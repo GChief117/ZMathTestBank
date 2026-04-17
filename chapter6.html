@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 6 — Definitions</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch6-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">6.1 Declarations &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">6.2 Abbreviations &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">6.3 Generic Abbreviations &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">6.4 Axiomatic Definitions &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 6 &mdash; Definitions</h1>
+
+<!-- ================= 6.1 Declarations ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">6.1 Declarations</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Purpose:</strong> a <span class="vocab" data-def="Introduces a new object (type or variable) into a Z specification.">declaration</span> introduces an object into a specification.</li>
+  <li><strong>Basic type:</strong> write <code>[Type]</code> to introduce a <span class="vocab" data-def="A set whose internal structure is invisible &mdash; elements are opaque atoms.">basic type</span> (given set) with opaque elements.</li>
+  <li><strong>Variable:</strong> <code>x : A</code> introduces variable <code>x</code> drawn from set <code>A</code>.</li>
+  <li><strong><span class="vocab" data-def="A declaration of the form x : t where t is a type &mdash; makes the underlying type explicit.">Signature</span>:</strong> <code>x : t</code> where <code>t</code> is a type &rarr; makes the type explicit.</li>
+  <li><strong>Local constraint:</strong> <code>x : t | x &isin; s</code> &mdash; the <span class="vocab" data-def="A predicate following a vertical bar that restricts the declared variable.">constraint</span> follows a vertical bar in set comprehensions, quantifications, or &mu;-expressions.</li>
+  <li><strong>Global constant:</strong> if the constant is used throughout the spec &rarr; requires an <span class="vocab" data-def="A definition that pairs a declaration with a constraining predicate (see &sect;6.4).">axiomatic definition</span>.</li>
+  <li><strong>Non-&Zopf; sets:</strong> if the set is not <code>&Zopf;</code>, it must be defined elsewhere in the specification.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Declaration</td><td>Introduces an object (type or variable) into a spec.</td></tr>
+  <tr><td>Basic type</td><td>A given set with opaque internal structure.</td></tr>
+  <tr><td>Signature</td><td>A declaration <code>x : t</code> where <code>t</code> is a type.</td></tr>
+  <tr><td>Constraint</td><td>A predicate after <code>|</code> restricting the declared variable.</td></tr>
+  <tr><td>Axiomatic definition</td><td>A declaration paired with a constraining predicate (&sect;6.4).</td></tr>
+  <tr><td>Given set</td><td>Synonym for basic type &mdash; introduced by <code>[Name]</code>.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>[Type]</code></td><td>Declare a basic type (given set).</td></tr>
+  <tr><td><code>:</code></td><td>Typing &mdash; &ldquo;is drawn from&rdquo; / &ldquo;is of type.&rdquo;</td></tr>
+  <tr><td><code>|</code></td><td>Constraint separator &mdash; &ldquo;such that.&rdquo;</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership &mdash; &ldquo;is an element of.&rdquo;</td></tr>
+  <tr><td><code>&Zopf;</code></td><td>The set of all integers &mdash; built-in type.</td></tr>
+</table>
+
+<h3 id="s0-D">IV.1 Examples: Hotel Switchboard, Hospital Records &amp; School Enrollment</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>[Type]</code></td><td>Declare a basic type.</td></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">hotel switchboard</span> tracks <span class="key">call charges</span> to current guests across rooms.</p>
+<ul>
+  <li><strong>Identify:</strong> two domain objects &mdash; guests and rooms.</li>
+  <li><strong>Declare:</strong> <code>[Guest, Room]</code> introduces two <span class="vocab" data-def="A set whose internal structure is invisible &mdash; elements are opaque atoms.">basic types</span>.</li>
+  <li><strong>Use:</strong> <code>x <span class="vocab" data-def="Typing &mdash; drawn from.">:</span> Guest</code> introduces a variable of type Guest.</li>
+  <li><strong>Result:</strong> guests and rooms are opaque &mdash; the spec only sees membership, not internal structure.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">hospital</span> stores <span class="key">patient records</span> linking patients to their assigned doctors.</p>
+<ul>
+  <li><strong>Identify:</strong> two domain objects &mdash; patients and doctors.</li>
+  <li><strong>Declare:</strong> <code>[Patient, Doctor]</code> introduces two basic types.</li>
+  <li><strong>Use:</strong> <code>p : Patient</code> introduces a variable drawn from Patient.</li>
+  <li><strong>Result:</strong> patient and doctor identities are opaque atoms.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">school</span> tracks <span class="key">enrollment</span> linking students to courses.</p>
+<ul>
+  <li><strong>Identify:</strong> two domain objects &mdash; students and courses.</li>
+  <li><strong>Declare:</strong> <code>[Student, Course]</code> introduces two basic types.</li>
+  <li><strong>Use:</strong> <code>s : Student</code> declares a variable of type Student.</li>
+  <li><strong>Result:</strong> opaque identifiers for students and courses.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: User Login, Sensor Reading &amp; Library Card</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>[Type]</code></td><td>Basic type declaration.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">web app</span> declares a <span class="key">username variable</span> drawn from an opaque user set.</p>
+<ul>
+  <li><strong>Identify:</strong> the domain object is a user identity.</li>
+  <li><strong>Declare:</strong> <code>[USER]</code> then <code>login : USER</code>.</li>
+  <li><strong>Use:</strong> <span class="vocab" data-def="A declaration of the form x : t where t is a type &mdash; makes the underlying type explicit.">signature</span> makes the type explicit.</li>
+  <li><strong>Result:</strong> <code>login</code> is drawn from the set of all users.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">IoT hub</span> declares a <span class="key">temperature reading</span> drawn from integers.</p>
+<ul>
+  <li><strong>Identify:</strong> temperature is a numeric value.</li>
+  <li><strong>Declare:</strong> <code>temp : &Zopf;</code> &mdash; no need to declare &Zopf;; it is built in.</li>
+  <li><strong>Use:</strong> signature with the built-in integer type.</li>
+  <li><strong>Result:</strong> <code>temp</code> can be any integer (positive, negative, zero).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">library system</span> declares a <span class="key">card number</span> drawn from an opaque identifier set.</p>
+<ul>
+  <li><strong>Identify:</strong> card numbers are domain-specific atoms.</li>
+  <li><strong>Declare:</strong> <code>[CARD]</code> then <code>myCard : CARD</code>.</li>
+  <li><strong>Use:</strong> basic type + variable declaration.</li>
+  <li><strong>Result:</strong> <code>myCard</code> is some opaque card ID.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Signature vs. Constraint — Access Control, Age Filter &amp; Priority Queue</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>|</code></td><td>Constraint separator.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">access-control system</span> declares a user variable <span class="key">restricted to admins</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> the variable is drawn from USER but must be in the admin subset.</li>
+  <li><strong>Declare:</strong> <code>u : USER | u &isin; admins</code>.</li>
+  <li><strong>Use:</strong> the <span class="vocab" data-def="A predicate after | restricting the declared variable.">constraint</span> after the bar narrows the type.</li>
+  <li><strong>Result:</strong> <code>u</code> is a USER who is also an admin.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">registration form</span> declares an age variable <span class="key">restricted to adults</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> age is an integer, constrained to &ge; 18.</li>
+  <li><strong>Declare:</strong> <code>age : &Zopf; | age &ge; 18</code>.</li>
+  <li><strong>Use:</strong> constraint narrows &Zopf; to adult ages.</li>
+  <li><strong>Result:</strong> <code>age</code> is an integer at least 18.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">priority queue</span> declares a priority level <span class="key">restricted to 1&ndash;5</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> priority is an integer between 1 and 5.</li>
+  <li><strong>Declare:</strong> <code>p : &Zopf; | 1 &le; p &le; 5</code>.</li>
+  <li><strong>Use:</strong> constraint bounds the range.</li>
+  <li><strong>Result:</strong> <code>p</code> is one of {1, 2, 3, 4, 5}.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Multiple Declarations — E-commerce, Fleet Mgmt &amp; Classroom</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>[Type]</code></td><td>Declare a basic type.</td></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>&Zopf;</code></td><td>Integers.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">e-commerce platform</span> needs <span class="key">products, customers, and prices</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> three domain objects &mdash; two opaque, one numeric.</li>
+  <li><strong>Declare:</strong> <code>[PRODUCT, CUSTOMER]</code> and <code>price : &Zopf;</code>.</li>
+  <li><strong>Use:</strong> basic types for opaque IDs, &Zopf; for numeric values.</li>
+  <li><strong>Result:</strong> products and customers are abstract; price is an integer.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">fleet management</span> system tracks <span class="key">vehicles, drivers, and mileage</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> vehicles and drivers are opaque; mileage is numeric.</li>
+  <li><strong>Declare:</strong> <code>[VEHICLE, DRIVER]</code> and <code>miles : &Zopf;</code>.</li>
+  <li><strong>Use:</strong> mix of basic types and integer variables.</li>
+  <li><strong>Result:</strong> vehicles/drivers are atoms; miles is a number.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">classroom app</span> tracks <span class="key">teachers, rooms, and capacity</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> teachers and rooms are opaque; capacity is numeric.</li>
+  <li><strong>Declare:</strong> <code>[TEACHER, ROOM]</code> and <code>seats : &Zopf;</code>.</li>
+  <li><strong>Use:</strong> given sets + integer variable.</li>
+  <li><strong>Result:</strong> domain objects declared, capacity is numeric.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Global vs. Local — Config Setting, Loop Counter &amp; Search Filter</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>|</code></td><td>Constraint separator.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">config setting</span> needs a <span class="key">global constant</span> available everywhere in the spec.</p>
+<ul>
+  <li><strong>Identify:</strong> the constant is used throughout &rarr; needs an <span class="vocab" data-def="A definition that pairs a declaration with a constraining predicate (see &sect;6.4).">axiomatic definition</span>.</li>
+  <li><strong>Declare:</strong> cannot use a bare <code>x : &Zopf;</code> at top level alone for a global constant.</li>
+  <li><strong>Use:</strong> axiomatic definition box with declaration + predicate.</li>
+  <li><strong>Result:</strong> global constants require more than a simple declaration.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">loop counter</span> is <span class="key">local</span> to a set comprehension.</p>
+<ul>
+  <li><strong>Identify:</strong> the variable is scoped to the comprehension.</li>
+  <li><strong>Declare:</strong> <code>{ i : &Zopf; | 0 &le; i &lt; n }</code> &mdash; <code>i</code> is local.</li>
+  <li><strong>Use:</strong> constraint follows <code>|</code> in the local scope.</li>
+  <li><strong>Result:</strong> <code>i</code> exists only inside the braces.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">search filter</span> restricts results <span class="key">locally</span> within a quantification.</p>
+<ul>
+  <li><strong>Identify:</strong> the variable is local to the &forall; expression.</li>
+  <li><strong>Declare:</strong> <code>&forall; x : ITEM | x &isin; results &bull; price(x) &le; budget</code>.</li>
+  <li><strong>Use:</strong> <code>x</code> is locally declared and constrained.</li>
+  <li><strong>Result:</strong> <code>x</code> scoped to the quantification only.</li>
+</ul>
+</div>
+
+<h3 id="s0-E">V.1 Practice: Declaration Symbol</h3>
+<div class="practice" id="p1_1"><p>Which symbol declares a basic type in Z?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_1')"><code>==</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_1')"><code>::=</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')"><code>[Name]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_1')"><code>:</code></button></li></ul><div class="feedback" id="fb1_1"><p><strong>Correct.</strong> Square brackets introduce a given set.</p><ul><li><strong>Identify:</strong> basic types use bracket syntax.</li><li><strong>Declare:</strong> <code>[Type]</code> form.</li><li><strong>Use:</strong> elements are opaque atoms.</li><li><strong>Result:</strong> a new type enters the specification.</li></ul></div></div>
+
+<h3>V.2 Practice: Signature Meaning</h3>
+<div class="practice" id="p1_2"><p>A signature <code>x : t</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')"><code>x</code> is drawn from type <code>t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')"><code>x</code> equals <code>t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')"><code>x</code> is a subset of <code>t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')"><code>x</code> is abbreviated as <code>t</code>.</button></li></ul><div class="feedback" id="fb1_2"><p><strong>Correct.</strong> The colon means &ldquo;is of type.&rdquo;</p><ul><li><strong>Identify:</strong> signature declares type.</li><li><strong>Declare:</strong> <code>x : t</code> form.</li><li><strong>Use:</strong> makes the underlying type explicit.</li><li><strong>Result:</strong> <code>x</code> is a member of <code>t</code>.</li></ul></div></div>
+
+<h3>V.3 Practice: Declaring a Hotel System</h3>
+<div class="practice" id="p1_3"><p class="scenario">A <span class="key">hotel system</span> needs to model <span class="key">guests</span> and <span class="key">rooms</span> as opaque identifiers. Which declaration is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>[Guest, Room]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>Guest == Room</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>Guest : Room</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>Guest ::= Room</code></button></li></ul><div class="feedback" id="fb1_3"><p><strong>Correct.</strong> Two basic types declared together.</p><ul><li><strong>Identify:</strong> two opaque domain objects.</li><li><strong>Declare:</strong> <code>[Guest, Room]</code> bracket syntax.</li><li><strong>Use:</strong> both become available as types.</li><li><strong>Result:</strong> guests and rooms are distinct given sets.</li></ul></div></div>
+
+<h3>V.4 Practice: Variable Declaration</h3>
+<div class="practice" id="p1_4"><p class="scenario">After <code>[Patient]</code>, a <span class="key">hospital app</span> needs to introduce a <span class="key">specific patient variable</span>. Which declaration works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>p : Patient</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>p == Patient</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>p ::= Patient</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>[p] : Patient</code></button></li></ul><div class="feedback" id="fb1_4"><p><strong>Correct.</strong> Colon declares a variable from a set.</p><ul><li><strong>Identify:</strong> variable drawn from given set.</li><li><strong>Declare:</strong> <code>p : Patient</code>.</li><li><strong>Use:</strong> <code>p</code> is now a Patient value.</li><li><strong>Result:</strong> variable introduced into scope.</li></ul></div></div>
+
+<h3>V.5 Practice: Built-in Type</h3>
+<div class="practice" id="p1_5"><p>Which type does NOT need to be declared because it is built in?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>&Zopf;</code> (integers)</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>Guest</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>Room</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>FILE</code></button></li></ul><div class="feedback" id="fb1_5"><p><strong>Correct.</strong> &Zopf; is the single built-in type in Z.</p><ul><li><strong>Identify:</strong> integers are pre-defined.</li><li><strong>Declare:</strong> no <code>[&Zopf;]</code> needed.</li><li><strong>Use:</strong> always available.</li><li><strong>Result:</strong> all other types must be declared.</li></ul></div></div>
+
+<h3>V.6 Practice: Constraint Syntax</h3>
+<div class="practice" id="p1_6"><p class="scenario">A <span class="key">voting system</span> declares an age variable restricted to <span class="key">at least 18</span>. Which form adds the constraint?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>age : &Zopf; | age &ge; 18</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>age == 18</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>age ::= 18</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>[age] : &Zopf;</code></button></li></ul><div class="feedback" id="fb1_6"><p><strong>Correct.</strong> Vertical bar introduces the constraint.</p><ul><li><strong>Identify:</strong> local constraint on a variable.</li><li><strong>Declare:</strong> <code>age : &Zopf;</code> with <code>| age &ge; 18</code>.</li><li><strong>Use:</strong> narrows the type to adults.</li><li><strong>Result:</strong> <code>age</code> is an integer &ge; 18.</li></ul></div></div>
+
+<h3>V.7 Practice: Opaque Elements</h3>
+<div class="practice" id="p1_7"><p>After declaring <code>[COLOR]</code>, what do we know about COLOR's internal structure?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_7')">It contains red, green, blue.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">It is a subset of &Zopf;.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')">Nothing &mdash; elements are opaque atoms.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">It is empty.</button></li></ul><div class="feedback" id="fb1_7"><p><strong>Correct.</strong> Basic types hide internal structure.</p><ul><li><strong>Identify:</strong> given set is opaque.</li><li><strong>Declare:</strong> <code>[COLOR]</code> says nothing about members.</li><li><strong>Use:</strong> only membership is meaningful.</li><li><strong>Result:</strong> no assumptions about the set's contents.</li></ul></div></div>
+
+<h3>V.8 Practice: Declaring a Fleet</h3>
+<div class="practice" id="p1_8"><p class="scenario">A <span class="key">fleet system</span> models <span class="key">vehicles</span> as opaque identifiers. Which declaration is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>[VEHICLE]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>VEHICLE == &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>VEHICLE ::= car | truck</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>VEHICLE : &Zopf;</code></button></li></ul><div class="feedback" id="fb1_8"><p><strong>Correct.</strong> Given set for opaque domain objects.</p><ul><li><strong>Identify:</strong> vehicles are opaque atoms.</li><li><strong>Declare:</strong> <code>[VEHICLE]</code> bracket syntax.</li><li><strong>Use:</strong> variables can be drawn from VEHICLE.</li><li><strong>Result:</strong> new basic type in the spec.</li></ul></div></div>
+
+<h3>V.9 Practice: Signature vs. Abbreviation</h3>
+<div class="practice" id="p1_9"><p>What distinguishes <code>x : A</code> from <code>x == A</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>x : A</code> declares a variable; <code>x == A</code> abbreviates an expression.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">They are identical.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')"><code>x : A</code> is an abbreviation.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')"><code>x == A</code> declares a type.</button></li></ul><div class="feedback" id="fb1_9"><p><strong>Correct.</strong> Colon declares membership; double-equals abbreviates.</p><ul><li><strong>Identify:</strong> two different definition forms.</li><li><strong>Declare:</strong> <code>:</code> for variables, <code>==</code> for aliases.</li><li><strong>Use:</strong> semantics differ fundamentally.</li><li><strong>Result:</strong> declarations vs. abbreviations.</li></ul></div></div>
+
+<h3>V.10 Practice: Integer Variable</h3>
+<div class="practice" id="p1_10"><p class="scenario">A <span class="key">thermometer app</span> needs a <span class="key">temperature reading</span> as an integer. Which declaration works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>temp : &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>[temp]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>temp == &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>temp ::= &Zopf;</code></button></li></ul><div class="feedback" id="fb1_10"><p><strong>Correct.</strong> <code>&Zopf;</code> is built in; just use the colon.</p><ul><li><strong>Identify:</strong> numeric value from integers.</li><li><strong>Declare:</strong> <code>temp : &Zopf;</code>.</li><li><strong>Use:</strong> no need to declare &Zopf; separately.</li><li><strong>Result:</strong> <code>temp</code> can be any integer.</li></ul></div></div>
+
+<h3>V.11 Practice: Local Scope</h3>
+<div class="practice" id="p1_11"><p>A variable declared inside <code>{ x : &Zopf; | x &gt; 0 }</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')">Local to the set comprehension.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Global to the entire spec.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">A basic type.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">An abbreviation.</button></li></ul><div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Comprehension variables are locally scoped.</p><ul><li><strong>Identify:</strong> <code>x</code> exists only inside the braces.</li><li><strong>Declare:</strong> local binding.</li><li><strong>Use:</strong> constraint applies within scope only.</li><li><strong>Result:</strong> <code>x</code> not visible outside.</li></ul></div></div>
+
+<h3>V.12 Practice: Multiple Basic Types</h3>
+<div class="practice" id="p1_12"><p class="scenario">A <span class="key">banking system</span> needs opaque <span class="key">accounts</span> and <span class="key">customers</span>. Which declaration works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>[ACCOUNT, CUSTOMER]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>ACCOUNT : CUSTOMER</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>ACCOUNT == CUSTOMER</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>ACCOUNT ::= CUSTOMER</code></button></li></ul><div class="feedback" id="fb1_12"><p><strong>Correct.</strong> Comma-separated basic types in brackets.</p><ul><li><strong>Identify:</strong> two opaque domain objects.</li><li><strong>Declare:</strong> <code>[ACCOUNT, CUSTOMER]</code>.</li><li><strong>Use:</strong> both are now available as types.</li><li><strong>Result:</strong> distinct given sets.</li></ul></div></div>
+
+<h3>V.13 Practice: Constrained Membership</h3>
+<div class="practice" id="p1_13"><p class="scenario">A <span class="key">ticket system</span> declares a seat number <span class="key">between 1 and 500</span>. Which form is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>seat : &Zopf; | 1 &le; seat &le; 500</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_13')"><code>seat == 500</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_13')"><code>[seat] : 1..500</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_13')"><code>seat &isin; 500</code></button></li></ul><div class="feedback" id="fb1_13"><p><strong>Correct.</strong> Variable + constraint after the bar.</p><ul><li><strong>Identify:</strong> bounded integer variable.</li><li><strong>Declare:</strong> <code>seat : &Zopf;</code> with predicate.</li><li><strong>Use:</strong> constraint narrows the range.</li><li><strong>Result:</strong> seat is in {1, ..., 500}.</li></ul></div></div>
+
+<h3>V.14 Practice: Non-&Zopf; Set Requirement</h3>
+<div class="practice" id="p1_14"><p>If a variable is declared as <code>x : A</code> and <code>A</code> is not <code>&Zopf;</code>, then:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>A</code> must be defined elsewhere in the spec.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>A</code> is automatically &Zopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>A</code> is ignored.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>A</code> is always empty.</button></li></ul><div class="feedback" id="fb1_14"><p><strong>Correct.</strong> Non-built-in sets must be introduced first.</p><ul><li><strong>Identify:</strong> only &Zopf; is pre-defined.</li><li><strong>Declare:</strong> <code>A</code> needs <code>[A]</code> or another definition.</li><li><strong>Use:</strong> forward references not allowed.</li><li><strong>Result:</strong> every type must be grounded.</li></ul></div></div>
+
+<h3>V.15 Practice: Global Constant Rule</h3>
+<div class="practice" id="p1_15"><p>To introduce a constant used throughout a specification, you need:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">An axiomatic definition (declaration + predicate).</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">A bare <code>x : &Zopf;</code> alone.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">A basic type <code>[x]</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">An abbreviation <code>x == &Zopf;</code>.</button></li></ul><div class="feedback" id="fb1_15"><p><strong>Correct.</strong> Global constants require axiomatic definitions.</p><ul><li><strong>Identify:</strong> global scope needs more than a declaration.</li><li><strong>Declare:</strong> axiomatic box form required.</li><li><strong>Use:</strong> the predicate constrains the value.</li><li><strong>Result:</strong> constant visible spec-wide.</li></ul></div></div>
+
+<h3>V.16 Practice: Declaring a Sensor</h3>
+<div class="practice" id="p1_16"><p class="scenario">An <span class="key">IoT platform</span> needs to declare <span class="key">sensor IDs</span> as opaque atoms. Which form is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>[SENSOR]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>SENSOR == &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>SENSOR : &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>SENSOR ::= s1 | s2</code></button></li></ul><div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Given set for opaque identifiers.</p><ul><li><strong>Identify:</strong> sensor IDs are domain atoms.</li><li><strong>Declare:</strong> <code>[SENSOR]</code>.</li><li><strong>Use:</strong> variables drawn from SENSOR.</li><li><strong>Result:</strong> new basic type.</li></ul></div></div>
+
+<h3>V.17 Practice: Constraint Bar Symbol</h3>
+<div class="practice" id="p1_17"><p>In <code>x : t | x &isin; s</code>, the <code>|</code> symbol means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')">&ldquo;Such that&rdquo; &mdash; constraint follows.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">&ldquo;Or&rdquo; &mdash; alternative.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">&ldquo;Defined as.&rdquo;</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">&ldquo;Is a type of.&rdquo;</button></li></ul><div class="feedback" id="fb1_17"><p><strong>Correct.</strong> The bar separates declaration from constraint.</p><ul><li><strong>Identify:</strong> <code>|</code> = &ldquo;such that.&rdquo;</li><li><strong>Declare:</strong> left side is the declaration.</li><li><strong>Use:</strong> right side is the predicate.</li><li><strong>Result:</strong> variable is narrowed by the constraint.</li></ul></div></div>
+
+<h3>V.18 Practice: Declaring a Map Key</h3>
+<div class="practice" id="p1_18"><p class="scenario">A <span class="key">database</span> needs a <span class="key">primary key</span> variable from an opaque ID set. Which declaration works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')"><code>[KEY]</code> then <code>pk : KEY</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>pk == KEY</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>pk ::= KEY</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>KEY : pk</code></button></li></ul><div class="feedback" id="fb1_18"><p><strong>Correct.</strong> Declare the type first, then the variable.</p><ul><li><strong>Identify:</strong> key is a domain atom.</li><li><strong>Declare:</strong> <code>[KEY]</code> then <code>pk : KEY</code>.</li><li><strong>Use:</strong> two-step: type then variable.</li><li><strong>Result:</strong> <code>pk</code> drawn from the KEY set.</li></ul></div></div>
+
+<h3>V.19 Practice: Replacement Rule</h3>
+<div class="practice" id="p1_19"><p>Any declaration can be replaced by a signature and a constraint. For example, <code>x : A</code> where <code>A &sub; t</code> becomes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>x : t | x &isin; A</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>x == A</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>[x] : t</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>x ::= A</code></button></li></ul><div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Signature + constraint decomposition.</p><ul><li><strong>Identify:</strong> widen to the type, add the membership constraint.</li><li><strong>Declare:</strong> <code>x : t</code> is the signature.</li><li><strong>Use:</strong> <code>| x &isin; A</code> is the constraint.</li><li><strong>Result:</strong> equivalent declaration.</li></ul></div></div>
+
+<h3>V.20 Practice: Warehouse System</h3>
+<div class="practice" id="p1_20"><p class="scenario">A <span class="key">warehouse</span> needs opaque <span class="key">bin locations</span> and a <span class="key">count variable</span>. Which declarations work?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')"><code>[BIN]</code> and <code>count : &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>BIN == count</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>BIN ::= count</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>[BIN, count]</code></button></li></ul><div class="feedback" id="fb1_20"><p><strong>Correct.</strong> Basic type for bins, integer for count.</p><ul><li><strong>Identify:</strong> bins are opaque; count is numeric.</li><li><strong>Declare:</strong> <code>[BIN]</code> + <code>count : &Zopf;</code>.</li><li><strong>Use:</strong> different declaration forms for different purposes.</li><li><strong>Result:</strong> mixed declaration types.</li></ul></div></div>
+
+<h3>V.21 Practice: Signature Definition</h3>
+<div class="practice" id="p1_21"><p>A declaration <code>x : t</code> where <code>t</code> is a type is called a:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')">Signature.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Abbreviation.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Axiom.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Free type.</button></li></ul><div class="feedback" id="fb1_21"><p><strong>Correct.</strong> A signature makes the underlying type explicit.</p><ul><li><strong>Identify:</strong> term from the textbook.</li><li><strong>Declare:</strong> <code>x : t</code> is a signature.</li><li><strong>Use:</strong> distinguishes from constrained declarations.</li><li><strong>Result:</strong> type is named directly.</li></ul></div></div>
+
+<h3>V.22 Practice: Given Set Convention</h3>
+<div class="practice" id="p1_22"><p>By convention, basic type names are written in:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">Italicised or capitalised identifiers (e.g. <code>Guest</code>, <code>PERSON</code>).</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">All lowercase.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Greek letters.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Numbers.</button></li></ul><div class="feedback" id="fb1_22"><p><strong>Correct.</strong> Domain-specific capitalised identifiers.</p><ul><li><strong>Identify:</strong> naming convention.</li><li><strong>Declare:</strong> <code>[Guest]</code> or <code>[PERSON]</code>.</li><li><strong>Use:</strong> distinguishes from variables.</li><li><strong>Result:</strong> readable specification.</li></ul></div></div>
+
+<h3>V.23 Practice: Vertical Bar in Quantification</h3>
+<div class="practice" id="p1_23"><p class="scenario">In <code>&forall; x : ITEM | x &isin; stock &bull; qty(x) &gt; 0</code>, the constraint <code>x &isin; stock</code> restricts <code>x</code> to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">Items that are in the stock set.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">All items in ITEM.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">No items.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Items with qty = 0.</button></li></ul><div class="feedback" id="fb1_23"><p><strong>Correct.</strong> The bar narrows to stock members only.</p><ul><li><strong>Identify:</strong> constraint after <code>|</code>.</li><li><strong>Declare:</strong> <code>x : ITEM</code> is the signature.</li><li><strong>Use:</strong> <code>| x &isin; stock</code> filters.</li><li><strong>Result:</strong> quantification applies only to stocked items.</li></ul></div></div>
+
+<h3>V.24 Practice: Spec Prose Role</h3>
+<div class="practice" id="p1_24"><p>According to the textbook, a formal specification should also contain:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')">Significant prose relating math objects to design features.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Only mathematical symbols.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Only code.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Only diagrams.</button></li></ul><div class="feedback" id="fb1_24"><p><strong>Correct.</strong> Prose connects math to system design.</p><ul><li><strong>Identify:</strong> spec = math + explanatory prose.</li><li><strong>Declare:</strong> relates objects to states, properties, operations.</li><li><strong>Use:</strong> makes the spec meaningful.</li><li><strong>Result:</strong> well-defined specification.</li></ul></div></div>
+
+<h3>V.25 Practice: Definition Methods Overview</h3>
+<div class="practice" id="p1_25"><p>The textbook lists which ways to define an object in Z?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Declare, abbreviate, or define by axiom (plus free types and schemas).</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Only declare.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Only abbreviate.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Only axiom.</button></li></ul><div class="feedback" id="fb1_25"><p><strong>Correct.</strong> Multiple definition mechanisms exist.</p><ul><li><strong>Identify:</strong> declare, abbreviate, axiom, free type, schema.</li><li><strong>Declare:</strong> each serves a different purpose.</li><li><strong>Use:</strong> chapter covers the first three.</li><li><strong>Result:</strong> rich definition toolkit.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 6.2 Abbreviations ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">6.2 Abbreviations</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Form:</strong> <code>symbol == term</code> &mdash; introduces a new name as a <span class="vocab" data-def="A definition that gives a new name to an existing expression &mdash; pure alias.">synonym</span> for an existing expression.</li>
+  <li>The new name (<span class="vocab" data-def="The symbol on the left of == &mdash; a fresh global constant with the same type and value as the right side.">symbol</span>) is a global constant with the same type and value as the <span class="vocab" data-def="The expression on the right of == &mdash; must be already defined.">term</span>.</li>
+  <li><strong>No recursion:</strong> the symbol being defined must NOT appear on the right &mdash; <span class="vocab" data-def="The newly defined name may not appear in its own definition.">non-recursive</span>.</li>
+  <li><strong><span class="vocab" data-def="An abbreviation asserts nothing new &mdash; it simply provides a convenient name.">Benign</span>:</strong> asserts nothing new; can always be <span class="vocab" data-def="Replace every use of the abbreviation with the expression on the right.">eliminated</span> by substituting the RHS.</li>
+  <li><strong>Inference rule [abbrev]:</strong> given <code>s == e</code>, conclude <code>s = e</code>.</li>
+  <li><strong>Set abbreviation:</strong> constraining predicates must be properly introduced for the abbreviation to be well defined.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Abbreviation</td><td>A definition <code>symbol == term</code> &mdash; a pure alias.</td></tr>
+  <tr><td>Symbol (LHS)</td><td>The fresh name being introduced.</td></tr>
+  <tr><td>Term (RHS)</td><td>The expression being named &mdash; must already be defined.</td></tr>
+  <tr><td>Non-recursive</td><td>The LHS must not appear on the RHS.</td></tr>
+  <tr><td>Benign</td><td>Asserts nothing &mdash; just a convenience.</td></tr>
+  <tr><td>Eliminable</td><td>Can be replaced by substituting the RHS everywhere.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Abbreviation &mdash; &ldquo;is defined as.&rdquo;</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical AND (in constraining predicates).</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set &mdash; set of all subsets.</td></tr>
+  <tr><td><code>{ &hellip; | &hellip; }</code></td><td>Set comprehension with constraint.</td></tr>
+</table>
+
+<h3 id="s1-D">IV.1 Examples: Additive Colours, Coin Denominations &amp; Weekdays</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">display driver</span> needs a short name for the <span class="key">three additive colours</span>.</p>
+<ul>
+  <li><strong>Name:</strong> choose a fresh identifier &mdash; <code>Additive</code>.</li>
+  <li><strong>Define:</strong> <code>Additive <span class="vocab" data-def="Abbreviation &mdash; defined as.">==</span> {red, green, blue}</code>.</li>
+  <li><strong>Type:</strong> if red, green, blue &isin; Colours, then <code>Additive : <span class="vocab" data-def="Power set &mdash; set of all subsets.">&Popf;</span> Colours</code>.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="An abbreviation asserts nothing new.">benign</span> &mdash; no new axiom; just a name.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">vending machine</span> needs a short name for <span class="key">accepted coin types</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>AcceptedCoins</code>.</li>
+  <li><strong>Define:</strong> <code>AcceptedCoins == {penny, nickel, dime, quarter}</code>.</li>
+  <li><strong>Type:</strong> <code>AcceptedCoins : &Popf; Coin</code>.</li>
+  <li><strong>Check:</strong> benign &mdash; pure alias for four values.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">scheduling app</span> needs a short name for the <span class="key">five weekdays</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>Weekday</code>.</li>
+  <li><strong>Define:</strong> <code>Weekday == {mon, tue, wed, thu, fri}</code>.</li>
+  <li><strong>Type:</strong> <code>Weekday : &Popf; Day</code>.</li>
+  <li><strong>Check:</strong> benign &mdash; just a convenience name.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: No Recursion — GNU, LOOP &amp; SELF</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Someone tries to define the <span class="key">recursive acronym</span> &ldquo;gnu&rdquo; as &ldquo;<span class="key">gnu's not unix</span>.&rdquo;</p>
+<ul>
+  <li><strong>Name:</strong> <code>gnu</code>.</li>
+  <li><strong>Define:</strong> <code>gnu == gnu's not unix</code>.</li>
+  <li><strong>Problem:</strong> <code>gnu</code> appears on the RHS &mdash; violates <span class="vocab" data-def="The newly defined name may not appear in its own definition.">non-recursive</span> rule.</li>
+  <li><strong>Check:</strong> INVALID &mdash; cannot be eliminated by substitution.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A developer tries to define <span class="key">LOOP</span> as &ldquo;<span class="key">LOOP + 1</span>.&rdquo;</p>
+<ul>
+  <li><strong>Name:</strong> <code>LOOP</code>.</li>
+  <li><strong>Define:</strong> <code>LOOP == LOOP + 1</code>.</li>
+  <li><strong>Problem:</strong> <code>LOOP</code> appears on the RHS &mdash; self-reference forbidden.</li>
+  <li><strong>Check:</strong> INVALID &mdash; infinite regress.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A spec writer tries <span class="key">SELF</span> defined as &ldquo;<span class="key">&not; SELF</span>.&rdquo;</p>
+<ul>
+  <li><strong>Name:</strong> <code>SELF</code>.</li>
+  <li><strong>Define:</strong> <code>SELF == &not; SELF</code>.</li>
+  <li><strong>Problem:</strong> <code>SELF</code> on the RHS &mdash; recursive.</li>
+  <li><strong>Check:</strong> INVALID &mdash; paradox if allowed.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Set Comprehension Abbreviations — English Tea, Scots Porridge &amp; Vegans</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical AND.</td></tr>
+  <tr><td><code>{ &hellip; | &hellip; }</code></td><td>Set comprehension.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Given basic type <code>Person</code>, name the set of people who <span class="key">drink tea</span> and <span class="key">take sugar</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>English</code>.</li>
+  <li><strong>Define:</strong> <code>English == { p : Person | p drinks tea <span class="vocab" data-def="Logical AND.">&and;</span> p takes sugar }</code>.</li>
+  <li><strong>Type:</strong> <code>English : &Popf; Person</code>.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="An abbreviation asserts nothing new.">benign</span> &mdash; well defined if predicates are introduced.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Name the set of people who <span class="key">eat porridge</span> and <span class="key">add salt</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>Scots</code>.</li>
+  <li><strong>Define:</strong> <code>Scots == { q : Person | q eats porridge &and; q adds salt }</code>.</li>
+  <li><strong>Type:</strong> <code>Scots : &Popf; Person</code>.</li>
+  <li><strong>Check:</strong> benign &mdash; constraining predicates must be properly introduced.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Name the set of people who <span class="key">eat no meat</span> and <span class="key">eat no dairy</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>Vegans</code>.</li>
+  <li><strong>Define:</strong> <code>Vegans == { r : Person | &not; r eats meat &and; &not; r eats dairy }</code>.</li>
+  <li><strong>Type:</strong> <code>Vegans : &Popf; Person</code>.</li>
+  <li><strong>Check:</strong> benign &mdash; pure alias for a filtered subset.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Eliminability — Replacing Names in Proofs</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">proof assistant</span> encounters <code>Additive</code> in a formula and needs to <span class="key">unfold</span> it.</p>
+<ul>
+  <li><strong>Name:</strong> <code>Additive</code>.</li>
+  <li><strong>Define:</strong> <code>Additive == {red, green, blue}</code>.</li>
+  <li><strong>Rule:</strong> [abbrev] gives <code>Additive = {red, green, blue}</code>.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="Replace every use of the abbreviation with the expression on the right.">eliminable</span> &mdash; substitute everywhere.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">verifier</span> sees <code>Weekday</code> in a precondition and needs the <span class="key">raw set</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>Weekday</code>.</li>
+  <li><strong>Define:</strong> <code>Weekday == {mon, tue, wed, thu, fri}</code>.</li>
+  <li><strong>Rule:</strong> [abbrev] &rarr; <code>Weekday = {mon, tue, wed, thu, fri}</code>.</li>
+  <li><strong>Check:</strong> eliminable &mdash; the abbreviation adds nothing logically.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">type checker</span> encounters <code>English</code> and needs to verify <span class="key">well-definedness</span>.</p>
+<ul>
+  <li><strong>Name:</strong> <code>English</code>.</li>
+  <li><strong>Define:</strong> <code>English == { p : Person | p drinks tea &and; p takes sugar }</code>.</li>
+  <li><strong>Rule:</strong> [abbrev] &rarr; substitute the comprehension.</li>
+  <li><strong>Check:</strong> eliminable &mdash; the abbreviation is transparent.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Type of Abbreviation — Colour Set, Status Enum &amp; Size Filter</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">paint mixer</span> abbreviates <code>{cyan, magenta, yellow}</code>. What is the <span class="key">type</span>?</p>
+<ul>
+  <li><strong>Name:</strong> <code>Subtractive == {cyan, magenta, yellow}</code>.</li>
+  <li><strong>Define:</strong> if cyan, magenta, yellow &isin; Colours &rarr; type is <code>&Popf; Colours</code>.</li>
+  <li><strong>Type:</strong> same type and value as the RHS expression.</li>
+  <li><strong>Check:</strong> benign &mdash; the abbreviation inherits its type.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">task tracker</span> abbreviates <code>{open, closed, blocked}</code>. What is the <span class="key">type</span>?</p>
+<ul>
+  <li><strong>Name:</strong> <code>Status == {open, closed, blocked}</code>.</li>
+  <li><strong>Define:</strong> if open, closed, blocked &isin; State &rarr; type is <code>&Popf; State</code>.</li>
+  <li><strong>Type:</strong> <code>Status : &Popf; State</code>.</li>
+  <li><strong>Check:</strong> the RHS elements must be defined elsewhere.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">warehouse</span> abbreviates items with <span class="key">weight under 50 kg</span>. What is the <span class="key">type</span>?</p>
+<ul>
+  <li><strong>Name:</strong> <code>Light == { i : Item | weight(i) &lt; 50 }</code>.</li>
+  <li><strong>Define:</strong> comprehension over Item &rarr; type is <code>&Popf; Item</code>.</li>
+  <li><strong>Type:</strong> <code>Light : &Popf; Item</code>.</li>
+  <li><strong>Check:</strong> benign subset alias.</li>
+</ul>
+</div>
+
+<h3 id="s1-E">V.1 Practice: Abbreviation Symbol</h3>
+<div class="practice" id="p2_1"><p>An abbreviation definition uses which symbol?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>:</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>::=</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>==</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>=</code></button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> Double-equals introduces an abbreviation.</p><ul><li><strong>Name:</strong> fresh identifier on the left.</li><li><strong>Define:</strong> <code>==</code> links to expression.</li><li><strong>Type:</strong> inherits from the RHS.</li><li><strong>Check:</strong> benign alias.</li></ul></div></div>
+
+<h3>V.2 Practice: Recursion Rule</h3>
+<div class="practice" id="p2_2"><p>Can the symbol being defined appear on the right-hand side?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_2')">Yes, always.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')">No &mdash; abbreviations are non-recursive.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Only for sets.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Only for integers.</button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> Self-reference is forbidden in abbreviations.</p><ul><li><strong>Name:</strong> LHS must be fresh.</li><li><strong>Define:</strong> RHS must not mention LHS.</li><li><strong>Type:</strong> non-recursive by rule.</li><li><strong>Check:</strong> eliminability requires no cycles.</li></ul></div></div>
+
+<h3>V.3 Practice: Naming a Colour Set</h3>
+<div class="practice" id="p2_3"><p class="scenario">A <span class="key">graphics engine</span> wants a short name for <span class="key">{red, green, blue}</span>. Which abbreviation is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>Additive == {red, green, blue}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>Additive : {red, green, blue}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>Additive ::= red | green | blue</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>{red, green, blue} == Additive</code></button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> <code>==</code> with a fresh LHS.</p><ul><li><strong>Name:</strong> <code>Additive</code> is fresh.</li><li><strong>Define:</strong> <code>== {red, green, blue}</code>.</li><li><strong>Type:</strong> <code>&Popf; Colours</code>.</li><li><strong>Check:</strong> benign alias.</li></ul></div></div>
+
+<h3>V.4 Practice: Invalid Recursive Definition</h3>
+<div class="practice" id="p2_4"><p class="scenario">Is <code>gnu == gnu's not unix</code> a valid abbreviation?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_4')">Yes &mdash; it names an acronym.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')">No &mdash; <code>gnu</code> appears on the RHS.</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">Only if gnu is a type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">Only for strings.</button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Self-reference violates the non-recursive rule.</p><ul><li><strong>Name:</strong> <code>gnu</code> is the LHS.</li><li><strong>Define:</strong> RHS contains <code>gnu</code> &mdash; forbidden.</li><li><strong>Type:</strong> cannot determine.</li><li><strong>Check:</strong> INVALID.</li></ul></div></div>
+
+<h3>V.5 Practice: Abbreviation as Alias</h3>
+<div class="practice" id="p2_5"><p>An abbreviation definition asserts:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">Nothing new &mdash; it is a pure alias.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">A new axiom.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">A constraint on the symbol.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">A type restriction.</button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Abbreviations are benign.</p><ul><li><strong>Name:</strong> just a convenience label.</li><li><strong>Define:</strong> no new information added.</li><li><strong>Type:</strong> same as the RHS.</li><li><strong>Check:</strong> eliminable by substitution.</li></ul></div></div>
+
+<h3>V.6 Practice: Set Comprehension Abbreviation</h3>
+<div class="practice" id="p2_6"><p class="scenario">Given <code>[Person]</code>, a <span class="key">survey app</span> wants to name people who <span class="key">drink tea and take sugar</span>. Which abbreviation works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>English == { p : Person | p drinks tea &and; p takes sugar }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>English : Person | tea &and; sugar</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>English ::= tea | sugar</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>Person == English</code></button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> Set comprehension with conjunctive filter.</p><ul><li><strong>Name:</strong> <code>English</code>.</li><li><strong>Define:</strong> <code>== { p : Person | &hellip; }</code>.</li><li><strong>Type:</strong> <code>&Popf; Person</code>.</li><li><strong>Check:</strong> benign if predicates are well defined.</li></ul></div></div>
+
+<h3>V.7 Practice: Eliminability</h3>
+<div class="practice" id="p2_7"><p>Any abbreviation can be eliminated from a specification by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">Replacing every occurrence with the RHS expression.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Deleting the LHS.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Adding a constraint.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Declaring a new type.</button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> Substitute RHS for every use of the symbol.</p><ul><li><strong>Name:</strong> symbol disappears.</li><li><strong>Define:</strong> RHS replaces it everywhere.</li><li><strong>Type:</strong> unchanged.</li><li><strong>Check:</strong> spec remains equivalent.</li></ul></div></div>
+
+<h3>V.8 Practice: Inference Rule</h3>
+<div class="practice" id="p2_8"><p>Given <code>s == e</code>, the [abbrev] inference rule concludes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>s = e</code> (the symbol equals the expression).</button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>s &ne; e</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>s : e</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>s &isin; e</code>.</button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Abbreviation yields equality.</p><ul><li><strong>Name:</strong> <code>s</code> is the defined symbol.</li><li><strong>Define:</strong> <code>== e</code> gives <code>s = e</code>.</li><li><strong>Type:</strong> same type on both sides.</li><li><strong>Check:</strong> one inference rule per abbreviation.</li></ul></div></div>
+
+<h3>V.9 Practice: Type of an Abbreviation</h3>
+<div class="practice" id="p2_9"><p class="scenario">If <code>red, green, blue</code> are declared as elements of type <code>Colours</code>, what is the type of <code>Additive == {red, green, blue}</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')"><code>&Popf; Colours</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>Colours</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&Nopf;</code></button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> A set of Colours values has type &Popf; Colours.</p><ul><li><strong>Name:</strong> <code>Additive</code>.</li><li><strong>Define:</strong> <code>== {red, green, blue}</code>.</li><li><strong>Type:</strong> subset of Colours &rarr; &Popf; Colours.</li><li><strong>Check:</strong> type inherited from the RHS.</li></ul></div></div>
+
+<h3>V.10 Practice: Naming a Filtered Set</h3>
+<div class="practice" id="p2_10"><p class="scenario">A <span class="key">payroll app</span> wants &ldquo;ManagerID&rdquo; to name natural numbers <span class="key">1000 to 9999</span>. Which abbreviation works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>ManagerID == { n : &Nopf; | 1000 &le; n &le; 9999 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>ManagerID : 1000..9999</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>ManagerID ::= 1000 | 9999</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>ManagerID = &Nopf;</code></button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> Set comprehension with range predicate.</p><ul><li><strong>Name:</strong> <code>ManagerID</code>.</li><li><strong>Define:</strong> <code>== { n : &Nopf; | &hellip; }</code>.</li><li><strong>Type:</strong> <code>&Popf; &Nopf;</code>.</li><li><strong>Check:</strong> benign filtered subset.</li></ul></div></div>
+
+<h3>V.11 Practice: Global Constant Scope</h3>
+<div class="practice" id="p2_11"><p>The new symbol introduced by an abbreviation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')">A global constant of the specification.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Local to one schema.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">A type parameter.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">A predicate.</button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> Abbreviations introduce global constants.</p><ul><li><strong>Name:</strong> visible throughout the spec.</li><li><strong>Define:</strong> from the point of definition onward.</li><li><strong>Type:</strong> same type as the RHS.</li><li><strong>Check:</strong> no forward references.</li></ul></div></div>
+
+<h3>V.12 Practice: Well-Definedness</h3>
+<div class="practice" id="p2_12"><p class="scenario">For <code>Scots == { q : Person | q eats porridge &and; q adds salt }</code> to be well defined, what must hold?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')">The constraining predicates must be properly introduced.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">Nothing &mdash; always valid.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>Scots</code> must appear on the RHS.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>Person</code> must be &Zopf;.</button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> Predicates must be well defined.</p><ul><li><strong>Name:</strong> <code>Scots</code>.</li><li><strong>Define:</strong> RHS predicates must be introduced.</li><li><strong>Type:</strong> <code>&Popf; Person</code> if well defined.</li><li><strong>Check:</strong> &ldquo;eats porridge&rdquo; and &ldquo;adds salt&rdquo; must have meaning.</li></ul></div></div>
+
+<h3>V.13 Practice: LHS Freshness</h3>
+<div class="practice" id="p2_13"><p>Can the LHS of an abbreviation reuse an existing name?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_13')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">No &mdash; the symbol must be fresh.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Only for types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Only for integers.</button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> The LHS must be a new identifier.</p><ul><li><strong>Name:</strong> fresh &mdash; never used before.</li><li><strong>Define:</strong> no redefinition allowed.</li><li><strong>Type:</strong> single definition per name.</li><li><strong>Check:</strong> global namespace is unique.</li></ul></div></div>
+
+<h3>V.14 Practice: Abbreviation vs. Axiomatic</h3>
+<div class="practice" id="p2_14"><p>The key difference between abbreviation and axiomatic definition is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')">Abbreviations assert nothing; axiomatic definitions add constraints.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">They are identical.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">Abbreviations use <code>::=</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">Axiomatic definitions are eliminable.</button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Benign alias vs. constraining axiom.</p><ul><li><strong>Name:</strong> both introduce names.</li><li><strong>Define:</strong> <code>==</code> vs. axiomatic box.</li><li><strong>Type:</strong> abbreviation = transparent; axiom = opaque.</li><li><strong>Check:</strong> different semantic weight.</li></ul></div></div>
+
+<h3>V.15 Practice: Membership After Abbreviation</h3>
+<div class="practice" id="p2_15"><p>If <code>Teen == { n : &Nopf; | 13 &le; n &le; 19 }</code>, is <code>15 &isin; Teen</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">Yes &mdash; 15 satisfies the filter.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Undefined.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Only if n is even.</button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> 13 &le; 15 &le; 19 holds.</p><ul><li><strong>Name:</strong> <code>Teen</code>.</li><li><strong>Define:</strong> substitute into the RHS.</li><li><strong>Type:</strong> 15 &isin; &Nopf; and satisfies the predicate.</li><li><strong>Check:</strong> membership confirmed.</li></ul></div></div>
+
+<h3>V.16 Practice: Naming Stop Words</h3>
+<div class="practice" id="p2_16"><p class="scenario">A <span class="key">search engine</span> wants &ldquo;StopWord&rdquo; for <span class="key">{&ldquo;the&rdquo;, &ldquo;a&rdquo;, &ldquo;an&rdquo;}</span>. Which abbreviation is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>StopWord == {"the", "a", "an"}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>StopWord : {"the", "a", "an"}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>StopWord ::= the | a | an</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>{"the", "a", "an"} == StopWord</code></button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Fresh LHS, <code>==</code>, set literal on RHS.</p><ul><li><strong>Name:</strong> <code>StopWord</code>.</li><li><strong>Define:</strong> enumerated set.</li><li><strong>Type:</strong> <code>&Popf; STRING</code>.</li><li><strong>Check:</strong> benign alias.</li></ul></div></div>
+
+<h3>V.17 Practice: Substitution Direction</h3>
+<div class="practice" id="p2_17"><p>To eliminate <code>Weekday == {mon, tue, wed, thu, fri}</code>, you replace:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">Every occurrence of <code>Weekday</code> with <code>{mon, tue, wed, thu, fri}</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Every occurrence of <code>{mon, &hellip;}</code> with <code>Weekday</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Delete <code>Weekday</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Add a constraint.</button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> LHS &rarr; RHS replacement.</p><ul><li><strong>Name:</strong> <code>Weekday</code> is replaced.</li><li><strong>Define:</strong> substitute the set literal.</li><li><strong>Type:</strong> unchanged.</li><li><strong>Check:</strong> spec equivalent after substitution.</li></ul></div></div>
+
+<h3>V.18 Practice: Predicate in Comprehension</h3>
+<div class="practice" id="p2_18"><p class="scenario">A <span class="key">fitness app</span> abbreviates heavy lifters as <code>{ p : Person | p lifts &ge; 100 &and; p trains daily }</code>. This is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')">Valid if the predicates &ldquo;lifts &ge; 100&rdquo; and &ldquo;trains daily&rdquo; are properly introduced.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">Always invalid.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">An axiomatic definition.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">A free type.</button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Well-definedness depends on the predicates.</p><ul><li><strong>Name:</strong> abbreviation of a filtered subset.</li><li><strong>Define:</strong> comprehension over Person.</li><li><strong>Type:</strong> <code>&Popf; Person</code>.</li><li><strong>Check:</strong> predicates must have meaning.</li></ul></div></div>
+
+<h3>V.19 Practice: Multiple Abbreviations</h3>
+<div class="practice" id="p2_19"><p>Can a spec have multiple abbreviation definitions?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')">Yes &mdash; each with a unique fresh LHS.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">No &mdash; only one allowed.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Only for types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Only for integers.</button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Any number of abbreviations is fine.</p><ul><li><strong>Name:</strong> each must be unique.</li><li><strong>Define:</strong> no name collisions.</li><li><strong>Type:</strong> each inherits from its RHS.</li><li><strong>Check:</strong> global namespace maintained.</li></ul></div></div>
+
+<h3>V.20 Practice: Abbreviation Scope</h3>
+<div class="practice" id="p2_20"><p>After <code>Teen == { n : &Nopf; | 13 &le; n &le; 19 }</code>, can &ldquo;Teen&rdquo; be used in a later definition?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')">Yes &mdash; it is in scope from the point of definition.</button></li><li><button onclick="selectAnswer(this,false,'fb2_20')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb2_20')">Only in schemas.</button></li><li><button onclick="selectAnswer(this,false,'fb2_20')">Only if Teen is non-empty.</button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Abbreviations are global from the point of definition.</p><ul><li><strong>Name:</strong> <code>Teen</code> now usable.</li><li><strong>Define:</strong> downstream definitions can reference it.</li><li><strong>Type:</strong> <code>&Popf; &Nopf;</code>.</li><li><strong>Check:</strong> forward references not allowed.</li></ul></div></div>
+
+<h3>V.21 Practice: Benign Nature</h3>
+<div class="practice" id="p2_21"><p>The word &ldquo;benign&rdquo; for abbreviations means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">The definition asserts nothing &mdash; it just provides a convenient name.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">It adds an axiom.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">It creates a new type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">It constrains a variable.</button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Benign = no new information.</p><ul><li><strong>Name:</strong> abbreviation term from the textbook.</li><li><strong>Define:</strong> convenience only.</li><li><strong>Type:</strong> semantically transparent.</li><li><strong>Check:</strong> always eliminable.</li></ul></div></div>
+
+<h3>V.22 Practice: Naming a Priority Set</h3>
+<div class="practice" id="p2_22"><p class="scenario">A <span class="key">task manager</span> wants &ldquo;HighPri&rdquo; for tasks with <span class="key">priority &ge; 8</span>. Which abbreviation is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>HighPri == { t : Task | priority(t) &ge; 8 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>HighPri : Task | priority &ge; 8</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>HighPri ::= 8</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>Task == HighPri</code></button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Set comprehension abbreviation.</p><ul><li><strong>Name:</strong> <code>HighPri</code>.</li><li><strong>Define:</strong> <code>== { t : Task | &hellip; }</code>.</li><li><strong>Type:</strong> <code>&Popf; Task</code>.</li><li><strong>Check:</strong> benign filtered subset.</li></ul></div></div>
+
+<h3>V.23 Practice: Abbreviation Adds No Axiom</h3>
+<div class="practice" id="p2_23"><p>Unlike axiomatic definitions, abbreviations:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Add no new axioms to the specification.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Always add axioms.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Create new types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Cannot name sets.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Pure alias &mdash; no assertive content.</p><ul><li><strong>Name:</strong> abbreviation vs. axiom distinction.</li><li><strong>Define:</strong> <code>==</code> is semantically passive.</li><li><strong>Type:</strong> no constraint added.</li><li><strong>Check:</strong> benign by definition.</li></ul></div></div>
+
+<h3>V.24 Practice: Self-Reference Check</h3>
+<div class="practice" id="p2_24"><p class="scenario">Is <code>X == X + 1</code> a valid abbreviation?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_24')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">No &mdash; <code>X</code> appears on the RHS.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')">Only for &Nopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')">Only if X = 0.</button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Self-reference is forbidden.</p><ul><li><strong>Name:</strong> <code>X</code> is the LHS.</li><li><strong>Define:</strong> <code>X + 1</code> contains <code>X</code> &mdash; recursive.</li><li><strong>Type:</strong> cannot determine.</li><li><strong>Check:</strong> INVALID abbreviation.</li></ul></div></div>
+
+<h3>V.25 Practice: Paraphrase of ==</h3>
+<div class="practice" id="p2_25"><p>The cleanest paraphrase of <code>Name == Expr</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">&ldquo;Name is shorthand for Expr.&rdquo;</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">&ldquo;Name satisfies Expr.&rdquo;</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">&ldquo;Name is a type built from Expr.&rdquo;</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">&ldquo;Name constrains Expr.&rdquo;</button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> A pure alias.</p><ul><li><strong>Name:</strong> abbreviation paraphrase.</li><li><strong>Define:</strong> shorthand = synonym.</li><li><strong>Type:</strong> same type and value.</li><li><strong>Check:</strong> benign, eliminable.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 6.3 Generic Abbreviations ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">6.3 Generic Abbreviations</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Purpose:</strong> define a <span class="vocab" data-def="A group of related symbols, one per value of a parameter &mdash; avoids repeating similar definitions.">family</span> of symbols parameterised by types.</li>
+  <li><strong>Form:</strong> <code>symbol parameters == term</code> &mdash; parameters are sets that may appear in the <span class="vocab" data-def="The expression on the right of == in which the parameters may occur.">term</span>.</li>
+  <li><strong>Empty set:</strong> <code>&empty;[S] == { x : S | false }</code> &mdash; one empty set per type via <span class="vocab" data-def="Replacing the generic parameter with a concrete type at point of use.">instantiation</span>.</li>
+  <li><strong>Non-empty subsets:</strong> <code>&Popf;<sub>1</sub> T == { a : &Popf; T | a &ne; &empty; }</code> &mdash; <span class="vocab" data-def="The set of all non-empty subsets of T.">&Popf;<sub>1</sub></span> defined generically.</li>
+  <li><strong>Infix form:</strong> <code>parameters symbol parameters == term</code> defines an infix operator (e.g. <code>s rel t == &Popf;(s &times; t)</code>).</li>
+  <li><strong>Inference rule:</strong> each generic abbreviation adds a <em>family</em> of [abbrev] rules, one per <span class="vocab" data-def="Replacing the generic parameter with a concrete type at point of use.">instantiation</span>.</li>
+  <li><strong>Parameter list:</strong> may be in brackets, or omitted when obvious from context.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Family</td><td>A group of related symbols, one per parameter value.</td></tr>
+  <tr><td>Generic abbreviation</td><td>An abbreviation parameterised by one or more sets.</td></tr>
+  <tr><td>Instantiation</td><td>Supplying a concrete type for a generic parameter.</td></tr>
+  <tr><td>Infix generic</td><td>A generic symbol placed between its parameters.</td></tr>
+  <tr><td>&Popf;<sub>1</sub></td><td>The set of all non-empty subsets.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Abbreviation &mdash; &ldquo;is defined as.&rdquo;</td></tr>
+  <tr><td><code>&empty;[S]</code></td><td>Empty set of type S.</td></tr>
+  <tr><td><code>&Popf;<sub>1</sub></code></td><td>Non-empty power set.</td></tr>
+  <tr><td><code>rel</code></td><td>Relation type: <code>s rel t == &Popf;(s &times; t)</code>.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+  <tr><td><code>[S]</code></td><td>Generic parameter (type placeholder).</td></tr>
+  <tr><td><code>&notin;</code></td><td>Not an element of.</td></tr>
+</table>
+
+<h3 id="s2-D">IV.1 Examples: Empty Set — Integer Pool, String Cache &amp; Sensor Buffer</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&empty;[S]</code></td><td>Empty set of type S.</td></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">connection pool</span> starts with <span class="key">no integer IDs</span> allocated.</p>
+<ul>
+  <li><strong>Family:</strong> the <span class="vocab" data-def="A group of related symbols, one per parameter value.">family</span> is the empty-set symbol, one per type.</li>
+  <li><strong>Define:</strong> <code>&empty;[&Zopf;] == { x : &Zopf; | false }</code>.</li>
+  <li><strong>Instantiate:</strong> <span class="vocab" data-def="Replacing the generic parameter with a concrete type.">instantiation</span> with &Zopf; &rarr; empty set of integers.</li>
+  <li><strong>Check:</strong> no integer satisfies <code>false</code>, so the set is empty.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">string cache</span> starts <span class="key">empty</span> at boot time.</p>
+<ul>
+  <li><strong>Family:</strong> same &empty; definition, different type.</li>
+  <li><strong>Define:</strong> <code>&empty;[STRING] == { x : STRING | false }</code>.</li>
+  <li><strong>Instantiate:</strong> instantiation with STRING.</li>
+  <li><strong>Check:</strong> empty set of strings.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">sensor buffer</span> starts with <span class="key">no readings</span>.</p>
+<ul>
+  <li><strong>Family:</strong> same generic &empty;.</li>
+  <li><strong>Define:</strong> <code>&empty;[READING] == { x : READING | false }</code>.</li>
+  <li><strong>Instantiate:</strong> instantiation with READING.</li>
+  <li><strong>Check:</strong> one definition covers all types.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Non-Empty Subsets &Popf;<sub>1</sub> — Voter Roles, Team Rosters &amp; Playlists</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Popf;<sub>1</sub></code></td><td>Non-empty subsets.</td></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">election system</span> requires a <span class="key">non-empty voter roll</span> for each precinct.</p>
+<ul>
+  <li><strong>Family:</strong> <span class="vocab" data-def="The set of all non-empty subsets of T.">&Popf;<sub>1</sub></span> filters out the empty set.</li>
+  <li><strong>Define:</strong> <code>&Popf;<sub>1</sub> VOTER == { a : &Popf; VOTER | a &ne; &empty; }</code>.</li>
+  <li><strong>Instantiate:</strong> voters &rarr; at least one voter per precinct.</li>
+  <li><strong>Check:</strong> excludes the empty set only.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">sports league</span> requires <span class="key">at least one player</span> per team roster.</p>
+<ul>
+  <li><strong>Family:</strong> same &Popf;<sub>1</sub>, different type.</li>
+  <li><strong>Define:</strong> <code>&Popf;<sub>1</sub> PLAYER == { a : &Popf; PLAYER | a &ne; &empty; }</code>.</li>
+  <li><strong>Instantiate:</strong> players &rarr; non-empty roster.</li>
+  <li><strong>Check:</strong> every team has at least one member.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">music app</span> requires <span class="key">at least one song</span> per playlist.</p>
+<ul>
+  <li><strong>Family:</strong> same &Popf;<sub>1</sub> definition.</li>
+  <li><strong>Define:</strong> <code>&Popf;<sub>1</sub> SONG == { a : &Popf; SONG | a &ne; &empty; }</code>.</li>
+  <li><strong>Instantiate:</strong> songs &rarr; non-empty playlist.</li>
+  <li><strong>Check:</strong> one generic definition, many uses.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Infix Relation — User-File, Student-Course &amp; Doctor-Patient</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>rel</code></td><td>Relation type.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">file system</span> tracks which <span class="key">users own which files</span>.</p>
+<ul>
+  <li><strong>Family:</strong> <code>rel</code> is an <span class="vocab" data-def="A generic symbol placed between its parameters.">infix generic</span>.</li>
+  <li><strong>Define:</strong> <code>USER rel FILE == &Popf;(USER &times; FILE)</code>.</li>
+  <li><strong>Instantiate:</strong> each element is a set of (user, file) pairs.</li>
+  <li><strong>Check:</strong> first component &isin; USER, second &isin; FILE.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">university</span> tracks which <span class="key">students take which courses</span>.</p>
+<ul>
+  <li><strong>Family:</strong> same <code>rel</code> definition.</li>
+  <li><strong>Define:</strong> <code>STUDENT rel COURSE == &Popf;(STUDENT &times; COURSE)</code>.</li>
+  <li><strong>Instantiate:</strong> enrollment is a set of pairs.</li>
+  <li><strong>Check:</strong> generic &mdash; works for any two types.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">clinic</span> tracks which <span class="key">doctors treat which patients</span>.</p>
+<ul>
+  <li><strong>Family:</strong> same <code>rel</code>.</li>
+  <li><strong>Define:</strong> <code>DOCTOR rel PATIENT == &Popf;(DOCTOR &times; PATIENT)</code>.</li>
+  <li><strong>Instantiate:</strong> treatment records as pairs.</li>
+  <li><strong>Check:</strong> infix operator reused across domains.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Family of Rules — Empty Set Proof, &Popf;<sub>1</sub> Proof &amp; Rel Proof</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>==</code></td><td>Defined as.</td></tr>
+  <tr><td><code>&notin;</code></td><td>Not an element of.</td></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Prove that for any <code>n &isin; &Nopf;</code>, <span class="key">n is not in the empty set</span> of naturals.</p>
+<ul>
+  <li><strong>Family:</strong> generic [abbrev] rule for &empty;.</li>
+  <li><strong>Define:</strong> <code>&empty;[&Nopf;] == { x : &Nopf; | false }</code> &rarr; <code>&empty;[&Nopf;] = { x : &Nopf; | false }</code>.</li>
+  <li><strong>Prove:</strong> <code>n &isin; &empty;[&Nopf;]</code> requires <code>false</code> &rarr; contradiction &rarr; <code>n &notin; &empty;[&Nopf;]</code>.</li>
+  <li><strong>Check:</strong> <code>&forall; n : &Nopf; &bull; n &notin; &empty;[&Nopf;]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Show that <span class="key">{1, 2} &isin; &Popf;<sub>1</sub> {0, 1, 2}</span>.</p>
+<ul>
+  <li><strong>Family:</strong> instantiate &Popf;<sub>1</sub> at {0, 1, 2}.</li>
+  <li><strong>Define:</strong> <code>&Popf;<sub>1</sub> {0,1,2} = { a : &Popf; {0,1,2} | a &ne; &empty; }</code>.</li>
+  <li><strong>Prove:</strong> <code>{1,2} &sube; {0,1,2}</code> and <code>{1,2} &ne; &empty;</code> &rarr; included.</li>
+  <li><strong>Check:</strong> <code>{1, 2} &isin; &Popf;<sub>1</sub> {0, 1, 2}</code> confirmed.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Show that <span class="key">{(a,1), (b,2)}</span> is a <span class="key">relation</span> from {a,b} to {1,2}.</p>
+<ul>
+  <li><strong>Family:</strong> instantiate <code>rel</code> at {a,b} and {1,2}.</li>
+  <li><strong>Define:</strong> <code>{a,b} rel {1,2} = &Popf;({a,b} &times; {1,2})</code>.</li>
+  <li><strong>Prove:</strong> <code>{(a,1),(b,2)} &sube; {a,b} &times; {1,2}</code> &rarr; valid relation.</li>
+  <li><strong>Check:</strong> each pair has first component in source, second in target.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Parameter Omission — Implicit Empty Set, Implicit Relation &amp; Implicit &Popf;<sub>1</sub></h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set (parameters implicit).</td></tr>
+  <tr><td><code>rel</code></td><td>Relation (parameters inferred).</td></tr>
+  <tr><td><code>&Popf;<sub>1</sub></code></td><td>Non-empty power set (parameter inferred).</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A spec writes <code>pool = &empty;</code> without specifying the type. The type is inferred from <span class="key">context</span>.</p>
+<ul>
+  <li><strong>Family:</strong> parameter list omitted.</li>
+  <li><strong>Define:</strong> if <code>pool : &Popf; &Zopf;</code>, then <code>&empty;</code> means <code>&empty;[&Zopf;]</code>.</li>
+  <li><strong>Instantiate:</strong> type inferred from the variable's declaration.</li>
+  <li><strong>Check:</strong> context determines the parameter.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A spec writes <code>owns : USER rel FILE</code> without brackets around the parameter list.</p>
+<ul>
+  <li><strong>Family:</strong> infix generic; parameters are positional.</li>
+  <li><strong>Define:</strong> <code>USER rel FILE</code> = <code>&Popf;(USER &times; FILE)</code>.</li>
+  <li><strong>Instantiate:</strong> parameters are the left and right operands.</li>
+  <li><strong>Check:</strong> brackets optional when clear from context.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A spec writes <code>roster : &Popf;<sub>1</sub> PLAYER</code> with the type directly after the symbol.</p>
+<ul>
+  <li><strong>Family:</strong> &Popf;<sub>1</sub> with parameter PLAYER.</li>
+  <li><strong>Define:</strong> <code>&Popf;<sub>1</sub> PLAYER = { a : &Popf; PLAYER | a &ne; &empty; }</code>.</li>
+  <li><strong>Instantiate:</strong> parameter placed directly after the symbol.</li>
+  <li><strong>Check:</strong> bracket notation omitted.</li>
+</ul>
+</div>
+
+<h3 id="s2-E">V.1 Practice: Generic Purpose</h3>
+<div class="practice" id="p3_1"><p>A generic abbreviation defines:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">A family of symbols, one per instantiation.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">A single fixed constant.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">A free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">An axiomatic definition.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> One definition serves many types.</p><ul><li><strong>Family:</strong> parameterised by sets.</li><li><strong>Define:</strong> <code>symbol parameters == term</code>.</li><li><strong>Instantiate:</strong> one rule per concrete type.</li><li><strong>Check:</strong> eliminable for each instantiation.</li></ul></div></div>
+
+<h3>V.2 Practice: Empty Set Definition</h3>
+<div class="practice" id="p3_2"><p>The empty set &empty;[S] is defined as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')"><code>{ x : S | false }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>{ x : S | true }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>S</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>&Popf; S</code></button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> No element satisfies <code>false</code>.</p><ul><li><strong>Family:</strong> one per type S.</li><li><strong>Define:</strong> <code>== { x : S | false }</code>.</li><li><strong>Instantiate:</strong> &empty;[&Zopf;], &empty;[PERSON], etc.</li><li><strong>Check:</strong> always yields the empty set.</li></ul></div></div>
+
+<h3>V.3 Practice: Instantiating Empty Set</h3>
+<div class="practice" id="p3_3"><p class="scenario">A <span class="key">mailbox</span> starts with <span class="key">no messages</span>. If messages are type MSG, the initial state uses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>&empty;[MSG]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&Popf; MSG</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>MSG</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&Popf;<sub>1</sub> MSG</code></button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Empty set instantiated at MSG type.</p><ul><li><strong>Family:</strong> generic &empty;.</li><li><strong>Define:</strong> <code>{ x : MSG | false }</code> = no messages.</li><li><strong>Instantiate:</strong> S = MSG.</li><li><strong>Check:</strong> mailbox is empty.</li></ul></div></div>
+
+<h3>V.4 Practice: &Popf;<sub>1</sub> Definition</h3>
+<div class="practice" id="p3_4"><p><code>&Popf;<sub>1</sub> T</code> is defined as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>{ a : &Popf; T | a &ne; &empty; }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>{ a : T | a &ne; &empty; }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&Popf; T</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>T</code></button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> All subsets of T except the empty set.</p><ul><li><strong>Family:</strong> parameterised by T.</li><li><strong>Define:</strong> filter out &empty;.</li><li><strong>Instantiate:</strong> &Popf;<sub>1</sub> &Zopf;, &Popf;<sub>1</sub> PERSON, etc.</li><li><strong>Check:</strong> every member is non-empty.</li></ul></div></div>
+
+<h3>V.5 Practice: Instantiating &Popf;<sub>1</sub></h3>
+<div class="practice" id="p3_5"><p>What is <code>&Popf;<sub>1</sub> {0, 1}</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>{ {0}, {1}, {0, 1} }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>{ &empty;, {0}, {1}, {0,1} }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>{ 0, 1 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> All subsets of {0,1} minus &empty;.</p><ul><li><strong>Family:</strong> &Popf;<sub>1</sub> at {0,1}.</li><li><strong>Define:</strong> &Popf; {0,1} = {&empty;, {0}, {1}, {0,1}}.</li><li><strong>Instantiate:</strong> remove &empty;.</li><li><strong>Check:</strong> three non-empty subsets remain.</li></ul></div></div>
+
+<h3>V.6 Practice: Infix Relation Definition</h3>
+<div class="practice" id="p3_6"><p><code>s rel t</code> is defined as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>&Popf;(s &times; t)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>s &times; t</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>&Popf; s</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>s &cup; t</code></button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> The power set of the Cartesian product.</p><ul><li><strong>Family:</strong> infix generic <code>rel</code>.</li><li><strong>Define:</strong> <code>== &Popf;(s &times; t)</code>.</li><li><strong>Instantiate:</strong> each element is a set of pairs.</li><li><strong>Check:</strong> first component from s, second from t.</li></ul></div></div>
+
+<h3>V.7 Practice: Relation Membership</h3>
+<div class="practice" id="p3_7"><p class="scenario">Given <code>s rel t == &Popf;(s &times; t)</code>, each element of <code>s rel t</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')">A set of pairs with first component from <code>s</code>, second from <code>t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">A single pair.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">A subset of <code>s</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">A subset of <code>t</code>.</button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Elements are sets of pairs.</p><ul><li><strong>Family:</strong> <code>rel</code> is a type constructor.</li><li><strong>Define:</strong> power set of Cartesian product.</li><li><strong>Instantiate:</strong> works for any s, t.</li><li><strong>Check:</strong> pair components typed correctly.</li></ul></div></div>
+
+<h3>V.8 Practice: Family of Rules</h3>
+<div class="practice" id="p3_8"><p>A generic abbreviation adds how many inference rules?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">A family &mdash; one rule per instantiation.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Exactly one.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Zero.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Exactly two.</button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> One [abbrev] rule per concrete type substitution.</p><ul><li><strong>Family:</strong> parameterised inference.</li><li><strong>Define:</strong> each instantiation yields one rule.</li><li><strong>Instantiate:</strong> &empty;[&Zopf;], &empty;[PERSON], &hellip;</li><li><strong>Check:</strong> infinitely many potential rules.</li></ul></div></div>
+
+<h3>V.9 Practice: Empty Set Proof</h3>
+<div class="practice" id="p3_9"><p class="scenario">To prove <code>5 &notin; &empty;[&Nopf;]</code>, we show:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>5 &isin; { x : &Nopf; | false }</code> requires <code>false</code> &mdash; contradiction.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>5 &gt; 0</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&Nopf;</code> is infinite.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>5 &isin; &Nopf;</code>.</button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> Membership requires the false predicate to hold &mdash; impossible.</p><ul><li><strong>Family:</strong> instantiate &empty; at &Nopf;.</li><li><strong>Define:</strong> <code>= { x : &Nopf; | false }</code>.</li><li><strong>Instantiate:</strong> 5 &isin; &Nopf; but <code>false</code> blocks.</li><li><strong>Check:</strong> <code>5 &notin; &empty;[&Nopf;]</code> proved.</li></ul></div></div>
+
+<h3>V.10 Practice: Parameter Omission</h3>
+<div class="practice" id="p3_10"><p>When can the parameter list of a generic abbreviation be omitted?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">When the values are obvious from context.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Only for &empty;.</button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> Context-driven inference.</p><ul><li><strong>Family:</strong> parameters can be implicit.</li><li><strong>Define:</strong> brackets optional.</li><li><strong>Instantiate:</strong> type inferred from usage.</li><li><strong>Check:</strong> unambiguous in context.</li></ul></div></div>
+
+<h3>V.11 Practice: Non-Empty Roster</h3>
+<div class="practice" id="p3_11"><p class="scenario">A <span class="key">team management</span> app requires <span class="key">at least one member</span>. Which type ensures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>&Popf;<sub>1</sub> MEMBER</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>&Popf; MEMBER</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>&empty;[MEMBER]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>MEMBER</code></button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> &Popf;<sub>1</sub> excludes the empty set.</p><ul><li><strong>Family:</strong> &Popf;<sub>1</sub> at MEMBER.</li><li><strong>Define:</strong> non-empty subsets of MEMBER.</li><li><strong>Instantiate:</strong> roster must have &ge; 1 member.</li><li><strong>Check:</strong> &empty; excluded.</li></ul></div></div>
+
+<h3>V.12 Practice: Infix Form</h3>
+<div class="practice" id="p3_12"><p>An infix generic abbreviation places the symbol:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">Between its parameters.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Before all parameters.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">After all parameters.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">In brackets.</button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> <code>parameters symbol parameters == term</code>.</p><ul><li><strong>Family:</strong> infix generic.</li><li><strong>Define:</strong> e.g. <code>s rel t == &Popf;(s &times; t)</code>.</li><li><strong>Instantiate:</strong> symbol sits between operands.</li><li><strong>Check:</strong> syntactic convenience.</li></ul></div></div>
+
+<h3>V.13 Practice: Generic vs. Plain Abbreviation</h3>
+<div class="practice" id="p3_13"><p>What distinguishes a generic abbreviation from a plain one?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">Generic abbreviations are parameterised by sets.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Plain abbreviations use <code>::=</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Generic abbreviations add axioms.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">They are identical.</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Parameters make it generic.</p><ul><li><strong>Family:</strong> one definition, many instantiations.</li><li><strong>Define:</strong> both use <code>==</code>.</li><li><strong>Instantiate:</strong> generic has parameters; plain does not.</li><li><strong>Check:</strong> generic yields a family of rules.</li></ul></div></div>
+
+<h3>V.14 Practice: Empty Set Type Distinction</h3>
+<div class="practice" id="p3_14"><p>Why are there many empty sets in Z?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')">No expression can belong to more than one type &mdash; each type has its own &empty;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Only one &empty; exists.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Empty sets are free types.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Empty sets are axiomatic.</button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Type system requires distinct empty sets.</p><ul><li><strong>Family:</strong> one &empty; per type.</li><li><strong>Define:</strong> <code>&empty;[S] == { x : S | false }</code>.</li><li><strong>Instantiate:</strong> &empty;[&Zopf;] &ne; &empty;[PERSON] as types differ.</li><li><strong>Check:</strong> type discipline enforced.</li></ul></div></div>
+
+<h3>V.15 Practice: Relation Instantiation</h3>
+<div class="practice" id="p3_15"><p class="scenario">A <span class="key">school database</span> uses <code>STUDENT rel COURSE</code>. Each element is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">A set of (STUDENT, COURSE) pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">A single student.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">A single course.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">A subset of STUDENT.</button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> <code>rel</code> gives power set of pairs.</p><ul><li><strong>Family:</strong> infix <code>rel</code>.</li><li><strong>Define:</strong> <code>== &Popf;(STUDENT &times; COURSE)</code>.</li><li><strong>Instantiate:</strong> enrollment records.</li><li><strong>Check:</strong> each pair links a student to a course.</li></ul></div></div>
+
+<h3>V.16 Practice: &Popf;<sub>1</sub> Excludes</h3>
+<div class="practice" id="p3_16"><p>&Popf;<sub>1</sub> T excludes exactly:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">The empty set.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">All singletons.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">T itself.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Nothing.</button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Only &empty; is removed from &Popf; T.</p><ul><li><strong>Family:</strong> &Popf;<sub>1</sub> definition.</li><li><strong>Define:</strong> <code>{ a : &Popf; T | a &ne; &empty; }</code>.</li><li><strong>Instantiate:</strong> any type T.</li><li><strong>Check:</strong> exactly one element excluded.</li></ul></div></div>
+
+<h3>V.17 Practice: Generic Abbreviation Form</h3>
+<div class="practice" id="p3_17"><p>The general form of a generic abbreviation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')"><code>symbol parameters == term</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>symbol : term</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>symbol ::= term</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>[symbol] == term</code></button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Symbol followed by set parameters, then <code>==</code>, then term.</p><ul><li><strong>Family:</strong> parameterised definition.</li><li><strong>Define:</strong> <code>==</code> abbreviation.</li><li><strong>Instantiate:</strong> parameters replaced at use.</li><li><strong>Check:</strong> eliminable per instantiation.</li></ul></div></div>
+
+<h3>V.18 Practice: Cartesian Product in rel</h3>
+<div class="practice" id="p3_18"><p class="scenario">In <code>s rel t == &Popf;(s &times; t)</code>, the <code>&times;</code> denotes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">Cartesian product &mdash; all ordered pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Multiplication.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Union.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Intersection.</button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> <code>s &times; t</code> = set of all (a, b) pairs with a &isin; s, b &isin; t.</p><ul><li><strong>Family:</strong> <code>rel</code> uses &times;.</li><li><strong>Define:</strong> power set of the product.</li><li><strong>Instantiate:</strong> any two sets.</li><li><strong>Check:</strong> product is the base set.</li></ul></div></div>
+
+<h3>V.19 Practice: Two Empty Sets</h3>
+<div class="practice" id="p3_19"><p>Are <code>&empty;[&Zopf;]</code> and <code>&empty;[PERSON]</code> the same?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_19')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">No &mdash; they have different types.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Only if PERSON = &Zopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Only in Z 2.0.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Different type parameters &rarr; different empty sets.</p><ul><li><strong>Family:</strong> one &empty; per type.</li><li><strong>Define:</strong> type discipline separates them.</li><li><strong>Instantiate:</strong> distinct instantiations.</li><li><strong>Check:</strong> no cross-type expressions in Z.</li></ul></div></div>
+
+<h3>V.20 Practice: Using &Popf;<sub>1</sub> in Spec</h3>
+<div class="practice" id="p3_20"><p class="scenario">A <span class="key">shopping cart</span> must have <span class="key">at least one item</span>. Which type declaration enforces this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')"><code>cart : &Popf;<sub>1</sub> ITEM</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>cart : &Popf; ITEM</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>cart : ITEM</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>cart : &empty;[ITEM]</code></button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> &Popf;<sub>1</sub> guarantees non-emptiness.</p><ul><li><strong>Family:</strong> &Popf;<sub>1</sub> at ITEM.</li><li><strong>Define:</strong> non-empty subsets of ITEM.</li><li><strong>Instantiate:</strong> cart has &ge; 1 item.</li><li><strong>Check:</strong> &empty; excluded.</li></ul></div></div>
+
+<h3>V.21 Practice: Generic Parameter</h3>
+<div class="practice" id="p3_21"><p>In <code>&empty;[S] == { x : S | false }</code>, what is <code>S</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">A generic parameter &mdash; any set (likely a type).</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">A fixed constant.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">An integer.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">A predicate.</button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> S is a placeholder for any set.</p><ul><li><strong>Family:</strong> parameterised definition.</li><li><strong>Define:</strong> S replaced at instantiation.</li><li><strong>Instantiate:</strong> S = &Zopf;, S = PERSON, etc.</li><li><strong>Check:</strong> any type works.</li></ul></div></div>
+
+<h3>V.22 Practice: Infix Operator Use</h3>
+<div class="practice" id="p3_22"><p class="scenario">A <span class="key">hospital</span> records <span class="key">doctor-patient</span> assignments. Using <code>rel</code>, the type is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>DOCTOR rel PATIENT</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>DOCTOR &times; PATIENT</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&Popf; DOCTOR</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>DOCTOR &cup; PATIENT</code></button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Infix <code>rel</code> between the two types.</p><ul><li><strong>Family:</strong> <code>rel</code> as infix.</li><li><strong>Define:</strong> <code>== &Popf;(DOCTOR &times; PATIENT)</code>.</li><li><strong>Instantiate:</strong> doctor-patient pairs.</li><li><strong>Check:</strong> each element is a set of assignments.</li></ul></div></div>
+
+<h3>V.23 Practice: Abbreviation Rule for Generics</h3>
+<div class="practice" id="p3_23"><p>Given <code>&empty;[&Zopf;] == { x : &Zopf; | false }</code>, the [abbrev] rule yields:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')"><code>&empty;[&Zopf;] = { x : &Zopf; | false }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>&empty;[&Zopf;] : &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>&empty;[&Zopf;] &isin; &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>&empty;[&Zopf;] &ne; &Zopf;</code></button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> <code>==</code> yields <code>=</code> via [abbrev].</p><ul><li><strong>Family:</strong> instantiated at &Zopf;.</li><li><strong>Define:</strong> abbreviation becomes equality.</li><li><strong>Instantiate:</strong> one rule for this type.</li><li><strong>Check:</strong> usable in proofs.</li></ul></div></div>
+
+<h3>V.24 Practice: Bracket Notation</h3>
+<div class="practice" id="p3_24"><p>The parameter list in a generic abbreviation may be enclosed in:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">Brackets, or omitted when obvious.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Parentheses always.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Curly braces.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Angle brackets.</button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Brackets or implicit.</p><ul><li><strong>Family:</strong> parameter list syntax.</li><li><strong>Define:</strong> <code>[S]</code> or omitted.</li><li><strong>Instantiate:</strong> context resolves ambiguity.</li><li><strong>Check:</strong> flexible notation.</li></ul></div></div>
+
+<h3>V.25 Practice: Second Generic Symbol in &empty;</h3>
+<div class="practice" id="p3_25"><p>In the definition <code>&empty;[S] == { x : S | false }</code>, a second generic symbol (&empty;) also appears. This is because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">The &empty; symbol itself denotes the empty set of elements from S.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">It is an error.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">S must equal &empty;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">false is a type.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> &empty; is the symbol being defined &mdash; parameterised by S.</p><ul><li><strong>Family:</strong> &empty; is the generic symbol.</li><li><strong>Define:</strong> <code>== { x : S | false }</code> is the body.</li><li><strong>Instantiate:</strong> each type gets its own &empty;.</li><li><strong>Check:</strong> self-consistent definition.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 6.4 Axiomatic Definitions ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">6.4 Axiomatic Definitions</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Form:</strong> a box with a <span class="vocab" data-def="The name and type of the object being introduced &mdash; above the line.">declaration</span> above a horizontal line and a <span class="vocab" data-def="A predicate constraining the declared object &mdash; below the line; assumed as an axiom.">predicate</span> below.</li>
+  <li>The predicate is an <span class="vocab" data-def="A statement assumed true whenever the symbol is used &mdash; the defining axiom.">axiom</span> &mdash; assumed true whenever the symbol is used.</li>
+  <li><strong>Constraining:</strong> the predicate may narrow the value to a <span class="vocab" data-def="A specific element satisfying the predicate &mdash; may be unique.">unique object</span> or leave it under-determined.</li>
+  <li><strong>Global:</strong> introduces a constant available throughout the specification.</li>
+  <li><strong>Example:</strong> <code>&Nopf; : &Popf; &Zopf;</code> with <code>&forall; z : &Zopf; &bull; z &isin; &Nopf; &hArr; z &ge; 0</code> defines the natural numbers.</li>
+  <li><strong>Consistency:</strong> the predicate must be <span class="vocab" data-def="At least one value must satisfy the predicate &mdash; otherwise the spec is inconsistent.">satisfiable</span> &mdash; an unsatisfiable axiom makes the spec inconsistent.</li>
+  <li><strong>Multiple objects:</strong> a single axiomatic box can declare several objects at once.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Axiomatic definition</td><td>Declaration + constraining predicate in a box.</td></tr>
+  <tr><td>Declaration</td><td>Name and type &mdash; above the line.</td></tr>
+  <tr><td>Predicate</td><td>Constraining axiom &mdash; below the line.</td></tr>
+  <tr><td>Axiom</td><td>A statement assumed true for the defined symbol.</td></tr>
+  <tr><td>Satisfiable</td><td>At least one value satisfies the predicate.</td></tr>
+  <tr><td>Unique object</td><td>The predicate may constrain to exactly one value.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing &mdash; &ldquo;is of type.&rdquo;</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&Zopf;</code></td><td>Integers.</td></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers (defined axiomatically).</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>&hArr;</code></td><td>If and only if.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership.</td></tr>
+</table>
+
+<h3 id="s3-D">IV.1 Examples: Defining &Nopf; — Natural Numbers, Even Naturals &amp; Positive Integers</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>&hArr;</code></td><td>If and only if.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">natural numbers</span> are defined as <span class="key">non-negative integers</span>.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>&Nopf; : &Popf; &Zopf;</code> &mdash; &Nopf; is a set of integers.</li>
+  <li><strong>Constrain:</strong> <code><span class="vocab" data-def="For all.">&forall;</span> z : &Zopf; &bull; z <span class="vocab" data-def="Set membership.">&isin;</span> &Nopf; <span class="vocab" data-def="If and only if.">&hArr;</span> z <span class="vocab" data-def="Greater than or equal to.">&ge;</span> 0</code>.</li>
+  <li><strong>Axiom:</strong> membership in &Nopf; &equiv; being &ge; 0.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="At least one value must satisfy the predicate.">satisfiable</span> &mdash; 0, 1, 2, &hellip; all qualify.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Define the <span class="key">even naturals</span> as a subset of &Nopf;.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>Even : &Popf; &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>&forall; n : &Nopf; &bull; n &isin; Even &hArr; n mod 2 = 0</code>.</li>
+  <li><strong>Axiom:</strong> membership &equiv; divisible by 2.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; 0, 2, 4, &hellip; qualify.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Define the <span class="key">positive integers</span> as integers <span class="key">strictly greater than 0</span>.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>Pos : &Popf; &Zopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>&forall; z : &Zopf; &bull; z &isin; Pos &hArr; z &gt; 0</code>.</li>
+  <li><strong>Axiom:</strong> membership &equiv; strictly positive.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; 1, 2, 3, &hellip; qualify.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Fixed Constants — Max Connections, Speed Limit &amp; Tax Rate</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">database</span> fixes <span class="key">max connections</span> at 200.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>maxConn : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>maxConn = 200</code>.</li>
+  <li><strong>Axiom:</strong> <span class="vocab" data-def="A statement assumed true for the defined symbol.">axiom</span> pins the value.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; exactly one witness (200).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">highway system</span> fixes <span class="key">speed limit</span> at 120 km/h.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>speedLimit : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>speedLimit = 120</code>.</li>
+  <li><strong>Axiom:</strong> unique value pinned by equality.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; witness is 120.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">tax calculator</span> fixes the <span class="key">tax rate</span> at 15%.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>taxRate : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>taxRate = 15</code>.</li>
+  <li><strong>Axiom:</strong> fixed constant.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; unique witness.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Range Constraints — Temperature, Age Limit &amp; Buffer Size</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+  <tr><td><code>&le;</code></td><td>Less than or equal to.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">thermostat</span> bounds <span class="key">target temperature</span> between 60 and 80.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>target : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>60 &le; target &le; 80</code>.</li>
+  <li><strong>Axiom:</strong> range constraint &mdash; not pinned to one value.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="At least one value must satisfy the predicate.">satisfiable</span> &mdash; any integer in [60, 80].</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">registration form</span> bounds <span class="key">minimum age</span> at 18.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>minAge : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>minAge = 18</code>.</li>
+  <li><strong>Axiom:</strong> exact equality &mdash; unique value.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; witness is 18.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">network buffer</span> has capacity <span class="key">between 64 and 4096 bytes</span>.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>bufSize : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>64 &le; bufSize &le; 4096</code>.</li>
+  <li><strong>Axiom:</strong> range constraint.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; many valid sizes.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Consistency — Valid, Inconsistent &amp; Under-determined</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A spec defines <code>k : &Nopf;</code> with <code>k = 5</code>. Is this <span class="key">consistent</span>?</p>
+<ul>
+  <li><strong>Declare:</strong> <code>k : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>k = 5</code>.</li>
+  <li><strong>Axiom:</strong> satisfiable &mdash; 5 &isin; &Nopf;.</li>
+  <li><strong>Check:</strong> consistent &mdash; witness exists.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A spec defines <code>m : &Nopf;</code> with <code>m &lt; 0</code>. Is this <span class="key">consistent</span>?</p>
+<ul>
+  <li><strong>Declare:</strong> <code>m : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>m &lt; 0</code>.</li>
+  <li><strong>Axiom:</strong> no natural is negative &mdash; unsatisfiable.</li>
+  <li><strong>Check:</strong> INCONSISTENT &mdash; spec is broken.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A spec defines <code>n : &Nopf;</code> with no predicate. Is this <span class="key">well defined</span>?</p>
+<ul>
+  <li><strong>Declare:</strong> <code>n : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> (none).</li>
+  <li><strong>Axiom:</strong> no constraint &mdash; <span class="vocab" data-def="The predicate may constrain to exactly one value.">under-determined</span>.</li>
+  <li><strong>Check:</strong> valid but unspecified &mdash; any natural works.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Multiple Declarations — Pair of Bounds, Coordinate &amp; RGB Channels</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:</code></td><td>Typing.</td></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers.</td></tr>
+  <tr><td><code>&le;</code></td><td>Less than or equal to.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">slider widget</span> defines both <span class="key">min and max</span> in one axiomatic box with <code>min &le; max</code>.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>min, max : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>min &le; max</code>.</li>
+  <li><strong>Axiom:</strong> ordering constraint on two values.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; e.g. min = 0, max = 100.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">map widget</span> defines <span class="key">latitude and longitude bounds</span> together.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>lat, lon : &Zopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>-90 &le; lat &le; 90 &and; -180 &le; lon &le; 180</code>.</li>
+  <li><strong>Axiom:</strong> range constraints on both.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; e.g. lat = 0, lon = 0.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">colour picker</span> defines <span class="key">r, g, b channels</span> together.</p>
+<ul>
+  <li><strong>Declare:</strong> <code>r, g, b : &Nopf;</code>.</li>
+  <li><strong>Constrain:</strong> <code>r &le; 255 &and; g &le; 255 &and; b &le; 255</code>.</li>
+  <li><strong>Axiom:</strong> each channel bounded.</li>
+  <li><strong>Check:</strong> satisfiable &mdash; e.g. (0, 0, 0).</li>
+</ul>
+</div>
+
+<h3 id="s3-E">V.1 Practice: Axiomatic Form</h3>
+<div class="practice" id="p4_1"><p>An axiomatic definition consists of:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">A declaration above a line and a predicate below.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>symbol == term</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>[Name]</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>T ::= c1 | c2</code>.</button></li></ul><div class="feedback" id="fb4_1"><p><strong>Correct.</strong> Declaration + predicate in a box.</p><ul><li><strong>Declare:</strong> name : type above the line.</li><li><strong>Constrain:</strong> predicate below the line.</li><li><strong>Axiom:</strong> constraint is assumed true.</li><li><strong>Check:</strong> must be satisfiable.</li></ul></div></div>
+
+<h3>V.2 Practice: Axiom Meaning</h3>
+<div class="practice" id="p4_2"><p>The predicate in an axiomatic definition is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')">An axiom assumed true whenever the symbol is used.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">A suggestion.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">An abbreviation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">A comment.</button></li></ul><div class="feedback" id="fb4_2"><p><strong>Correct.</strong> The predicate is a defining axiom.</p><ul><li><strong>Declare:</strong> introduces the symbol.</li><li><strong>Constrain:</strong> the predicate holds by definition.</li><li><strong>Axiom:</strong> non-negotiable constraint.</li><li><strong>Check:</strong> used in all reasoning about the symbol.</li></ul></div></div>
+
+<h3>V.3 Practice: Defining &Nopf;</h3>
+<div class="practice" id="p4_3"><p class="scenario">The <span class="key">natural numbers</span> are axiomatically defined as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>&Nopf; : &Popf; &Zopf;</code> with <code>&forall; z : &Zopf; &bull; z &isin; &Nopf; &hArr; z &ge; 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>&Nopf; == &Zopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>&Nopf; ::= 0 | 1 | 2 | &hellip;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>[&Nopf;]</code></button></li></ul><div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Axiomatic box with biconditional.</p><ul><li><strong>Declare:</strong> <code>&Nopf; : &Popf; &Zopf;</code>.</li><li><strong>Constrain:</strong> membership &hArr; &ge; 0.</li><li><strong>Axiom:</strong> defining property of naturals.</li><li><strong>Check:</strong> satisfiable &mdash; 0, 1, 2, &hellip;</li></ul></div></div>
+
+<h3>V.4 Practice: Fixed Constant</h3>
+<div class="practice" id="p4_4"><p class="scenario">A <span class="key">game engine</span> defines <span class="key">maxPlayers = 4</span>. Which axiomatic definition captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')"><code>maxPlayers : &Nopf;</code> with <code>maxPlayers = 4</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>maxPlayers == 4</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>maxPlayers ::= 4</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>[maxPlayers]</code></button></li></ul><div class="feedback" id="fb4_4"><p><strong>Correct.</strong> Declaration + equality constraint.</p><ul><li><strong>Declare:</strong> <code>maxPlayers : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>= 4</code>.</li><li><strong>Axiom:</strong> pins to exactly 4.</li><li><strong>Check:</strong> satisfiable &mdash; unique witness.</li></ul></div></div>
+
+<h3>V.5 Practice: Consistency Check</h3>
+<div class="practice" id="p4_5"><p class="scenario">A spec defines <code>k : &Nopf;</code> with <code>k &lt; 0</code>. This is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_5')">Valid.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')">Inconsistent &mdash; no natural is negative.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Under-determined.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">A valid abbreviation.</button></li></ul><div class="feedback" id="fb4_5"><p><strong>Correct.</strong> Unsatisfiable predicate breaks the spec.</p><ul><li><strong>Declare:</strong> <code>k : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>k &lt; 0</code> &mdash; impossible.</li><li><strong>Axiom:</strong> no witness exists.</li><li><strong>Check:</strong> inconsistent spec.</li></ul></div></div>
+
+<h3>V.6 Practice: Range Constraint</h3>
+<div class="practice" id="p4_6"><p class="scenario">A <span class="key">thermostat</span> bounds <span class="key">targetTemp</span> between 60 and 80. Which axiomatic form captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>targetTemp : &Nopf;</code> with <code>60 &le; targetTemp &le; 80</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>targetTemp == 60..80</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>targetTemp ::= 60 | 80</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>[targetTemp]</code></button></li></ul><div class="feedback" id="fb4_6"><p><strong>Correct.</strong> Axiomatic with range predicate.</p><ul><li><strong>Declare:</strong> <code>targetTemp : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>60 &le; targetTemp &le; 80</code>.</li><li><strong>Axiom:</strong> bounded constant.</li><li><strong>Check:</strong> satisfiable &mdash; any value in range.</li></ul></div></div>
+
+<h3>V.7 Practice: No Predicate</h3>
+<div class="practice" id="p4_7"><p>An axiomatic definition without a predicate introduces:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')">A typed constant with no restrictions &mdash; under-determined.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">An invalid definition.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">An abbreviation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">A free type.</button></li></ul><div class="feedback" id="fb4_7"><p><strong>Correct.</strong> Predicate is optional; without it, any value of the type works.</p><ul><li><strong>Declare:</strong> name : type.</li><li><strong>Constrain:</strong> (none).</li><li><strong>Axiom:</strong> trivially satisfiable.</li><li><strong>Check:</strong> under-determined but valid.</li></ul></div></div>
+
+<h3>V.8 Practice: Axiomatic vs. Abbreviation</h3>
+<div class="practice" id="p4_8"><p>The key difference between axiomatic and abbreviation definitions is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')">Axiomatic adds a constraint (axiom); abbreviation is a pure alias.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">They are the same.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Abbreviations use <code>:</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Axiomatic uses <code>==</code>.</button></li></ul><div class="feedback" id="fb4_8"><p><strong>Correct.</strong> Axioms assert; abbreviations alias.</p><ul><li><strong>Declare:</strong> both introduce names.</li><li><strong>Constrain:</strong> only axiomatic adds a predicate.</li><li><strong>Axiom:</strong> new information vs. no new information.</li><li><strong>Check:</strong> fundamentally different semantics.</li></ul></div></div>
+
+<h3>V.9 Practice: Global Visibility</h3>
+<div class="practice" id="p4_9"><p>Constants introduced by axiomatic definitions are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">Globally visible throughout the specification.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Local to one section.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Only visible in schemas.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Temporary.</button></li></ul><div class="feedback" id="fb4_9"><p><strong>Correct.</strong> Axiomatic definitions are global.</p><ul><li><strong>Declare:</strong> constant enters global scope.</li><li><strong>Constrain:</strong> axiom holds everywhere.</li><li><strong>Axiom:</strong> spec-wide truth.</li><li><strong>Check:</strong> available after the definition point.</li></ul></div></div>
+
+<h3>V.10 Practice: Defining a Bounded Value</h3>
+<div class="practice" id="p4_10"><p class="scenario">A <span class="key">chat app</span> limits <span class="key">message length</span> to 1&ndash;2000 characters. Which axiomatic form works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')"><code>maxLen : &Nopf;</code> with <code>1 &le; maxLen &le; 2000</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_10')"><code>maxLen == 2000</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_10')"><code>maxLen ::= 1 | 2000</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_10')"><code>maxLen : 1..2000</code></button></li></ul><div class="feedback" id="fb4_10"><p><strong>Correct.</strong> Range-constrained natural constant.</p><ul><li><strong>Declare:</strong> <code>maxLen : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>1 &le; maxLen &le; 2000</code>.</li><li><strong>Axiom:</strong> bounded value.</li><li><strong>Check:</strong> satisfiable &mdash; any value in range.</li></ul></div></div>
+
+<h3>V.11 Practice: Unique Witness</h3>
+<div class="practice" id="p4_11"><p>If the predicate is <code>k = 42</code>, how many values satisfy it?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">Exactly one &mdash; 42.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Many.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Zero.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Infinitely many.</button></li></ul><div class="feedback" id="fb4_11"><p><strong>Correct.</strong> Equality pins to a unique value.</p><ul><li><strong>Declare:</strong> <code>k : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>k = 42</code>.</li><li><strong>Axiom:</strong> exactly one witness.</li><li><strong>Check:</strong> fully determined constant.</li></ul></div></div>
+
+<h3>V.12 Practice: Multiple Objects</h3>
+<div class="practice" id="p4_12"><p>Can a single axiomatic definition declare multiple objects?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')">Yes &mdash; all declared above the line, constrained below.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">No &mdash; only one per box.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Only for types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Only for functions.</button></li></ul><div class="feedback" id="fb4_12"><p><strong>Correct.</strong> Multiple declarations in one box.</p><ul><li><strong>Declare:</strong> e.g. <code>min, max : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>min &le; max</code>.</li><li><strong>Axiom:</strong> relates both values.</li><li><strong>Check:</strong> satisfiable together.</li></ul></div></div>
+
+<h3>V.13 Practice: Satisfiability</h3>
+<div class="practice" id="p4_13"><p>An unsatisfiable predicate in an axiomatic definition makes the spec:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')">Inconsistent.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Valid.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Under-determined.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Benign.</button></li></ul><div class="feedback" id="fb4_13"><p><strong>Correct.</strong> No witness &rarr; inconsistent.</p><ul><li><strong>Declare:</strong> the symbol exists.</li><li><strong>Constrain:</strong> but nothing satisfies it.</li><li><strong>Axiom:</strong> false axiom &rarr; anything provable.</li><li><strong>Check:</strong> spec is broken.</li></ul></div></div>
+
+<h3>V.14 Practice: Defining a Positive Constant</h3>
+<div class="practice" id="p4_14"><p class="scenario">A <span class="key">vending machine</span> defines <span class="key">price</span> as a positive natural. Which axiomatic form works?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')"><code>price : &Nopf;</code> with <code>price &gt; 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_14')"><code>price == &Nopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_14')"><code>price ::= &Nopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_14')"><code>price &isin; &Nopf;</code></button></li></ul><div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Positivity constraint.</p><ul><li><strong>Declare:</strong> <code>price : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>price &gt; 0</code>.</li><li><strong>Axiom:</strong> excludes zero.</li><li><strong>Check:</strong> satisfiable &mdash; 1, 2, 3, &hellip;</li></ul></div></div>
+
+<h3>V.15 Practice: Biconditional in &Nopf; Definition</h3>
+<div class="practice" id="p4_15"><p>In <code>&forall; z : &Zopf; &bull; z &isin; &Nopf; &hArr; z &ge; 0</code>, the <code>&hArr;</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">If and only if &mdash; membership is equivalent to being &ge; 0.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Implies.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Or.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Not equal.</button></li></ul><div class="feedback" id="fb4_15"><p><strong>Correct.</strong> Biconditional defines exact membership.</p><ul><li><strong>Declare:</strong> <code>&Nopf; : &Popf; &Zopf;</code>.</li><li><strong>Constrain:</strong> <code>&hArr;</code> links membership to non-negativity.</li><li><strong>Axiom:</strong> necessary and sufficient condition.</li><li><strong>Check:</strong> complete characterisation.</li></ul></div></div>
+
+<h3>V.16 Practice: Declaring a Speed Limit</h3>
+<div class="practice" id="p4_16"><p class="scenario">A <span class="key">highway system</span> fixes <span class="key">speedLimit = 120</span>. Which form is an axiomatic definition?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')"><code>speedLimit : &Nopf;</code> with <code>speedLimit = 120</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>speedLimit == 120</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>speedLimit ::= 120</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>[speedLimit]</code></button></li></ul><div class="feedback" id="fb4_16"><p><strong>Correct.</strong> Declaration + equality axiom.</p><ul><li><strong>Declare:</strong> <code>speedLimit : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>= 120</code>.</li><li><strong>Axiom:</strong> pinned value.</li><li><strong>Check:</strong> satisfiable &mdash; witness is 120.</li></ul></div></div>
+
+<h3>V.17 Practice: Under-determined Value</h3>
+<div class="practice" id="p4_17"><p>If <code>n : &Nopf;</code> with <code>n &ge; 10</code>, is the value of <code>n</code> unique?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_17')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">No &mdash; many naturals are &ge; 10.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Only if n = 10.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">n is undefined.</button></li></ul><div class="feedback" id="fb4_17"><p><strong>Correct.</strong> Range constraints leave multiple witnesses.</p><ul><li><strong>Declare:</strong> <code>n : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>n &ge; 10</code>.</li><li><strong>Axiom:</strong> 10, 11, 12, &hellip; all work.</li><li><strong>Check:</strong> under-determined but consistent.</li></ul></div></div>
+
+<h3>V.18 Practice: Pair of Bounds</h3>
+<div class="practice" id="p4_18"><p class="scenario">A <span class="key">slider widget</span> defines <span class="key">min &le; max</span> in one box. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')"><code>min, max : &Nopf;</code> with <code>min &le; max</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>min == max</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>min : max</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>[min, max]</code></button></li></ul><div class="feedback" id="fb4_18"><p><strong>Correct.</strong> Multiple objects + ordering constraint.</p><ul><li><strong>Declare:</strong> <code>min, max : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>min &le; max</code>.</li><li><strong>Axiom:</strong> relates the two values.</li><li><strong>Check:</strong> satisfiable &mdash; e.g. (0, 100).</li></ul></div></div>
+
+<h3>V.19 Practice: Type in Declaration</h3>
+<div class="practice" id="p4_19"><p>In the axiomatic definition of &Nopf;, the declaration <code>&Nopf; : &Popf; &Zopf;</code> says:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">&Nopf; is a set of integers (i.e. a subset of &Zopf;).</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">&Nopf; equals &Zopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">&Nopf; is a single integer.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">&Nopf; is a type.</button></li></ul><div class="feedback" id="fb4_19"><p><strong>Correct.</strong> &Popf; &Zopf; = power set of integers = set of integer sets.</p><ul><li><strong>Declare:</strong> <code>&Nopf; : &Popf; &Zopf;</code>.</li><li><strong>Constrain:</strong> predicate specifies which integers.</li><li><strong>Axiom:</strong> the non-negative ones.</li><li><strong>Check:</strong> &Nopf; &sub; &Zopf;.</li></ul></div></div>
+
+<h3>V.20 Practice: Defining a Library Limit</h3>
+<div class="practice" id="p4_20"><p class="scenario">A <span class="key">library</span> fixes <span class="key">loan period</span> at 14 days. Which axiomatic definition captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')"><code>loanDays : &Nopf;</code> with <code>loanDays = 14</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>loanDays == 14</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>loanDays ::= 14</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>[loanDays]</code></button></li></ul><div class="feedback" id="fb4_20"><p><strong>Correct.</strong> Fixed constant via axiomatic box.</p><ul><li><strong>Declare:</strong> <code>loanDays : &Nopf;</code>.</li><li><strong>Constrain:</strong> <code>= 14</code>.</li><li><strong>Axiom:</strong> pins to 14.</li><li><strong>Check:</strong> satisfiable &mdash; unique witness.</li></ul></div></div>
+
+<h3>V.21 Practice: Axiom Strength</h3>
+<div class="practice" id="p4_21"><p>Axiomatic definitions are preferred over abbreviations when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')">You need to assert a constraint on the value.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Only for &Zopf;.</button></li></ul><div class="feedback" id="fb4_21"><p><strong>Correct.</strong> Constraints require axiomatic form.</p><ul><li><strong>Declare:</strong> abbreviations can't constrain.</li><li><strong>Constrain:</strong> axiomatic adds the predicate.</li><li><strong>Axiom:</strong> new information asserted.</li><li><strong>Check:</strong> choose the form that fits the need.</li></ul></div></div>
+
+<h3>V.22 Practice: Unique Name Rule</h3>
+<div class="practice" id="p4_22"><p>Can two axiomatic definitions introduce the same name?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_22')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">No &mdash; names must be unique globally.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Only for different types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Only in schemas.</button></li></ul><div class="feedback" id="fb4_22"><p><strong>Correct.</strong> Global namespace forbids duplicates.</p><ul><li><strong>Declare:</strong> one name per constant.</li><li><strong>Constrain:</strong> redefinition is disallowed.</li><li><strong>Axiom:</strong> unique binding.</li><li><strong>Check:</strong> no clashes.</li></ul></div></div>
+
+<h3>V.23 Practice: RGB Channels</h3>
+<div class="practice" id="p4_23"><p class="scenario">A <span class="key">colour picker</span> defines <span class="key">r, g, b</span> each bounded by 255. Which axiomatic form captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')"><code>r, g, b : &Nopf;</code> with <code>r &le; 255 &and; g &le; 255 &and; b &le; 255</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>r == g == b == 255</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>[r, g, b]</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>r, g, b ::= 0..255</code></button></li></ul><div class="feedback" id="fb4_23"><p><strong>Correct.</strong> Three objects, conjunction of constraints.</p><ul><li><strong>Declare:</strong> <code>r, g, b : &Nopf;</code>.</li><li><strong>Constrain:</strong> each &le; 255.</li><li><strong>Axiom:</strong> bounded channels.</li><li><strong>Check:</strong> satisfiable &mdash; e.g. (0, 0, 0).</li></ul></div></div>
+
+<h3>V.24 Practice: Function Declaration</h3>
+<div class="practice" id="p4_24"><p>Can an axiomatic definition declare a function?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')">Yes &mdash; any type, including function types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">No &mdash; only &Nopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Only sets.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Only basic types.</button></li></ul><div class="feedback" id="fb4_24"><p><strong>Correct.</strong> The declaration may use any type.</p><ul><li><strong>Declare:</strong> e.g. <code>f : &Zopf; &rarr; &Zopf;</code>.</li><li><strong>Constrain:</strong> predicate specifies behaviour.</li><li><strong>Axiom:</strong> function behaviour is axiomatised.</li><li><strong>Check:</strong> general definition mechanism.</li></ul></div></div>
+
+<h3>V.25 Practice: Consistency Summary</h3>
+<div class="practice" id="p4_25"><p>The most critical requirement for an axiomatic definition is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">The predicate must be satisfiable (at least one witness exists).</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">The name must be short.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">The type must be &Nopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">The predicate must be trivial.</button></li></ul><div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Unsatisfiable axiom = inconsistent spec.</p><ul><li><strong>Declare:</strong> constant exists.</li><li><strong>Constrain:</strong> must have a witness.</li><li><strong>Axiom:</strong> otherwise anything is provable.</li><li><strong>Check:</strong> consistency is paramount.</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 4</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 6.</footer>
+
+</body>
+</html>

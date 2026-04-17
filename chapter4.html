@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 4 — Equality and Definite Description</title>
+<link rel="stylesheet" href="style.css">
+<script src="ch4-bank.js" defer></script>
+<script src="quiz.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">4.1 Equality &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">4.2 The One-Point Rule &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">4.3 Uniqueness and Quantity &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">4.4 Definite Description &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 4 &mdash; Equality and Definite Description</h1>
+
+<!-- ================= 4.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">4.1 Equality</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="A relation asserting two expressions denote the same object.">Equality</span>:</strong> <code>e = f</code> means e and f are <span class="vocab" data-def="Cannot be distinguished &mdash; denote the same object.">identical</span> (same object).</li>
+  <li><strong><span class="vocab" data-def="Every expression equals itself: t = t. An axiom of standard Z.">Reflection</span> [eq-ref]:</strong> <code>t = t</code> &mdash; everything equals itself.</li>
+  <li><strong><span class="vocab" data-def="If s = t and p holds of t, then p holds of s &mdash; substitute equals for equals.">Leibniz&rsquo;s law</span> [eq-sub]:</strong> if <code>s = t</code>, substitute one for the other in any predicate.</li>
+  <li><strong><span class="vocab" data-def="Abbreviation for &not;(e = f) &mdash; two expressions denote different objects.">Inequality</span>:</strong> <code>e &ne; f</code> abbreviates <code>&not;(e = f)</code>.</li>
+  <li><strong><span class="vocab" data-def="If s = t then t = s &mdash; derived from eq-ref and eq-sub.">Symmetry</span> [eq-symm]:</strong> if <code>s = t</code> then <code>t = s</code> &mdash; derived from [eq-ref] + [eq-sub].</li>
+  <li><strong><span class="vocab" data-def="If s = t and t = u then s = u &mdash; chain equalities.">Transitivity</span>:</strong> if <code>s = t</code> and <code>t = u</code> then <code>s = u</code> &mdash; derived from [eq-sub].</li>
+  <li><strong><span class="vocab" data-def="s = t iff every property of s is a property of t, and conversely.">Identity of Indiscernibles</span>:</strong> <code>s = t</code> iff every property of s is a property of t.</li>
+  <li><strong><span class="vocab" data-def="Equalities and set membership are the only atomic propositions in Z.">Atomic propositions</span>:</strong> equalities (with set membership) form the atoms of Z logic.</li>
+</ul>
+</div>
+
+<h3 id="s0-B" class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Equality</td><td>Two expressions denote the same object.</td></tr>
+  <tr><td>Identical</td><td>Cannot be distinguished &mdash; denote the same object.</td></tr>
+  <tr><td>Reflection</td><td>Every expression equals itself: t = t.</td></tr>
+  <tr><td>Leibniz&rsquo;s law</td><td>If s = t, substitute one for the other in any predicate.</td></tr>
+  <tr><td>Inequality</td><td>Abbreviation for &not;(e = f).</td></tr>
+  <tr><td>Symmetry</td><td>If s = t then t = s.</td></tr>
+  <tr><td>Transitivity</td><td>If s = t and t = u then s = u.</td></tr>
+  <tr><td>Identity of Indiscernibles</td><td>s = t iff every property of s is a property of t.</td></tr>
+  <tr><td>Atomic proposition</td><td>An equality or set-membership statement &mdash; the simplest Z predicates.</td></tr>
+  <tr><td>Congruence</td><td>Equal arguments yield equal function results.</td></tr>
+</table>
+
+<h3 id="s0-C" class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equals &mdash; two expressions denote the same object.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal &mdash; abbreviation for &not;(e = f).</td></tr>
+  <tr><td><code>&not;</code></td><td>Negation.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical AND.</td></tr>
+  <tr><td><code>&forall;</code></td><td>Universal quantifier.</td></tr>
+</table>
+
+<h3 id="s0-D">IV.1 Examples: Identity Parade, Staff Directory &amp; Shipping Label</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">At an <span class="key">identity parade</span>, a witness points and says &ldquo;the man on the right is <span class="key">the man who stole my idea</span>.&rdquo;</p>
+<ul>
+  <li><strong>Identify:</strong> two descriptions &mdash; &ldquo;man on the right&rdquo; and &ldquo;man who stole my idea.&rdquo;</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="Two expressions denote the same object.">equality</span> &mdash; both names denote the same person.</li>
+  <li><strong>Apply:</strong> <code>man_on_right <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> man_who_stole_idea</code>.</li>
+  <li><strong>Conclude:</strong> one person, two descriptions &mdash; they are <span class="vocab" data-def="Cannot be distinguished &mdash; denote the same object.">identical</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">staff directory</span> lists &ldquo;Head of Engineering&rdquo; and &ldquo;Alice Chen&rdquo; on the <span class="key">same row</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> two labels &mdash; a role title and a personal name.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="Two expressions denote the same object.">equality</span> &mdash; both refer to the same employee.</li>
+  <li><strong>Apply:</strong> <code>Head_of_Engineering <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> Alice_Chen</code>.</li>
+  <li><strong>Conclude:</strong> every predicate true of Alice is true of the Head of Engineering.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">shipping label</span> shows &ldquo;sender&rdquo; and &ldquo;return address&rdquo; pointing to the <span class="key">same location</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> two fields &mdash; &ldquo;sender&rdquo; and &ldquo;return address.&rdquo;</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="Two expressions denote the same object.">equality</span> of addresses.</li>
+  <li><strong>Apply:</strong> <code>sender_address <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> return_address</code>.</li>
+  <li><strong>Conclude:</strong> one address, two roles on the label.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Arithmetic Identity, Clock Reset &amp; Colour Mixer</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">In basic arithmetic everyone accepts that <span class="key">1 + 1 = 1 + 1</span>, whatever the properties of numbers and addition.</p>
+<ul>
+  <li><strong>Identify:</strong> same expression on both sides.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="Every expression equals itself: t = t.">reflection</span> [eq-ref] &mdash; <code>t = t</code>.</li>
+  <li><strong>Apply:</strong> <code>1 + 1 <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> 1 + 1</code>.</li>
+  <li><strong>Conclude:</strong> holds by axiom alone &mdash; no computation needed.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">digital clock</span> displays <span class="key">12:00</span>; querying it again immediately still reads <span class="key">12:00</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> the same reading at the same instant.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="Every expression equals itself: t = t.">reflection</span> &mdash; a value equals itself.</li>
+  <li><strong>Apply:</strong> <code>clock_time <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> clock_time</code>.</li>
+  <li><strong>Conclude:</strong> trivially true by [eq-ref].</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">colour mixer</span> with identical RGB inputs on both channels produces the <span class="key">same colour</span> twice.</p>
+<ul>
+  <li><strong>Identify:</strong> same input, same output.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="Every expression equals itself: t = t.">reflection</span>.</li>
+  <li><strong>Apply:</strong> <code>mix(r, g, b) <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> mix(r, g, b)</code>.</li>
+  <li><strong>Conclude:</strong> same function, same arguments &rarr; same result by [eq-ref].</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Christmas Day, Exam Score &amp; Package Tracking</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">We know <span class="key">Christmas Day = 25th December</span> and that <span class="key">25th December falls on a Sunday</span> this year.</p>
+<ul>
+  <li><strong>Identify:</strong> equality <code>Christmas_Day = 25th_Dec</code> and predicate <code>Sunday(25th_Dec)</code>.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="If s = t and p holds of t, then p holds of s &mdash; substitute equals for equals.">Leibniz&rsquo;s law</span> [eq-sub] &mdash; substitute equals.</li>
+  <li><strong>Apply:</strong> <code>Christmas_Day = 25th_Dec &and; Sunday(25th_Dec) <span class="vocab" data-def="Implies.">&rArr;</span> Sunday(Christmas_Day)</code>.</li>
+  <li><strong>Conclude:</strong> Christmas Day falls on a Sunday this year.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A school records <span class="key">Student_A = valedictorian</span> and <span class="key">GPA(valedictorian) = 4.0</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> equality of student and role, plus a predicate on the role.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="If s = t and p holds of t, then p holds of s &mdash; substitute equals for equals.">Leibniz&rsquo;s law</span> [eq-sub].</li>
+  <li><strong>Apply:</strong> substitute &rarr; <code>GPA(Student_A) <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> 4.0</code>.</li>
+  <li><strong>Conclude:</strong> same person, same GPA.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A courier&rsquo;s system shows <span class="key">parcel_42 = express_shipment</span> and <span class="key">Priority(express_shipment) = high</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> equality of parcel ID and shipment type, plus a priority predicate.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="If s = t and p holds of t, then p holds of s &mdash; substitute equals for equals.">Leibniz&rsquo;s law</span> [eq-sub].</li>
+  <li><strong>Apply:</strong> substitute &rarr; <code>Priority(parcel_42) <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> high</code>.</li>
+  <li><strong>Conclude:</strong> parcel 42 has high priority.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Different Passwords, Lab Samples &amp; Ticket Classes</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&not;</code></td><td>Negation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">User A&rsquo;s <span class="key">password hash</span> passes validation but User B&rsquo;s <span class="key">does not</span> &mdash; they hold <span class="key">different properties</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> predicate <code>Valid(hash_A)</code> is true; <code><span class="vocab" data-def="Negation.">&not;</span>Valid(hash_B)</code>.</li>
+  <li><strong>Rule:</strong> different properties &rArr; different objects &mdash; contrapositive of <span class="vocab" data-def="If s = t and p holds of t, then p holds of s &mdash; substitute equals for equals.">Leibniz&rsquo;s law</span>.</li>
+  <li><strong>Apply:</strong> <code>hash_A <span class="vocab" data-def="Abbreviation for &not;(e = f) &mdash; two expressions denote different objects.">&ne;</span> hash_B</code>.</li>
+  <li><strong>Conclude:</strong> the two hashes are <span class="vocab" data-def="Abbreviation for &not;(e = f) &mdash; two expressions denote different objects.">unequal</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Two <span class="key">lab samples</span>: sample X is <span class="key">radioactive</span>, sample Y is <span class="key">not</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>Radioactive(X)</code> is true; <code>&not;Radioactive(Y)</code>.</li>
+  <li><strong>Rule:</strong> different properties &rArr; different objects.</li>
+  <li><strong>Apply:</strong> <code>X <span class="vocab" data-def="Abbreviation for &not;(e = f) &mdash; two expressions denote different objects.">&ne;</span> Y</code>.</li>
+  <li><strong>Conclude:</strong> they are distinct samples.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Two <span class="key">airline tickets</span>: ticket P includes <span class="key">lounge access</span>, ticket Q <span class="key">does not</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>LoungeAccess(P)</code> is true; <code>&not;LoungeAccess(Q)</code>.</li>
+  <li><strong>Rule:</strong> different properties &rArr; different objects.</li>
+  <li><strong>Apply:</strong> <code>P <span class="vocab" data-def="Abbreviation for &not;(e = f) &mdash; two expressions denote different objects.">&ne;</span> Q</code>.</li>
+  <li><strong>Conclude:</strong> the tickets are different classes.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Airport Gate, Professor Plum &amp; Currency Chain</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">boarding pass</span> says gate = A12; the <span class="key">departure screen</span> says A12 = the gate at the end of the terminal.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>gate <span class="vocab" data-def="Equals &mdash; two expressions denote the same object.">=</span> A12</code> and <code>A12 = end_gate</code>.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="If s = t and t = u then s = u &mdash; chain equalities.">transitivity</span> &mdash; chain equalities.</li>
+  <li><strong>Apply:</strong> <code>gate = end_gate</code>.</li>
+  <li><strong>Conclude:</strong> walk to the end of the terminal.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">At the identity parade, <span class="key">man on right = man who stole idea</span>. Later revealed: <span class="key">man on right = Professor Plum</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> two equalities sharing a middle term.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="If s = t then t = s &mdash; derived from eq-ref and eq-sub.">symmetry</span> + <span class="vocab" data-def="If s = t and t = u then s = u &mdash; chain equalities.">transitivity</span>.</li>
+  <li><strong>Apply:</strong> by [eq-symm]: <code>man_who_stole_idea = man_on_right</code>; then chain &rarr; <code>man_who_stole_idea = Professor_Plum</code>.</li>
+  <li><strong>Conclude:</strong> the plagiarist is Professor Plum.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A traveller converts: <span class="key">100 USD = 90 EUR</span> and <span class="key">90 EUR = 80 GBP</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> two equalities (in value) sharing a middle amount.</li>
+  <li><strong>Rule:</strong> <span class="vocab" data-def="If s = t and t = u then s = u &mdash; chain equalities.">transitivity</span>.</li>
+  <li><strong>Apply:</strong> <code>100_USD = 80_GBP</code> (in value).</li>
+  <li><strong>Conclude:</strong> chain equalities to skip the intermediate currency.</li>
+</ul>
+</div>
+
+<!-- §4.1 Practice -->
+<h3 id="s0-E">V.1 Practice: Equality Properties</h3>
+<div class="practice" id="p1_1">
+  <p>Which properties does equality possess?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Only reflexive.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">Reflexive, symmetric, and transitive.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Only symmetric and transitive.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">None of these.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_1">
+    <p><strong>Correct.</strong> Equality is an equivalence relation.</p>
+    <ul>
+      <li><strong>Identify:</strong> all three properties are derivable.</li>
+      <li><strong>Rule:</strong> [eq-ref] gives reflexivity; [eq-sub] derives the rest.</li>
+      <li><strong>Apply:</strong> reflexive + symmetric + transitive = equivalence relation.</li>
+      <li><strong>Conclude:</strong> equality satisfies all three.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Substitution Law</h3>
+<div class="practice" id="p1_2">
+  <p>Which law lets you substitute equals in any predicate?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>&not;</code>-elimination.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">De Morgan&rsquo;s law.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">Leibniz&rsquo;s law [eq-sub].</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">Excluded middle.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_2">
+    <p><strong>Correct.</strong> Leibniz&rsquo;s law allows substitution of equals.</p>
+    <ul>
+      <li><strong>Identify:</strong> given <code>s = t</code> and <code>p[t/x]</code>.</li>
+      <li><strong>Rule:</strong> [eq-sub] &mdash; replace t with s in p.</li>
+      <li><strong>Apply:</strong> conclude <code>p[s/x]</code>.</li>
+      <li><strong>Conclude:</strong> same object, same predicates.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_3">
+  <p class="scenario">Given <code>Alice <span class="key">=</span> TeamLead</code> and <code>Promoted(<span class="key">Alice</span>)</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>Promoted(TeamLead)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>&not;Promoted(TeamLead)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>Alice &ne; TeamLead</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>TeamLead = Promoted</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_3">
+    <p><strong>Correct.</strong> Substitute equals via Leibniz&rsquo;s law.</p>
+    <ul>
+      <li><strong>Identify:</strong> <code>Alice = TeamLead</code> and <code>Promoted(Alice)</code>.</li>
+      <li><strong>Rule:</strong> [eq-sub] &mdash; swap Alice for TeamLead.</li>
+      <li><strong>Apply:</strong> <code>Promoted(TeamLead)</code>.</li>
+      <li><strong>Conclude:</strong> same person inherits the predicate.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_4">
+  <p class="scenario">A school database records <code>valedictorian <span class="key">=</span> Student_A</code> and <code>GPA(valedictorian) <span class="key">=</span> 4.0</code>. What is <code>GPA(Student_A)</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>GPA(Student_A) = 4.0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>GPA(Student_A) &ne; 4.0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>GPA(Student_A) = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')">Cannot determine.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_4">
+    <p><strong>Correct.</strong> Leibniz substitution transfers the GPA.</p>
+    <ul>
+      <li><strong>Identify:</strong> equality of person + predicate on one name.</li>
+      <li><strong>Rule:</strong> [eq-sub].</li>
+      <li><strong>Apply:</strong> substitute valedictorian &rarr; Student_A.</li>
+      <li><strong>Conclude:</strong> 4.0.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_5">
+  <p class="scenario">Given <code>Manager <span class="key">=</span> Alice</code> and <code>HasOffice(<span class="key">Manager</span>)</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>HasOffice(Alice)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>&not;HasOffice(Alice)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>Manager &ne; Alice</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_5">
+    <p><strong>Correct.</strong> Substitute Manager for Alice in the predicate.</p>
+    <ul>
+      <li><strong>Identify:</strong> <code>Manager = Alice</code> and <code>HasOffice(Manager)</code>.</li>
+      <li><strong>Rule:</strong> [eq-sub].</li>
+      <li><strong>Apply:</strong> <code>HasOffice(Alice)</code>.</li>
+      <li><strong>Conclude:</strong> same person, same office.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_6">
+  <p class="scenario">Given <code>morning_star <span class="key">=</span> evening_star</code> and <code>Bright(<span class="key">morning_star</span>)</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>Bright(evening_star)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>&not;Bright(evening_star)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>morning_star &ne; evening_star</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')">Nothing &mdash; different names.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_6">
+    <p><strong>Correct.</strong> Both names denote Venus &mdash; same object, same predicates.</p>
+    <ul>
+      <li><strong>Identify:</strong> equality + predicate on one name.</li>
+      <li><strong>Rule:</strong> [eq-sub].</li>
+      <li><strong>Apply:</strong> substitute morning_star &rarr; evening_star.</li>
+      <li><strong>Conclude:</strong> <code>Bright(evening_star)</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_7">
+  <p class="scenario">Given <code>OrderID <span class="key">=</span> 42</code> and <code>Status(OrderID) <span class="key">=</span> shipped</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>Status(42) = shipped</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>Status(42) &ne; shipped</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>OrderID &ne; 42</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_7">
+    <p><strong>Correct.</strong> Substitute OrderID = 42 via [eq-sub].</p>
+    <ul>
+      <li><strong>Identify:</strong> equality of variable and value.</li>
+      <li><strong>Rule:</strong> [eq-sub].</li>
+      <li><strong>Apply:</strong> <code>Status(42) = shipped</code>.</li>
+      <li><strong>Conclude:</strong> congruence: equal arguments, equal results.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Applying Reflection</h3>
+<div class="practice" id="p1_8">
+  <p>Which rule justifies <code>5 = 5</code> without any premises?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>[eq-ref]</code> &mdash; reflection.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>[eq-sub]</code> &mdash; Leibniz.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>[eq-symm]</code> &mdash; symmetry.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')">Transitivity.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_8">
+    <p><strong>Correct.</strong> Every expression equals itself &mdash; no premises needed.</p>
+    <ul>
+      <li><strong>Identify:</strong> same expression on both sides.</li>
+      <li><strong>Rule:</strong> [eq-ref]: <code>t = t</code>.</li>
+      <li><strong>Apply:</strong> <code>5 = 5</code> is an instance.</li>
+      <li><strong>Conclude:</strong> axiom, not derived.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Applying Symmetry</h3>
+<div class="practice" id="p1_9">
+  <p class="scenario">Given <code>Alice <span class="key">=</span> CEO</code>, which follows by <span class="key">symmetry</span>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>CEO = Alice</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>Alice &ne; CEO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>&forall; x &bull; x = Alice</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_9">
+    <p><strong>Correct.</strong> [eq-symm]: if s = t then t = s.</p>
+    <ul>
+      <li><strong>Identify:</strong> equality with arguments in one order.</li>
+      <li><strong>Rule:</strong> [eq-symm] derived from [eq-ref] + [eq-sub].</li>
+      <li><strong>Apply:</strong> swap the arguments.</li>
+      <li><strong>Conclude:</strong> <code>CEO = Alice</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Applying Transitivity</h3>
+<div class="practice" id="p1_10">
+  <p class="scenario">Given <code>3 + 2 <span class="key">=</span> 5</code> and <code>5 <span class="key">=</span> 2 + 3</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>3 + 2 = 2 + 3</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>3 + 2 &ne; 2 + 3</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>5 &ne; 5</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_10">
+    <p><strong>Correct.</strong> Chain equalities via transitivity.</p>
+    <ul>
+      <li><strong>Identify:</strong> two equalities sharing the middle term 5.</li>
+      <li><strong>Rule:</strong> transitivity &mdash; derived from [eq-sub].</li>
+      <li><strong>Apply:</strong> <code>3 + 2 = 5 = 2 + 3</code>.</li>
+      <li><strong>Conclude:</strong> <code>3 + 2 = 2 + 3</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Applying Transitivity</h3>
+<div class="practice" id="p1_11">
+  <p class="scenario">Given <code>password_hash <span class="key">=</span> H("secret")</code> and <code>H("secret") <span class="key">=</span> abc123</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>password_hash = abc123</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>password_hash &ne; abc123</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>H("secret") &ne; abc123</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_11">
+    <p><strong>Correct.</strong> Transitivity chains the two equalities.</p>
+    <ul>
+      <li><strong>Identify:</strong> shared middle term <code>H("secret")</code>.</li>
+      <li><strong>Rule:</strong> transitivity.</li>
+      <li><strong>Apply:</strong> drop the middle.</li>
+      <li><strong>Conclude:</strong> <code>password_hash = abc123</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Recognising Inequality</h3>
+<div class="practice" id="p1_12">
+  <p>The notation <code>x &ne; y</code> is an abbreviation for:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>&not;(x = y)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>x = &not;y</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>x &and; y</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>x &rArr; y</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_12">
+    <p><strong>Correct.</strong> Inequality negates equality.</p>
+    <ul>
+      <li><strong>Identify:</strong> <code>&ne;</code> is shorthand.</li>
+      <li><strong>Rule:</strong> definition: <code>&ne;</code> = <code>&not;(=)</code>.</li>
+      <li><strong>Apply:</strong> <code>x &ne; y &hArr; &not;(x = y)</code>.</li>
+      <li><strong>Conclude:</strong> different objects.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Recognising Inequality</h3>
+<div class="practice" id="p1_13">
+  <p class="scenario">Given <code>Soluble(X)</code> and <code><span class="key">&not;</span>Soluble(Y)</code>, what follows?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>X &ne; Y</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>X = Y</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>&forall; z &bull; z = X</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_13">
+    <p><strong>Correct.</strong> Different properties imply different objects.</p>
+    <ul>
+      <li><strong>Identify:</strong> a predicate true of one, false of the other.</li>
+      <li><strong>Rule:</strong> contrapositive of Leibniz.</li>
+      <li><strong>Apply:</strong> if equal, both would satisfy Soluble &mdash; contradiction.</li>
+      <li><strong>Conclude:</strong> <code>X &ne; Y</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_14">
+  <p class="scenario">Given <code>current_user <span class="key">=</span> Alice</code> and <code>Age(Alice) <span class="key">=</span> 30</code>, what is <code>Age(current_user)</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>Age(current_user) = 30</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>Age(current_user) &ne; 30</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>Age(current_user) = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">Cannot determine.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_14">
+    <p><strong>Correct.</strong> Leibniz + transitivity.</p>
+    <ul>
+      <li><strong>Identify:</strong> equality + function value.</li>
+      <li><strong>Rule:</strong> [eq-sub] &mdash; congruence.</li>
+      <li><strong>Apply:</strong> <code>Age(current_user) = Age(Alice) = 30</code>.</li>
+      <li><strong>Conclude:</strong> 30.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_15">
+  <p class="scenario">If <code>x <span class="key">=</span> y</code>, does <code>f(x) <span class="key">=</span> f(y)</code> hold for any function f?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">Yes &mdash; congruence via [eq-sub].</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">No.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">Only if f is injective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">Only if x = 0.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_15">
+    <p><strong>Correct.</strong> Functions respect equality (congruence).</p>
+    <ul>
+      <li><strong>Identify:</strong> equal arguments.</li>
+      <li><strong>Rule:</strong> [eq-sub] with predicate <code>f(x) = f(_)</code>.</li>
+      <li><strong>Apply:</strong> substitute x for y.</li>
+      <li><strong>Conclude:</strong> <code>f(x) = f(y)</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Applying Leibniz</h3>
+<div class="practice" id="p1_16">
+  <p class="scenario">Given <code>account.balance <span class="key">=</span> 100</code> and a withdrawal of 25, express the <span class="key">post-state</span>:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>account.balance' = 75</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>account.balance' = 100</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>account.balance' = 125</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>account.balance' &ne; 75</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_16">
+    <p><strong>Correct.</strong> 100 &minus; 25 = 75.</p>
+    <ul>
+      <li><strong>Identify:</strong> pre-state value and operation.</li>
+      <li><strong>Rule:</strong> arithmetic + equality.</li>
+      <li><strong>Apply:</strong> <code>balance' = balance &minus; 25 = 75</code>.</li>
+      <li><strong>Conclude:</strong> post-state equality.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Applying Transitivity</h3>
+<div class="practice" id="p1_17">
+  <p class="scenario">Given <code>a <span class="key">=</span> b</code>, <code>b <span class="key">=</span> c</code>, and <code>c <span class="key">=</span> d</code>, conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')"><code>a = d</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>a &ne; d</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>a = b &and; c &ne; d</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_17">
+    <p><strong>Correct.</strong> Repeated transitivity chains all four.</p>
+    <ul>
+      <li><strong>Identify:</strong> three equalities in a chain.</li>
+      <li><strong>Rule:</strong> transitivity applied twice.</li>
+      <li><strong>Apply:</strong> <code>a = b = c = d</code>.</li>
+      <li><strong>Conclude:</strong> <code>a = d</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Applying Reflection</h3>
+<div class="practice" id="p1_18">
+  <p>Reflection (<code>t = t</code>) is classified as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">An axiom of standard Z.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">A derived rule.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">A theorem requiring proof.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">An abbreviation.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_18">
+    <p><strong>Correct.</strong> [eq-ref] is an axiom &mdash; assumed, not proved.</p>
+    <ul>
+      <li><strong>Identify:</strong> no premises needed.</li>
+      <li><strong>Rule:</strong> axiom status.</li>
+      <li><strong>Apply:</strong> holds in every model of standard Z.</li>
+      <li><strong>Conclude:</strong> axiom, not derived.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Applying Symmetry</h3>
+<div class="practice" id="p1_19">
+  <p>Symmetry [eq-symm] is:</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_19')">An axiom.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')">Derived from [eq-ref] and [eq-sub].</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')">An abbreviation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')">Unprovable.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_19">
+    <p><strong>Correct.</strong> Symmetry is derived, not primitive.</p>
+    <ul>
+      <li><strong>Identify:</strong> want <code>s = t &rArr; t = s</code>.</li>
+      <li><strong>Rule:</strong> use [eq-ref] to get <code>t = t</code>, then [eq-sub] with <code>s = t</code>.</li>
+      <li><strong>Apply:</strong> yields <code>t = s</code>.</li>
+      <li><strong>Conclude:</strong> derived rule [eq-symm].</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Applying Transitivity</h3>
+<div class="practice" id="p1_20">
+  <p>Given <code>x = y &and; y = z</code>, which rule gives <code>x = z</code>?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Reflection.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Symmetry.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')">Transitivity (via [eq-sub]).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Abbreviation.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_20">
+    <p><strong>Correct.</strong> Chain via middle element.</p>
+    <ul>
+      <li><strong>Identify:</strong> two equalities sharing y.</li>
+      <li><strong>Rule:</strong> transitivity derived from [eq-sub].</li>
+      <li><strong>Apply:</strong> substitute y for z in <code>x = y</code>.</li>
+      <li><strong>Conclude:</strong> <code>x = z</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Reflection Axiom</h3>
+<div class="practice" id="p1_21">
+  <p>Which formal statement expresses reflection?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&exist; x &bull; x = x</code></button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')"><code>&forall; x &bull; x = x</code> (no premises needed)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&forall; x, y &bull; x = y</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&not;&forall; x &bull; x = x</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_21">
+    <p><strong>Correct.</strong> Every element equals itself.</p>
+    <ul>
+      <li><strong>Identify:</strong> universally quantified self-equality.</li>
+      <li><strong>Rule:</strong> [eq-ref].</li>
+      <li><strong>Apply:</strong> axiom schema.</li>
+      <li><strong>Conclude:</strong> <code>t = t</code> for any expression t.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Equality vs Equivalence</h3>
+<div class="practice" id="p1_22">
+  <p>In Z, equality relates <em>values</em>; the propositional connective for relating <em>predicates</em> is:</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_22')"><code>=</code></button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')"><code>&hArr;</code> (equivalence).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')"><code>&ne;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')"><code>&rArr;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_22">
+    <p><strong>Correct.</strong> Equality for values; equivalence for predicates.</p>
+    <ul>
+      <li><strong>Identify:</strong> two distinct relations.</li>
+      <li><strong>Rule:</strong> <code>=</code> compares expressions; <code>&hArr;</code> compares truth values.</li>
+      <li><strong>Apply:</strong> <code>5 + 3 = 3 + 5</code> vs <code>p &hArr; q</code>.</li>
+      <li><strong>Conclude:</strong> do not conflate them.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Identity of Indiscernibles</h3>
+<div class="practice" id="p1_23">
+  <p>The Principle of the Identity of Indiscernibles states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')"><code>s = t</code> iff every property of s is a property of t, and conversely.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>s = t</code> iff they have the same name.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>s = t</code> iff they have the same type.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>s &ne; t</code> always.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_23">
+    <p><strong>Correct.</strong> Leibniz&rsquo;s original formulation.</p>
+    <ul>
+      <li><strong>Identify:</strong> property-based identity criterion.</li>
+      <li><strong>Rule:</strong> [eq-sub] follows from this principle.</li>
+      <li><strong>Apply:</strong> if all predicates agree, the objects are identical.</li>
+      <li><strong>Conclude:</strong> Leibniz (1646&ndash;1716).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Atomic Propositions</h3>
+<div class="practice" id="p1_24">
+  <p>In Z, the atomic propositions are:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')">Equalities and set-membership statements.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">Only equalities.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">Only implications.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">Quantified statements.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_24">
+    <p><strong>Correct.</strong> Two kinds of atoms in Z logic.</p>
+    <ul>
+      <li><strong>Identify:</strong> simplest propositions.</li>
+      <li><strong>Rule:</strong> <code>e = f</code> and <code>x &isin; S</code>.</li>
+      <li><strong>Apply:</strong> all other propositions are built from these using connectives/quantifiers.</li>
+      <li><strong>Conclude:</strong> equalities + set membership.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Congruence</h3>
+<div class="practice" id="p1_25">
+  <p>If <code>x = y</code>, then for any function f, <code>f(x) = f(y)</code>. This property is called:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Congruence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Reflection.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Symmetry.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Inequality.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_25">
+    <p><strong>Correct.</strong> Functions respect equality.</p>
+    <ul>
+      <li><strong>Identify:</strong> equal inputs &rarr; equal outputs.</li>
+      <li><strong>Rule:</strong> consequence of [eq-sub].</li>
+      <li><strong>Apply:</strong> works for every function and predicate.</li>
+      <li><strong>Conclude:</strong> congruence.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 4.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">4.2 The One-Point Rule</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="If the quantifier body pins x to a specific term via equality, the quantifier collapses.">One-point rule</span>:</strong> eliminates a quantifier when the body pins x to a term via equality.</li>
+  <li><strong>Existential form:</strong> <code>&exist; x : a &bull; p &and; x = t &equiv; t &isin; a &and; p[t/x]</code>.</li>
+  <li><strong>Universal form:</strong> <code>&forall; x : a &bull; x = t &rArr; p &equiv; t &isin; a &rArr; p[t/x]</code>.</li>
+  <li><strong><span class="vocab" data-def="x must not appear free in t for the one-point rule to apply.">Proviso</span>:</strong> x must not be <span class="vocab" data-def="A variable not bound by any quantifier in the expression.">free</span> in t &mdash; otherwise t changes when x changes.</li>
+  <li><strong><span class="vocab" data-def="Provable from existing axioms; not a primitive rule.">Derived rule</span>:</strong> both directions proven from [eq-sub], [&exist;-intro], [&exist;-elim], [eq-symm].</li>
+  <li><strong>Key benefit:</strong> removes a quantifier entirely, simplifying reasoning.</li>
+  <li><strong>Common in specs:</strong> when a formula identifies a unique value, the quantifier is redundant.</li>
+</ul>
+</div>
+
+<h3 id="s1-B" class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>One-point rule</td><td>Quantifier collapses when the body pins x to a fixed term.</td></tr>
+  <tr><td>Pinned variable</td><td>A bound variable constrained by equality to a specific value.</td></tr>
+  <tr><td>Free variable</td><td>A variable not bound by any quantifier in the expression.</td></tr>
+  <tr><td>Proviso</td><td>x must not be free in t for one-point to apply.</td></tr>
+  <tr><td>Derived rule</td><td>Provable from existing axioms; not primitive.</td></tr>
+  <tr><td>Collapse</td><td>Simplification that removes the quantifier.</td></tr>
+</table>
+
+<h3 id="s1-C" class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier &mdash; &ldquo;there exists.&rdquo;</td></tr>
+  <tr><td><code>&forall;</code></td><td>Universal quantifier &mdash; &ldquo;for all.&rdquo;</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical AND (conjunction).</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&hArr;</code></td><td>If and only if (equivalence).</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of.</td></tr>
+</table>
+
+<h3 id="s1-D">IV.1 Examples: Warehouse Lookup, Hotel Check-In &amp; Parking Permit</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">warehouse</span> query: &ldquo;there exists a bin b that <span class="key">equals bin 7</span> and is <span class="key">in stock</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&exist; b : Bin &bull; b = 7 &and; InStock(b)</code>.</li>
+  <li><strong>Pin:</strong> b is <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to 7.</li>
+  <li><strong>Substitute:</strong> replace b with 7 &rarr; <code>InStock(7)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;Is bin 7 in stock?&rdquo; &mdash; quantifier gone.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">hotel</span> front desk checks: &ldquo;there exists a guest g that <span class="key">equals Ms. Chen</span> and has a <span class="key">reservation</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&exist; g : Guest &bull; g = Ms_Chen &and; HasReservation(g)</code>.</li>
+  <li><strong>Pin:</strong> g is <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to Ms_Chen.</li>
+  <li><strong>Substitute:</strong> <code>HasReservation(Ms_Chen)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;Does Ms. Chen have a reservation?&rdquo;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">parking</span> system queries: &ldquo;there exists a permit p that <span class="key">equals permit 204</span> and is <span class="key">valid today</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&exist; p : Permit &bull; p = 204 &and; ValidToday(p)</code>.</li>
+  <li><strong>Pin:</strong> p <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to 204.</li>
+  <li><strong>Substitute:</strong> <code>ValidToday(204)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;Is permit 204 valid today?&rdquo;</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Office Policy, Speed Limit &amp; Dress Code</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">office policy</span>: &ldquo;for every employee e, <span class="key">if e equals the CEO</span>, then e has a <span class="key">corner office</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&forall; e : Employee &bull; e = CEO &rArr; CornerOffice(e)</code>.</li>
+  <li><strong>Pin:</strong> e <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to CEO in the antecedent.</li>
+  <li><strong>Substitute:</strong> <code>CornerOffice(CEO)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;The CEO has a corner office.&rdquo;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">traffic rule</span>: &ldquo;for every road r, <span class="key">if r equals Main Street</span>, then the speed limit is <span class="key">30 km/h</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&forall; r : Road &bull; r = MainSt &rArr; Limit(r) = 30</code>.</li>
+  <li><strong>Pin:</strong> r <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to MainSt.</li>
+  <li><strong>Substitute:</strong> <code>Limit(MainSt) = 30</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;Main Street&rsquo;s limit is 30.&rdquo;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">school dress code</span>: &ldquo;for every student s, <span class="key">if s equals the valedictorian</span>, then s wears a <span class="key">gold sash</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&forall; s : Student &bull; s = valedictorian &rArr; GoldSash(s)</code>.</li>
+  <li><strong>Pin:</strong> s <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to valedictorian.</li>
+  <li><strong>Substitute:</strong> <code>GoldSash(valedictorian)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;The valedictorian wears a gold sash.&rdquo;</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Sum Check, Age Verification &amp; Temperature Reading</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Simplify: &ldquo;<span class="key">there exists</span> n in &Nopf; such that <span class="key">4 + n = 6</span> and <span class="key">n = 2</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&exist; n : &Nopf; &bull; 4 + n = 6 &and; n = 2</code>.</li>
+  <li><strong>Pin:</strong> n <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to 2.</li>
+  <li><strong>Substitute:</strong> <code>2 &isin; &Nopf; &and; 4 + 2 = 6</code>.</li>
+  <li><strong>Simplify:</strong> both true &rarr; the whole predicate is true.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Simplify: &ldquo;<span class="key">there exists</span> an age a such that <span class="key">a = 21</span> and <span class="key">Legal(a)</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&exist; a : &Nopf; &bull; a = 21 &and; Legal(a)</code>.</li>
+  <li><strong>Pin:</strong> a <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to 21.</li>
+  <li><strong>Substitute:</strong> <code>Legal(21)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;Is 21 a legal age?&rdquo;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Simplify: &ldquo;<span class="key">there exists</span> a reading t such that <span class="key">t = 37.0</span> and <span class="key">Normal(t)</span>.&rdquo;</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>&exist; t : Temp &bull; t = 37.0 &and; Normal(t)</code>.</li>
+  <li><strong>Pin:</strong> t <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to 37.0.</li>
+  <li><strong>Substitute:</strong> <code>Normal(37.0)</code>.</li>
+  <li><strong>Simplify:</strong> &ldquo;Is 37.0 &deg;C normal?&rdquo; (Yes.)</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Compound Term, Expression Term &amp; Function Term</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Simplify: <code>&exist; n &bull; n = x + 1 &and; Even(n)</code> where x is a <span class="key">known free variable</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> n <span class="vocab" data-def="A bound variable constrained by equality to a specific value.">pinned</span> to the compound term <code>x + 1</code>.</li>
+  <li><strong>Pin:</strong> n is not <span class="vocab" data-def="A variable not bound by any quantifier in the expression.">free</span> in <code>x + 1</code> &mdash; <span class="vocab" data-def="x must not appear free in t for the one-point rule to apply.">proviso</span> met.</li>
+  <li><strong>Substitute:</strong> <code>Even(x + 1)</code>.</li>
+  <li><strong>Simplify:</strong> one-point works with any term, not just constants.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Simplify: <code>&exist; p &bull; p = f(a) &and; Small(p)</code>.</p>
+<ul>
+  <li><strong>Predicate:</strong> p pinned to <code>f(a)</code>.</li>
+  <li><strong>Pin:</strong> p not free in <code>f(a)</code> &mdash; proviso met.</li>
+  <li><strong>Substitute:</strong> <code>Small(f(a))</code>.</li>
+  <li><strong>Simplify:</strong> function-application term is fine.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Simplify: <code>&exist; k &bull; k = password &and; Valid(k) &and; NotExpired(k)</code>.</p>
+<ul>
+  <li><strong>Predicate:</strong> k pinned to <code>password</code>.</li>
+  <li><strong>Pin:</strong> k not free in <code>password</code> &mdash; proviso met.</li>
+  <li><strong>Substitute:</strong> <code>Valid(password) &and; NotExpired(password)</code>.</li>
+  <li><strong>Simplify:</strong> substitute into all conjuncts.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Largest Natural, Self-Reference &amp; Recursive Bound</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Can we simplify <code>&exist; n : &Nopf; &bull; (&forall; m : &Nopf; &bull; n &gt; m) &and; n = n + 1</code>?</p>
+<ul>
+  <li><strong>Predicate:</strong> n is &ldquo;pinned&rdquo; to <code>n + 1</code>.</li>
+  <li><strong>Pin:</strong> BUT n is <span class="vocab" data-def="A variable not bound by any quantifier in the expression.">free</span> in <code>n + 1</code> &mdash; <span class="vocab" data-def="x must not appear free in t for the one-point rule to apply.">proviso</span> <strong>violated</strong>.</li>
+  <li><strong>Substitute:</strong> cannot apply <span class="vocab" data-def="If the quantifier body pins x to a specific term via equality, the quantifier collapses.">one-point rule</span>.</li>
+  <li><strong>Simplify:</strong> the rule does not apply when x is free in t.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Can we simplify <code>&exist; x &bull; x = x + 0 &and; P(x)</code>?</p>
+<ul>
+  <li><strong>Predicate:</strong> x &ldquo;pinned&rdquo; to <code>x + 0</code>.</li>
+  <li><strong>Pin:</strong> x is free in <code>x + 0</code> &mdash; proviso <strong>violated</strong>.</li>
+  <li><strong>Substitute:</strong> cannot apply one-point.</li>
+  <li><strong>Simplify:</strong> need a different approach (e.g., simplify <code>x + 0 = x</code> first).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Can we simplify <code>&exist; n : &Nopf; &bull; 6 + n = 4 &and; n = &minus;2</code>?</p>
+<ul>
+  <li><strong>Predicate:</strong> n pinned to &minus;2; n not free in &minus;2 &mdash; proviso met.</li>
+  <li><strong>Pin:</strong> substitute &rarr; <code>&minus;2 &isin; &Nopf; &and; 6 + (&minus;2) = 4</code>.</li>
+  <li><strong>Substitute:</strong> <code>&minus;2 &isin; &Nopf;</code> is <strong>false</strong> (negatives not in &Nopf;).</li>
+  <li><strong>Simplify:</strong> entire predicate is false &mdash; membership check catches it.</li>
+</ul>
+</div>
+
+<!-- §4.2 Practice -->
+<h3 id="s1-E">V.1 Practice: One-Point Basics</h3>
+<div class="practice" id="p2_1"><p>Simplify <code>&exist; x &bull; x = 3 &and; P(x)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>P(3)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>&exist; x &bull; P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>x = 3</code></button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> One-point existential.</p><ul><li><strong>Predicate:</strong> x pinned to 3.</li><li><strong>Pin:</strong> x not free in 3.</li><li><strong>Substitute:</strong> replace x with 3.</li><li><strong>Simplify:</strong> <code>P(3)</code>.</li></ul></div></div>
+
+<h3>V.2 Practice: Existential vs Universal Form</h3>
+<div class="practice" id="p2_2"><p>Simplify <code>&forall; x &bull; x = 10 &rArr; Q(x)</code>.</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>&forall; x &bull; Q(x)</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>Q(10)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>Q(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>x = 10</code></button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> One-point universal.</p><ul><li><strong>Predicate:</strong> x pinned to 10 in antecedent.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> replace x with 10.</li><li><strong>Simplify:</strong> <code>Q(10)</code>.</li></ul></div></div>
+
+<h3>V.3 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_3"><p class="scenario">Simplify: &ldquo;<span class="key">there exists</span> an employee e with <span class="key">e = Alice</span> and <span class="key">Admin(e)</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>Admin(Alice)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>&exist; e &bull; Admin(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>e = Alice</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>Alice = Admin</code></button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Pinned to Alice.</p><ul><li><strong>Predicate:</strong> <code>&exist; e &bull; e = Alice &and; Admin(e)</code>.</li><li><strong>Pin:</strong> e = Alice.</li><li><strong>Substitute:</strong> <code>Admin(Alice)</code>.</li><li><strong>Simplify:</strong> quantifier eliminated.</li></ul></div></div>
+
+<h3>V.4 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_4"><p>Simplify <code>&exist; n &bull; n = x + 1 &and; Even(n)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>Even(x + 1)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>Even(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>n = x + 1</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>&exist; n &bull; Even(n)</code></button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Pinned to x + 1 (n not free in it).</p><ul><li><strong>Predicate:</strong> n pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>Even(x + 1)</code>.</li><li><strong>Simplify:</strong> compound term is fine.</li></ul></div></div>
+
+<h3>V.5 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_5"><p>Simplify <code>&forall; r &bull; r = Manager &rArr; HasOffice(r)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')"><code>HasOffice(Manager)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>&forall; r &bull; HasOffice(r)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>r = Manager</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>HasOffice(r)</code></button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Universal one-point.</p><ul><li><strong>Predicate:</strong> r pinned to Manager.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>HasOffice(Manager)</code>.</li><li><strong>Simplify:</strong> universal quantifier gone.</li></ul></div></div>
+
+<h3>V.6 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_6"><p>Simplify <code>&exist; y &bull; y = 0 &and; y &lt; 10</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>0 &lt; 10</code> (true)</button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>y &lt; 10</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>&exist; y &bull; y &lt; 10</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>y = 0</code></button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> Pin y = 0, then evaluate.</p><ul><li><strong>Predicate:</strong> y pinned to 0.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>0 &lt; 10</code>.</li><li><strong>Simplify:</strong> evaluates to true.</li></ul></div></div>
+
+<h3>V.7 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_7"><p>Simplify <code>&forall; u &bull; u = Alice &rArr; Admin(u) &and; LoggedIn(u)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')"><code>Admin(Alice) &and; LoggedIn(Alice)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_7')"><code>&forall; u &bull; Admin(u)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_7')"><code>u = Alice</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Nothing.</button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> Pin u = Alice, substitute into conjunction.</p><ul><li><strong>Predicate:</strong> u pinned to Alice.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> both predicates get Alice.</li><li><strong>Simplify:</strong> <code>Admin(Alice) &and; LoggedIn(Alice)</code>.</li></ul></div></div>
+
+<h3>V.8 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_8"><p class="scenario">Simplify: &ldquo;<span class="key">for every</span> day d, if <span class="key">d equals Monday</span>, then d is the <span class="key">start of the work week</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>StartOfWorkWeek(Monday)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>&forall; d &bull; StartOfWorkWeek(d)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>d = Monday</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')">Nothing.</button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Universal one-point, pinned to Monday.</p><ul><li><strong>Predicate:</strong> d pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> replace d.</li><li><strong>Simplify:</strong> <code>StartOfWorkWeek(Monday)</code>.</li></ul></div></div>
+
+<h3>V.9 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_9"><p>Simplify <code>&exist; n : &Nopf; &bull; n = 5 &and; Prime(n)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')"><code>Prime(5)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>Prime(n)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>n = 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&exist; n &bull; Prime(n)</code></button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Pinned to 5.</p><ul><li><strong>Predicate:</strong> n = 5.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>Prime(5)</code>.</li><li><strong>Simplify:</strong> yes, 5 is prime.</li></ul></div></div>
+
+<h3>V.10 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_10"><p>Simplify <code>&forall; c &bull; c = Customer42 &rArr; HasOrder(c)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>HasOrder(Customer42)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>&forall; c &bull; HasOrder(c)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>c = Customer42</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>HasOrder(c)</code></button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> Universal one-point.</p><ul><li><strong>Predicate:</strong> c pinned to Customer42.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> replace c.</li><li><strong>Simplify:</strong> <code>HasOrder(Customer42)</code>.</li></ul></div></div>
+
+<h3>V.11 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_11"><p>Simplify <code>&exist; x &bull; x = a + b &and; Big(x)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>Big(a + b)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_11')"><code>Big(a) &and; Big(b)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_11')"><code>&exist; x &bull; Big(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_11')"><code>x = a + b</code></button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> Pinned to a + b (compound term).</p><ul><li><strong>Predicate:</strong> x pinned.</li><li><strong>Pin:</strong> x not free in a + b.</li><li><strong>Substitute:</strong> <code>Big(a + b)</code>.</li><li><strong>Simplify:</strong> one-point with compound term.</li></ul></div></div>
+
+<h3>V.12 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_12"><p>Simplify <code>&exist; p &bull; p = current_process &and; Running(p) &and; MemoryOk(p)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>Running(current_process) &and; MemoryOk(current_process)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>&exist; p &bull; Running(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>p = current_process</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">Nothing.</button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> Substitute into both predicates.</p><ul><li><strong>Predicate:</strong> p pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> both conjuncts.</li><li><strong>Simplify:</strong> quantifier removed.</li></ul></div></div>
+
+<h3>V.13 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_13"><p>Simplify <code>&forall; f &bull; f = homePage &rArr; Loaded(f)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')"><code>Loaded(homePage)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_13')"><code>&forall; f &bull; Loaded(f)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_13')"><code>f = homePage</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_13')"><code>Loaded(f)</code></button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> Universal one-point.</p><ul><li><strong>Predicate:</strong> f pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> replace f.</li><li><strong>Simplify:</strong> <code>Loaded(homePage)</code>.</li></ul></div></div>
+
+<h3>V.14 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_14"><p>Simplify <code>&exist; age &bull; age = 21 &and; Legal(age)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')"><code>Legal(21)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>Legal(age)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>age = 21</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>&exist; age &bull; Legal(age)</code></button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Pinned to 21.</p><ul><li><strong>Predicate:</strong> age pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>Legal(21)</code>.</li><li><strong>Simplify:</strong> quantifier gone.</li></ul></div></div>
+
+<h3>V.15 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_15"><p class="scenario">Simplify: &ldquo;<span class="key">for every</span> session s, if <span class="key">s equals my_session</span>, then <span class="key">Active(s)</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')"><code>Active(my_session)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>&forall; s &bull; Active(s)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>s = my_session</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Nothing.</button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Universal one-point.</p><ul><li><strong>Predicate:</strong> s pinned to my_session.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> replace s.</li><li><strong>Simplify:</strong> <code>Active(my_session)</code>.</li></ul></div></div>
+
+<h3>V.16 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_16"><p>Simplify <code>&exist; p &bull; p = f(a) &and; Small(p)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>Small(f(a))</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>Small(a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>&exist; p &bull; Small(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>p = f(a)</code></button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Substitute the whole term.</p><ul><li><strong>Predicate:</strong> p pinned to f(a).</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>Small(f(a))</code>.</li><li><strong>Simplify:</strong> function-application term is fine.</li></ul></div></div>
+
+<h3>V.17 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_17"><p>Simplify <code>&forall; t &bull; t = deadline &rArr; Future(t)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')"><code>Future(deadline)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_17')"><code>&forall; t &bull; Future(t)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_17')"><code>t = deadline</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_17')"><code>Future(t)</code></button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> Pin, simplify.</p><ul><li><strong>Predicate:</strong> t pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> replace t.</li><li><strong>Simplify:</strong> <code>Future(deadline)</code>.</li></ul></div></div>
+
+<h3>V.18 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_18"><p>Simplify <code>&exist; k &bull; k = password &and; Valid(k) &and; NotExpired(k)</code>.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>Valid(password) &and; NotExpired(password)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>&exist; k &bull; Valid(k)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>k = password</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">Nothing.</button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Substitute into all predicates.</p><ul><li><strong>Predicate:</strong> k pinned.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> both conjuncts.</li><li><strong>Simplify:</strong> double conjunction preserved.</li></ul></div></div>
+
+<h3>V.19 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_19"><p>The existential one-point rule is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>&exist; x : a &bull; p &and; x = t &hArr; t &isin; a &and; p[t/x]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>&forall; x &bull; x = t &rArr; p &hArr; p[t/x]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>&exist; x &bull; x &ne; t &rArr; p</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>&forall; x &bull; p</code></button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Standard form with &and; for &exist;.</p><ul><li><strong>Predicate:</strong> existential body uses conjunction.</li><li><strong>Pin:</strong> x = t pins.</li><li><strong>Substitute:</strong> replace x with t, check t &isin; a.</li><li><strong>Simplify:</strong> equivalence, not just implication.</li></ul></div></div>
+
+<h3>V.20 Practice: Applying One-Point</h3>
+<div class="practice" id="p2_20"><p>The universal one-point rule is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>&exist; x &bull; x = t &and; p &hArr; p[t/x]</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>&forall; x : a &bull; x = t &rArr; p &hArr; t &isin; a &rArr; p[t/x]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>&forall; x &bull; x &ne; t &rArr; p</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>&exist; x &bull; p</code></button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Standard form with &rArr; for &forall;.</p><ul><li><strong>Predicate:</strong> universal body uses implication.</li><li><strong>Pin:</strong> antecedent x = t.</li><li><strong>Substitute:</strong> consequent gets t.</li><li><strong>Simplify:</strong> equivalence.</li></ul></div></div>
+
+<h3>V.21 Practice: Free Variable Proviso</h3>
+<div class="practice" id="p2_21"><p>The one-point rule requires that x is <strong>not free</strong> in t because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">If x were free in t, the substitution would create a circular reference.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">It makes the formula shorter.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">t must be a constant.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">x must be a number.</button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> x would be bound on the left but free on the right.</p><ul><li><strong>Predicate:</strong> the equivalence would break.</li><li><strong>Pin:</strong> <code>n = n + 1</code> is self-referential.</li><li><strong>Substitute:</strong> cannot eliminate n.</li><li><strong>Simplify:</strong> proviso protects soundness.</li></ul></div></div>
+
+<h3>V.22 Practice: One-Point as Derived Rule</h3>
+<div class="practice" id="p2_22"><p>The one-point rule is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_22')">An axiom.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')">A derived rule &mdash; proven from [eq-sub], [&exist;-intro], [&exist;-elim], [eq-symm].</button></li><li><button onclick="selectAnswer(this,false,'fb2_22')">An abbreviation.</button></li><li><button onclick="selectAnswer(this,false,'fb2_22')">Unprovable.</button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Both directions are proven in the logic.</p><ul><li><strong>Predicate:</strong> R&rarr;L uses &exist;-intro; L&rarr;R uses &exist;-elim.</li><li><strong>Pin:</strong> [eq-symm] used in the L&rarr;R direction.</li><li><strong>Substitute:</strong> multiple inference rules combine.</li><li><strong>Simplify:</strong> derived, not primitive.</li></ul></div></div>
+
+<h3>V.23 Practice: One-Point Limitations</h3>
+<div class="practice" id="p2_23"><p>Without an equality, does the one-point rule apply to <code>&exist; x &bull; P(x)</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_23')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">No &mdash; no pinning equality.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Only in &Nopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Only for Boolean.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> The rule requires <code>x = t</code> in the body.</p><ul><li><strong>Predicate:</strong> no equality present.</li><li><strong>Pin:</strong> nothing to pin.</li><li><strong>Substitute:</strong> cannot determine t.</li><li><strong>Simplify:</strong> rule does not apply.</li></ul></div></div>
+
+<h3>V.24 Practice: One-Point with Membership</h3>
+<div class="practice" id="p2_24"><p>After applying one-point to <code>&exist; n : &Nopf; &bull; 6 + n = 4 &and; n = &minus;2</code>, the result is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>6 + (&minus;2) = 4</code> (true).</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">False &mdash; because <code>&minus;2 &notin; &Nopf;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>&exist; n &bull; n = &minus;2</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')">Cannot simplify.</button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> The membership check <code>&minus;2 &isin; &Nopf;</code> fails.</p><ul><li><strong>Predicate:</strong> n pinned to &minus;2.</li><li><strong>Pin:</strong> proviso met.</li><li><strong>Substitute:</strong> <code>&minus;2 &isin; &Nopf; &and; 6 &minus; 2 = 4</code>.</li><li><strong>Simplify:</strong> first conjunct is false &rarr; whole false.</li></ul></div></div>
+
+<h3>V.25 Practice: One-Point Limitations</h3>
+<div class="practice" id="p2_25"><p>Can one-point simplify <code>&exist; n : &Nopf; &bull; (&forall; m : &Nopf; &bull; n &gt; m) &and; n = n + 1</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_25')">Yes &mdash; pinned to n + 1.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">No &mdash; n is free in <code>n + 1</code>, violating the proviso.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Yes &mdash; pinned to 0.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Yes &mdash; simplifies to true.</button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> The proviso blocks application.</p><ul><li><strong>Predicate:</strong> n &ldquo;pinned&rdquo; to n + 1.</li><li><strong>Pin:</strong> n is free in n + 1 &mdash; proviso violated.</li><li><strong>Substitute:</strong> cannot apply one-point.</li><li><strong>Simplify:</strong> need a different approach.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 4.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">4.3 Uniqueness and Quantity</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Equality enriches counting:</strong> phrases like &ldquo;only,&rdquo; &ldquo;at most,&rdquo; &ldquo;at least,&rdquo; &ldquo;exactly&rdquo; need <code>=</code> and <code>&ne;</code>.</li>
+  <li><strong><span class="vocab" data-def="x does it &and; anyone who does it equals x.">Only</span>:</strong> <code>P(x) &and; &forall; y &bull; P(y) &rArr; y = x</code>.</li>
+  <li><strong><span class="vocab" data-def="Zero or one element satisfies P: &forall; x, y &bull; P(x) &and; P(y) &rArr; x = y.">At most one</span>:</strong> <code>&forall; x, y &bull; P(x) &and; P(y) &rArr; x = y</code>.</li>
+  <li><strong><span class="vocab" data-def="Two distinct witnesses: &exist; x, y &bull; x &ne; y &and; P(x) &and; P(y).">At least two</span>:</strong> <code>&exist; x, y &bull; x &ne; y &and; P(x) &and; P(y)</code>.</li>
+  <li><strong><span class="vocab" data-def="&exist;&#8321; x &bull; P(x) = at least one + at most one.">Unique quantifier</span> <code>&exist;<sub>1</sub></code>:</strong> exactly one &mdash; combines existence and uniqueness.</li>
+  <li><strong>Expansion:</strong> <code>&exist;<sub>1</sub> x &bull; P(x) &equiv; &exist; x &bull; P(x) &and; (&forall; y &bull; P(y) &rArr; y = x)</code>.</li>
+  <li><strong>Analogy:</strong> valid / satisfiable / unsatisfiable predicates &harr; tautologies / contingencies / contradictions.</li>
+</ul>
+</div>
+
+<h3 id="s2-B" class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Only</td><td>x does it, and anyone who does it must be x.</td></tr>
+  <tr><td>At most one</td><td>Zero or one element satisfies P.</td></tr>
+  <tr><td>At least two</td><td>Two distinct witnesses exist.</td></tr>
+  <tr><td>Unique quantifier</td><td>&exist;&#8321; &mdash; exactly one satisfier.</td></tr>
+  <tr><td>Distinct</td><td>Not equal to each other.</td></tr>
+  <tr><td>Exactly n</td><td>Precisely n distinct elements satisfy P.</td></tr>
+</table>
+
+<h3 id="s2-C" class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;<sub>1</sub></code></td><td>Unique existence &mdash; exactly one.</td></tr>
+  <tr><td><code>&exist;</code></td><td>There exists (at least one).</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical AND.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&or;</code></td><td>Logical OR.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of.</td></tr>
+</table>
+
+<h3 id="s2-D">IV.1 Examples: Team Captain, Class President &amp; Lead Architect</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;<sub>1</sub></code></td><td>Exactly one.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A sports team has <span class="key">exactly one</span> <span class="key">captain</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> one and only one person holds the captain role.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="&exist;&#8321; x &bull; P(x) = at least one + at most one.">unique quantifier</span> <code>&exist;<sub>1</sub></code>.</li>
+  <li><strong>Formalise:</strong> <code>&exist;<sub>1</sub> p : Player &bull; IsCaptain(p)</code>.</li>
+  <li><strong>Verify:</strong> expands to <code>&exist; p &bull; IsCaptain(p) &and; (&forall; q &bull; IsCaptain(q) &rArr; q = p)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A school class has <span class="key">exactly one</span> <span class="key">president</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> one student holds the presidency.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="&exist;&#8321; x &bull; P(x) = at least one + at most one.">unique quantifier</span>.</li>
+  <li><strong>Formalise:</strong> <code>&exist;<sub>1</sub> s : Student &bull; IsPresident(s)</code>.</li>
+  <li><strong>Verify:</strong> at least one + at most one = exactly one.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A project has <span class="key">exactly one</span> <span class="key">lead architect</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> one person leads the architecture.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="&exist;&#8321; x &bull; P(x) = at least one + at most one.">unique quantifier</span>.</li>
+  <li><strong>Formalise:</strong> <code>&exist;<sub>1</sub> a : Engineer &bull; LeadArchitect(a)</code>.</li>
+  <li><strong>Verify:</strong> existence + uniqueness.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Primary Server, Singleton Key &amp; Emergency Contact</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A system has <span class="key">at most one</span> <span class="key">primary server</span> (possibly zero).</p>
+<ul>
+  <li><strong>Statement:</strong> two primaries must be the same server.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="Zero or one element satisfies P: &forall; x, y &bull; P(x) &and; P(y) &rArr; x = y.">at most one</span> pattern.</li>
+  <li><strong>Formalise:</strong> <code>&forall; s<sub>1</sub>, s<sub>2</sub> : Server &bull; Primary(s<sub>1</sub>) &and; Primary(s<sub>2</sub>) &rArr; s<sub>1</sub> = s<sub>2</sub></code>.</li>
+  <li><strong>Verify:</strong> allows zero primaries (standby mode).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A keyring has <span class="key">at most one</span> <span class="key">master key</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> two master keys must be the same key.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="Zero or one element satisfies P: &forall; x, y &bull; P(x) &and; P(y) &rArr; x = y.">at most one</span>.</li>
+  <li><strong>Formalise:</strong> <code>&forall; k<sub>1</sub>, k<sub>2</sub> : Key &bull; Master(k<sub>1</sub>) &and; Master(k<sub>2</sub>) &rArr; k<sub>1</sub> = k<sub>2</sub></code>.</li>
+  <li><strong>Verify:</strong> allows zero (no master key issued yet).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An employee record has <span class="key">at most one</span> <span class="key">emergency contact</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> two contacts must be the same person.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="Zero or one element satisfies P: &forall; x, y &bull; P(x) &and; P(y) &rArr; x = y.">at most one</span>.</li>
+  <li><strong>Formalise:</strong> <code>&forall; c<sub>1</sub>, c<sub>2</sub> : Contact &bull; EmergencyFor(c<sub>1</sub>, e) &and; EmergencyFor(c<sub>2</sub>, e) &rArr; c<sub>1</sub> = c<sub>2</sub></code>.</li>
+  <li><strong>Verify:</strong> allows the field to be empty.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Job Applicants, Concert Attendees &amp; Bug Reports</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of.</td></tr>
+</table>
+<div class="example">
+<p class="scenario"><span class="key">At least two</span> people have <span class="key">applied</span> for a job.</p>
+<ul>
+  <li><strong>Statement:</strong> two <span class="vocab" data-def="Not equal to each other.">distinct</span> applicants exist.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="Two distinct witnesses: &exist; x, y &bull; x &ne; y &and; P(x) &and; P(y).">at least two</span>.</li>
+  <li><strong>Formalise:</strong> <code>&exist; p, q : Applicants &bull; p &ne; q</code>.</li>
+  <li><strong>Verify:</strong> <code>&ne;</code> ensures they are different people.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="key">At least two</span> <span class="key">attendees</span> are seated in the front row.</p>
+<ul>
+  <li><strong>Statement:</strong> two distinct people in the front row.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="Two distinct witnesses: &exist; x, y &bull; x &ne; y &and; P(x) &and; P(y).">at least two</span>.</li>
+  <li><strong>Formalise:</strong> <code>&exist; a, b : Attendee &bull; a &ne; b &and; FrontRow(a) &and; FrontRow(b)</code>.</li>
+  <li><strong>Verify:</strong> inequality guarantees distinctness.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="key">At least two</span> <span class="key">bug reports</span> reference the same module.</p>
+<ul>
+  <li><strong>Statement:</strong> two distinct bugs, same module.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="Two distinct witnesses: &exist; x, y &bull; x &ne; y &and; P(x) &and; P(y).">at least two</span>.</li>
+  <li><strong>Formalise:</strong> <code>&exist; r<sub>1</sub>, r<sub>2</sub> : Bug &bull; r<sub>1</sub> &ne; r<sub>2</sub> &and; Module(r<sub>1</sub>) = Module(r<sub>2</sub>)</code>.</li>
+  <li><strong>Verify:</strong> different reports, same module.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Visitor Limit, Elevator Occupants &amp; Seminar Panellists</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&or;</code></td><td>OR.</td></tr>
+</table>
+<div class="example">
+<p class="scenario"><span class="key">No more than two</span> <span class="key">visitors</span> are permitted at a time.</p>
+<ul>
+  <li><strong>Statement:</strong> any three must have a pair that are the same.</li>
+  <li><strong>Quantify:</strong> universal with three variables.</li>
+  <li><strong>Formalise:</strong> <code>&forall; p, q, r : Visitors &bull; p = q &or; q = r &or; r = p</code>.</li>
+  <li><strong>Verify:</strong> forces at most two distinct visitors.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">elevator</span> allows <span class="key">no more than two</span> occupants.</p>
+<ul>
+  <li><strong>Statement:</strong> any triple must have a repeated person.</li>
+  <li><strong>Quantify:</strong> universal, three variables.</li>
+  <li><strong>Formalise:</strong> <code>&forall; a, b, c : Occupant &bull; a = b &or; b = c &or; c = a</code>.</li>
+  <li><strong>Verify:</strong> at most two distinct occupants.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">seminar panel</span> has <span class="key">no more than two</span> speakers.</p>
+<ul>
+  <li><strong>Statement:</strong> any triple of speakers must share a duplicate.</li>
+  <li><strong>Quantify:</strong> universal, three variables.</li>
+  <li><strong>Formalise:</strong> <code>&forall; s<sub>1</sub>, s<sub>2</sub>, s<sub>3</sub> : Speaker &bull; s<sub>1</sub> = s<sub>2</sub> &or; s<sub>2</sub> = s<sub>3</sub> &or; s<sub>3</sub> = s<sub>1</sub></code>.</li>
+  <li><strong>Verify:</strong> pigeonhole: three into two slots.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Only Romeo, Book on Desk &amp; Singleton Admin</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of.</td></tr>
+</table>
+<div class="example">
+<p class="scenario"><span class="key">Only Romeo</span> <span class="key">loves Juliet</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> Romeo loves her, and anyone else who does must be Romeo.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="x does it &and; anyone who does it equals x.">only</span> pattern &mdash; conjunction + universal.</li>
+  <li><strong>Formalise:</strong> <code>Romeo loves Juliet &and; &forall; p : Person &bull; p loves Juliet &rArr; p = Romeo</code>.</li>
+  <li><strong>Verify:</strong> existence (Romeo does it) + uniqueness (no one else).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">There is <span class="key">exactly one</span> <span class="key">book on the desk</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> one book, and every book on the desk is that one.</li>
+  <li><strong>Quantify:</strong> existence + at-most-one.</li>
+  <li><strong>Formalise:</strong> <code>&exist; b : Book &bull; b &isin; Desk &and; (&forall; c : Book | c &isin; Desk &bull; c = b)</code>.</li>
+  <li><strong>Verify:</strong> matches the <code>&exist;<sub>1</sub></code> expansion.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="key">Only one</span> user account has <span class="key">admin privileges</span>.</p>
+<ul>
+  <li><strong>Statement:</strong> an admin exists, and any admin is that same account.</li>
+  <li><strong>Quantify:</strong> <span class="vocab" data-def="&exist;&#8321; x &bull; P(x) = at least one + at most one.">unique quantifier</span>.</li>
+  <li><strong>Formalise:</strong> <code>&exist;<sub>1</sub> u : User &bull; Admin(u)</code>.</li>
+  <li><strong>Verify:</strong> singleton admin.</li>
+</ul>
+</div>
+
+<!-- §4.3 Practice -->
+<h3 id="s2-E">V.1 Practice: Unique Existence Meaning</h3>
+<div class="practice" id="p3_1"><p>Unique existence <code>&exist;<sub>1</sub> x &bull; P(x)</code> means:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_1')">At least one x satisfies P.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">At most one x satisfies P.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">Exactly one x satisfies P (both at least one and at most one).</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">No x satisfies P.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Existence + uniqueness.</p><ul><li><strong>Statement:</strong> at least one + at most one.</li><li><strong>Quantify:</strong> combined in <code>&exist;<sub>1</sub></code>.</li><li><strong>Formalise:</strong> <code>&exist; x &bull; P(x) &and; (&forall; y &bull; P(y) &rArr; y = x)</code>.</li><li><strong>Verify:</strong> exactly one.</li></ul></div></div>
+
+<h3>V.2 Practice: At Most One Pattern</h3>
+<div class="practice" id="p3_2"><p>Which expresses &ldquo;at most one element satisfies P&rdquo;?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>&exist; x &bull; P(x)</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')"><code>&forall; x, y &bull; P(x) &and; P(y) &rArr; x = y</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>&forall; x &bull; P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>&not;&exist; x &bull; P(x)</code></button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> Two satisfiers must be equal.</p><ul><li><strong>Statement:</strong> any two P-satisfiers are the same.</li><li><strong>Quantify:</strong> universal with two variables.</li><li><strong>Formalise:</strong> <code>&forall; x, y &bull; P(x) &and; P(y) &rArr; x = y</code>.</li><li><strong>Verify:</strong> allows zero satisfiers too.</li></ul></div></div>
+
+<h3>V.3 Practice: Formalising Uniqueness</h3>
+<div class="practice" id="p3_3"><p class="scenario">Express: &ldquo;every <span class="key">flight</span> has <span class="key">exactly one pilot</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>&forall; f : Flight &bull; &exist;<sub>1</sub> p : Pilot &bull; Flies(p, f)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&forall; f, p &bull; Flies(p, f)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&exist; p &bull; &forall; f &bull; Flies(p, f)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&not;&exist; p &bull; Flies(p, f)</code></button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Nested &forall; &exist;<sub>1</sub>.</p><ul><li><strong>Statement:</strong> per flight, one pilot.</li><li><strong>Quantify:</strong> outer &forall;, inner &exist;<sub>1</sub>.</li><li><strong>Formalise:</strong> nesting captures &ldquo;each flight.&rdquo;</li><li><strong>Verify:</strong> exactly one pilot per flight.</li></ul></div></div>
+
+<h3>V.4 Practice: Formalising Uniqueness</h3>
+<div class="practice" id="p3_4"><p class="scenario">Express: &ldquo;a <span class="key">password</span> is <span class="key">unique</span> to each user.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>&forall; u<sub>1</sub>, u<sub>2</sub> &bull; Password(u<sub>1</sub>) = Password(u<sub>2</sub>) &rArr; u<sub>1</sub> = u<sub>2</sub></code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&exist; u &bull; Password(u)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&forall; u &bull; &not;Password(u)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&exist;<sub>1</sub> u &bull; Password(u)</code></button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Injectivity pattern.</p><ul><li><strong>Statement:</strong> same password &rArr; same user.</li><li><strong>Quantify:</strong> universal with two variables.</li><li><strong>Formalise:</strong> at-most-one per password value.</li><li><strong>Verify:</strong> injectivity.</li></ul></div></div>
+
+<h3>V.5 Practice: Formalising Uniqueness</h3>
+<div class="practice" id="p3_5"><p class="scenario">Express: &ldquo;at most one <span class="key">student</span> is <span class="key">class president</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>&forall; s<sub>1</sub>, s<sub>2</sub> &bull; President(s<sub>1</sub>) &and; President(s<sub>2</sub>) &rArr; s<sub>1</sub> = s<sub>2</sub></code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>&exist; s &bull; President(s)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>&forall; s &bull; President(s)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>&exist;<sub>1</sub> s &bull; President(s)</code></button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> At-most-one allows zero.</p><ul><li><strong>Statement:</strong> two presidents must be the same.</li><li><strong>Quantify:</strong> universal, two variables.</li><li><strong>Formalise:</strong> at-most-one pattern.</li><li><strong>Verify:</strong> &exist;<sub>1</sub> would require existence; this allows zero.</li></ul></div></div>
+
+<h3>V.6 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_6"><p class="scenario">Express: &ldquo;<span class="key">at least two</span> <span class="key">applicants</span> exist.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>&exist; p, q : Applicants &bull; p &ne; q</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>&exist; p &bull; p &isin; Applicants</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>&forall; p &bull; p &isin; Applicants</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>&exist;<sub>1</sub> p &bull; p &isin; Applicants</code></button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> Two distinct witnesses.</p><ul><li><strong>Statement:</strong> two different applicants.</li><li><strong>Quantify:</strong> &exist; with two variables.</li><li><strong>Formalise:</strong> <code>p &ne; q</code> ensures distinctness.</li><li><strong>Verify:</strong> at-least-two pattern.</li></ul></div></div>
+
+<h3>V.7 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_7"><p class="scenario">Express: &ldquo;<span class="key">exactly two</span> solutions to <span class="key">f(x) = 0</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')"><code>&exist; x, y &bull; x &ne; y &and; f(x) = 0 &and; f(y) = 0 &and; &forall; z &bull; f(z) = 0 &rArr; z = x &or; z = y</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>&exist; x &bull; f(x) = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>&forall; x &bull; f(x) = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>&exist;<sub>1</sub> x &bull; f(x) = 0</code></button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Two distinct witnesses + no third.</p><ul><li><strong>Statement:</strong> exactly two roots.</li><li><strong>Quantify:</strong> existence of two + universal bound.</li><li><strong>Formalise:</strong> <code>x &ne; y</code> + closure.</li><li><strong>Verify:</strong> exactly-two pattern.</li></ul></div></div>
+
+<h3>V.8 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_8"><p class="scenario">Express: &ldquo;no two <span class="key">employees</span> share an <span class="key">email address</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')"><code>&forall; e<sub>1</sub>, e<sub>2</sub> &bull; Email(e<sub>1</sub>) = Email(e<sub>2</sub>) &rArr; e<sub>1</sub> = e<sub>2</sub></code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>&exist; e &bull; Email(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>&not;&exist; e &bull; Email(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>&forall; e &bull; &not;Email(e)</code></button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> Injectivity of email.</p><ul><li><strong>Statement:</strong> same email &rArr; same person.</li><li><strong>Quantify:</strong> universal, two variables.</li><li><strong>Formalise:</strong> at-most-one-per-email.</li><li><strong>Verify:</strong> injectivity pattern.</li></ul></div></div>
+
+<h3>V.9 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_9"><p class="scenario">Express: &ldquo;every <span class="key">voter</span> has <span class="key">exactly one ballot</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>&forall; v : Voter &bull; &exist;<sub>1</sub> b : Ballot &bull; Cast(v, b)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&exist; b &bull; &forall; v &bull; Cast(v, b)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&forall; v, b &bull; Cast(v, b)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&not;&exist; b &bull; Cast(v, b)</code></button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> Nested &forall; &exist;<sub>1</sub>.</p><ul><li><strong>Statement:</strong> one ballot per voter.</li><li><strong>Quantify:</strong> outer &forall;, inner &exist;<sub>1</sub>.</li><li><strong>Formalise:</strong> per-voter uniqueness.</li><li><strong>Verify:</strong> exactly one per voter.</li></ul></div></div>
+
+<h3>V.10 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_10"><p class="scenario">Express: &ldquo;every <span class="key">book</span> has <span class="key">exactly one ISBN</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')"><code>&forall; b : Book &bull; &exist;<sub>1</sub> i : ISBN &bull; HasISBN(b, i)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>&exist; i &bull; &forall; b &bull; HasISBN(b, i)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>&forall; b, i &bull; HasISBN(b, i)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>&not;&exist; i &bull; HasISBN(b, i)</code></button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> Nested &forall; &exist;<sub>1</sub>.</p><ul><li><strong>Statement:</strong> per book, one ISBN.</li><li><strong>Quantify:</strong> outer &forall;, inner &exist;<sub>1</sub>.</li><li><strong>Formalise:</strong> exactly one per book.</li><li><strong>Verify:</strong> uniqueness of ISBN.</li></ul></div></div>
+
+<h3>V.11 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_11"><p class="scenario">Express: &ldquo;a <span class="key">reservation number</span> is <span class="key">unique</span> system-wide.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>&forall; r<sub>1</sub>, r<sub>2</sub> &bull; Number(r<sub>1</sub>) = Number(r<sub>2</sub>) &rArr; r<sub>1</sub> = r<sub>2</sub></code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>&exist; r &bull; Number(r)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>&forall; r &bull; &not;Number(r)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>&exist;<sub>1</sub> r &bull; Number(r)</code></button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> Injectivity.</p><ul><li><strong>Statement:</strong> same number &rArr; same reservation.</li><li><strong>Quantify:</strong> universal, two variables.</li><li><strong>Formalise:</strong> injectivity pattern.</li><li><strong>Verify:</strong> no collisions.</li></ul></div></div>
+
+<h3>V.12 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_12"><p class="scenario">Express: &ldquo;<span class="key">exactly one</span> <span class="key">employee</span> earns $200k.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')"><code>&exist;<sub>1</sub> e : Employee &bull; Salary(e) = 200000</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>&exist; e &bull; Salary(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>&forall; e &bull; Salary(e) = 200000</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>&not;&exist; e &bull; Salary(e) = 200000</code></button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> Exactly one.</p><ul><li><strong>Statement:</strong> one employee at that salary.</li><li><strong>Quantify:</strong> <code>&exist;<sub>1</sub></code>.</li><li><strong>Formalise:</strong> unique existence.</li><li><strong>Verify:</strong> existence + uniqueness.</li></ul></div></div>
+
+<h3>V.13 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_13"><p>&ldquo;At least two&rdquo; can be expressed as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')"><code>&exist; x, y &bull; x &ne; y &and; P(x) &and; P(y)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>&exist; x &bull; P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>&forall; x &bull; P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>&exist;<sub>1</sub> x &bull; P(x)</code></button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Two distinct witnesses.</p><ul><li><strong>Statement:</strong> two different satisfiers.</li><li><strong>Quantify:</strong> &exist; with two variables.</li><li><strong>Formalise:</strong> <code>&ne;</code> ensures distinct.</li><li><strong>Verify:</strong> at-least-two pattern.</li></ul></div></div>
+
+<h3>V.14 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_14"><p class="scenario">Express: &ldquo;<span class="key">exactly one</span> <span class="key">process</span> runs as <span class="key">root</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')"><code>&exist;<sub>1</sub> p : Process &bull; User(p) = root</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_14')"><code>&exist; p &bull; User(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_14')"><code>&forall; p &bull; User(p) = root</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_14')"><code>&not;&exist; p &bull; User(p) = root</code></button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Exactly one root process.</p><ul><li><strong>Statement:</strong> one process with root.</li><li><strong>Quantify:</strong> <code>&exist;<sub>1</sub></code>.</li><li><strong>Formalise:</strong> unique existence.</li><li><strong>Verify:</strong> singleton root.</li></ul></div></div>
+
+<h3>V.15 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_15"><p class="scenario">Express: &ldquo;no two <span class="key">rooms</span> have the same <span class="key">number</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')"><code>&forall; r<sub>1</sub>, r<sub>2</sub> : Room &bull; Number(r<sub>1</sub>) = Number(r<sub>2</sub>) &rArr; r<sub>1</sub> = r<sub>2</sub></code></button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&exist; r &bull; Number(r)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&forall; r &bull; &not;Number(r)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&exist;<sub>1</sub> r &bull; Number(r)</code></button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Injective room numbers.</p><ul><li><strong>Statement:</strong> same number &rArr; same room.</li><li><strong>Quantify:</strong> universal, two variables.</li><li><strong>Formalise:</strong> injectivity.</li><li><strong>Verify:</strong> no collisions.</li></ul></div></div>
+
+<h3>V.16 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_16"><p>What is the expansion of <code>&exist;<sub>1</sub> x &bull; P(x)</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')"><code>&exist; x &bull; P(x) &and; (&forall; y &bull; P(y) &rArr; y = x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>&exist; x &bull; P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>&forall; x &bull; P(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>&not;&exist; x &bull; P(x)</code></button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Existence + every satisfier equals x.</p><ul><li><strong>Statement:</strong> one witness.</li><li><strong>Quantify:</strong> &exist; + inner &forall;.</li><li><strong>Formalise:</strong> standard expansion.</li><li><strong>Verify:</strong> captures exactly one.</li></ul></div></div>
+
+<h3>V.17 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_17"><p class="scenario">Express: &ldquo;no two <span class="key">accounts</span> share an <span class="key">ID</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')"><code>&forall; a<sub>1</sub>, a<sub>2</sub> : Account &bull; ID(a<sub>1</sub>) = ID(a<sub>2</sub>) &rArr; a<sub>1</sub> = a<sub>2</sub></code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&exist; a &bull; ID(a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&forall; a &bull; &not;ID(a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&exist;<sub>1</sub> a &bull; ID(a)</code></button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Injective ID.</p><ul><li><strong>Statement:</strong> same ID &rArr; same account.</li><li><strong>Quantify:</strong> universal, two variables.</li><li><strong>Formalise:</strong> injectivity.</li><li><strong>Verify:</strong> no collisions.</li></ul></div></div>
+
+<h3>V.18 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_18"><p class="scenario">Express: &ldquo;every <span class="key">customer</span> has <span class="key">at least one address</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')"><code>&forall; c : Customer &bull; &exist; a : Address &bull; Has(c, a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_18')"><code>&exist; a &bull; &forall; c &bull; Has(c, a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_18')"><code>&exist;<sub>1</sub> a &bull; Has(c, a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_18')"><code>&not;&exist; a &bull; Has(c, a)</code></button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> &forall; &exist; nesting.</p><ul><li><strong>Statement:</strong> every customer, some address.</li><li><strong>Quantify:</strong> outer &forall;, inner &exist;.</li><li><strong>Formalise:</strong> at-least-one per customer.</li><li><strong>Verify:</strong> no uniqueness needed here.</li></ul></div></div>
+
+<h3>V.19 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_19"><p>Is <code>&exist;<sub>1</sub></code> stronger or weaker than <code>&exist;</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">Stronger &mdash; <code>&exist;<sub>1</sub> &rArr; &exist;</code> but not vice versa.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Weaker.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Same.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Incomparable.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> &exist;<sub>1</sub> adds a uniqueness clause.</p><ul><li><strong>Statement:</strong> &exist;<sub>1</sub> implies &exist;.</li><li><strong>Quantify:</strong> extra uniqueness constraint.</li><li><strong>Formalise:</strong> stronger = more conditions.</li><li><strong>Verify:</strong> &exist; alone allows multiple satisfiers.</li></ul></div></div>
+
+<h3>V.20 Practice: Formalising Quantity</h3>
+<div class="practice" id="p3_20"><p>Unique existence is equivalent to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')">At least one + at most one.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">At most zero.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>&forall;</code> = true.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>&not;&exist;</code>.</button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> Both conditions together give exactly one.</p><ul><li><strong>Statement:</strong> existence + uniqueness.</li><li><strong>Quantify:</strong> two conditions combined.</li><li><strong>Formalise:</strong> <code>&exist;<sub>1</sub></code> captures both.</li><li><strong>Verify:</strong> standard decomposition.</li></ul></div></div>
+
+<h3>V.21 Practice: Unique Quantifier Expansion</h3>
+<div class="practice" id="p3_21"><p>Can <code>&exist;<sub>1</sub></code> have zero satisfiers?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_21')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">No &mdash; exactly one means at least one.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Only in empty domains.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Only if P has no &forall;.</button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> Exactly one = 1 satisfier, not 0.</p><ul><li><strong>Statement:</strong> existence is required.</li><li><strong>Quantify:</strong> &exist; part of the expansion.</li><li><strong>Formalise:</strong> <code>&exist; x &bull; P(x) &and; &hellip;</code></li><li><strong>Verify:</strong> zero satisfiers violates &exist;.</li></ul></div></div>
+
+<h3>V.22 Practice: At Least Two Pattern</h3>
+<div class="practice" id="p3_22"><p class="scenario">Express: &ldquo;there are <span class="key">at least two</span> <span class="key">prime numbers</span> less than 5.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>&exist; p, q : &Nopf; &bull; p &ne; q &and; Prime(p) &and; Prime(q) &and; p &lt; 5 &and; q &lt; 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&exist; p &bull; Prime(p) &and; p &lt; 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&forall; p &bull; Prime(p) &rArr; p &lt; 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&exist;<sub>1</sub> p &bull; Prime(p) &and; p &lt; 5</code></button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Two distinct witnesses (2 and 3).</p><ul><li><strong>Statement:</strong> two primes below 5.</li><li><strong>Quantify:</strong> &exist; with two variables + &ne;.</li><li><strong>Formalise:</strong> distinctness + property.</li><li><strong>Verify:</strong> at-least-two pattern.</li></ul></div></div>
+
+<h3>V.23 Practice: Only Pattern</h3>
+<div class="practice" id="p3_23"><p class="scenario">Formalise: &ldquo;<span class="key">only Romeo</span> <span class="key">loves Juliet</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')"><code>Romeo loves Juliet &and; &forall; p : Person &bull; p loves Juliet &rArr; p = Romeo</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>&exist; p &bull; p loves Juliet</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>&forall; p &bull; p loves Juliet</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>Romeo = Juliet</code></button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> &ldquo;Only&rdquo; = does it + anyone who does must be Romeo.</p><ul><li><strong>Statement:</strong> Romeo loves Juliet.</li><li><strong>Quantify:</strong> &forall; closure: anyone else must be Romeo.</li><li><strong>Formalise:</strong> conjunction + universal.</li><li><strong>Verify:</strong> &ldquo;only&rdquo; pattern.</li></ul></div></div>
+
+<h3>V.24 Practice: Exactly N Pattern</h3>
+<div class="practice" id="p3_24"><p class="scenario">Express: &ldquo;there is <span class="key">exactly one</span> <span class="key">book on the desk</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')"><code>&exist; b : Book &bull; b &isin; Desk &and; (&forall; c : Book | c &isin; Desk &bull; c = b)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&exist; b &bull; b &isin; Desk</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&forall; b &bull; b &isin; Desk</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&not;&exist; b &bull; b &isin; Desk</code></button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Expanded &exist;<sub>1</sub> form.</p><ul><li><strong>Statement:</strong> one book, and every desk-book is it.</li><li><strong>Quantify:</strong> &exist; + inner &forall;.</li><li><strong>Formalise:</strong> existence + uniqueness.</li><li><strong>Verify:</strong> matches textbook Example 4.13.</li></ul></div></div>
+
+<h3>V.25 Practice: Unique Quantifier Strength</h3>
+<div class="practice" id="p3_25"><p>Valid, satisfiable, and unsatisfiable predicates are analogues of:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Tautologies, contingencies, and contradictions.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Conjunctions, disjunctions, and negations.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Axioms, theorems, and lemmas.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Types, sets, and functions.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Predicate-level parallels of propositional concepts.</p><ul><li><strong>Statement:</strong> valid = true for all values.</li><li><strong>Quantify:</strong> satisfiable = true for some.</li><li><strong>Formalise:</strong> unsatisfiable = true for none.</li><li><strong>Verify:</strong> generalisation from propositions to predicates.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 4.4 ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">4.4 Definite Description</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="A term &mu; x : a &bull; p denoting the unique x in a satisfying p.">Definite description</span>:</strong> <code>&mu; x : a &bull; p</code> &mdash; &ldquo;the unique x in a such that p.&rdquo;</li>
+  <li><strong>Only meaningful</strong> when <code>&exist;<sub>1</sub> x : a &bull; p</code> holds.</li>
+  <li><strong><span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">Undefined</span>:</strong> if zero or many x satisfy p, the description has no denotation.</li>
+  <li><strong><span class="vocab" data-def="Given &exist;&#8321; x : a &bull; p, conclude (&mu; x : a &bull; p) &isin; a &and; p[(&mu; x)/x].">Axiom [&mu;-intro]</span>:</strong> from <code>&exist;<sub>1</sub></code>, conclude the description is in a and satisfies p.</li>
+  <li><strong>Purpose:</strong> name objects by their properties rather than by a given name.</li>
+  <li><strong>Common in specs:</strong> &ldquo;the admin,&rdquo; &ldquo;the current user,&rdquo; &ldquo;the CEO&rdquo; &mdash; all <span class="vocab" data-def="A term &mu; x : a &bull; p denoting the unique x in a satisfying p.">definite descriptions</span>.</li>
+</ul>
+</div>
+
+<h3 id="s3-B" class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Definite description</td><td>A term naming the unique element satisfying a predicate.</td></tr>
+  <tr><td>&mu;-notation</td><td>Notation for &ldquo;the unique x such that.&rdquo;</td></tr>
+  <tr><td>Undefined description</td><td>A &mu;-expression with zero or multiple satisfiers.</td></tr>
+  <tr><td>Unique satisfier</td><td>The single element making the predicate true.</td></tr>
+  <tr><td>&mu;-intro</td><td>Axiom: from &exist;<sub>1</sub>, derive membership and predicate of the &mu;-term.</td></tr>
+</table>
+
+<h3 id="s3-C" class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&mu;</code></td><td>The unique x such that&hellip; (definite description operator).</td></tr>
+  <tr><td><code>&exist;<sub>1</sub></code></td><td>Unique existence.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical AND.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+
+<h3 id="s3-D">IV.1 Examples: Company CEO, School Principal &amp; Team Coach</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&mu;</code></td><td>Definite description.</td></tr>
+  <tr><td><code>&exist;<sub>1</sub></code></td><td>Unique existence.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A company&rsquo;s <span class="key">CEO</span> is <span class="key">the unique</span> person holding that role.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the CEO&rdquo; picks out one specific person.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> p : Person &bull; IsCEO(p)</code> must hold.</li>
+  <li><strong>Formalise:</strong> <code>CEO = <span class="vocab" data-def="A term &mu; x : a &bull; p denoting the unique x in a satisfying p.">&mu;</span> p : Person &bull; IsCEO(p)</code>.</li>
+  <li><strong>Check:</strong> if two people are CEO, the description is <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A school&rsquo;s <span class="key">principal</span> is <span class="key">the unique</span> staff member in charge.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the principal&rdquo; refers to one person.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> s : Staff &bull; IsPrincipal(s)</code>.</li>
+  <li><strong>Formalise:</strong> <code>principal = &mu; s : Staff &bull; IsPrincipal(s)</code>.</li>
+  <li><strong>Check:</strong> exactly one principal assumed.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A team&rsquo;s <span class="key">head coach</span> is <span class="key">the unique</span> person managing training.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the head coach&rdquo; singles out one person.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> c : Person &bull; HeadCoach(c)</code>.</li>
+  <li><strong>Formalise:</strong> <code>coach = &mu; c : Person &bull; HeadCoach(c)</code>.</li>
+  <li><strong>Check:</strong> co-coaches would break the description.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Square Root, Smallest Prime &amp; Maximum Score</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&mu;</code></td><td>Definite description.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">natural-number square root</span> of 4.</p>
+<ul>
+  <li><strong>Describe:</strong> the unique n in &Nopf; such that n &times; n = 4.</li>
+  <li><strong>Require:</strong> in &Nopf;, only 2 works (&minus;2 &notin; &Nopf;) &mdash; unique.</li>
+  <li><strong>Formalise:</strong> <code>&radic;4 = <span class="vocab" data-def="A term &mu; x : a &bull; p denoting the unique x in a satisfying p.">&mu;</span> n : &Nopf; &bull; n &times; n = 4</code>.</li>
+  <li><strong>Check:</strong> in &Zopf; it would be <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span> (two roots: 2 and &minus;2).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">smallest prime</span> number.</p>
+<ul>
+  <li><strong>Describe:</strong> the unique prime no larger than any other prime.</li>
+  <li><strong>Require:</strong> exactly one such prime (which is 2).</li>
+  <li><strong>Formalise:</strong> <code>smallestPrime = &mu; p : &Nopf; &bull; Prime(p) &and; &forall; q &bull; Prime(q) &rArr; p &le; q</code>.</li>
+  <li><strong>Check:</strong> unique minimum exists &mdash; description valid.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">highest score</span> in an exam (assuming no ties).</p>
+<ul>
+  <li><strong>Describe:</strong> the unique student with the maximum mark.</li>
+  <li><strong>Require:</strong> no ties &mdash; exactly one top scorer.</li>
+  <li><strong>Formalise:</strong> <code>topScorer = &mu; s : Student &bull; &forall; t : Student &bull; Score(s) &ge; Score(t)</code>.</li>
+  <li><strong>Check:</strong> a tie would make the description <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Root User, Admin Account &amp; Master Key</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&mu;</code></td><td>Definite description.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A system&rsquo;s <span class="key">root user</span> is <span class="key">the unique</span> account with UID 0.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the root user&rdquo; &mdash; one account by convention.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> u : User &bull; UID(u) = 0</code>.</li>
+  <li><strong>Formalise:</strong> <code>root = &mu; u : User &bull; UID(u) = 0</code>.</li>
+  <li><strong>Check:</strong> two UID-0 accounts = undefined.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">admin account</span> is <span class="key">the unique</span> account with full privileges.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the admin&rdquo; &mdash; singled out by privilege level.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> a : Account &bull; FullPrivileges(a)</code>.</li>
+  <li><strong>Formalise:</strong> <code>admin = &mu; a : Account &bull; FullPrivileges(a)</code>.</li>
+  <li><strong>Check:</strong> multiple admins? Then use &exist;, not &mu;.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A building&rsquo;s <span class="key">master key</span> is <span class="key">the unique</span> key that opens every door.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the master key&rdquo; &mdash; one key.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> k : Key &bull; &forall; d : Door &bull; Opens(k, d)</code>.</li>
+  <li><strong>Formalise:</strong> <code>masterKey = &mu; k : Key &bull; &forall; d : Door &bull; Opens(k, d)</code>.</li>
+  <li><strong>Check:</strong> two such keys = undefined description.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Capital City, Queue Head &amp; Election Winner</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&mu;</code></td><td>Definite description.</td></tr>
+  <tr><td><code>=</code></td><td>Equals.</td></tr>
+  <tr><td><code>&and;</code></td><td>AND.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">capital of France</span> is <span class="key">the unique</span> city serving as seat of government.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the capital&rdquo; singles out one city.</li>
+  <li><strong>Require:</strong> exactly one capital per country.</li>
+  <li><strong>Formalise:</strong> <code>capital = &mu; c : City &bull; CapitalOf(c, France)</code>.</li>
+  <li><strong>Check:</strong> evaluates to Paris.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">head of a queue</span> is <span class="key">the unique</span> element at position 0.</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the head&rdquo; &mdash; one element at the front.</li>
+  <li><strong>Require:</strong> exactly one element at position 0 (non-empty queue).</li>
+  <li><strong>Formalise:</strong> <code>head = &mu; e : Element &bull; Position(e) = 0 &and; InQueue(e)</code>.</li>
+  <li><strong>Check:</strong> empty queue = undefined (no satisfier).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">election winner</span> (assuming no tie).</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the winner&rdquo; &mdash; one candidate.</li>
+  <li><strong>Require:</strong> exactly one winner (no tie).</li>
+  <li><strong>Formalise:</strong> <code>winner = &mu; c : Candidate &bull; Won(c)</code>.</li>
+  <li><strong>Check:</strong> a tie makes the description <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: King of USA, Largest Natural &amp; Universal Truth</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&mu;</code></td><td>Definite description.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">&ldquo;The <span class="key">king of the USA</span>&rdquo; &mdash; is this a valid definite description?</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the king of the USA&rdquo; &mdash; attempts to pick out one person.</li>
+  <li><strong>Require:</strong> <code>&exist;<sub>1</sub> k : Person &bull; KingOf(k, USA)</code> &mdash; <strong>false</strong> (no such person).</li>
+  <li><strong>Formalise:</strong> <code>&mu; k : Person &bull; KingOf(k, USA)</code>.</li>
+  <li><strong>Check:</strong> zero satisfiers &rarr; <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">&ldquo;The <span class="key">largest natural number</span>&rdquo; &mdash; valid?</p>
+<ul>
+  <li><strong>Describe:</strong> attempts to pick the maximum of &Nopf;.</li>
+  <li><strong>Require:</strong> no largest natural number exists.</li>
+  <li><strong>Formalise:</strong> <code>&mu; n : &Nopf; &bull; &forall; m : &Nopf; &bull; n &ge; m</code>.</li>
+  <li><strong>Check:</strong> zero satisfiers &rarr; <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><code>&mu; x &bull; True</code> &mdash; valid?</p>
+<ul>
+  <li><strong>Describe:</strong> &ldquo;the unique x such that True&rdquo; &mdash; every x satisfies True.</li>
+  <li><strong>Require:</strong> infinitely many satisfiers &mdash; not unique.</li>
+  <li><strong>Formalise:</strong> <code>&mu; x &bull; True</code>.</li>
+  <li><strong>Check:</strong> multiple satisfiers &rarr; <span class="vocab" data-def="Zero or multiple satisfiers &mdash; the &mu;-expression has no denotation.">undefined</span>.</li>
+</ul>
+</div>
+
+<!-- §4.4 Practice -->
+<h3 id="s3-E">V.1 Practice: Definite Description Meaning</h3>
+<div class="practice" id="p4_1"><p>A definite description <code>&mu; x &bull; P(x)</code> denotes:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_1')">Any x satisfying P.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">The unique x satisfying P (if it exists).</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">No x.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Every x.</button></li></ul><div class="feedback" id="fb4_1"><p><strong>Correct.</strong> The unique satisfier.</p><ul><li><strong>Describe:</strong> &mu; picks out one element.</li><li><strong>Require:</strong> &exist;<sub>1</sub> must hold.</li><li><strong>Formalise:</strong> &mu;-notation.</li><li><strong>Check:</strong> unique satisfier.</li></ul></div></div>
+
+<h3>V.2 Practice: When &mu; is Undefined</h3>
+<div class="practice" id="p4_2"><p>When is <code>&mu; x &bull; P(x)</code> undefined?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')">When there is no unique x satisfying P (zero or more than one).</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Only when x = 0.</button></li></ul><div class="feedback" id="fb4_2"><p><strong>Correct.</strong> Zero or many satisfiers breaks &mu;.</p><ul><li><strong>Describe:</strong> &mu; requires exactly one.</li><li><strong>Require:</strong> &exist;<sub>1</sub> fails.</li><li><strong>Formalise:</strong> no denotation.</li><li><strong>Check:</strong> undefined.</li></ul></div></div>
+
+<h3>V.3 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_3"><p class="scenario">Define &ldquo;the only <span class="key">solution</span> to <span class="key">x + 1 = 5</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>&mu; x &bull; x + 1 = 5</code> (= 4)</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>&exist; x &bull; x + 1 = 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>&forall; x &bull; x + 1 = 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Undefined.</button></li></ul><div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Unique solution is 4.</p><ul><li><strong>Describe:</strong> &ldquo;the x such that x + 1 = 5.&rdquo;</li><li><strong>Require:</strong> exactly one solution.</li><li><strong>Formalise:</strong> &mu;-notation.</li><li><strong>Check:</strong> evaluates to 4.</li></ul></div></div>
+
+<h3>V.4 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_4"><p class="scenario">Express &ldquo;the <span class="key">CEO</span>&rdquo; using &mu;-notation.</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')"><code>&mu; p : Person &bull; IsCEO(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>&exist; p &bull; IsCEO(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>&forall; p &bull; IsCEO(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>IsCEO(p) = CEO</code></button></li></ul><div class="feedback" id="fb4_4"><p><strong>Correct.</strong> &mu; names the unique CEO.</p><ul><li><strong>Describe:</strong> &ldquo;the person who is CEO.&rdquo;</li><li><strong>Require:</strong> exactly one CEO.</li><li><strong>Formalise:</strong> <code>&mu; p : Person &bull; IsCEO(p)</code>.</li><li><strong>Check:</strong> classical definite description.</li></ul></div></div>
+
+<h3>V.5 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_5"><p class="scenario">Define &ldquo;the <span class="key">current president of France</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')"><code>&mu; p : Person &bull; PresidentOf(p, France) &and; Current(p)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_5')"><code>&exist; p &bull; PresidentOf(p, France)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_5')"><code>&forall; p &bull; PresidentOf(p, France)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_5')"><code>President = France</code></button></li></ul><div class="feedback" id="fb4_5"><p><strong>Correct.</strong> &mu; with compound predicate.</p><ul><li><strong>Describe:</strong> &ldquo;the unique current president.&rdquo;</li><li><strong>Require:</strong> exactly one at any time.</li><li><strong>Formalise:</strong> conjunction narrows it.</li><li><strong>Check:</strong> valid description.</li></ul></div></div>
+
+<h3>V.6 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_6"><p class="scenario">Define &ldquo;the <span class="key">root user</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>&mu; u : User &bull; Username(u) = "root"</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>&exist; u &bull; Username(u) = "root"</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>&forall; u &bull; Username(u) = "root"</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>root = user</code></button></li></ul><div class="feedback" id="fb4_6"><p><strong>Correct.</strong> &mu; with equality predicate.</p><ul><li><strong>Describe:</strong> &ldquo;the user named root.&rdquo;</li><li><strong>Require:</strong> exactly one root user.</li><li><strong>Formalise:</strong> &mu;-notation.</li><li><strong>Check:</strong> unique root.</li></ul></div></div>
+
+<h3>V.7 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_7"><p>Is <code>&mu; x : &Zopf; &bull; x&sup2; = 4</code> valid?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_7')">Yes, it denotes 2.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Yes, it denotes &minus;2.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')">No &mdash; two solutions (2 and &minus;2).</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Only in &Nopf;.</button></li></ul><div class="feedback" id="fb4_7"><p><strong>Correct.</strong> Multiple satisfiers &rarr; undefined.</p><ul><li><strong>Describe:</strong> x&sup2; = 4 in &Zopf;.</li><li><strong>Require:</strong> &exist;<sub>1</sub> fails &mdash; two roots.</li><li><strong>Formalise:</strong> &mu; is undefined.</li><li><strong>Check:</strong> in &Nopf; it would be valid (only 2).</li></ul></div></div>
+
+<h3>V.8 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_8"><p>Is <code>&mu; x : &Nopf; &bull; x&sup2; = 4</code> valid?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')">Yes &mdash; unique solution 2 (since &minus;2 &notin; &Nopf;).</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Only when x = &minus;2.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Undefined.</button></li></ul><div class="feedback" id="fb4_8"><p><strong>Correct.</strong> &Nopf; excludes &minus;2, making x = 2 unique.</p><ul><li><strong>Describe:</strong> type narrows the domain.</li><li><strong>Require:</strong> &exist;<sub>1</sub> in &Nopf; holds.</li><li><strong>Formalise:</strong> <code>&mu; x : &Nopf; &bull; x&sup2; = 4 = 2</code>.</li><li><strong>Check:</strong> type restriction restores uniqueness.</li></ul></div></div>
+
+<h3>V.9 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_9"><p class="scenario">Define &ldquo;the <span class="key">capital of France</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')"><code>&mu; c : City &bull; CapitalOf(c, France)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_9')"><code>&exist; c &bull; CapitalOf(c, France)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_9')"><code>&forall; c &bull; CapitalOf(c, France)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_9')"><code>France = Paris</code></button></li></ul><div class="feedback" id="fb4_9"><p><strong>Correct.</strong> &mu; gives Paris.</p><ul><li><strong>Describe:</strong> &ldquo;the city that is the capital of France.&rdquo;</li><li><strong>Require:</strong> exactly one capital.</li><li><strong>Formalise:</strong> &mu;-notation.</li><li><strong>Check:</strong> unique capital.</li></ul></div></div>
+
+<h3>V.10 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_10"><p class="scenario">Is &ldquo;the <span class="key">king of the USA</span>&rdquo; a valid definite description?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_10')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">No &mdash; there is no king of the USA.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Only historically.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Yes, but changes daily.</button></li></ul><div class="feedback" id="fb4_10"><p><strong>Correct.</strong> No satisfier &rarr; undefined.</p><ul><li><strong>Describe:</strong> &ldquo;the king of the USA.&rdquo;</li><li><strong>Require:</strong> &exist;<sub>1</sub> fails &mdash; zero satisfiers.</li><li><strong>Formalise:</strong> &mu; is undefined.</li><li><strong>Check:</strong> empty description.</li></ul></div></div>
+
+<h3>V.11 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_11"><p class="scenario">Define &ldquo;the <span class="key">first natural number</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')"><code>&mu; n : &Nopf; &bull; &forall; m : &Nopf; &bull; n &le; m</code> (= 0)</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')"><code>&exist; n &bull; n = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_11')"><code>&forall; n &bull; n = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_11')"><code>n = 1</code></button></li></ul><div class="feedback" id="fb4_11"><p><strong>Correct.</strong> The minimum is unique = 0.</p><ul><li><strong>Describe:</strong> &ldquo;the smallest natural number.&rdquo;</li><li><strong>Require:</strong> exactly one minimum in &Nopf;.</li><li><strong>Formalise:</strong> <code>&mu; n : &Nopf; &bull; &forall; m : &Nopf; &bull; n &le; m</code>.</li><li><strong>Check:</strong> evaluates to 0.</li></ul></div></div>
+
+<h3>V.12 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_12"><p class="scenario">Define &ldquo;the <span class="key">mother of Alice</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')"><code>&mu; m : Person &bull; MotherOf(m, Alice)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_12')"><code>&exist; m &bull; MotherOf(m, Alice)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_12')"><code>&forall; m &bull; MotherOf(m, Alice)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_12')"><code>Mother = Alice</code></button></li></ul><div class="feedback" id="fb4_12"><p><strong>Correct.</strong> Biologically unique mother.</p><ul><li><strong>Describe:</strong> &ldquo;the person who is Alice&rsquo;s mother.&rdquo;</li><li><strong>Require:</strong> exactly one biological mother.</li><li><strong>Formalise:</strong> &mu;-notation.</li><li><strong>Check:</strong> unique by biology.</li></ul></div></div>
+
+<h3>V.13 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_13"><p>Is <code>&mu; x &bull; False</code> well-defined?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_13')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')">No &mdash; nothing satisfies False.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Only in &Zopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Yes, 0.</button></li></ul><div class="feedback" id="fb4_13"><p><strong>Correct.</strong> No satisfier &rarr; undefined.</p><ul><li><strong>Describe:</strong> False has no witness.</li><li><strong>Require:</strong> &exist;<sub>1</sub> fails.</li><li><strong>Formalise:</strong> empty description.</li><li><strong>Check:</strong> zero satisfiers.</li></ul></div></div>
+
+<h3>V.14 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_14"><p>Is <code>&mu; x &bull; True</code> well-defined?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_14')">Yes, any x.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')">No &mdash; many x satisfy True.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Yes, the first x.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Yes, 0.</button></li></ul><div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Non-unique &rarr; undefined.</p><ul><li><strong>Describe:</strong> True is universal.</li><li><strong>Require:</strong> &exist;<sub>1</sub> fails &mdash; many satisfiers.</li><li><strong>Formalise:</strong> no denotation.</li><li><strong>Check:</strong> multiple satisfiers.</li></ul></div></div>
+
+<h3>V.15 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_15"><p class="scenario">Define &ldquo;the <span class="key">winner</span> of the <span class="key">election</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')"><code>&mu; c : Candidate &bull; Won(c)</code> (if unique)</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')"><code>&exist; c &bull; Won(c)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_15')"><code>&forall; c &bull; Won(c)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_15')"><code>Winner = c</code></button></li></ul><div class="feedback" id="fb4_15"><p><strong>Correct.</strong> Assumes unique winner (tie = undefined).</p><ul><li><strong>Describe:</strong> &ldquo;the candidate who won.&rdquo;</li><li><strong>Require:</strong> no tie.</li><li><strong>Formalise:</strong> &mu;-notation.</li><li><strong>Check:</strong> tie breaks uniqueness.</li></ul></div></div>
+
+<h3>V.16 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_16"><p class="scenario">Define &ldquo;the <span class="key">current logged-in user</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')"><code>&mu; u : User &bull; LoggedIn(u) &and; Current(u)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>&exist; u &bull; LoggedIn(u)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>&forall; u &bull; LoggedIn(u)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>current_user</code></button></li></ul><div class="feedback" id="fb4_16"><p><strong>Correct.</strong> &mu; + compound predicate.</p><ul><li><strong>Describe:</strong> &ldquo;the user who is logged in and current.&rdquo;</li><li><strong>Require:</strong> exactly one such user.</li><li><strong>Formalise:</strong> conjunction narrows.</li><li><strong>Check:</strong> multi-user system may break this.</li></ul></div></div>
+
+<h3>V.17 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_17"><p>What if two things satisfy P in <code>&mu; x &bull; P(x)</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_17')">It picks either one.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">It picks both.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">The description is undefined.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">It picks the first alphabetically.</button></li></ul><div class="feedback" id="fb4_17"><p><strong>Correct.</strong> Requires uniqueness &mdash; two = undefined.</p><ul><li><strong>Describe:</strong> &mu; demands exactly one.</li><li><strong>Require:</strong> &exist;<sub>1</sub> fails.</li><li><strong>Formalise:</strong> no denotation.</li><li><strong>Check:</strong> ambiguous &rarr; undefined.</li></ul></div></div>
+
+<h3>V.18 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_18"><p class="scenario">Define &ldquo;the <span class="key">oldest employee</span>&rdquo; (assuming no ties).</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')"><code>&mu; e : Employee &bull; &forall; f : Employee &bull; Age(e) &ge; Age(f)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>&exist; e &bull; Age(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>&forall; e &bull; Age(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>oldest = e</code></button></li></ul><div class="feedback" id="fb4_18"><p><strong>Correct.</strong> &mu; with maximum predicate.</p><ul><li><strong>Describe:</strong> &ldquo;the employee at least as old as all others.&rdquo;</li><li><strong>Require:</strong> no tie assumed.</li><li><strong>Formalise:</strong> <code>&mu;</code> with &forall; body.</li><li><strong>Check:</strong> tie = undefined.</li></ul></div></div>
+
+<h3>V.19 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_19"><p>Definite description requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">Unique existence (&exist;<sub>1</sub>).</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">At most one (may be zero).</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">No satisfier.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Many satisfiers.</button></li></ul><div class="feedback" id="fb4_19"><p><strong>Correct.</strong> &exist;<sub>1</sub> is the prerequisite.</p><ul><li><strong>Describe:</strong> &mu; requires &exist;<sub>1</sub>.</li><li><strong>Require:</strong> existence + uniqueness.</li><li><strong>Formalise:</strong> from &exist;<sub>1</sub> via [&mu;-intro].</li><li><strong>Check:</strong> at-most-one allows zero, which is not enough.</li></ul></div></div>
+
+<h3>V.20 Practice: Writing Definite Descriptions</h3>
+<div class="practice" id="p4_20"><p>Given <code>&exist;<sub>1</sub> x &bull; P(x)</code>, what is <code>P(&mu; x &bull; P(x))</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')">True &mdash; by [&mu;-intro].</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">False.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">Undefined.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">Depends on P.</button></li></ul><div class="feedback" id="fb4_20"><p><strong>Correct.</strong> The description satisfies the property by construction.</p><ul><li><strong>Describe:</strong> &mu; denotes the satisfier.</li><li><strong>Require:</strong> &exist;<sub>1</sub> gives us the axiom.</li><li><strong>Formalise:</strong> [&mu;-intro] yields P(&mu; x &bull; P(x)).</li><li><strong>Check:</strong> by definition, the &mu;-term satisfies P.</li></ul></div></div>
+
+<h3>V.21 Practice: &mu;-intro Rule</h3>
+<div class="practice" id="p4_21"><p>The [&mu;-intro] axiom says: from <code>&exist;<sub>1</sub> x : a &bull; p</code>, conclude:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')"><code>(&mu; x : a &bull; p) &isin; a &and; p[(&mu; x : a &bull; p)/x]</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_21')"><code>&forall; x &bull; p</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_21')"><code>&not;&exist; x &bull; p</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_21')"><code>x = &mu;</code></button></li></ul><div class="feedback" id="fb4_21"><p><strong>Correct.</strong> Membership + predicate satisfaction.</p><ul><li><strong>Describe:</strong> the &mu;-term is in a.</li><li><strong>Require:</strong> and p holds of it.</li><li><strong>Formalise:</strong> [&mu;-intro] axiom.</li><li><strong>Check:</strong> both conclusions follow from &exist;<sub>1</sub>.</li></ul></div></div>
+
+<h3>V.22 Practice: &mu; vs &exist;<sub>1</sub></h3>
+<div class="practice" id="p4_22"><p>How does &mu; differ from &exist;<sub>1</sub>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">&exist;<sub>1</sub> is a predicate (true/false); &mu; is a term (denotes an element).</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">They are the same thing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">&mu; is stronger.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">&exist;<sub>1</sub> is a term.</button></li></ul><div class="feedback" id="fb4_22"><p><strong>Correct.</strong> &exist;<sub>1</sub> asserts; &mu; names.</p><ul><li><strong>Describe:</strong> &exist;<sub>1</sub> is a proposition.</li><li><strong>Require:</strong> &mu; produces a value.</li><li><strong>Formalise:</strong> different syntactic categories.</li><li><strong>Check:</strong> predicate vs term.</li></ul></div></div>
+
+<h3>V.23 Practice: Undefined Descriptions</h3>
+<div class="practice" id="p4_23"><p>Is &ldquo;the <span class="key">largest natural number</span>&rdquo; a valid definite description?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_23')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')">No &mdash; there is no largest natural number.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Only in finite domains.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Only for &Zopf;.</button></li></ul><div class="feedback" id="fb4_23"><p><strong>Correct.</strong> No satisfier (or any) &mdash; undefined.</p><ul><li><strong>Describe:</strong> attempts to pick the maximum.</li><li><strong>Require:</strong> &Nopf; is unbounded &mdash; no maximum.</li><li><strong>Formalise:</strong> &exist;<sub>1</sub> fails.</li><li><strong>Check:</strong> zero satisfiers &rarr; undefined.</li></ul></div></div>
+
+<h3>V.24 Practice: &mu; in Specifications</h3>
+<div class="practice" id="p4_24"><p>Definite description is useful in specifications because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')">It names a unique element by its properties, not by a given name.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">It creates new types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">It removes quantifiers.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">It introduces ambiguity.</button></li></ul><div class="feedback" id="fb4_24"><p><strong>Correct.</strong> Property-based naming.</p><ul><li><strong>Describe:</strong> refer to &ldquo;the admin&rdquo; without knowing the name.</li><li><strong>Require:</strong> uniqueness assumed.</li><li><strong>Formalise:</strong> &mu; gives a compact reference.</li><li><strong>Check:</strong> convenient in specifications.</li></ul></div></div>
+
+<h3>V.25 Practice: &mu; with Compound Predicates</h3>
+<div class="practice" id="p4_25"><p class="scenario">Define &ldquo;the <span class="key">head of the queue</span>.&rdquo;</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')"><code>&mu; e : Element &bull; Position(e) = 0 &and; InQueue(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_25')"><code>&exist; e &bull; InQueue(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_25')"><code>&forall; e &bull; InQueue(e)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_25')"><code>head = e</code></button></li></ul><div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Unique element at position 0.</p><ul><li><strong>Describe:</strong> &ldquo;the element at position 0 in the queue.&rdquo;</li><li><strong>Require:</strong> non-empty queue &mdash; exactly one head.</li><li><strong>Formalise:</strong> &mu; with conjunction.</li><li><strong>Check:</strong> empty queue = undefined.</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 4</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 4.</footer>
+
+</body>
+</html>

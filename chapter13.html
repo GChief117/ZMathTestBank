@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 13 — Promotion</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch13-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">13.1 Factoring Operations &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">13.2 Promotion &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">13.3 Free &amp; Constrained &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 13 &mdash; Promotion</h1>
+
+<!-- ================= 13.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">13.1 Factoring Operations</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Indexed components:</strong> large systems contain multiple instances of the same <span class="vocab" data-def="State scoped to one object instance (e.g., one player's score).">local state</span> (database records, user accounts, array elements).</li>
+  <li><strong>Uniform relationship:</strong> a <span class="vocab" data-def="State that tracks the entire collection of local states, usually via a function or relation.">global state</span> maps indices to local states &rarr; changes to one component can be expressed locally.</li>
+  <li><strong><span class="vocab" data-def="Decomposing a global operation into a local operation plus a promotion schema that links local and global state.">Factoring</span>:</strong> split a global op into a <span class="vocab" data-def="An operation defined on a single local-state object.">local operation</span> + a <span class="vocab" data-def="A schema expressing the relationship between global and local state changes.">promotion schema</span>.</li>
+  <li><strong>Separation of concerns:</strong> local op describes the <em>effect</em>; promotion schema describes the <em>frame</em> (which element, how global state updates).</li>
+  <li><strong>Reconstitution:</strong> conjoin local op &and; promotion, then hide local state via <code>&exist; &Delta;Local</code> to get a global op.</li>
+  <li><strong>Index types vary:</strong> partial function (game scores), relation (mail system), or sequence (data array) &mdash; factoring works for all.</li>
+  <li><strong>Benefit:</strong> each factor can be specified and analysed in isolation; multiple local ops share one promotion schema.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Local state</td><td>State scoped to one object instance (e.g., one player's score).</td></tr>
+  <tr><td>Global state</td><td>State that tracks the entire collection of local states.</td></tr>
+  <tr><td>Factoring</td><td>Decomposing a global operation into a local operation plus a promotion schema.</td></tr>
+  <tr><td>Local operation</td><td>An operation defined on a single local-state object.</td></tr>
+  <tr><td>Promotion schema</td><td>A schema linking local and global state changes, expressing the frame.</td></tr>
+  <tr><td>Frame</td><td>The boundary: only what is inside the frame may change; everything outside stays the same.</td></tr>
+  <tr><td>Indexed component</td><td>A local state identified by an index (key, address, position) within a global collection.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Delta;</code></td><td>State change (before &amp; after copies of a schema).</td></tr>
+  <tr><td><code>&theta;</code></td><td>Binding of a schema&rsquo;s components (e.g., <code>&theta;Local</code>).</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override &mdash; replace one mapping entry.</td></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>&harr;</code></td><td>Relation (many-to-many).</td></tr>
+  <tr><td><code>&#x21FB;</code></td><td>Partial injection.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier (hides local state).</td></tr>
+  <tr><td><code>&and;</code></td><td>Schema conjunction.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain of a function or relation.</td></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>seq</code></td><td>Sequence type.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Sequence concatenation.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet (pair in a function).</td></tr>
+</table>
+
+<!-- === 13.1 Examples === -->
+
+<h3 id="s0-D">IV.1 Examples: Trivial Pursuit Scores, Football League &amp; Vending Machine</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">In <span class="key">Trivial Pursuit</span>, each player collects coloured tokens; the game tracks every player&rsquo;s set of colours.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>LocalScore</code> &mdash; <code>s : <span class="vocab" data-def="Power set."><span class="vocab" data-def="Power set.">&Popf;</span></span> Colour</code> records one player&rsquo;s collected tokens.</li>
+  <li><strong>Global state:</strong> <code>GlobalScore</code> &mdash; <code>score : Players <span class="vocab" data-def="Partial function.">&#x21F8;</span> LocalScore</code> maps each active player to their score.</li>
+  <li><strong>Factored local op:</strong> <code>AnswerLocal</code> &mdash; <code>s&prime; = s <span class="vocab" data-def="Set union.">&cup;</span> {c?}</code> adds a new colour token.</li>
+  <li><strong>Promotion schema:</strong> links <code>&Delta;GlobalScore</code> and <code>&Delta;LocalScore</code> via player input <code>p?</code>, extracting <code>&theta;LocalScore = score p?</code> and updating <code>score&prime; = score &oplus; {p? &#8614; &theta;LocalScore&prime;}</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">football league</span> tracks each team&rsquo;s set of trophies won during the season.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>TeamRecord</code> &mdash; <code>trophies : <span class="vocab" data-def="Power set.">&Popf;</span> Trophy</code> records one team&rsquo;s wins.</li>
+  <li><strong>Global state:</strong> <code>League</code> &mdash; <code>standings : TeamID <span class="vocab" data-def="Partial function.">&#x21F8;</span> TeamRecord</code> maps every team to its record.</li>
+  <li><strong>Factored local op:</strong> <code>WinLocal</code> &mdash; <code>trophies&prime; = trophies <span class="vocab" data-def="Set union.">&cup;</span> {t?}</code> adds a trophy.</li>
+  <li><strong>Promotion schema:</strong> links <code>&Delta;League</code> and <code>&Delta;TeamRecord</code> via <code>id?</code>; other teams unchanged.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">vending machine</span> company tracks each machine&rsquo;s set of stocked items across a city.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>MachineStock</code> &mdash; <code>items : <span class="vocab" data-def="Power set.">&Popf;</span> Product</code> records one machine&rsquo;s inventory.</li>
+  <li><strong>Global state:</strong> <code>Network</code> &mdash; <code>machines : MachineID <span class="vocab" data-def="Partial function.">&#x21F8;</span> MachineStock</code>.</li>
+  <li><strong>Factored local op:</strong> <code>RestockLocal</code> &mdash; <code>items&prime; = items <span class="vocab" data-def="Set union.">&cup;</span> {p?}</code> adds a product.</li>
+  <li><strong>Promotion schema:</strong> links <code>&Delta;Network</code> and <code>&Delta;MachineStock</code> via <code>id?</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Mail System Receive, Hospital Records &amp; Cloud Storage</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&harr;</code></td><td>Relation.</td></tr>
+  <tr><td><code>&#x21FB;</code></td><td>Partial injection.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">electronic mail system</span> has users related to addresses, and addresses mapped to mailboxes; a message arrives for a user.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>MailBox</code> &mdash; <code>mail : seq Message; new_mail, last_read : TimeStamp</code>.</li>
+  <li><strong>Global state:</strong> <code>MailSystem</code> &mdash; <code>address : User <span class="vocab" data-def="Relation (many-to-many).">&harr;</span> Address; mailbox : Address <span class="vocab" data-def="Partial injection.">&#x21FB;</span> MailBox</code>.</li>
+  <li><strong>Factored local op:</strong> <code>ReceiveBox</code> &mdash; <code>mail&prime; = mail <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> &langle;m?&rangle;; new_mail&prime; = t?; last_read&prime; = last_read</code>.</li>
+  <li><strong>Promotion schema:</strong> identifies user <code>u?</code>, picks address <code>a!</code>, extracts <code>&theta;MailBox = mailbox a!</code>, and updates <code>mailbox&prime; = mailbox <span class="vocab" data-def="Function override.">&oplus;</span> {a! &#8614; &theta;MailBox&prime;}</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">hospital</span> assigns patients to beds; each bed has a medical chart (local state).</p>
+<ul>
+  <li><strong>Local state:</strong> <code>Chart</code> &mdash; <code>notes : seq Entry; last_update : TimeStamp</code>.</li>
+  <li><strong>Global state:</strong> <code>Ward</code> &mdash; <code>patient : PatientID <span class="vocab" data-def="Relation.">&harr;</span> BedID; chart : BedID <span class="vocab" data-def="Partial injection.">&#x21FB;</span> Chart</code>.</li>
+  <li><strong>Factored local op:</strong> <code>AddNote</code> &mdash; <code>notes&prime; = notes <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> &langle;e?&rangle;; last_update&prime; = now?</code>.</li>
+  <li><strong>Promotion schema:</strong> identifies patient, picks bed, extracts chart, updates <code>chart&prime; = chart <span class="vocab" data-def="Function override.">&oplus;</span> {bed! &#8614; &theta;Chart&prime;}</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">cloud storage</span> service maps users to folders; each folder holds a file list.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>Folder</code> &mdash; <code>files : seq FileName; modified : TimeStamp</code>.</li>
+  <li><strong>Global state:</strong> <code>Storage</code> &mdash; <code>owner : UserID <span class="vocab" data-def="Relation.">&harr;</span> FolderID; folder : FolderID <span class="vocab" data-def="Partial injection.">&#x21FB;</span> Folder</code>.</li>
+  <li><strong>Factored local op:</strong> <code>Upload</code> &mdash; <code>files&prime; = files <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> &langle;f?&rangle;; modified&prime; = now?</code>.</li>
+  <li><strong>Promotion schema:</strong> identifies user, picks folder, updates <code>folder&prime; = folder <span class="vocab" data-def="Function override.">&oplus;</span> {id! &#8614; &theta;Folder&prime;}</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Data Array Assignment, Spreadsheet Cell &amp; Sensor Grid</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq</code></td><td>Sequence.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Membership.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">data array</span> is a sequence of <code>Data</code> elements; assigning a new value to one element is factored.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>Data</code> &mdash; <code>value : Value</code>.</li>
+  <li><strong>Global state:</strong> <code>Array</code> &mdash; <code>array : <span class="vocab" data-def="Sequence type.">seq</span> Data</code>.</li>
+  <li><strong>Factored local op:</strong> <code>AssignData</code> &mdash; <code>value&prime; = new?</code>.</li>
+  <li><strong>Promotion schema:</strong> <code>index? <span class="vocab" data-def="Set membership.">&isin;</span> <span class="vocab" data-def="Domain.">dom</span> array</code>; non-target entries unchanged; <code>array index? = &theta;Data</code>; <code>array&prime; index? = &theta;Data&prime;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">spreadsheet</span> is a grid of cells; editing one cell&rsquo;s formula is a local operation on that cell.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>Cell</code> &mdash; <code>formula : Expr</code>.</li>
+  <li><strong>Global state:</strong> <code>Sheet</code> &mdash; <code>cells : <span class="vocab" data-def="Sequence type.">seq</span> Cell</code> (indexed by row&times;col).</li>
+  <li><strong>Factored local op:</strong> <code>EditCell</code> &mdash; <code>formula&prime; = new?</code>.</li>
+  <li><strong>Promotion schema:</strong> <code>index? <span class="vocab" data-def="Set membership.">&isin;</span> <span class="vocab" data-def="Domain.">dom</span> cells</code>; updates <code>cells&prime; = cells <span class="vocab" data-def="Function override.">&oplus;</span> {index? &#8614; &theta;Cell&prime;}</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">sensor grid</span> has a sequence of sensor nodes; recalibrating one sensor is local.</p>
+<ul>
+  <li><strong>Local state:</strong> <code>Sensor</code> &mdash; <code>threshold : &Nopf;</code>.</li>
+  <li><strong>Global state:</strong> <code>Grid</code> &mdash; <code>sensors : <span class="vocab" data-def="Sequence type.">seq</span> Sensor</code>.</li>
+  <li><strong>Factored local op:</strong> <code>Recalibrate</code> &mdash; <code>threshold&prime; = new?</code>.</li>
+  <li><strong>Promotion schema:</strong> <code>index? <span class="vocab" data-def="Set membership.">&isin;</span> <span class="vocab" data-def="Domain.">dom</span> sensors</code>; <code>sensors index? = &theta;Sensor</code>; <code>sensors&prime; index? = &theta;Sensor&prime;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Factoring Advantage, Modular Testing &amp; Schema Reuse</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier.</td></tr>
+  <tr><td><code>&and;</code></td><td>Schema conjunction.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">game studio</span> needs to add &ldquo;remove token&rdquo; to the Trivial Pursuit spec without rewriting the global schema.</p>
+<ul>
+  <li><strong>Local op:</strong> define <code>RemoveLocal</code> on <code>&Delta;LocalScore</code> alone: <code>s&prime; = s \ {c?}</code>.</li>
+  <li><strong>Reconstitution:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> <span class="vocab" data-def="State change.">&Delta;</span>LocalScore &bull; RemoveLocal <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code> &mdash; reuses the same promotion schema.</li>
+  <li><strong>Benefit:</strong> one new local op; zero changes to Promote or GlobalScore.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">QA team</span> wants to test the mail system&rsquo;s &ldquo;delete message&rdquo; operation independently of the full mail routing.</p>
+<ul>
+  <li><strong>Local op:</strong> define <code>DeleteMsg</code> on <code><span class="vocab" data-def="State change.">&Delta;</span>MailBox</code> alone &mdash; testable with a single mailbox.</li>
+  <li><strong>Reconstitution:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;MailBox &bull; DeleteMsg <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code> gives the global version.</li>
+  <li><strong>Benefit:</strong> local tests run faster; bugs are isolated to one factor.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">database team</span> adds &ldquo;swap two array elements&rdquo; by composing two local assign operations via the same promotion schema.</p>
+<ul>
+  <li><strong>Local ops:</strong> two instances of <code>AssignData</code> with different indices.</li>
+  <li><strong>Reconstitution:</strong> each is promoted independently &mdash; <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> <span class="vocab" data-def="State change.">&Delta;</span>Data &bull; AssignData <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code> &mdash; then composed.</li>
+  <li><strong>Benefit:</strong> no new promotion schema needed; same frame reused.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Non-functional Index, Relational vs Functional &amp; Sequence Index</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&harr;</code></td><td>Relation.</td></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>seq</code></td><td>Sequence.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">university</span> maps students to advisors; one student may have multiple advisors, and one advisor many students.</p>
+<ul>
+  <li><strong>Index type:</strong> <code>advises : StudentID <span class="vocab" data-def="Relation (many-to-many).">&harr;</span> AdvisorID</code> &mdash; a <span class="vocab" data-def="Decomposing a global operation into a local operation plus a promotion schema.">factoring</span> where the index is a relation, not a function.</li>
+  <li><strong>Implication:</strong> promotion schema must handle multiple matching advisors for a single student.</li>
+  <li><strong>Comparison:</strong> mail system uses the same relational pattern (<code>address : User &harr; Address</code>).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">parking garage</span> maps each bay to at most one car; the index is functional.</p>
+<ul>
+  <li><strong>Index type:</strong> <code>parked : BayID <span class="vocab" data-def="Partial function.">&#x21F8;</span> Car</code> &mdash; each bay holds at most one car.</li>
+  <li><strong>Implication:</strong> promotion schema is simpler; target is uniquely identified by bay number.</li>
+  <li><strong>Comparison:</strong> Trivial Pursuit game uses functional indexing (<code>score : Players &#x21F8; LocalScore</code>).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">train scheduler</span> models stops as a sequence; the position of each stop determines the local state.</p>
+<ul>
+  <li><strong>Index type:</strong> <code>route : <span class="vocab" data-def="Sequence type.">seq</span> Stop</code> &mdash; position in the sequence is the index.</li>
+  <li><strong>Implication:</strong> promotion schema uses <code>index? &isin; dom route</code>; frame condition preserves all other positions.</li>
+  <li><strong>Comparison:</strong> data array uses the same sequential pattern (<code>array : seq Data</code>).</li>
+</ul>
+</div>
+
+<!-- === 13.1 Practice === -->
+<h3 id="s0-E">V.1 Practice: Factoring Recall</h3>
+<div class="practice" id="p1_1">
+  <p>Factoring a global operation means splitting it into:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">A local operation + a promotion schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Two global operations.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A free type + a sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A predicate + an axiom.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_1">
+    <p><strong>Correct.</strong> Factoring separates the effect (local op) from the frame (promotion schema).</p>
+    <ul>
+      <li><strong>Local op:</strong> describes what changes in one element.</li>
+      <li><strong>Promotion:</strong> links local &Delta; to global &Delta;.</li>
+      <li><strong>Reconstitution:</strong> <code>&exist; &Delta;Local &bull; LocalOp &and; Promote</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Frame Purpose</h3>
+<div class="practice" id="p1_2">
+  <p>The promotion schema&rsquo;s main job is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">Linking global state to the local state of the targeted element and framing what stays unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">Defining new types.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">Hiding all variables.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">Renaming components.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_2">
+    <p><strong>Correct.</strong> The promotion schema extracts the target, passes it to the local op, and writes back the result.</p>
+    <ul>
+      <li><strong>Local op:</strong> operates on extracted element.</li>
+      <li><strong>Promotion:</strong> <code>&theta;Local = global(id?)</code>; <code>global&prime; = global &oplus; {id? &#8614; &theta;Local&prime;}</code>.</li>
+      <li><strong>Frame:</strong> non-target entries unchanged.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Game Score Factoring</h3>
+<div class="practice" id="p1_3">
+  <p class="scenario">A <span class="key">board game</span> tracks each player&rsquo;s collected tokens via <code>score : Players &#x21F8; LocalScore</code>. Player <span class="key">p?</span> earns colour <span class="key">c?</span>. Which local op adds the token?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>&Delta;LocalScore; c? : Colour; s&prime; = s &cup; {c?}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>&Delta;GlobalScore; score&prime; = score &oplus; {p? &#8614; c?}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>&Xi;LocalScore; s&prime; = s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>&Delta;LocalScore; s&prime; = &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_3">
+    <p><strong>Correct.</strong> The local op only sees one player&rsquo;s score set and adds the colour.</p>
+    <ul>
+      <li><strong>Local op:</strong> <code>s&prime; = s &cup; {c?}</code>.</li>
+      <li><strong>Promotion:</strong> links <code>&Delta;GlobalScore</code> to <code>&Delta;LocalScore</code> via <code>p?</code>.</li>
+      <li><strong>Frame:</strong> other players&rsquo; scores unchanged.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Mail System Factoring</h3>
+<div class="practice" id="p1_4">
+  <p class="scenario">A <span class="key">mail system</span> receives message <span class="key">m?</span> at time <span class="key">t?</span> for user <span class="key">u?</span>. The local op <code>ReceiveBox</code> appends the message to a single mailbox. Which line updates the mail sequence?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>mail&prime; = mail &#x2040; &langle;m?&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>mail&prime; = &langle;m?&rangle; &#x2040; mail</code> (prepends, wrong order)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>mail&prime; = mail</code> (no change)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>mail&prime; = {m?}</code> (replaces all mail)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_4">
+    <p><strong>Correct.</strong> The new message is appended to the end of the sequence.</p>
+    <ul>
+      <li><strong>Local op:</strong> <code>mail&prime; = mail &#x2040; &langle;m?&rangle;</code>; <code>new_mail&prime; = t?</code>; <code>last_read&prime; = last_read</code>.</li>
+      <li><strong>Promotion:</strong> picks address <code>a!</code> from <code>u? &#8614; a! &isin; address</code>.</li>
+      <li><strong>Frame:</strong> other mailboxes unchanged.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Array Factoring</h3>
+<div class="practice" id="p1_5">
+  <p class="scenario">A <span class="key">data array</span> has <code>array : seq Data</code>. Assigning a new value to element <span class="key">index?</span> is factored. The promotion schema must assert:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>index? &isin; dom array &and; array index? = &theta;Data &and; array&prime; index? = &theta;Data&prime;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>index? &notin; dom array</code> (invalid index)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>array&prime; = array</code> (no change)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>array&prime; = &langle;&rangle;</code> (empties the array)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_5">
+    <p><strong>Correct.</strong> The promotion schema extracts the element, passes it to the local op, and writes back the result.</p>
+    <ul>
+      <li><strong>Local op:</strong> <code>value&prime; = new?</code> on <code>&Delta;Data</code>.</li>
+      <li><strong>Promotion:</strong> <code>index? &isin; dom array</code>; frame preserves non-target entries.</li>
+      <li><strong>Frame:</strong> <code>{index?} &#x25C1; array = {index?} &#x25C1; array&prime;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Reconstitution Formula</h3>
+<div class="practice" id="p1_6">
+  <p class="scenario">A <span class="key">warehouse</span> factors its <code>PickItem</code> operation into a local op and a promotion schema. Which formula reconstitutes the global op?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>&exist; &Delta;Bin &bull; PickLocal &and; Promote</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>PickLocal &or; Promote</code> (disjunction, not conjunction)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>PickLocal</code> alone (missing frame)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>Promote</code> alone (missing effect)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_6">
+    <p><strong>Correct.</strong> Conjoin local op with promotion, then hide local state.</p>
+    <ul>
+      <li><strong>Local op:</strong> describes the pick effect on one bin.</li>
+      <li><strong>Promotion:</strong> links global warehouse to local bin via <code>id?</code>.</li>
+      <li><strong>Frame:</strong> <code>&exist;</code> hides <code>&Delta;Bin</code>; only global state remains visible.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Separation of Concerns</h3>
+<div class="practice" id="p1_7">
+  <p class="scenario">A <span class="key">hospital</span> adds a new operation &ldquo;discharge patient&rdquo; to its ward system. The <span class="key">promotion schema already exists</span>. What must the team write?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')">Only a new local operation <code>DischargeLocal</code> on <code>&Delta;Chart</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">A new promotion schema from scratch.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">A complete new global operation with all frame conditions.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">Nothing &mdash; it works automatically.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_7">
+    <p><strong>Correct.</strong> The promotion schema is reusable; only the new local op is needed.</p>
+    <ul>
+      <li><strong>Local op:</strong> new <code>DischargeLocal</code> on <code>&Delta;Chart</code>.</li>
+      <li><strong>Promotion:</strong> reuse existing schema unchanged.</li>
+      <li><strong>Frame:</strong> factoring enables this kind of modular extension.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Promotion Schema Override</h3>
+<div class="practice" id="p1_8">
+  <p class="scenario">A <span class="key">game</span>&rsquo;s promotion schema updates the global map. Which expression writes the new local state back into <code>score</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>score&prime; = score &oplus; {p? &#8614; &theta;LocalScore&prime;}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>score&prime; = score</code> (no update)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>score&prime; = {p? &#8614; &theta;LocalScore&prime;}</code> (loses all other players)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>score&prime; = score \ {p?}</code> (removes player)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_8">
+    <p><strong>Correct.</strong> Override replaces just the entry at <code>p?</code> while preserving the rest.</p>
+    <ul>
+      <li><strong>Local op:</strong> computed <code>&theta;LocalScore&prime;</code>.</li>
+      <li><strong>Promotion:</strong> <code>&oplus;</code> ensures single-entry update.</li>
+      <li><strong>Frame:</strong> <code>{p?} &#x25C1; score&prime; = {p?} &#x25C1; score</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Relational Index</h3>
+<div class="practice" id="p1_9">
+  <p class="scenario">In the <span class="key">mail system</span>, the mapping from users to addresses is a <span class="key">relation</span>, not a function. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')">A user may have multiple addresses, and an address may belong to multiple users.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')">Each user has exactly one address.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')">Addresses cannot be shared.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')">The mapping is total.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_9">
+    <p><strong>Correct.</strong> A relation allows many-to-many associations.</p>
+    <ul>
+      <li><strong>Local op:</strong> still operates on a single <code>MailBox</code>.</li>
+      <li><strong>Promotion:</strong> must select which address (<code>a!</code>) among possibly many.</li>
+      <li><strong>Frame:</strong> the relational index generalises the functional pattern.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Sequence Index</h3>
+<div class="practice" id="p1_10">
+  <p class="scenario">A <span class="key">data array</span> uses <code>array : seq Data</code>. The promotion schema&rsquo;s frame condition for non-target entries uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>{index?} &#x25C1; array = {index?} &#x25C1; array&prime;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>array = array&prime;</code> (no change at all)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>dom array&prime; = &empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>array&prime; = &langle;&rangle;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_10">
+    <p><strong>Correct.</strong> Domain anti-restriction removes the target index; remaining entries must match.</p>
+    <ul>
+      <li><strong>Local op:</strong> only changes element at <code>index?</code>.</li>
+      <li><strong>Promotion:</strong> frame condition uses <code>&#x25C1;</code> (domain anti-restriction).</li>
+      <li><strong>Frame:</strong> preserves all other positions in the sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Functional vs Relational Factoring</h3>
+<div class="practice" id="p1_11">
+  <p class="scenario">A <span class="key">parking garage</span> maps bays to cars via <code>parked : BayID &#x21F8; Car</code>. Compared to the mail system&rsquo;s relational index, the promotion schema here is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')">Simpler &mdash; each bay uniquely identifies one car, so no choice is needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')">Identical to the relational case.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')">More complex because functions are harder.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')">Impossible &mdash; functions can&rsquo;t be used for promotion.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_11">
+    <p><strong>Correct.</strong> A functional index yields a unique target; a relational index may require a choice.</p>
+    <ul>
+      <li><strong>Local op:</strong> same structure either way.</li>
+      <li><strong>Promotion:</strong> functional &rarr; unique target; relational &rarr; nondeterministic choice.</li>
+      <li><strong>Frame:</strong> both preserve non-target entries.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Theta Notation</h3>
+<div class="practice" id="p1_12">
+  <p class="scenario">In a promotion schema, <code>&theta;LocalScore = score p?</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')">The binding of the local state schema equals the value stored at index <code>p?</code> in the global map.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">The global state is reset.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">A new schema is declared.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">The local state is deleted.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_12">
+    <p><strong>Correct.</strong> <code>&theta;</code> extracts the binding of a schema&rsquo;s components as a single object.</p>
+    <ul>
+      <li><strong>Local op:</strong> receives this extracted binding as its pre-state.</li>
+      <li><strong>Promotion:</strong> <code>&theta;Local = global(id?)</code> links the two levels.</li>
+      <li><strong>Frame:</strong> after the local op, <code>&theta;Local&prime;</code> is written back via <code>&oplus;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Multiple Local Ops</h3>
+<div class="practice" id="p1_13">
+  <p class="scenario">A <span class="key">library system</span> already has a promotion schema linking <code>&Delta;Library</code> to <code>&Delta;Book</code>. The team wants to add &ldquo;renew&rdquo; and &ldquo;reserve&rdquo; operations. How many new promotion schemas are needed?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>0</code> &mdash; reuse the existing promotion schema with each new local op.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>1</code> &mdash; one new schema per operation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>2</code> &mdash; one per new operation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>3</code> &mdash; one per existing + new.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_13">
+    <p><strong>Correct.</strong> The promotion schema is reused across all local ops on the same local state type.</p>
+    <ul>
+      <li><strong>Local op:</strong> write <code>RenewLocal</code> and <code>ReserveLocal</code> on <code>&Delta;Book</code>.</li>
+      <li><strong>Promotion:</strong> same schema conjoined with each.</li>
+      <li><strong>Frame:</strong> factoring&rsquo;s key advantage &mdash; one frame, many effects.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Existential Hiding</h3>
+<div class="practice" id="p1_14">
+  <p class="scenario">After conjoining <code>AnswerLocal &and; Promote</code>, the local state variables are hidden by:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>&exist; &Delta;LocalScore &bull; ...</code> &mdash; existential quantification over the local state change.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>&forall; &Delta;LocalScore &bull; ...</code> (universal; wrong quantifier).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">Schema negation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">Schema composition.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_14">
+    <p><strong>Correct.</strong> Existential quantification hides the local variables, leaving only the global interface.</p>
+    <ul>
+      <li><strong>Local op:</strong> its variables become internal.</li>
+      <li><strong>Promotion:</strong> the conjunction links them.</li>
+      <li><strong>Frame:</strong> <code>&exist;</code> removes local details from the global signature.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Equivalent Global Op</h3>
+<div class="practice" id="p1_15">
+  <p class="scenario">The textbook shows that <code>&exist; &Delta;LocalScore &bull; AnswerLocal &and; Promote</code> is equivalent to the direct <code>AnswerGlobal</code> schema. This demonstrates:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">Factored and direct specifications are logically equivalent &mdash; factoring adds structure, not meaning.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">Factoring changes the semantics.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">The direct version is always better.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">The factored version cannot be expanded.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_15">
+    <p><strong>Correct.</strong> Factoring is a structuring technique; it preserves logical equivalence.</p>
+    <ul>
+      <li><strong>Local op:</strong> describes the same effect in isolation.</li>
+      <li><strong>Promotion:</strong> adds no new constraints beyond the frame.</li>
+      <li><strong>Frame:</strong> the reconstituted schema expands to exactly the direct version.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: MailBox Components</h3>
+<div class="practice" id="p1_16">
+  <p class="scenario">The <span class="key">MailBox</span> schema has three components: <code>mail</code>, <code>new_mail</code>, and <code>last_read</code>. In <code>ReceiveBox</code>, which component is <em>unchanged</em>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>last_read&prime; = last_read</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>mail</code> (it is updated with new message)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>new_mail</code> (it is set to <code>t?</code>)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">All three change.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_16">
+    <p><strong>Correct.</strong> <code>last_read</code> records when the user last read their mail &mdash; receiving doesn&rsquo;t change that.</p>
+    <ul>
+      <li><strong>Local op:</strong> <code>mail&prime; = mail &#x2040; &langle;m?&rangle;</code>; <code>new_mail&prime; = t?</code>.</li>
+      <li><strong>Promotion:</strong> writes back updated <code>&theta;MailBox&prime;</code>.</li>
+      <li><strong>Frame:</strong> other mailboxes unchanged; <code>last_read</code> unchanged within this one.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Domain Membership</h3>
+<div class="practice" id="p1_17">
+  <p class="scenario">In the game promotion schema, the predicate <code>p? &isin; dom score</code> asserts:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')">Player <code>p?</code> is currently in the game (has an entry in the score map).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">Player <code>p?</code> is not in the game.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">The score map is empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">All players are in the game.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_17">
+    <p><strong>Correct.</strong> The precondition ensures the target element exists before operating on it.</p>
+    <ul>
+      <li><strong>Local op:</strong> operates on the existing score for <code>p?</code>.</li>
+      <li><strong>Promotion:</strong> <code>p? &isin; dom score</code> is the precondition.</li>
+      <li><strong>Frame:</strong> if <code>p?</code> is not in the domain, the operation is undefined.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Address Output</h3>
+<div class="practice" id="p1_18">
+  <p class="scenario">In <code>ReceiveSystem</code>, the address <code>a!</code> is an <span class="key">output</span>. Why?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">The system chooses which of the user&rsquo;s addresses receives the message, and reports it.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">The user provides the address as input.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">The address is always fixed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">Outputs are not used in promotion.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_18">
+    <p><strong>Correct.</strong> Since <code>address</code> is a relation, a user may have multiple addresses; the system picks one and reports it.</p>
+    <ul>
+      <li><strong>Local op:</strong> operates on the chosen mailbox.</li>
+      <li><strong>Promotion:</strong> <code>u? &#8614; a! &isin; address</code> selects and outputs the address.</li>
+      <li><strong>Frame:</strong> <code>address&prime; = address</code> (the relation itself is unchanged).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Data Array Local Op</h3>
+<div class="practice" id="p1_19">
+  <p class="scenario">The local operation <code>AssignData</code> has declaration <code>&Delta;Data; new? : Value</code>. Its predicate is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>value&prime; = new?</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>value&prime; = value</code> (no change)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>value&prime; &isin; dom array</code> (type error)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>array&prime; = array &oplus; {index? &#8614; new?}</code> (this is global, not local)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_19">
+    <p><strong>Correct.</strong> The local op simply replaces the value; it knows nothing about the array.</p>
+    <ul>
+      <li><strong>Local op:</strong> <code>value&prime; = new?</code> on <code>&Delta;Data</code>.</li>
+      <li><strong>Promotion:</strong> handles the index and array frame.</li>
+      <li><strong>Frame:</strong> separation of concerns &mdash; local op is minimal.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Why Factoring Helps</h3>
+<div class="practice" id="p1_20">
+  <p class="scenario">A <span class="key">cloud storage service</span> has 12 different file operations. Without factoring, each would need its own global schema with frame conditions. With factoring:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')">One promotion schema is shared; only 12 local ops are written.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">12 promotion schemas are still needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Factoring doesn&rsquo;t help with multiple operations.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">The global state must be rewritten for each op.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_20">
+    <p><strong>Correct.</strong> Factoring&rsquo;s primary benefit is reusing the promotion schema across all operations on the same local state.</p>
+    <ul>
+      <li><strong>Local op:</strong> 12 small, testable operations.</li>
+      <li><strong>Promotion:</strong> 1 shared schema.</li>
+      <li><strong>Frame:</strong> frame conditions written once, not 12 times.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Indexed Component Concept</h3>
+<div class="practice" id="p1_21">
+  <p>An <span class="vocab" data-def="A local state identified by an index within a global collection.">indexed component</span> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')">A local state instance identified by a key, address, or position within a global collection.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">A global state without indices.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">A free type constructor.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">A schema operator.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_21">
+    <p><strong>Correct.</strong> Indexed components are the building blocks that factoring operates on.</p>
+    <ul>
+      <li><strong>Local op:</strong> defined per-component.</li>
+      <li><strong>Promotion:</strong> uses the index to locate the component.</li>
+      <li><strong>Frame:</strong> examples include players (by ID), mailboxes (by address), array elements (by position).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Mail Promotion Address Unchanged</h3>
+<div class="practice" id="p1_22">
+  <p class="scenario">In the mail system&rsquo;s promotion schema, <code>address&prime; = address</code>. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">Receiving a message does not change the user-to-address relation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">The address is deleted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">A new address is created.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">The relation becomes a function.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_22">
+    <p><strong>Correct.</strong> The address mapping is part of the frame &mdash; it stays the same during a receive operation.</p>
+    <ul>
+      <li><strong>Local op:</strong> only the mailbox content changes.</li>
+      <li><strong>Promotion:</strong> <code>address&prime; = address</code> is an explicit frame condition.</li>
+      <li><strong>Frame:</strong> only the targeted mailbox is modified.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Override Symbol</h3>
+<div class="practice" id="p1_23">
+  <p>The symbol <code>&oplus;</code> in a promotion schema means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">Function override &mdash; replace the entry at the specified key while keeping all others.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">Set union (adds without replacing).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">Domain restriction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">Schema conjunction.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_23">
+    <p><strong>Correct.</strong> <code>&oplus;</code> overwrites the mapping at one key; all other keys are preserved.</p>
+    <ul>
+      <li><strong>Local op:</strong> computes the new value.</li>
+      <li><strong>Promotion:</strong> <code>global&prime; = global &oplus; {id? &#8614; &theta;Local&prime;}</code>.</li>
+      <li><strong>Frame:</strong> <code>&oplus;</code> is the standard way to express single-entry update.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Local Op Isolation</h3>
+<div class="practice" id="p1_24">
+  <p class="scenario">A <span class="key">sensor grid</span>&rsquo;s <code>Recalibrate</code> local op sets <code>threshold&prime; = new?</code>. This op:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')">Knows nothing about the grid &mdash; it only sees <code>&Delta;Sensor</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">References <code>grid</code> and <code>index?</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">Updates all sensors at once.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">Requires knowing the grid size.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_24">
+    <p><strong>Correct.</strong> Local operations are defined in isolation from the global state.</p>
+    <ul>
+      <li><strong>Local op:</strong> only sees <code>&Delta;Sensor</code> components.</li>
+      <li><strong>Promotion:</strong> handles the grid context.</li>
+      <li><strong>Frame:</strong> this isolation is factoring&rsquo;s core design principle.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Promotion Concept</h3>
+<div class="practice" id="p1_25">
+  <p>The term &ldquo;promotion&rdquo; in Z means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Structuring a global operation as a local operation lifted through a promotion schema that links local and global state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Renaming schema components.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Hiding variables from a schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Composing two independent schemas.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_25">
+    <p><strong>Correct.</strong> Promotion = factoring a global op into local op + frame, also called &ldquo;framing.&rdquo;</p>
+    <ul>
+      <li><strong>Local op:</strong> describes the effect on one element.</li>
+      <li><strong>Promotion:</strong> the frame linking local and global.</li>
+      <li><strong>Frame:</strong> only what is inside may change; everything outside is unaffected.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 13.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">13.2 Promotion</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Formal definition:</strong> given <span class="vocab" data-def="A state schema describing one element.">Local</span>, <span class="vocab" data-def="A state schema describing the collection.">Global</span>, <span class="vocab" data-def="An operation on Local with &Delta;Local.">LocalOperation</span>, and a <span class="vocab" data-def="Schema with &Delta;Global, &Delta;Local, and an index input linking them.">Promote</span> schema &rarr; the local op is <span class="vocab" data-def="When a global operation is defined in terms of a local operation, the local op has been promoted.">promoted</span> to <code>&exist; &Delta;Local &bull; Promote &and; LocalOperation</code>.</li>
+  <li><strong>Promote schema contains:</strong> decorated/undecorated copies of both Local and Global, plus an <span class="vocab" data-def="A value selecting which element of the global collection to operate on.">index input</span> (e.g., <code>p? : Performance</code>).</li>
+  <li><strong>Promote predicates:</strong> (1) index &isin; domain; (2) extract local pre-state from global; (3) write local post-state back; (4) frame condition for non-target entries.</li>
+  <li><strong>Functional index:</strong> when the global-to-local mapping is a function, existential quantification can be eliminated (one-point rule).</li>
+  <li><strong>Non-promotable ops:</strong> operations on the global state itself (e.g., changing the set of announced performances) cannot be factored via promotion.</li>
+  <li><strong>Totalisation:</strong> promoted ops are often partial; error schemas (using <code>&Xi;</code>) handle cases like &ldquo;not yet booking&rdquo; and are disjoined to form total operations.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Local</td><td>A state schema describing one element.</td></tr>
+  <tr><td>Global</td><td>A state schema describing the collection.</td></tr>
+  <tr><td>LocalOperation</td><td>An operation on Local with &Delta;Local.</td></tr>
+  <tr><td>Promote</td><td>Schema with &Delta;Global, &Delta;Local, and an index input linking them.</td></tr>
+  <tr><td>Promoted</td><td>When a global op is defined as &exist; &Delta;Local &bull; Promote &and; LocalOp.</td></tr>
+  <tr><td>Index input</td><td>A value selecting which element of the global collection to operate on.</td></tr>
+  <tr><td>One-point rule</td><td>Eliminates &exist; when the variable is uniquely determined.</td></tr>
+  <tr><td>Totalisation</td><td>Disjoining a promoted op with error schemas to cover all inputs.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier (hides local state).</td></tr>
+  <tr><td><code>&and;</code></td><td>Schema conjunction.</td></tr>
+  <tr><td><code>&or;</code></td><td>Schema disjunction (for totalisation).</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged (used in error schemas).</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset (invariant constraint).</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction / anti-restriction.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership.</td></tr>
+  <tr><td><code>&notin;</code></td><td>Not a member.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain.</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet.</td></tr>
+</table>
+
+<!-- === 13.2 Examples === -->
+
+<h3 id="s1-D">IV.1 Examples: Box Office Purchase, Concert Ticketing &amp; Airline Booking</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">box office</span> manages bookings for multiple performances; each performance has its own <code>BoxOffice</code> (seating, sold tickets).</p>
+<ul>
+  <li><strong>Global:</strong> <code>GlobalBoxOffice</code> &mdash; <code>announced : <span class="vocab" data-def="Power set.">&Popf;</span> Performance; booking : Performance <span class="vocab" data-def="Partial function.">&#x21F8;</span> BoxOffice; dom booking <span class="vocab" data-def="Subset.">&sube;</span> announced</code>.</li>
+  <li><strong>Promote:</strong> <code>p? &isin; dom booking; &theta;BoxOffice = booking p?; booking&prime; = booking <span class="vocab" data-def="Function override.">&oplus;</span> {p? &#8614; &theta;BoxOffice&prime;}; announced&prime; = announced</code>.</li>
+  <li><strong>Promoted op:</strong> <code>GlobalPurchase<sub>0</sub> &cong; <span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;BoxOffice &bull; Purchase <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">concert venue</span> sells tickets for multiple events; each event has a seating chart with sold/available seats.</p>
+<ul>
+  <li><strong>Global:</strong> <code>VenueSystem</code> &mdash; <code>listed : <span class="vocab" data-def="Power set.">&Popf;</span> Event; tickets : Event <span class="vocab" data-def="Partial function.">&#x21F8;</span> SeatingChart; dom tickets <span class="vocab" data-def="Subset.">&sube;</span> listed</code>.</li>
+  <li><strong>Promote:</strong> <code>e? &isin; dom tickets; &theta;SeatingChart = tickets e?; tickets&prime; = tickets <span class="vocab" data-def="Function override.">&oplus;</span> {e? &#8614; &theta;SeatingChart&prime;}</code>.</li>
+  <li><strong>Promoted op:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;SeatingChart &bull; SellSeat <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">airline</span> manages bookings for multiple flights; each flight has a manifest with sold/available seats.</p>
+<ul>
+  <li><strong>Global:</strong> <code>AirlineSystem</code> &mdash; <code>scheduled : <span class="vocab" data-def="Power set.">&Popf;</span> Flight; manifest : Flight <span class="vocab" data-def="Partial function.">&#x21F8;</span> Manifest; dom manifest <span class="vocab" data-def="Subset.">&sube;</span> scheduled</code>.</li>
+  <li><strong>Promote:</strong> <code>f? &isin; dom manifest; &theta;Manifest = manifest f?; manifest&prime; = manifest <span class="vocab" data-def="Function override.">&oplus;</span> {f? &#8614; &theta;Manifest&prime;}</code>.</li>
+  <li><strong>Promoted op:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;Manifest &bull; BookSeat <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: NotYetBooking Error, Sold-Out Error &amp; Flight-Cancelled Error</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged.</td></tr>
+  <tr><td><code>&or;</code></td><td>Schema disjunction.</td></tr>
+  <tr><td><code>&notin;</code></td><td>Not a member.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A performance has been <span class="key">announced but not yet booking</span>; the system reports an error without changing state.</p>
+<ul>
+  <li><strong>Error schema:</strong> <code>NotYetBooking</code> &mdash; <code><span class="vocab" data-def="State unchanged.">&Xi;</span>GlobalBoxOffice; p? &isin; announced \ dom booking; r! = not_yet_booking</code>.</li>
+  <li><strong>Total op:</strong> <code>GlobalPurchase = GlobalPurchase<sub>0</sub> <span class="vocab" data-def="Schema disjunction.">&or;</span> NotYetBooking</code>.</li>
+  <li><strong>Benefit:</strong> covers all inputs &mdash; the operation is now <span class="vocab" data-def="Disjoining a promoted op with error schemas to cover all inputs.">totalised</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A concert event is <span class="key">sold out</span>; the system reports an error.</p>
+<ul>
+  <li><strong>Error schema:</strong> <code>SoldOut</code> &mdash; <code><span class="vocab" data-def="State unchanged.">&Xi;</span>VenueSystem; e? &isin; dom tickets; available(tickets e?) = &empty;; r! = sold_out</code>.</li>
+  <li><strong>Total op:</strong> <code>SellTicket = SellSeat<sub>0</sub> <span class="vocab" data-def="Schema disjunction.">&or;</span> SoldOut <span class="vocab" data-def="Schema disjunction.">&or;</span> NotListed</code>.</li>
+  <li><strong>Benefit:</strong> every possible input is handled.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A flight has been <span class="key">cancelled</span>; booking attempts get an error.</p>
+<ul>
+  <li><strong>Error schema:</strong> <code>FlightCancelled</code> &mdash; <code><span class="vocab" data-def="State unchanged.">&Xi;</span>AirlineSystem; f? <span class="vocab" data-def="Not a member.">&notin;</span> dom manifest; r! = flight_cancelled</code>.</li>
+  <li><strong>Total op:</strong> <code>Book = BookSeat<sub>0</sub> <span class="vocab" data-def="Schema disjunction.">&or;</span> FlightCancelled</code>.</li>
+  <li><strong>Benefit:</strong> partial promotion + error = total operation.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: StartBooking, Open Registration &amp; Launch Flight Sales</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&notin;</code></td><td>Not a member.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Membership.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The box office <span class="key">starts accepting bookings</span> for performance <code>p?</code> &mdash; a global-only operation that <em>cannot</em> be promoted.</p>
+<ul>
+  <li><strong>Preconditions:</strong> <code>p? <span class="vocab" data-def="Set membership.">&isin;</span> announced; p? <span class="vocab" data-def="Not a member.">&notin;</span> dom booking</code>.</li>
+  <li><strong>Effect:</strong> <code>booking&prime; = booking <span class="vocab" data-def="Set union.">&cup;</span> {p? &#8614; &theta;BoxOfficeInit}</code> &mdash; adds a fresh entry.</li>
+  <li><strong>Not promotable:</strong> this changes the <em>domain</em> of the global map, so it&rsquo;s not a local operation on an existing element.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A university <span class="key">opens registration</span> for a new course &mdash; adds a fresh <code>CourseRoster</code> to the system.</p>
+<ul>
+  <li><strong>Preconditions:</strong> <code>c? <span class="vocab" data-def="Set membership.">&isin;</span> approved; c? <span class="vocab" data-def="Not a member.">&notin;</span> dom roster</code>.</li>
+  <li><strong>Effect:</strong> <code>roster&prime; = roster <span class="vocab" data-def="Set union.">&cup;</span> {c? &#8614; &theta;RosterInit}</code>.</li>
+  <li><strong>Not promotable:</strong> creates a new entry &mdash; a global-level change.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An airline <span class="key">launches sales</span> for a new flight &mdash; adds a fresh <code>Manifest</code>.</p>
+<ul>
+  <li><strong>Preconditions:</strong> <code>f? <span class="vocab" data-def="Set membership.">&isin;</span> scheduled; f? <span class="vocab" data-def="Not a member.">&notin;</span> dom manifest</code>.</li>
+  <li><strong>Effect:</strong> <code>manifest&prime; = manifest <span class="vocab" data-def="Set union.">&cup;</span> {f? &#8614; &theta;ManifestInit}</code>.</li>
+  <li><strong>Not promotable:</strong> changes the domain of the global mapping.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: One-Point Elimination, Expand &amp; Simplify &amp; Equivalence Check</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">box office</span> index is a <em>function</em>, so <code>p?</code> uniquely determines the local state. The one-point rule eliminates <code>&exist;</code>.</p>
+<ul>
+  <li><strong>Before:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;BoxOffice &bull; Purchase <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code>.</li>
+  <li><strong>After:</strong> expanded schema with <code>&Delta;GlobalBoxOffice; p?; s?; c?; r!</code> &mdash; no <code>&exist;</code> needed.</li>
+  <li><strong>Reason:</strong> <code>&theta;BoxOffice = booking p?</code> uniquely determines the local state; <span class="vocab" data-def="Eliminates &exist; when the variable is uniquely determined.">one-point rule</span> applies.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">concert venue</span>&rsquo;s tickets map is also functional. Expanding <code>SellSeat</code>:</p>
+<ul>
+  <li><strong>Before:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;SeatingChart &bull; SellSeat <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code>.</li>
+  <li><strong>After:</strong> direct schema on <code>&Delta;VenueSystem</code> &mdash; <code>e? &isin; dom tickets</code> plus seating logic.</li>
+  <li><strong>Reason:</strong> functional index &rarr; <span class="vocab" data-def="Eliminates &exist; when the variable is uniquely determined.">one-point rule</span> removes the quantifier.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">airline</span>&rsquo;s manifest map is functional. Expanding <code>BookSeat</code>:</p>
+<ul>
+  <li><strong>Before:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> &Delta;Manifest &bull; BookSeat <span class="vocab" data-def="Schema conjunction.">&and;</span> Promote</code>.</li>
+  <li><strong>After:</strong> direct schema on <code>&Delta;AirlineSystem</code> &mdash; equivalent to a monolithic booking schema.</li>
+  <li><strong>Reason:</strong> factored and direct versions are logically equivalent.</li>
+</ul>
+</div>
+
+<!-- === 13.2 Practice === -->
+<h3 id="s1-E">V.1 Practice: Promotion Formula</h3>
+<div class="practice" id="p2_1">
+  <p>The standard promotion formula is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>&exist; &Delta;Local &bull; Promote &and; LocalOperation</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>&forall; &Delta;Local &bull; Promote &or; LocalOperation</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>Promote &or; LocalOperation</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>LocalOperation</code> alone</button></li>
+  </ul>
+  <div class="feedback" id="fb2_1">
+    <p><strong>Correct.</strong> Existential quantification hides local state; conjunction links the two schemas.</p>
+    <ul>
+      <li><strong>Promote:</strong> links global &Delta; to local &Delta;.</li>
+      <li><strong>LocalOp:</strong> describes the effect.</li>
+      <li><strong>&exist;:</strong> hides local variables from the global interface.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Promote Schema Components</h3>
+<div class="practice" id="p2_2">
+  <p>A Promote schema must include:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>&Delta;Global</code>, <code>&Delta;Local</code>, and an index input.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')">Only <code>&Delta;Global</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')">Only <code>&Delta;Local</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')">No declarations.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_2">
+    <p><strong>Correct.</strong> The Promote schema bridges both state levels with an index selecting the target.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>&Delta;Global; &Delta;Local; index?</code>.</li>
+      <li><strong>Predicates:</strong> extract, update, frame.</li>
+      <li><strong>Result:</strong> used by all promoted ops on that local type.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Box Office Promote</h3>
+<div class="practice" id="p2_3">
+  <p class="scenario">The <span class="key">box office</span> Promote schema includes <code>announced&prime; = announced</code>. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')">Local operations on individual performances do not affect the set of announced performances.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')">Performances are automatically announced.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')">The booking function is unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')">All performances are removed.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_3">
+    <p><strong>Correct.</strong> The announced set is part of the global frame &mdash; promotion only changes one box office.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>announced&prime; = announced</code> is an explicit frame condition.</li>
+      <li><strong>LocalOp:</strong> operates on a single <code>BoxOffice</code>.</li>
+      <li><strong>Global:</strong> only the targeted performance&rsquo;s box office changes.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: NotYetBooking</h3>
+<div class="practice" id="p2_4">
+  <p class="scenario">A performance is <span class="key">announced</span> but <span class="key">not yet booking</span> (i.e., <code>p? &isin; announced \ dom booking</code>). Which schema handles this?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>NotYetBooking</code> using <code>&Xi;GlobalBoxOffice</code> and output <code>r! = not_yet_booking</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>Purchase</code> with <code>&Delta;GlobalBoxOffice</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>Promote</code> alone.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>StartBooking</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_4">
+    <p><strong>Correct.</strong> Error schemas use <code>&Xi;</code> (state unchanged) and emit an error output.</p>
+    <ul>
+      <li><strong>Promote:</strong> not used &mdash; this is an error case, not a promoted op.</li>
+      <li><strong>&Xi;:</strong> global state is unchanged.</li>
+      <li><strong>Output:</strong> <code>r! = not_yet_booking</code> reports the error.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: StartBooking Non-Promotable</h3>
+<div class="practice" id="p2_5">
+  <p class="scenario"><code>StartBooking</code> adds a new entry to the booking map. Why can&rsquo;t this be promoted?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">It changes the <em>domain</em> of the global map &mdash; there is no existing local state to operate on.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">It uses <code>&Xi;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">It doesn&rsquo;t have inputs.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">All operations can be promoted.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_5">
+    <p><strong>Correct.</strong> Promotion operates on an existing indexed element; creating a new one changes the domain.</p>
+    <ul>
+      <li><strong>Promote:</strong> requires <code>p? &isin; dom booking</code> &mdash; fails for new entries.</li>
+      <li><strong>StartBooking:</strong> <code>p? &notin; dom booking</code> &mdash; no existing local state.</li>
+      <li><strong>Global-only:</strong> some operations must be written directly at the global level.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Totalisation</h3>
+<div class="practice" id="p2_6">
+  <p class="scenario">A <span class="key">promoted purchase</span> op is partial &mdash; it only works when the performance is already booking. The total operation is formed by:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>GlobalPurchase = GlobalPurchase<sub>0</sub> &or; NotYetBooking</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>GlobalPurchase = GlobalPurchase<sub>0</sub> &and; NotYetBooking</code> (conjunction makes it stricter)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>GlobalPurchase = NotYetBooking</code> alone</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>GlobalPurchase = GlobalPurchase<sub>0</sub></code> alone (still partial)</button></li>
+  </ul>
+  <div class="feedback" id="fb2_6">
+    <p><strong>Correct.</strong> Disjunction covers both branches: success or error.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>GlobalPurchase<sub>0</sub></code> handles the booking case.</li>
+      <li><strong>Error:</strong> <code>NotYetBooking</code> handles the not-booking case.</li>
+      <li><strong>Total:</strong> <code>&or;</code> ensures every input has a defined outcome.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: One-Point Rule</h3>
+<div class="practice" id="p2_7">
+  <p class="scenario">When the global-to-local mapping is a <span class="key">function</span>, the existential quantifier in the promotion formula can be eliminated. This is called:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">The one-point rule &mdash; the local state is uniquely determined by the index.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Schema negation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Free type elimination.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Universal introduction.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_7">
+    <p><strong>Correct.</strong> If <code>&theta;Local = global(index?)</code> uniquely determines the local state, <code>&exist;</code> can be removed.</p>
+    <ul>
+      <li><strong>Promote:</strong> functional index &rarr; unique binding.</li>
+      <li><strong>One-point:</strong> <code>&exist; x &bull; x = t &and; P(x)</code> simplifies to <code>P(t)</code>.</li>
+      <li><strong>Result:</strong> the expanded schema has no quantifiers.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Promote Invariant</h3>
+<div class="practice" id="p2_8">
+  <p class="scenario">In <code>GlobalBoxOffice</code>, the invariant <code>dom booking &sube; announced</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')">Every performance being booked must have been announced first.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')">Every announced performance is being booked.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')">The sets are always equal.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')">Booking is total.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_8">
+    <p><strong>Correct.</strong> Some performances may be announced but not yet booking; none can book without being announced.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>p? &isin; dom booking</code> implies <code>p? &isin; announced</code>.</li>
+      <li><strong>Invariant:</strong> <code>dom booking &sube; announced</code>.</li>
+      <li><strong>StartBooking:</strong> transitions from announced-only to booking.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Xi in Error Schemas</h3>
+<div class="practice" id="p2_9">
+  <p>In an error schema like <code>NotYetBooking</code>, <code>&Xi;GlobalBoxOffice</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')">The global state is completely unchanged &mdash; the operation has no side effects.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">The global state is deleted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">Only booking changes.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">A new performance is added.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_9">
+    <p><strong>Correct.</strong> <code>&Xi;</code> declares both before and after copies and constrains them to be equal.</p>
+    <ul>
+      <li><strong>&Xi;:</strong> <code>announced&prime; = announced &and; booking&prime; = booking</code>.</li>
+      <li><strong>Output:</strong> only the error message <code>r!</code> is produced.</li>
+      <li><strong>Use:</strong> standard pattern for error branches in totalisation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Expanded GlobalPurchase</h3>
+<div class="practice" id="p2_10">
+  <p class="scenario">When <code>GlobalPurchase<sub>0</sub></code> is expanded (eliminating <code>&exist;</code> via one-point), the result is a schema on <code>&Delta;GlobalBoxOffice</code> with inputs <code>p?, s?, c?</code> and output <code>r!</code>. The predicate checks seat availability using:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>s? &isin; booking p?.seating \ dom booking p?.sold</code> (seat is allocated but not yet sold).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>s? &isin; dom booking p?.sold</code> (already sold).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>s? &notin; booking p?.seating</code> (not a valid seat).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>p? &notin; dom booking</code> (not booking).</button></li>
+  </ul>
+  <div class="feedback" id="fb2_10">
+    <p><strong>Correct.</strong> The seat must be in the seating plan and not already sold.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>p? &isin; dom booking</code>.</li>
+      <li><strong>Purchase:</strong> checks available seats and updates <code>sold</code>.</li>
+      <li><strong>Expanded:</strong> all in one schema after one-point elimination.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Promote Reuse</h3>
+<div class="practice" id="p2_11">
+  <p class="scenario">The box office adds a <span class="key">Return</span> operation (return a sold ticket). Using the same Promote schema:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>GlobalReturn &cong; &exist; &Delta;BoxOffice &bull; Return &and; Promote</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')">A new Promote schema is required.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>GlobalReturn = Return</code> alone.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>GlobalReturn = Promote</code> alone.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_11">
+    <p><strong>Correct.</strong> The same Promote schema works with any local op on <code>BoxOffice</code>.</p>
+    <ul>
+      <li><strong>Promote:</strong> reused unchanged.</li>
+      <li><strong>Return:</strong> new local op on <code>&Delta;BoxOffice</code>.</li>
+      <li><strong>Result:</strong> <code>&exist; &Delta;BoxOffice &bull; Return &and; Promote</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Disjunction for Errors</h3>
+<div class="practice" id="p2_12">
+  <p class="scenario">A <span class="key">hotel</span> has a promoted <code>CheckIn</code> and two error schemas: <code>RoomNotReady</code> and <code>NoReservation</code>. The total operation is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>TotalCheckIn = CheckIn<sub>0</sub> &or; RoomNotReady &or; NoReservation</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>TotalCheckIn = CheckIn<sub>0</sub> &and; RoomNotReady &and; NoReservation</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>TotalCheckIn = CheckIn<sub>0</sub></code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>TotalCheckIn = RoomNotReady &or; NoReservation</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_12">
+    <p><strong>Correct.</strong> Each branch handles a different precondition; disjunction covers all cases.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>CheckIn<sub>0</sub></code> is the success branch.</li>
+      <li><strong>Errors:</strong> <code>RoomNotReady</code> and <code>NoReservation</code> use <code>&Xi;</code>.</li>
+      <li><strong>Total:</strong> <code>&or;</code> chains all branches.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Index Input</h3>
+<div class="practice" id="p2_13">
+  <p class="scenario">In the box office Promote schema, <code>p? : Performance</code> is the <span class="key">index input</span>. It selects:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">Which performance&rsquo;s box office to operate on.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Which seat to book.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Which customer is buying.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">The response code.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_13">
+    <p><strong>Correct.</strong> The index input identifies the target element within the global collection.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>p? &isin; dom booking</code> &mdash; precondition.</li>
+      <li><strong>Extract:</strong> <code>&theta;BoxOffice = booking p?</code>.</li>
+      <li><strong>Update:</strong> <code>booking&prime; = booking &oplus; {p? &#8614; &theta;BoxOffice&prime;}</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Promotion Scope</h3>
+<div class="practice" id="p2_14">
+  <p>Promotion is used only for operations that can be described in terms of:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')">Their effect within an indexed frame &mdash; modifying one element of the collection.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">Any global operation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">Creating new elements.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">Deleting elements.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_14">
+    <p><strong>Correct.</strong> Operations that change the domain (create/delete elements) cannot be factored via promotion.</p>
+    <ul>
+      <li><strong>Promote:</strong> requires an existing element at the index.</li>
+      <li><strong>Non-promotable:</strong> <code>StartBooking</code>, element creation/deletion.</li>
+      <li><strong>Promotable:</strong> <code>Purchase</code>, <code>Return</code>, any op on an existing element.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Functional Index Advantage</h3>
+<div class="practice" id="p2_15">
+  <p class="scenario">When the global-to-local mapping is a <span class="key">function</span> (not just a relation), the promoted op&rsquo;s advantage is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">The existential quantification can be eliminated via the one-point rule, yielding a simpler schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">The operation becomes total automatically.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">No Promote schema is needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">Error schemas are unnecessary.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_15">
+    <p><strong>Correct.</strong> Functional indexing means the local state is uniquely determined by the index.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>&theta;Local = global(index?)</code> is unique.</li>
+      <li><strong>One-point:</strong> eliminates <code>&exist;</code>.</li>
+      <li><strong>Result:</strong> cleaner expanded schema.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Booking Invariant Subset</h3>
+<div class="practice" id="p2_16">
+  <p class="scenario">A <span class="key">gym</span> has <code>classes : ClassID &#x21F8; ClassInfo</code> and <code>offered : &Popf; ClassID</code> with invariant <code>dom classes &sube; offered</code>. A promoted op on one class:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')">Requires <code>id? &isin; dom classes</code> and keeps <code>offered&prime; = offered</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Can create a new class.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Changes <code>offered</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Deletes the class.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_16">
+    <p><strong>Correct.</strong> Promoted ops work within the existing domain; the reference set is part of the frame.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>id? &isin; dom classes</code>; <code>offered&prime; = offered</code>.</li>
+      <li><strong>Invariant:</strong> maintained by the frame condition.</li>
+      <li><strong>Create:</strong> would be a separate global-level op (like <code>StartBooking</code>).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Error Schema Pattern</h3>
+<div class="practice" id="p2_17">
+  <p>An error schema in the promotion pattern typically has:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')"><code>&Xi;Global</code> (state unchanged), an input, and an error output <code>r!</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')"><code>&Delta;Global</code> (state changes).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">No declarations at all.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">A Promote inclusion.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_17">
+    <p><strong>Correct.</strong> Error schemas report failure without modifying state.</p>
+    <ul>
+      <li><strong>&Xi;:</strong> state before = state after.</li>
+      <li><strong>Output:</strong> <code>r!</code> carries the error code.</li>
+      <li><strong>Use:</strong> disjoined with the success case for totalisation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Concert Promote</h3>
+<div class="practice" id="p2_18">
+  <p class="scenario">A <span class="key">concert venue</span> promotes <code>SellSeat</code> to the global level. The Promote schema requires <code>e? &isin; dom tickets</code>. If <code>e?</code> is not in the domain:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')">The promoted op is undefined &mdash; an error schema (e.g., <code>NotListed</code>) is needed for totalisation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">The op succeeds with no effect.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">A new event is created.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">The Promote schema handles it internally.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_18">
+    <p><strong>Correct.</strong> Promoted ops are partial; they only handle inputs satisfying the Promote precondition.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>e? &isin; dom tickets</code> is the precondition.</li>
+      <li><strong>Error:</strong> <code>NotListed</code> covers <code>e? &notin; dom tickets</code>.</li>
+      <li><strong>Total:</strong> <code>SellTicket = SellSeat<sub>0</sub> &or; NotListed &or; SoldOut</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Domain Change Test</h3>
+<div class="practice" id="p2_19">
+  <p class="scenario">Which of these operations on a <span class="key">library</span> system (with <code>catalogue : BookID &#x21F8; Book</code>) can be promoted?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>RenewBook</code> &mdash; extends the due date of an existing book.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>AcquireBook</code> &mdash; adds a new book to the catalogue.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>DiscardBook</code> &mdash; removes a book from the catalogue.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')">All of the above.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_19">
+    <p><strong>Correct.</strong> Only operations on existing elements can be promoted; create/delete change the domain.</p>
+    <ul>
+      <li><strong>RenewBook:</strong> modifies an existing entry &mdash; promotable.</li>
+      <li><strong>AcquireBook:</strong> adds to domain &mdash; not promotable.</li>
+      <li><strong>DiscardBook:</strong> removes from domain &mdash; not promotable.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Box Office Override</h3>
+<div class="practice" id="p2_20">
+  <p class="scenario">In the box office Promote schema, <code>{p?} &#x25C1; booking&prime; = {p?} &#x25C1; booking</code> ensures:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')">All performances other than <code>p?</code> are unaffected.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')">Performance <code>p?</code> is unaffected.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')">All performances are changed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')">The booking map is emptied.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_20">
+    <p><strong>Correct.</strong> Domain anti-restriction removes <code>p?</code>; the remaining entries must match before and after.</p>
+    <ul>
+      <li><strong>Promote:</strong> frame condition preserves non-target entries.</li>
+      <li><strong>Override:</strong> combined with <code>booking&prime; = booking &oplus; {p? &#8614; &theta;BoxOffice&prime;}</code>.</li>
+      <li><strong>Effect:</strong> only one performance&rsquo;s box office changes.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Promote and Global Invariant</h3>
+<div class="practice" id="p2_21">
+  <p>When a Promote schema preserves <code>announced&prime; = announced</code> and the invariant is <code>dom booking &sube; announced</code>, the invariant is maintained because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">Promotion only overrides an existing entry; <code>dom booking</code> doesn&rsquo;t change, so <code>dom booking&prime; &sube; announced&prime;</code> still holds.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">The invariant is checked at runtime.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">The invariant is removed during promotion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">The announced set grows automatically.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_21">
+    <p><strong>Correct.</strong> <code>&oplus;</code> replaces a value but not a key; the domain is unchanged.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>dom booking&prime; = dom booking</code>.</li>
+      <li><strong>Frame:</strong> <code>announced&prime; = announced</code>.</li>
+      <li><strong>Invariant:</strong> <code>dom booking &sube; announced</code> &rArr; <code>dom booking&prime; &sube; announced&prime;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Multiple Error Schemas</h3>
+<div class="practice" id="p2_22">
+  <p class="scenario">A <span class="key">booking system</span> needs to handle: (1) performance not yet booking, (2) seat already sold, (3) unknown performance. Each error schema uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>&Xi;GlobalBoxOffice</code> and a distinct <code>r!</code> value.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>&Delta;GlobalBoxOffice</code> for each error.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">A single shared error schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">No error schemas &mdash; promotion handles all cases.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_22">
+    <p><strong>Correct.</strong> Each error branch preserves state and reports a unique error code.</p>
+    <ul>
+      <li><strong>&Xi;:</strong> state unchanged in all error branches.</li>
+      <li><strong>Output:</strong> different <code>r!</code> values distinguish errors.</li>
+      <li><strong>Total:</strong> <code>Purchase<sub>0</sub> &or; NotYetBooking &or; SeatTaken &or; UnknownPerformance</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Promote Four Predicates</h3>
+<div class="practice" id="p2_23">
+  <p>A well-formed Promote schema has four predicate roles. Which is <em>not</em> one of them?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Defining a new type (this is a type definition, not a Promote predicate).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Index &isin; domain (precondition).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Extract local pre-state from global.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Write local post-state back to global.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_23">
+    <p><strong>Correct.</strong> The four predicates are: (1) index membership, (2) extract pre-state, (3) write back post-state, (4) frame non-target entries.</p>
+    <ul>
+      <li><strong>Promote:</strong> all four are predicate-level, not type-level.</li>
+      <li><strong>Types:</strong> are declared in the schema signature, not the predicate.</li>
+      <li><strong>Frame:</strong> the fourth predicate ensures non-target preservation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Airline Promote</h3>
+<div class="practice" id="p2_24">
+  <p class="scenario">An <span class="key">airline</span> promotes <code>BookSeat</code> via <code>&exist; &Delta;Manifest &bull; BookSeat &and; Promote</code>. The Promote schema&rsquo;s frame condition includes <code>scheduled&prime; = scheduled</code>. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">The set of scheduled flights is unchanged by a seat booking.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">New flights are added.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Flights are cancelled.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">The manifest is unchanged.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_24">
+    <p><strong>Correct.</strong> The scheduled-flights set is part of the global frame.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>scheduled&prime; = scheduled</code>.</li>
+      <li><strong>Local:</strong> only the targeted flight&rsquo;s manifest changes.</li>
+      <li><strong>Frame:</strong> global reference sets stay fixed during local ops.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Promoted vs Direct</h3>
+<div class="practice" id="p2_25">
+  <p>A promoted operation and its direct (monolithic) global equivalent are:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">Logically equivalent &mdash; promotion is a structuring technique, not a semantic change.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Different in meaning.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Only equivalent for functions.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Never equivalent.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_25">
+    <p><strong>Correct.</strong> The factored form can be expanded to recover the direct form exactly.</p>
+    <ul>
+      <li><strong>Promote:</strong> structuring aid for modularity.</li>
+      <li><strong>Direct:</strong> same predicates, less modular.</li>
+      <li><strong>Equivalence:</strong> proven by expanding and simplifying.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 13.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">13.3 Free and Constrained Promotion</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state beyond what the local state schema itself requires.">Free promotion</span>:</strong> the Promote schema does not additionally constrain the local state &mdash; if an update is possible at all, it is possible for <em>all</em> local after-states.</li>
+  <li><strong>Formal test:</strong> <code>(&exist; Local&prime; &bull; &exist; Global&prime; &bull; Promote) &rArr; (&forall; Local&prime; &bull; &exist; Global&prime; &bull; Promote)</code>.</li>
+  <li><strong>Meaning:</strong> the existential and universal quantifiers over <code>Local&prime;</code> can be exchanged &mdash; the promotion imposes no constraint beyond the <span class="vocab" data-def="Requirement that comes from the local state schema's own predicate, not from the promotion schema.">local state invariant</span>.</li>
+  <li><strong><span class="vocab" data-def="A promotion where the global state invariant constrains which local after-states are allowed, so the quantifiers cannot be exchanged.">Constrained promotion</span>:</strong> the global state invariant or promotion schema constrains which local after-states are possible, so the exchange fails.</li>
+  <li><strong>Deciding freeness:</strong> expand <code>&exist; Global&prime; &bull; Promote</code>; if <code>&theta;Local&prime;</code> appears unconstrained (beyond the local invariant), the promotion is <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state beyond what the local state schema itself requires.">free</span>.</li>
+  <li><strong>Rules used:</strong> <span class="vocab" data-def="Rule: from &exist; S &bull; B and [s &isin; S] ... C, conclude C (provided s not free in other assumptions or C).">existential elimination</span> and <span class="vocab" data-def="Rule: from [s &isin; S] ... B[s/&theta;S], conclude &forall; S &bull; B (provided s not free in other assumptions).">universal introduction</span> justify the quantifier exchange.</li>
+  <li><strong>Trade-off:</strong> free promotions are more modular; constrained promotions may be the correct model when the global invariant genuinely restricts local behaviour.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Free promotion</td><td>Promote places no extra constraint on local state; quantifiers are exchangeable.</td></tr>
+  <tr><td>Constrained promotion</td><td>Global invariant restricts local after-states; quantifiers cannot be exchanged.</td></tr>
+  <tr><td>Local state invariant</td><td>Constraint from the local schema&rsquo;s own predicate.</td></tr>
+  <tr><td>Quantifier exchange</td><td><code>&exist; Local&prime;</code> &harr; <code>&forall; Local&prime;</code> in the promotion context.</td></tr>
+  <tr><td>Existential elimination</td><td>Proof rule for removing <code>&exist;</code>.</td></tr>
+  <tr><td>Universal introduction</td><td>Proof rule for introducing <code>&forall;</code>.</td></tr>
+  <tr><td>Priority stack</td><td>A sequence ordered by priority; the global invariant constrains local priority values.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier.</td></tr>
+  <tr><td><code>&forall;</code></td><td>Universal quantifier.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication (used in freeness test).</td></tr>
+  <tr><td><code>&nrArr;</code></td><td>Does not imply (constrained case).</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&theta;</code></td><td>Schema binding.</td></tr>
+  <tr><td><code>seq</code></td><td>Sequence.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+  <tr><td><code>&lt;</code></td><td>Strictly less than.</td></tr>
+  <tr><td><code>head</code></td><td>First element of a sequence.</td></tr>
+  <tr><td><code>tail</code></td><td>All but the first element of a sequence.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Sequence concatenation.</td></tr>
+</table>
+
+<!-- === 13.3 Examples === -->
+
+<h3 id="s2-D">IV.1 Examples: Data Array is Free, Sensor Grid is Free &amp; Inventory is Free</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&forall;</code></td><td>Universal.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">data array</span> promotion schema only requires <code>index? &isin; <span class="vocab" data-def="Domain.">dom</span> array</code> and that the result is a valid <code>Data</code> element &mdash; no constraint beyond the local type.</p>
+<ul>
+  <li><strong>Test:</strong> <code>(<span class="vocab" data-def="Existential quantifier.">&exist;</span> Data&prime; &bull; <span class="vocab" data-def="Existential quantifier.">&exist;</span> Array&prime; &bull; Promote) <span class="vocab" data-def="Implication.">&rArr;</span> (<span class="vocab" data-def="Universal quantifier.">&forall;</span> Data&prime; &bull; <span class="vocab" data-def="Existential quantifier.">&exist;</span> Array&prime; &bull; Promote)</code> holds.</li>
+  <li><strong>Why:</strong> <code>&theta;Data&prime; &isin; Data</code> is the only constraint on the local after-state.</li>
+  <li><strong>Verdict:</strong> <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state.">free</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">sensor grid</span> with <code>sensors : seq Sensor</code> and promotion requiring <code>index? &isin; dom sensors</code>.</p>
+<ul>
+  <li><strong>Test:</strong> the promotion places no constraint on <code>&theta;Sensor&prime;</code> beyond <code>Sensor</code> membership.</li>
+  <li><strong>Why:</strong> any valid <code>Sensor</code> after-state can be written back into the sequence.</li>
+  <li><strong>Verdict:</strong> <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state.">free</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">inventory system</span> with <code>stock : ProductID &#x21F8; Product</code> and promotion requiring <code>id? &isin; dom stock</code>.</p>
+<ul>
+  <li><strong>Test:</strong> <code>&theta;Product&prime;</code> is unconstrained beyond the <code>Product</code> schema.</li>
+  <li><strong>Why:</strong> the global state imposes no ordering or cross-product constraint.</li>
+  <li><strong>Verdict:</strong> <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state.">free</span>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Priority Stack is Constrained, Sorted List is Constrained &amp; Capacity Queue is Constrained</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&forall;</code></td><td>Universal.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+  <tr><td><code>&lt;</code></td><td>Strictly less than.</td></tr>
+  <tr><td><code>seq</code></td><td>Sequence.</td></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>tail</code></td><td>Remaining elements.</td></tr>
+  <tr><td><code>&nrArr;</code></td><td>Does not imply.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">priority stack</span> has <code>stack : <span class="vocab" data-def="Sequence.">seq</span> PriData</code> where <code>&forall; i, j : dom stack | i <span class="vocab" data-def="Strictly less than.">&lt;</span> j &bull; (stack i).priority <span class="vocab" data-def="Greater than or equal to.">&ge;</span> (stack j).priority</code>.</p>
+<ul>
+  <li><strong>Promote:</strong> operates on <code><span class="vocab" data-def="First element.">head</span> stack</code>; <code>stack&prime; = &langle;&theta;PriData&prime;&rangle; <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> <span class="vocab" data-def="Remaining elements.">tail</span> stack</code>.</li>
+  <li><strong>Constraint:</strong> after-state must maintain priority ordering &mdash; changing <code>priority</code> to a lower value violates the invariant.</li>
+  <li><strong>Verdict:</strong> <code>&exist; PriData&prime; &bull; &exist; Stack&prime; &bull; Promote <span class="vocab" data-def="Does not imply.">&nrArr;</span> &forall; PriData&prime; &bull; &exist; Stack&prime; &bull; Promote</code> &mdash; <span class="vocab" data-def="A promotion where the global state invariant constrains which local after-states are allowed.">constrained</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">sorted list</span> has <code>items : <span class="vocab" data-def="Sequence.">seq</span> Record</code> with <code><span class="vocab" data-def="Universal quantifier.">&forall;</span> i, j : dom items | i &lt; j &bull; (items i).key &lt; (items j).key</code>.</p>
+<ul>
+  <li><strong>Constraint:</strong> updating one record&rsquo;s key could break the sorted order.</li>
+  <li><strong>Verdict:</strong> <span class="vocab" data-def="A promotion where the global state invariant constrains which local after-states are allowed.">constrained</span> &mdash; the global invariant restricts which local after-states are valid.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">capacity-limited queue</span> has <code>queue : <span class="vocab" data-def="Sequence.">seq</span> Job</code> with <code>#queue &le; maxSize</code>.</p>
+<ul>
+  <li><strong>Constraint:</strong> if a local op on a job could change the job&rsquo;s size contribution, the global capacity limit constrains the after-state.</li>
+  <li><strong>Verdict:</strong> <span class="vocab" data-def="A promotion where the global state invariant constrains which local after-states are allowed.">constrained</span> if size is affected; <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state.">free</span> if local ops don&rsquo;t affect size.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Freeness Proof Sketch, Simplification &amp; Quantifier Exchange</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&forall;</code></td><td>Universal.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>&theta;</code></td><td>Binding.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">To prove the <span class="key">data array</span> promotion is free, expand <code>&exist; Array&prime; &bull; Promote</code> and simplify.</p>
+<ul>
+  <li><strong>Step 1:</strong> replace <code>Promote</code> with its body: <code>index? &isin; dom array; array index? = <span class="vocab" data-def="Schema binding.">&theta;</span>Data; array&prime; = array <span class="vocab" data-def="Function override.">&oplus;</span> {index? &#8614; &theta;Data&prime;}</code>.</li>
+  <li><strong>Step 2:</strong> one-point rule eliminates <code>&exist; array&prime;</code>; the only remaining constraint on <code>&theta;Data&prime;</code> is <code>&theta;Data&prime; &isin; Data</code>.</li>
+  <li><strong>Conclusion:</strong> <code>&theta;Data&prime;</code> is unconstrained beyond its type &mdash; <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state.">free</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">parking garage</span> with <code>bays : BayID &#x21F8; Car</code> &mdash; no ordering invariant.</p>
+<ul>
+  <li><strong>Step 1:</strong> expand <code>&exist; bays&prime; &bull; Promote</code>.</li>
+  <li><strong>Step 2:</strong> the only constraint on <code>&theta;Car&prime;</code> is <code>&theta;Car&prime; &isin; Car</code>.</li>
+  <li><strong>Conclusion:</strong> <span class="vocab" data-def="A promotion where the Promote schema places no additional constraint on the local state.">free</span> &mdash; any car can replace any car in any bay.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">quantifier exchange</span> rule is justified by two proof rules:</p>
+<ul>
+  <li><strong><span class="vocab" data-def="Rule: from &exist; S &bull; B and [s &isin; S] ... C, conclude C.">Existential elimination</span>:</strong> from <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> S &bull; B</code> and a derivation of <code>C</code> from <code>[s &isin; S; B[s/&theta;S]]</code>, conclude <code>C</code>.</li>
+  <li><strong><span class="vocab" data-def="Rule: from [s &isin; S] ... B[s/&theta;S], conclude &forall; S &bull; B.">Universal introduction</span>:</strong> from a derivation of <code>B[s/<span class="vocab" data-def="Schema binding.">&theta;</span>S]</code> assuming <code>[s &isin; S]</code>, conclude <code><span class="vocab" data-def="Universal quantifier.">&forall;</span> S &bull; B</code>.</li>
+  <li><strong>Together:</strong> if <code>&theta;Local&prime;</code> is unconstrained in the Promote expansion, the rules justify exchanging <code>&exist;</code> for <code>&forall;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Priority Stack Detail, Constrained Proof Sketch &amp; Design Choice</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq</code></td><td>Sequence.</td></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>tail</code></td><td>Remaining elements.</td></tr>
+  <tr><td><code>&ge;</code></td><td>Greater than or equal to.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&nrArr;</code></td><td>Does not imply.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">priority stack</span>&rsquo;s local state is <code>PriData</code> with <code>priority : &Nopf;; data : Data</code>. The global invariant orders elements by priority.</p>
+<ul>
+  <li><strong>Promote:</strong> <code>stack <span class="vocab" data-def="Not equal.">&ne;</span> &langle;&rangle;; &theta;PriData = <span class="vocab" data-def="First element.">head</span> stack; stack&prime; = &langle;&theta;PriData&prime;&rangle; <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> <span class="vocab" data-def="Remaining elements.">tail</span> stack</code>.</li>
+  <li><strong>Invariant:</strong> <code>&forall; i, j : dom stack | i &lt; j &bull; (stack i).priority <span class="vocab" data-def="Greater than or equal to.">&ge;</span> (stack j).priority</code>.</li>
+  <li><strong>Constraint:</strong> changing <code>priority</code> from 3 to 1 at the head violates the ordering with the second element.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">To show the priority stack promotion is <span class="key">constrained</span>, exhibit a counterexample.</p>
+<ul>
+  <li><strong>Stack:</strong> <code>stack = &langle;{priority = 3, data = a}, {priority = 2, data = b}&rangle;</code>.</li>
+  <li><strong>Allowed after-state:</strong> <code>{priority = 3, data = c}</code> &mdash; maintains ordering.</li>
+  <li><strong>Disallowed after-state:</strong> <code>{priority = 1, data = c}</code> &mdash; violates <code>3 <span class="vocab" data-def="Greater than or equal to.">&ge;</span> 2 <span class="vocab" data-def="Greater than or equal to.">&ge;</span> 1</code> at the head.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">When a promotion is <span class="key">constrained</span>, the designer may either:</p>
+<ul>
+  <li><strong>Accept it:</strong> the constrained promotion is a correct model &mdash; the global invariant is essential.</li>
+  <li><strong>Strengthen Promote:</strong> add predicates to make the promotion free by absorbing the constraint into the local state.</li>
+  <li><strong>Redesign:</strong> restructure the local state to avoid the global constraint (e.g., separate priority from data).</li>
+</ul>
+</div>
+
+<!-- === 13.3 Practice === -->
+<h3 id="s2-E">V.1 Practice: Free vs Constrained Recall</h3>
+<div class="practice" id="p3_1">
+  <p>A promotion is <em>free</em> if and only if:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">The Promote schema places no additional constraint on the local after-state beyond the local state invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')">The promotion uses <code>&forall;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')">The local state has no invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')">The global state is empty.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_1">
+    <p><strong>Correct.</strong> Free means the quantifiers <code>&exist; Local&prime;</code> and <code>&forall; Local&prime;</code> can be exchanged.</p>
+    <ul>
+      <li><strong>Free:</strong> no extra constraint on <code>&theta;Local&prime;</code>.</li>
+      <li><strong>Test:</strong> <code>(&exist; L&prime; &bull; &exist; G&prime; &bull; P) &rArr; (&forall; L&prime; &bull; &exist; G&prime; &bull; P)</code>.</li>
+      <li><strong>Benefit:</strong> more modular &mdash; local op is independent of global context.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Constrained Meaning</h3>
+<div class="practice" id="p3_2">
+  <p>A <em>constrained</em> promotion means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">The global invariant restricts which local after-states are valid, so the quantifier exchange fails.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">No promotion exists.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">The local state has no variables.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">The promotion is incorrect.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_2">
+    <p><strong>Correct.</strong> Constrained promotions are valid but less modular than free ones.</p>
+    <ul>
+      <li><strong>Constrained:</strong> <code>&exist; L&prime; &bull; ... &nrArr; &forall; L&prime; &bull; ...</code>.</li>
+      <li><strong>Example:</strong> priority stack &mdash; changing priority can break global ordering.</li>
+      <li><strong>Trade-off:</strong> less modularity, but may be the correct model.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Data Array Freeness</h3>
+<div class="practice" id="p3_3">
+  <p class="scenario">The <span class="key">data array</span> promotion is free because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')">The only constraint on <code>&theta;Data&prime;</code> is that it belongs to type <code>Data</code> &mdash; no global ordering or cross-element constraint.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')">The array is always empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')">The array has a size limit.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')">The array elements must be sorted.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_3">
+    <p><strong>Correct.</strong> Any valid <code>Data</code> value can be placed at any index without violating the global state.</p>
+    <ul>
+      <li><strong>Expand:</strong> <code>&exist; Array&prime; &bull; Promote</code> simplifies to <code>&theta;Data&prime; &isin; Data</code>.</li>
+      <li><strong>Free:</strong> unconstrained local after-state.</li>
+      <li><strong>Quantifier exchange:</strong> <code>&exist;</code> and <code>&forall;</code> over <code>Data&prime;</code> are equivalent.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Priority Stack Constrainedness</h3>
+<div class="practice" id="p3_4">
+  <p class="scenario">The <span class="key">priority stack</span> promotion is constrained because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')">The global invariant requires priority ordering &mdash; some local after-states violate this.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')">The stack is always empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')">The promotion schema is missing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')">The local state has no components.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_4">
+    <p><strong>Correct.</strong> Changing the head element&rsquo;s priority to a lower value could break the descending order.</p>
+    <ul>
+      <li><strong>Invariant:</strong> <code>(stack i).priority &ge; (stack j).priority</code> for <code>i &lt; j</code>.</li>
+      <li><strong>Counterexample:</strong> head has priority 3, second has 2; changing head to 1 violates ordering.</li>
+      <li><strong>Constrained:</strong> not all local after-states are globally valid.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Freeness Test Formula</h3>
+<div class="practice" id="p3_5">
+  <p>The formal test for free promotion is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>(&exist; Local&prime; &bull; &exist; Global&prime; &bull; Promote) &rArr; (&forall; Local&prime; &bull; &exist; Global&prime; &bull; Promote)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>(&forall; Local&prime; &bull; Promote) &rArr; (&exist; Local&prime; &bull; Promote)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>Promote &rArr; LocalOp</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>&exist; Global &bull; Promote</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_5">
+    <p><strong>Correct.</strong> If one local after-state works, then all local after-states work.</p>
+    <ul>
+      <li><strong>&exist;:</strong> &ldquo;some local after-state is possible.&rdquo;</li>
+      <li><strong>&forall;:</strong> &ldquo;all local after-states are possible.&rdquo;</li>
+      <li><strong>Free:</strong> the implication holds &mdash; no global constraint narrows the choice.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Counterexample</h3>
+<div class="practice" id="p3_6">
+  <p class="scenario">A <span class="key">priority stack</span> has <code>stack = &langle;{priority=3, data=a}, {priority=2, data=b}&rangle;</code>. Which after-state for the head is <em>disallowed</em> by the global invariant?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>{priority = 1, data = c}</code> &mdash; priority 1 &lt; 2, violating the descending order.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>{priority = 3, data = c}</code> (maintains order).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>{priority = 5, data = c}</code> (even higher, maintains order).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>{priority = 2, data = c}</code> (equal to second, still valid).</button></li>
+  </ul>
+  <div class="feedback" id="fb3_6">
+    <p><strong>Correct.</strong> The head must have priority &ge; the second element; 1 &lt; 2 violates this.</p>
+    <ul>
+      <li><strong>Invariant:</strong> <code>(stack 1).priority &ge; (stack 2).priority</code>.</li>
+      <li><strong>Allowed:</strong> priority &ge; 2 at the head.</li>
+      <li><strong>Disallowed:</strong> priority &lt; 2 breaks the ordering.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Modularity Benefit</h3>
+<div class="practice" id="p3_7">
+  <p>Free promotions are more modular than constrained ones because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')">Local operations can be developed and tested independently of the global invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')">Constrained promotions are always wrong.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')">Free promotions don&rsquo;t need a Promote schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')">Free promotions are faster to execute.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_7">
+    <p><strong>Correct.</strong> Independence of local ops from global context is the key modularity advantage.</p>
+    <ul>
+      <li><strong>Free:</strong> local op only needs to satisfy local invariant.</li>
+      <li><strong>Constrained:</strong> local op must also consider global invariant.</li>
+      <li><strong>Trade-off:</strong> constrained may be correct when the invariant is essential.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Sorted List Constrained</h3>
+<div class="practice" id="p3_8">
+  <p class="scenario">A <span class="key">sorted list</span> has <code>items : seq Record</code> with <code>&forall; i, j | i &lt; j &bull; (items i).key &lt; (items j).key</code>. Updating one record&rsquo;s key value makes the promotion:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">Constrained &mdash; the new key must maintain the sorted order relative to neighbours.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')">Free &mdash; any key value works.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')">Impossible &mdash; sorted lists can&rsquo;t use promotion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')">Neither free nor constrained.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_8">
+    <p><strong>Correct.</strong> The global sorting invariant restricts which keys are valid at each position.</p>
+    <ul>
+      <li><strong>Invariant:</strong> strictly increasing keys.</li>
+      <li><strong>Constrained:</strong> changing a key could break the order.</li>
+      <li><strong>Counterexample:</strong> changing middle element&rsquo;s key to be greater than its successor.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Proof Rule — Existential Elimination</h3>
+<div class="practice" id="p3_9">
+  <p>The existential elimination rule states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')">From <code>&exist; S &bull; B</code> and a derivation of <code>C</code> from <code>[s &isin; S; B[s/&theta;S]]</code>, conclude <code>C</code> (provided <code>s</code> is not free in <code>C</code>).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')">From <code>&forall; S &bull; B</code>, conclude <code>B[t/&theta;S]</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')">From <code>B</code>, conclude <code>&exist; S &bull; B</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')">From <code>C</code>, conclude <code>&forall; S &bull; C</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_9">
+    <p><strong>Correct.</strong> This rule lets us &ldquo;open&rdquo; an existential quantification to work with the witness.</p>
+    <ul>
+      <li><strong>Rule:</strong> <code>&exist;-elim</code> &mdash; use the witness to derive a conclusion independent of it.</li>
+      <li><strong>Proviso:</strong> <code>s</code> must not be free in <code>C</code> or other assumptions.</li>
+      <li><strong>Use:</strong> part of the freeness proof for promotion.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Proof Rule — Universal Introduction</h3>
+<div class="practice" id="p3_10">
+  <p>The universal introduction rule states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">From <code>[s &isin; S]</code> derive <code>B[s/&theta;S]</code>; conclude <code>&forall; S &bull; B</code> (provided <code>s</code> is not free in other assumptions).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">From <code>&exist; S &bull; B</code>, conclude <code>&forall; S &bull; B</code> directly.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">From <code>B</code>, conclude <code>&forall; S &bull; B</code> without assumptions.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">From <code>&forall; S &bull; B</code>, conclude <code>B[t/&theta;S]</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_10">
+    <p><strong>Correct.</strong> If you can derive <code>B</code> for an arbitrary <code>s &isin; S</code>, you can conclude it for all.</p>
+    <ul>
+      <li><strong>Rule:</strong> <code>&forall;-intro</code> &mdash; generalise from an arbitrary instance.</li>
+      <li><strong>Proviso:</strong> <code>s</code> must not be free in other assumptions.</li>
+      <li><strong>Use:</strong> second half of the freeness proof.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Free Promotion Identification</h3>
+<div class="practice" id="p3_11">
+  <p class="scenario">A <span class="key">parking garage</span> has <code>bays : BayID &#x21F8; Car</code> with no ordering invariant. The promotion is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')">Free &mdash; any valid <code>Car</code> value can replace any other without violating the global state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')">Constrained &mdash; cars must be ordered by plate number.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')">Neither.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')">Cannot be determined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_11">
+    <p><strong>Correct.</strong> No cross-bay invariant constrains the local after-state.</p>
+    <ul>
+      <li><strong>Expand:</strong> <code>&theta;Car&prime; &isin; Car</code> is the only constraint.</li>
+      <li><strong>Free:</strong> quantifiers are exchangeable.</li>
+      <li><strong>Modularity:</strong> local ops on bays are fully independent.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Constrained Design Choice</h3>
+<div class="practice" id="p3_12">
+  <p class="scenario">When a promotion is <span class="key">constrained</span>, the designer can:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">Accept the constraint, strengthen the Promote predicate, or redesign the local state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')">Only abandon promotion entirely.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')">Only weaken the global invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')">Do nothing &mdash; constrained promotions are invalid.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_12">
+    <p><strong>Correct.</strong> All three options are valid design responses to a constrained promotion.</p>
+    <ul>
+      <li><strong>Accept:</strong> the constraint correctly models the system.</li>
+      <li><strong>Strengthen:</strong> make the promotion free by absorbing the constraint.</li>
+      <li><strong>Redesign:</strong> restructure to avoid the cross-element constraint.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Head-of-Stack Promotion</h3>
+<div class="practice" id="p3_13">
+  <p class="scenario">In the <span class="key">priority stack</span>, the Promote schema operates on <code>head stack</code>. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">Only the highest-priority element (top of the stack) can be operated upon.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">Any element can be operated upon.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">The last element is targeted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">All elements are modified simultaneously.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_13">
+    <p><strong>Correct.</strong> The priority stack restricts access to the head element.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>&theta;PriData = head stack</code>.</li>
+      <li><strong>Update:</strong> <code>stack&prime; = &langle;&theta;PriData&prime;&rangle; &#x2040; tail stack</code>.</li>
+      <li><strong>Constraint:</strong> the after-state must maintain the priority ordering.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Free = Unconstrained After-State</h3>
+<div class="practice" id="p3_14">
+  <p>In a free promotion, after expanding <code>&exist; Global&prime; &bull; Promote</code>, the local after-state <code>&theta;Local&prime;</code> should appear:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')">Unconstrained &mdash; only bound by the local state schema&rsquo;s own predicate.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')">Fully constrained by the global invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')">Absent from the expansion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')">Equal to the pre-state.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_14">
+    <p><strong>Correct.</strong> That&rsquo;s the defining characteristic of free promotion.</p>
+    <ul>
+      <li><strong>Expand:</strong> remove <code>&exist; Global&prime;</code> via one-point.</li>
+      <li><strong>Check:</strong> is <code>&theta;Local&prime;</code> only constrained by its type?</li>
+      <li><strong>Yes &rarr; free; No &rarr; constrained.</strong></li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Game Score Freeness</h3>
+<div class="practice" id="p3_15">
+  <p class="scenario">The <span class="key">Trivial Pursuit</span> game has <code>score : Players &#x21F8; LocalScore</code> with no cross-player invariant. Is the promotion free?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">Yes &mdash; any valid <code>LocalScore</code> can be written for any player without violating the global state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')">No &mdash; players compete, so scores are constrained.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')">Only if there is one player.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')">Cannot be determined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_15">
+    <p><strong>Correct.</strong> The global state has no invariant relating one player&rsquo;s score to another.</p>
+    <ul>
+      <li><strong>GlobalScore:</strong> just a mapping &mdash; no ordering or cross-element constraint.</li>
+      <li><strong>Free:</strong> each player&rsquo;s score is independent.</li>
+      <li><strong>Modularity:</strong> local ops on one player don&rsquo;t affect others.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Quantifier Exchange Meaning</h3>
+<div class="practice" id="p3_16">
+  <p>The quantifier exchange <code>(&exist; L&prime; &bull; ... &rArr; &forall; L&prime; &bull; ...)</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">If any local after-state works, then all local after-states work &mdash; the promotion doesn&rsquo;t restrict them.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">All local after-states must be identical.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">No local after-state works.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">The quantifiers are always exchangeable.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_16">
+    <p><strong>Correct.</strong> This is the essence of freeness &mdash; the promotion is agnostic to which local after-state occurs.</p>
+    <ul>
+      <li><strong>&exist;:</strong> at least one works.</li>
+      <li><strong>&forall;:</strong> all work.</li>
+      <li><strong>Free:</strong> the implication holds &mdash; no narrowing by the global context.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Non-Empty Stack Precondition</h3>
+<div class="practice" id="p3_17">
+  <p class="scenario">The priority stack&rsquo;s Promote schema includes <code>stack &ne; &langle;&rangle;</code>. This ensures:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">The stack is non-empty before taking the head &mdash; <code>head</code> is undefined on an empty sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">The stack is always empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">The stack has exactly one element.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">The stack is infinite.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_17">
+    <p><strong>Correct.</strong> <code>head</code> and <code>tail</code> require a non-empty sequence as precondition.</p>
+    <ul>
+      <li><strong>Promote:</strong> <code>stack &ne; &langle;&rangle;</code> is a well-definedness precondition.</li>
+      <li><strong>Head:</strong> extracts the first element.</li>
+      <li><strong>Tail:</strong> the rest of the sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Decoration Mechanism</h3>
+<div class="practice" id="p3_18">
+  <p>The decoration mechanism (primed/unprimed copies of a schema) allows us to:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">Distinguish before-state and after-state components at the component level (e.g., <code>S</code> vs <code>S&prime;</code>).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Create free types.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Define axioms.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Remove variables.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_18">
+    <p><strong>Correct.</strong> Components in <code>S&prime;</code> differ from those in <code>S</code> &mdash; they represent the after-state.</p>
+    <ul>
+      <li><strong>Decoration:</strong> <code>S&prime;</code> generates primed versions of all components.</li>
+      <li><strong>Use:</strong> essential for expressing state changes in Promote and local ops.</li>
+      <li><strong>Freeness:</strong> the proof checks whether <code>&theta;Local&prime;</code> is unconstrained.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: PriData Components</h3>
+<div class="practice" id="p3_19">
+  <p class="scenario">The priority stack&rsquo;s local state <code>PriData</code> has components:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')"><code>priority : &Nopf;</code> and <code>data : Data</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">Only <code>data : Data</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">Only <code>priority : &Nopf;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')"><code>stack : seq PriData</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_19">
+    <p><strong>Correct.</strong> Each stack element has both a priority value and a data payload.</p>
+    <ul>
+      <li><strong>priority:</strong> determines ordering in the stack.</li>
+      <li><strong>data:</strong> the payload being stored.</li>
+      <li><strong>Invariant:</strong> elements are ordered by decreasing <code>priority</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Deciding Freeness Method</h3>
+<div class="practice" id="p3_20">
+  <p>To decide whether a promotion is free, the method is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')">Expand <code>&exist; Global&prime; &bull; Promote</code>, simplify, and check if <code>&theta;Local&prime;</code> appears unconstrained beyond the local invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')">Check if the local state has components.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')">Check if the index is a natural number.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')">Run the system and observe.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_20">
+    <p><strong>Correct.</strong> Algebraic expansion reveals whether the global context constrains the local after-state.</p>
+    <ul>
+      <li><strong>Expand:</strong> substitute the Promote body.</li>
+      <li><strong>Simplify:</strong> eliminate existential over <code>Global&prime;</code>.</li>
+      <li><strong>Check:</strong> is <code>&theta;Local&prime;</code> only constrained by its type?</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Local State Invariant</h3>
+<div class="practice" id="p3_21">
+  <p>In the freeness test, the &ldquo;local state invariant&rdquo; refers to:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">Constraints from the local state schema&rsquo;s own predicate &mdash; not from the Promote schema or global invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">The global invariant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">The Promote schema&rsquo;s predicate.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">There is no local invariant.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_21">
+    <p><strong>Correct.</strong> The local state invariant is intrinsic to the local schema (e.g., <code>balance &ge; 0</code>).</p>
+    <ul>
+      <li><strong>Local:</strong> own predicate constraints.</li>
+      <li><strong>Free:</strong> only these constrain <code>&theta;Local&prime;</code>.</li>
+      <li><strong>Constrained:</strong> additional constraints come from Promote or Global.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Mail System Freeness</h3>
+<div class="practice" id="p3_22">
+  <p class="scenario">The <span class="key">mail system</span> has <code>mailbox : Address &#x21FB; MailBox</code> with no cross-mailbox ordering invariant. Is the promotion free?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')">Yes &mdash; any valid <code>MailBox</code> after-state can be written without violating the global state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">No &mdash; mailboxes must be sorted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">Only if there is one mailbox.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">Cannot be determined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_22">
+    <p><strong>Correct.</strong> The global state has no invariant relating mailbox contents to each other.</p>
+    <ul>
+      <li><strong>MailSystem:</strong> <code>address</code> is a relation; <code>mailbox</code> is a partial function.</li>
+      <li><strong>Free:</strong> each mailbox is independently updateable.</li>
+      <li><strong>Modularity:</strong> <code>ReceiveBox</code> operates without considering other mailboxes.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Constrained Elegance Trade-off</h3>
+<div class="practice" id="p3_23">
+  <p>Constrained promotions are &ldquo;not as elegant&rdquo; because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">They lack the modularity that freeness implies &mdash; local ops cannot be tested in complete isolation from the global context.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">They are always incorrect.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">They cannot be written in Z.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">They require more memory.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_23">
+    <p><strong>Correct.</strong> Constrained promotions are valid but require awareness of the global invariant when reasoning about local ops.</p>
+    <ul>
+      <li><strong>Modularity:</strong> reduced &mdash; local and global are coupled.</li>
+      <li><strong>Correctness:</strong> may be the right model (e.g., priority stack).</li>
+      <li><strong>Choice:</strong> accept, strengthen, or redesign.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: One-Point in Freeness Proof</h3>
+<div class="practice" id="p3_24">
+  <p class="scenario">In the data array freeness proof, the one-point rule is used to eliminate:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')"><code>&exist; array&prime;</code> &mdash; because <code>array&prime; = array &oplus; {index? &#8614; &theta;Data&prime;}</code> uniquely determines <code>array&prime;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&exist; index?</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&exist; Data</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&forall; array</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_24">
+    <p><strong>Correct.</strong> The override expression uniquely determines the after-array given the after-data.</p>
+    <ul>
+      <li><strong>One-point:</strong> <code>&exist; a&prime; &bull; a&prime; = f &and; P(a&prime;)</code> simplifies to <code>P(f)</code>.</li>
+      <li><strong>Result:</strong> <code>&theta;Data&prime; &isin; Data</code> is the only remaining constraint.</li>
+      <li><strong>Free:</strong> <code>&theta;Data&prime;</code> is unconstrained beyond its type.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Summary — Free vs Constrained</h3>
+<div class="practice" id="p3_25">
+  <p>Which statement best summarises the difference between free and constrained promotion?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Free: global context doesn&rsquo;t restrict local after-states. Constrained: it does.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Free: no promotion schema. Constrained: has a promotion schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Free: uses <code>&forall;</code>. Constrained: uses <code>&exist;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Free: one element. Constrained: all elements.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_25">
+    <p><strong>Correct.</strong> The distinction is about whether the global invariant constrains local after-states.</p>
+    <ul>
+      <li><strong>Free:</strong> <code>(&exist; L&prime; &bull; ...) &rArr; (&forall; L&prime; &bull; ...)</code> holds.</li>
+      <li><strong>Constrained:</strong> the implication fails &mdash; some local after-states are excluded.</li>
+      <li><strong>Both:</strong> are valid promotion patterns with different modularity properties.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 3</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 13.</footer>
+
+</body>
+</html>

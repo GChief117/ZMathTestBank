@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 19 — Refinement Calculus</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">19.1 Specification Statement &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">19.2 Assignment &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">19.3 Logical Constants &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">19.4 Sequential Composition &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(4, event)">19.5 Conditional Statements &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s4-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s4-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s4-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s4-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s4-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(5, event)">19.6 Iteration &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s5-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s5-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s5-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s5-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s5-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 19 &mdash; Refinement Calculus</h1>
+
+<!-- ================= 19.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">19.1 Specification Statement</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>A <span class="vocab" data-def="A bracket notation [pre, post] describing an operation by its precondition and postcondition, independent of any implementation.">specification statement</span> has the form <code>w : [ pre, post ]</code> &mdash; frame <code>w</code>, precondition <code>pre</code>, postcondition <code>post</code>.</li>
+  <li>The <span class="vocab" data-def="The list of variables the operation is permitted to change; all others must remain unchanged.">frame</span> lists variables that may change; everything else stays fixed.</li>
+  <li><strong>Pre:</strong> assumption on the initial state. <strong>Post:</strong> guarantee about the final state.</li>
+  <li>Specification statements are the starting point for refinement calculus &mdash; they are refined stepwise into code.</li>
+  <li>An op with trivially-satisfiable post is <code>skip</code>; an infeasible post gives <code>magic</code>.</li>
+  <li>Specification statements unify Z schemas and imperative-code specifications.</li>
+  <li>Pre/post uses primed variables (<code>x'</code>) to reference the final state.</li>
+  <li>Calculus: rewrite <code>w : [ pre, post ]</code> into simpler statements until code remains.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Specification statement</td><td>[pre, post] description of an op.</td></tr>
+  <tr><td>Frame</td><td>Variables allowed to change.</td></tr>
+  <tr><td>Precondition</td><td>Initial-state assumption.</td></tr>
+  <tr><td>Postcondition</td><td>Final-state guarantee.</td></tr>
+  <tr><td>Feasibility</td><td>Some final state satisfies post from every pre-state.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>[ , ]</code></td><td>Spec-statement brackets.</td></tr>
+  <tr><td><code>:</code></td><td>Frame separator.</td></tr>
+  <tr><td><code>x'</code></td><td>Final-state variable.</td></tr>
+</table>
+
+<h3>IV.1 Example: Increment Specification</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>[ , ]</code></td><td>Spec brackets.</td></tr>
+  <tr><td><code>x'</code></td><td>Final-state <code>x</code>.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A visit counter has <span class="key">frame { n }</span>, <span class="key">pre n &ge; 0</span>, <span class="key">post n' = n + 1</span>.</p>
+<ul>
+  <li><strong>Frame:</strong> <code>n</code>.</li>
+  <li><strong>Pre:</strong> <code>n &ge; 0</code>.</li>
+  <li><strong>Post:</strong> <code>n' = n + 1</code>.</li>
+  <li><strong>Natural language:</strong> assume non-negative; produce one more.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Max-of-Two Specification</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>[ , ]</code></td><td>Spec brackets.</td></tr>
+  <tr><td><code>x'</code></td><td>Final-state <code>x</code>.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A thermostat wants <span class="key">frame { m }</span> to store the <span class="key">max of two readings a, b</span>.</p>
+<ul>
+  <li><strong>Frame:</strong> <code>m</code>.</li>
+  <li><strong>Pre:</strong> <code>true</code> (any inputs).</li>
+  <li><strong>Post:</strong> <code>m' = a &and; m' &ge; b &or; m' = b &and; m' &ge; a</code>.</li>
+  <li><strong>Natural language:</strong> m' is the larger of a, b.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p1_1"><p>A specification statement has form:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')"><code>w : [ pre, post ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_1')"><code>w = code</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Free type.</button></li></ul><div class="feedback" id="fb1_1"><p><strong>Correct.</strong> Frame/pre/post triple.</p><ul><li>Standard form.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p1_2"><p>The frame lists:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">Variables the op may change.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">All variables.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">No variables.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Nothing.</button></li></ul><div class="feedback" id="fb1_2"><p><strong>Correct.</strong> Change permissions.</p><ul><li>Others stay fixed.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p1_3"><p class="scenario">A bank balance op must update <code>bal</code>; other fields unchanged. Which spec statement captures "deposit x"?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>bal : [ x &ge; 0, bal' = bal + x ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>bal : [ true, bal' = x ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>bal : [ x &lt; 0, bal' = bal - x ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>bal : [ false, true ]</code></button></li></ul><div class="feedback" id="fb1_3"><p><strong>Correct.</strong> Deposit spec.</p><ul><li><strong>Frame:</strong> bal.</li><li><strong>Pre:</strong> <code>x &ge; 0</code>.</li><li><strong>Post:</strong> <code>bal' = bal + x</code>.</li><li><strong>Natural language:</strong> add positive deposit.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p1_4"><p class="scenario">A parking system tracks <code>spots</code>. Which spec statement captures "release one spot, <code>spots &lt; capacity</code> afterwards"?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>spots : [ spots &gt; 0, spots' = spots - 1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>spots : [ spots &lt; 0, spots' = spots + 1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>spots : [ true, spots' = 0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>spots : [ false, true ]</code></button></li></ul><div class="feedback" id="fb1_4"><p><strong>Correct.</strong> Release spec.</p><ul><li><strong>Frame:</strong> spots.</li><li><strong>Pre:</strong> <code>spots &gt; 0</code>.</li><li><strong>Post:</strong> <code>spots' = spots - 1</code>.</li><li><strong>Natural language:</strong> free one space.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p1_5"><p><code>skip</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>: [ true, true ]</code> &mdash; always feasible, no change.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>: [ false, false ]</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">Free type.</button></li></ul><div class="feedback" id="fb1_5"><p><strong>Correct.</strong> No-op spec.</p><ul><li>Always does nothing.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p1_6"><p class="scenario">A game wants <code>score</code> reset to 0. Which spec matches?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>score : [ true, score' = 0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>score : [ false, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>score : [ true, score' = score ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>score : [ true, true ]</code></button></li></ul><div class="feedback" id="fb1_6"><p><strong>Correct.</strong> Reset spec.</p><ul><li><strong>Frame:</strong> score.</li><li><strong>Pre:</strong> <code>true</code>.</li><li><strong>Post:</strong> <code>score' = 0</code>.</li><li><strong>Natural language:</strong> zero the score.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p1_7"><p>Feasibility means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')">Some final state satisfies the post for every pre-state.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">The op compiles.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">The op is fast.</button></li></ul><div class="feedback" id="fb1_7"><p><strong>Correct.</strong> Post is achievable.</p><ul><li>No magic.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p1_8"><p class="scenario">A vending machine specifies "dispense chosen drink if stocked." Frame <code>{ stock }</code>. Which is it?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>stock : [ stock(d) &gt; 0, stock' = stock &oplus; {d &#8614; stock(d)-1} ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>stock : [ stock(d) = 0, stock' = stock ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>stock : [ true, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>stock : [ false, true ]</code></button></li></ul><div class="feedback" id="fb1_8"><p><strong>Correct.</strong> Dispense spec.</p><ul><li><strong>Frame:</strong> stock.</li><li><strong>Pre:</strong> stocked.</li><li><strong>Post:</strong> decrement.</li><li><strong>Natural language:</strong> dispense one.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p1_9"><p>A post using <code>x'</code> references:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')">The final state of <code>x</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">The initial state.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">A free type.</button></li></ul><div class="feedback" id="fb1_9"><p><strong>Correct.</strong> Post-state variable.</p><ul><li>Primed convention.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p1_10"><p class="scenario">A temperature sensor spec needs <code>temp</code> set to the average of <code>a, b</code>. Which is it?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>temp : [ true, temp' = (a + b) / 2 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>temp : [ a = b, temp' = a ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>temp : [ false, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>temp : [ true, true ]</code></button></li></ul><div class="feedback" id="fb1_10"><p><strong>Correct.</strong> Mean spec.</p><ul><li><strong>Frame:</strong> temp.</li><li><strong>Pre:</strong> <code>true</code>.</li><li><strong>Post:</strong> average.</li><li><strong>Natural language:</strong> mean of two.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p1_11"><p>A spec with <code>post = false</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')">Infeasible (magic) &mdash; nothing can satisfy it.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">skip.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Trivial.</button></li></ul><div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Magic.</p><ul><li>Unachievable spec.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p1_12"><p class="scenario">An elevator op moves to requested floor <code>f</code>. Frame <code>{ floor }</code>. Which is the spec?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>floor : [ 1 &le; f &le; max, floor' = f ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>floor : [ true, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>floor : [ false, floor' = f ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>floor : [ f &gt; max, floor' = f ]</code></button></li></ul><div class="feedback" id="fb1_12"><p><strong>Correct.</strong> Move spec.</p><ul><li><strong>Frame:</strong> floor.</li><li><strong>Pre:</strong> valid range.</li><li><strong>Post:</strong> at requested.</li><li><strong>Natural language:</strong> go to f.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p1_13"><p>Variables outside the frame:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')">Remain unchanged.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">May be wild.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Get reset.</button></li></ul><div class="feedback" id="fb1_13"><p><strong>Correct.</strong> Implicit Xi.</p><ul><li>Frame discipline.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p1_14"><p class="scenario">An inventory op "restock <code>item</code> by <code>n</code>" has frame <code>{ stock }</code>. Which spec?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>stock : [ n &ge; 0, stock' = stock &oplus; {item &#8614; stock(item) + n} ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>stock : [ n &lt; 0, stock' = &empty; ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>stock : [ true, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>stock : [ false, true ]</code></button></li></ul><div class="feedback" id="fb1_14"><p><strong>Correct.</strong> Restock spec.</p><ul><li><strong>Frame:</strong> stock.</li><li><strong>Pre:</strong> <code>n &ge; 0</code>.</li><li><strong>Post:</strong> add n.</li><li><strong>Natural language:</strong> increase stock.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p1_15"><p>Specification statements are refined:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">Stepwise into code using calculus laws.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">All at once.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">Never.</button></li></ul><div class="feedback" id="fb1_15"><p><strong>Correct.</strong> Stepwise refinement.</p><ul><li>Calculus application.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p1_16"><p class="scenario">A calculator op "negate <code>x</code>" has frame <code>{ x }</code>. Which spec?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>x : [ true, x' = -x ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>x : [ true, x' = x ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>x : [ false, x' = 0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>x : [ true, true ]</code></button></li></ul><div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Negate spec.</p><ul><li><strong>Frame:</strong> x.</li><li><strong>Pre:</strong> <code>true</code>.</li><li><strong>Post:</strong> <code>x' = -x</code>.</li><li><strong>Natural language:</strong> flip sign.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p1_17"><p>Why use spec statements?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')">They bridge schemas and imperative code.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Only aesthetics.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Free type.</button></li></ul><div class="feedback" id="fb1_17"><p><strong>Correct.</strong> Bridge schemas-to-code.</p><ul><li>Refinement path.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p1_18"><p class="scenario">A printer op "advance page number by 1" has frame <code>{ page }</code>. Which spec?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')"><code>page : [ true, page' = page + 1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>page : [ false, page' = page ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>page : [ true, page' = 0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>page : [ true, true ]</code></button></li></ul><div class="feedback" id="fb1_18"><p><strong>Correct.</strong> Advance spec.</p><ul><li><strong>Frame:</strong> page.</li><li><strong>Pre:</strong> <code>true</code>.</li><li><strong>Post:</strong> increment.</li><li><strong>Natural language:</strong> next page.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p1_19"><p>Spec statements decouple:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')">What from how.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Types from values.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Free type.</button></li></ul><div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Behavior vs implementation.</p><ul><li>Declarative.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p1_20"><p class="scenario">A weather station spec "record temp average of last two" has frame <code>{ avgTemp }</code>. Which is it?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')"><code>avgTemp : [ true, avgTemp' = (t1 + t2) / 2 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>avgTemp : [ false, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>avgTemp : [ true, avgTemp' = t1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>avgTemp : [ true, true ]</code></button></li></ul><div class="feedback" id="fb1_20"><p><strong>Correct.</strong> Average spec.</p><ul><li><strong>Frame:</strong> avgTemp.</li><li><strong>Pre:</strong> <code>true</code>.</li><li><strong>Post:</strong> mean.</li><li><strong>Natural language:</strong> average two temps.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p1_21"><p>A spec with <code>pre = false</code>:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')">Is vacuously satisfied &mdash; caller promises the impossible.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Fails always.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Free type.</button></li></ul><div class="feedback" id="fb1_21"><p><strong>Correct.</strong> Vacuous spec.</p><ul><li>Caller-impossible precondition.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p1_22"><p class="scenario">A music player op "play next track" has frame <code>{ track }</code>. Which spec?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')"><code>track : [ track &lt; #playlist, track' = track + 1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_22')"><code>track : [ true, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_22')"><code>track : [ false, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_22')"><code>track : [ true, track' = 0 ]</code></button></li></ul><div class="feedback" id="fb1_22"><p><strong>Correct.</strong> Next-track spec.</p><ul><li><strong>Frame:</strong> track.</li><li><strong>Pre:</strong> not at end.</li><li><strong>Post:</strong> advance.</li><li><strong>Natural language:</strong> skip forward.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p1_23"><p>Spec statements are Morgan-style notation for:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">Abstract operations in refinement calculus.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Code.</button></li></ul><div class="feedback" id="fb1_23"><p><strong>Correct.</strong> Morgan notation.</p><ul><li>Canonical.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p1_24"><p class="scenario">A stopwatch op "reset timer" has frame <code>{ ticks }</code>. Which spec?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')"><code>ticks : [ true, ticks' = 0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_24')"><code>ticks : [ false, true ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_24')"><code>ticks : [ true, ticks' = ticks ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_24')"><code>ticks : [ true, true ]</code></button></li></ul><div class="feedback" id="fb1_24"><p><strong>Correct.</strong> Reset spec.</p><ul><li><strong>Frame:</strong> ticks.</li><li><strong>Pre:</strong> <code>true</code>.</li><li><strong>Post:</strong> zero.</li><li><strong>Natural language:</strong> reset stopwatch.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p1_25"><p>A spec statement unifies:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Declarative Z schemas with imperative code.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Only code.</button></li></ul><div class="feedback" id="fb1_25"><p><strong>Correct.</strong> Unifies both.</p><ul><li>Refinement path.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 19.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">19.2 Assignment</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="A code statement that updates a variable's value: x := e means 'replace x with the value of expression e.'">Assignment</span> <code>x := e</code> updates one variable.</li>
+  <li>Assignment rule: <code>w, x : [ pre, post ] &sube; x := e</code> when <code>pre &rArr; post[e/x']</code> (post is made true by setting <code>x</code> to <code>e</code>).</li>
+  <li><strong>Weakening pre</strong> and <strong>strengthening post</strong> are valid refinement steps.</li>
+  <li>A spec is refined to an assignment when the postcondition is a simple equation <code>x' = e</code>.</li>
+  <li>The frame must include <code>x</code>; non-frame variables are untouched.</li>
+  <li>Assignments are the atomic code steps of refinement calculus.</li>
+  <li>Feasibility is preserved: a feasible spec refined to assignment gives executable code.</li>
+  <li>Think of assignment as the final step of a derivation, converting specification to code.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Assignment</td><td>Code that sets a variable.</td></tr>
+  <tr><td>Assignment rule</td><td>Law refining a spec to an assignment.</td></tr>
+  <tr><td>Weaken pre</td><td>Accept a more permissive precondition.</td></tr>
+  <tr><td>Strengthen post</td><td>Demand a more specific postcondition.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Refines.</td></tr>
+  <tr><td><code>[e/x']</code></td><td>Substitute <code>e</code> for <code>x'</code>.</td></tr>
+</table>
+
+<h3>IV.1 Example: Refine Increment to Assignment</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Refines.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">counter increment</span> spec <code>n : [ true, n' = n + 1 ]</code> refines to the <span class="key">assignment n := n + 1</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>n : [ true, n' = n + 1 ]</code>.</li>
+  <li><strong>Check:</strong> <code>true &rArr; (n + 1 = n + 1)</code> &check;</li>
+  <li><strong>Code:</strong> <code>n := n + 1</code>.</li>
+  <li><strong>Natural language:</strong> increment is trivially an assignment.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Refine Balance Deposit</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>[e/x']</code></td><td>Substitution.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">bank deposit</span> spec <code>bal : [ x &ge; 0, bal' = bal + x ]</code> refines to <span class="key">bal := bal + x</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>bal : [ x &ge; 0, bal' = bal + x ]</code>.</li>
+  <li><strong>Check:</strong> substitute <code>bal' = bal + x</code>: <code>(bal + x = bal + x)</code> &check;</li>
+  <li><strong>Code:</strong> <code>bal := bal + x</code>.</li>
+  <li><strong>Natural language:</strong> deposit is a single assignment.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p2_1"><p>Assignment has form:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>x := e</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>x = e</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>x &rarr; e</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">Nothing.</button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> Walrus for update.</p><ul><li>Standard notation.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p2_2"><p>Assignment rule says:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>w, x : [ pre, post ] &sube; x := e</code> when <code>pre &rArr; post[e/x']</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>w, x : [ pre, post ] &sube; skip</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>x := y</code>.</button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> Substitution check.</p><ul><li>Post holds under e.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p2_3"><p class="scenario">A thermostat spec <code>temp : [ true, temp' = 20 ]</code> refines to which assignment?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>temp := 20</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>temp := temp</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>temp := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>temp := 100</code></button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Set constant.</p><ul><li><strong>Spec:</strong> temp' = 20.</li><li><strong>Check:</strong> trivial.</li><li><strong>Code:</strong> <code>temp := 20</code>.</li><li><strong>Natural language:</strong> set to target.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p2_4"><p class="scenario">A game <code>score : [ true, score' = score + 10 ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>score := score + 10</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>score := 10</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>score := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>score := score - 10</code></button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Add-ten.</p><ul><li><strong>Spec:</strong> add 10.</li><li><strong>Check:</strong> substitute &check;.</li><li><strong>Code:</strong> <code>score := score + 10</code>.</li><li><strong>Natural language:</strong> bonus points.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p2_5"><p>Weakening a precondition:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">Is a valid refinement step.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Invalidates refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Free type.</button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Accept more inputs.</p><ul><li>Broader domain.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p2_6"><p class="scenario">A counter <code>n : [ n &ge; 0, n' = n - 1 ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>n := n - 1</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>n := n</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>n := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>n := n + 1</code></button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> Decrement.</p><ul><li><strong>Spec:</strong> <code>n' = n - 1</code>.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> <code>n := n - 1</code>.</li><li><strong>Natural language:</strong> step down.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p2_7"><p>Strengthening postconditions:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">Gives a more specific guarantee, still a valid refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Invalid.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Free type.</button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> Tighter guarantee.</p><ul><li>Reduces non-det.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p2_8"><p class="scenario">An ATM spec <code>bal : [ bal &ge; x, bal' = bal - x ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>bal := bal - x</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>bal := x</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>bal := bal + x</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>bal := 0</code></button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Withdrawal.</p><ul><li><strong>Spec:</strong> withdraw x.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> <code>bal := bal - x</code>.</li><li><strong>Natural language:</strong> subtract amount.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p2_9"><p>Substitution <code>post[e/x']</code>:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')">Replaces each <code>x'</code> in post with expression <code>e</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">Does nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">Free type.</button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Substitute e for x'.</p><ul><li>Post after update.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p2_10"><p class="scenario">A loyalty app <code>pts : [ true, pts' = pts * 2 ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>pts := pts * 2</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>pts := 2</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>pts := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>pts := pts</code></button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> Double.</p><ul><li><strong>Spec:</strong> double points.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> <code>pts := pts * 2</code>.</li><li><strong>Natural language:</strong> 2x bonus.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p2_11"><p>An assignment step converts:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')">A simple spec into an executable line of code.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Spec into spec.</button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> Spec to code.</p><ul><li>Final step.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p2_12"><p class="scenario">An IoT device <code>status : [ true, status' = "ON" ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>status := "ON"</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>status := status</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>status := "OFF"</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>status := &empty;</code></button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> Turn on.</p><ul><li><strong>Spec:</strong> to "ON".</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> <code>status := "ON"</code>.</li><li><strong>Natural language:</strong> power on.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p2_13"><p>If the post can't be satisfied by any <code>e</code>:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">The spec is infeasible and no assignment refines it.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Any assignment works.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Free type.</button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> Infeasible.</p><ul><li>No code exists.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p2_14"><p class="scenario">A parking meter <code>time : [ coins &ge; 0, time' = time + coins * 5 ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')"><code>time := time + coins * 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>time := 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>time := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>time := time</code></button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Coin credit.</p><ul><li><strong>Spec:</strong> add 5*coins.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> assignment.</li><li><strong>Natural language:</strong> buy minutes.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p2_15"><p>Variables not in the frame:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">Cannot be assigned by this operation.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Get reset.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Become wild.</button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Frame restriction.</p><ul><li>No side-effects.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p2_16"><p class="scenario">A reading tracker <code>pages : [ true, pages' = pages + 1 ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>pages := pages + 1</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>pages := 1</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>pages := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>pages := pages</code></button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Increment.</p><ul><li><strong>Spec:</strong> add one.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> <code>pages := pages + 1</code>.</li><li><strong>Natural language:</strong> turned another page.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p2_17"><p>The assignment law is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">The simplest refinement rule &mdash; ends a derivation.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Never applicable.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Free type.</button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> Atomic step.</p><ul><li>Closes the derivation.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p2_18"><p class="scenario">A payroll app <code>gross : [ hours &ge; 0, gross' = hours * rate ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>gross := hours * rate</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>gross := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>gross := hours</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>gross := rate</code></button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Payroll calc.</p><ul><li><strong>Spec:</strong> hours * rate.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> assignment.</li><li><strong>Natural language:</strong> gross pay.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p2_19"><p>Assignment refinement is valid when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')">The postcondition holds after substituting <code>e</code> for <code>x'</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Never.</button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Substitution check.</p><ul><li>Verifies spec.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p2_20"><p class="scenario">A shopping cart <code>total : [ true, total' = price * qty ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>total := price * qty</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>total := price</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>total := qty</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>total := 0</code></button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Line total.</p><ul><li><strong>Spec:</strong> price * qty.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> assignment.</li><li><strong>Natural language:</strong> item cost.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p2_21"><p>Assignments are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">The executable endpoint of refinement derivations.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Abstract only.</button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Executable endpoint.</p><ul><li>Machine code.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p2_22"><p class="scenario">A shipping app <code>weight : [ true, weight' = items * unitWeight ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>weight := items * unitWeight</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>weight := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>weight := items</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>weight := unitWeight</code></button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Total weight.</p><ul><li><strong>Spec:</strong> product.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> assignment.</li><li><strong>Natural language:</strong> shipment weight.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p2_23"><p>Monotonicity of refinement allows:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Refining subsections and composing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Only full refinement.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Local refinement composes.</p><ul><li>Compositional.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p2_24"><p class="scenario">A thermostat display <code>disp : [ true, disp' = temp - 32 ]</code> refines to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')"><code>disp := temp - 32</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>disp := 32</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>disp := temp</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>disp := 0</code></button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Offset display.</p><ul><li><strong>Spec:</strong> temp - 32.</li><li><strong>Check:</strong> substitute.</li><li><strong>Code:</strong> assignment.</li><li><strong>Natural language:</strong> F-to-C adjust.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p2_25"><p>The assignment rule reduces:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">A simple spec to a line of code via substitution.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">A spec to nothing.</button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> Spec &rarr; code.</p><ul><li>Atomic endpoint.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 19.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">19.3 Logical Constants</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>A <span class="vocab" data-def="A named fixed value introduced with 'con c : T | P(c)' that may appear in specs and refinement proofs but never in final code.">logical constant</span> is declared with <code>con c : T | P(c) &bull; spec</code> &mdash; names an unknown fixed value with property <code>P</code>.</li>
+  <li>Logical constants let us record the pre-state value during a derivation, referring to it in the post.</li>
+  <li>Introduction rule: if <code>c</code> doesn't appear in <code>spec</code>, adding a <code>con</code> declaration is a valid step.</li>
+  <li>Elimination: a <code>con</code> is removed when its role is done &mdash; it never appears in final executable code.</li>
+  <li>Logical constants are <strong>auxiliary</strong>: they exist only in the proof/derivation.</li>
+  <li>A typical pattern: <code>con c &bull; v : [ v = c, v' = f(c) ]</code> records the initial value of <code>v</code> as <code>c</code>.</li>
+  <li>Scoping uses <code>begin</code> / <code>end</code> blocks: the constant is valid inside the block only.</li>
+  <li>Logical constants are the refinement-calculus analog of "ghost variables" in Hoare logic.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Logical constant</td><td>Named fixed value used only in proof.</td></tr>
+  <tr><td>con declaration</td><td>Introduce a logical constant.</td></tr>
+  <tr><td>Ghost variable</td><td>Auxiliary value, not in code.</td></tr>
+  <tr><td>Begin/end block</td><td>Scoping boundary for constants.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>con</code></td><td>Constant declaration.</td></tr>
+  <tr><td><code>begin</code></td><td>Open scope.</td></tr>
+  <tr><td><code>end</code></td><td>Close scope.</td></tr>
+</table>
+
+<h3>IV.1 Example: Record Initial Balance</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>con</code></td><td>Constant declaration.</td></tr>
+  <tr><td><code>begin</code></td><td>Open scope.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bank transfer needs to know the <span class="key">initial balance</span> of the sender to confirm the amount really moved.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>bal : [ bal &ge; x, bal' = bal - x ]</code>.</li>
+  <li><strong>Introduce constant:</strong> <code>con c &bull; bal : [ bal = c &and; c &ge; x, bal' = c - x ]</code>.</li>
+  <li><strong>Refine:</strong> inside block, <code>c</code> captures initial value.</li>
+  <li><strong>Natural language:</strong> record "before" to state "after".</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Max-Recall Pattern</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>con</code></td><td>Constant declaration.</td></tr>
+  <tr><td><code>end</code></td><td>Close scope.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A peak-detector records the <span class="key">highest temperature</span>; spec refers to both initial and new readings.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>peak : [ true, peak' &ge; peak &and; peak' &ge; reading ]</code>.</li>
+  <li><strong>Introduce constant:</strong> <code>con p &bull; peak : [ peak = p, peak' &ge; p &and; peak' &ge; reading ]</code>.</li>
+  <li><strong>Refine:</strong> derive <code>peak := max(p, reading)</code>, then eliminate <code>p</code>.</li>
+  <li><strong>Natural language:</strong> ghost value disappears from code.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p3_1"><p>A logical constant is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">A named fixed value used only in proofs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">A code variable.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Free type.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Proof-only value.</p><ul><li>Not in code.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p3_2"><p>The <code>con</code> keyword:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">Declares a logical constant.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Assigns a value.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Is a free type.</button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> Declaration.</p><ul><li>Introduces ghost.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p3_3"><p class="scenario">A spec for a temperature change needs to reference the starting reading. Which introduces a logical constant for that?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>con t0 &bull; temp : [ temp = t0, post(t0, temp') ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>t0 := temp</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>temp := t0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')">Nothing.</button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Record initial value.</p><ul><li><strong>Spec:</strong> uses t0.</li><li><strong>Introduce:</strong> <code>con t0</code>.</li><li><strong>Refine:</strong> within block.</li><li><strong>Natural language:</strong> ghost initial reading.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p3_4"><p class="scenario">A bank's transfer needs the initial <code>bal</code> in its post. Which con introduction is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>con c &bull; bal : [ bal = c, bal' = c - x ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>bal = c</code> alone</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>c := bal</code></button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Capture initial.</p><ul><li><strong>Spec:</strong> post uses c.</li><li><strong>Introduce:</strong> <code>con c</code>.</li><li><strong>Refine:</strong> derive code.</li><li><strong>Natural language:</strong> ghost "before".</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p3_5"><p>Final executable code:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')">Never contains logical constants.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Must contain them.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Free type.</button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> Eliminated.</p><ul><li>Ghosts disappear.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p3_6"><p class="scenario">A game spec needs to refer to the initial <code>score</code>. Which declaration helps?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>con s0 &bull; score : [ score = s0, score' &gt; s0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>score := s0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>s0 := score</code></button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> Initial-score ghost.</p><ul><li><strong>Spec:</strong> post references s0.</li><li><strong>Introduce:</strong> <code>con s0</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> before/after comparison.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p3_7"><p>Scoping of <code>con</code>:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')">Bounded by <code>begin</code> / <code>end</code> block.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Global.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">File-wide.</button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Block-scoped.</p><ul><li>Local to derivation.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p3_8"><p class="scenario">A stock app tracks price change. Which uses a logical constant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')"><code>con p0 &bull; price : [ price = p0, |price' - p0| &le; &epsilon; ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>p0 := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>price := p0</code></button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> Initial-price ghost.</p><ul><li><strong>Spec:</strong> bounded change.</li><li><strong>Introduce:</strong> <code>con p0</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> delta bound.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p3_9"><p>Logical constants are analogous to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')">Ghost variables in Hoare logic.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Actual machine registers.</button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> Ghost analog.</p><ul><li>Proof-only scaffolding.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p3_10"><p class="scenario">A user profile app needs to reference initial <code>points</code> to prove the bonus was applied. Which uses a <code>con</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')"><code>con p0 &bull; points : [ points = p0, points' = 2 * p0 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>p0 := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>points := p0</code></button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> Initial-points ghost.</p><ul><li><strong>Spec:</strong> double initial.</li><li><strong>Introduce:</strong> <code>con p0</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> 2x of before.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p3_11"><p>The con-introduction rule is valid when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')">The constant name doesn't already appear in the spec.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">Nothing.</button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> No-shadow requirement.</p><ul><li>Fresh name.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p3_12"><p class="scenario">A calorie tracker's spec says calories' = calories - burned. Which introduces a constant for initial calories?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')"><code>con c &bull; calories : [ calories = c, calories' = c - burned ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>c := burned</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>calories := c</code></button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> Ghost initial.</p><ul><li><strong>Spec:</strong> post uses c.</li><li><strong>Introduce:</strong> <code>con c</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> before-burn ghost.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p3_13"><p>Logical constants disappear:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">Before code generation.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">At compile time.</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Eliminated in derivation.</p><ul><li>No runtime.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p3_14"><p class="scenario">A survey app's spec needs to record original <code>count</code>. Which is right?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')"><code>con c &bull; count : [ count = c, count' = c + 1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_14')"><code>count := c</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')"><code>c := count'</code></button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Record initial count.</p><ul><li><strong>Spec:</strong> post references c.</li><li><strong>Introduce:</strong> <code>con c</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> increment from c.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p3_15"><p>The logical-constant pattern is central to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">Sequential composition refinement proofs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Free-type proofs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Type checking.</button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Sequential comp staple.</p><ul><li>Mid-state tracking.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p3_16"><p class="scenario">A library app tracks books' initial count before a batch import. Which uses <code>con</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')"><code>con b0 &bull; books : [ books = b0, books' = b0 + imports ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>books := b0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>b0 := &empty;</code></button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Pre-import ghost.</p><ul><li><strong>Spec:</strong> post uses b0.</li><li><strong>Introduce:</strong> <code>con b0</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> add imports to ghost.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p3_17"><p>Logical constants are eliminated by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">Completing derivation so the <code>con</code> is no longer referenced.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Assignment.</button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Scope exit.</p><ul><li>No references left.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p3_18"><p class="scenario">A printer's spec records initial jobs before flushing. Which uses a constant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')"><code>con j &bull; jobs : [ jobs = j, jobs' = &empty; &and; flushed = j ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_18')"><code>jobs := j</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')"><code>j := &empty;</code></button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> Pre-flush ghost.</p><ul><li><strong>Spec:</strong> flushed = pre-jobs.</li><li><strong>Introduce:</strong> <code>con j</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> record before flush.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p3_19"><p>The introduction law:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">Wraps a spec in a <code>con</code> declaration when the name is fresh.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Is always valid.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Generates code.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Fresh-name wrap.</p><ul><li>Valid introduction.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p3_20"><p class="scenario">A car-rental app tracks initial mileage. Which uses <code>con</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')"><code>con m &bull; mileage : [ mileage = m, mileage' = m + driven ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>mileage := m</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>m := &empty;</code></button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> Pre-drive ghost.</p><ul><li><strong>Spec:</strong> post = m + driven.</li><li><strong>Introduce:</strong> <code>con m</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> record start-mileage.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p3_21"><p>A <code>con</code> declaration's role is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">Scaffolding in the proof, not the code.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Only code.</button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> Proof scaffolding.</p><ul><li>Vanishes after use.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p3_22"><p class="scenario">A fitness app records pre-workout steps to compare with post. Which uses <code>con</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>con s &bull; steps : [ steps = s, steps' &ge; s + goal ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>steps := s</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>s := &empty;</code></button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Pre-workout ghost.</p><ul><li><strong>Spec:</strong> post &ge; s + goal.</li><li><strong>Introduce:</strong> <code>con s</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> goal over initial.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p3_23"><p>Logical constants enable:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">Refinement steps that need to remember initial state.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Only aesthetics.</button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> State-memory.</p><ul><li>Essential for sequencing.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p3_24"><p class="scenario">A voting app captures the pre-vote tally. Which declaration?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')"><code>con t &bull; tally : [ tally = t, tally' = t + 1 ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>tally := t</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>t := &empty;</code></button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Pre-vote ghost.</p><ul><li><strong>Spec:</strong> post = t + 1.</li><li><strong>Introduce:</strong> <code>con t</code>.</li><li><strong>Refine:</strong> inside block.</li><li><strong>Natural language:</strong> add one vote.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p3_25"><p>Logical constants are essential for:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Tracking values that must cross derivation boundaries.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Code generation.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Cross-boundary values.</p><ul><li>Refinement aid.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 19.4 ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">19.4 Sequential Composition</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="A refinement that splits a specification into two specs executed in sequence, with a 'mid' predicate connecting them.">Sequential composition</span> splits <code>[ pre, post ]</code> into two parts executed one after the other.</li>
+  <li>Rule: <code>w : [ pre, post ] &sube; w : [ pre, mid ] ; w : [ mid, post ]</code> &mdash; pick a <span class="vocab" data-def="A predicate describing the state between two sequential operations — 'half-way there'.">mid predicate</span> true after the first half.</li>
+  <li>The trick is choosing <code>mid</code> carefully so both sub-specs are easier to refine.</li>
+  <li>Logical constants often appear: <code>con c</code> records the initial value so the mid can reference it.</li>
+  <li>Sequential composition introduces the <code>;</code> operator between specs / code.</li>
+  <li>Each half is refined independently (monotonicity); compose the results.</li>
+  <li>The art is picking a mid that splits the work evenly &mdash; too weak or too strong hurts.</li>
+  <li>This rule is how most algorithms are constructed: do step A, then step B.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Sequential composition</td><td>Running one op after another.</td></tr>
+  <tr><td>Mid predicate</td><td>State half-way through.</td></tr>
+  <tr><td>Sequencing rule</td><td>Law splitting a spec into two.</td></tr>
+  <tr><td>Monotonicity</td><td>Refining a part refines the whole.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>;</code></td><td>Sequential composition.</td></tr>
+  <tr><td><code>mid</code></td><td>Intermediate predicate.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Refines.</td></tr>
+</table>
+
+<h3>IV.1 Example: Swap Variables via Temp</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>;</code></td><td>Sequential composition.</td></tr>
+  <tr><td><code>mid</code></td><td>Intermediate predicate.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">swap of x and y</span> uses a <span class="key">temp variable</span> as the mid-state for sequential composition.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>x, y : [ true, x' = y &and; y' = x ]</code>.</li>
+  <li><strong>Mid:</strong> <code>t = x &and; x' = y</code> (after first half).</li>
+  <li><strong>Sequence:</strong> <code>t := x ; x := y ; y := t</code>.</li>
+  <li><strong>Natural language:</strong> classic three-step swap.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Compute f(x) via Intermediate</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>;</code></td><td>Sequential composition.</td></tr>
+  <tr><td><code>mid</code></td><td>Intermediate predicate.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">area calculator</span> computes <span class="key">a = &pi; r<sup>2</sup></span> via intermediate <span class="key">s = r<sup>2</sup></span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>a : [ r &ge; 0, a' = &pi; * r * r ]</code>.</li>
+  <li><strong>Mid:</strong> <code>s = r * r</code>.</li>
+  <li><strong>Sequence:</strong> <code>s := r * r ; a := &pi; * s</code>.</li>
+  <li><strong>Natural language:</strong> square first, scale second.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p4_1"><p>Sequential composition uses operator:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')"><code>;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>,</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>+</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>&</code></button></li></ul><div class="feedback" id="fb4_1"><p><strong>Correct.</strong> Semicolon.</p><ul><li>Classic separator.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p4_2"><p>Mid predicate describes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')">The state between two sequential parts.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">The final state.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">The initial state.</button></li></ul><div class="feedback" id="fb4_2"><p><strong>Correct.</strong> Halfway state.</p><ul><li>Glue between parts.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p4_3"><p class="scenario">A shopping cart: compute tax then total. Spec <code>total : [ true, total' = price + price * tax_rate ]</code>. Which mid?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>mid: tax = price * tax_rate</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>mid: total = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>mid: true</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Nothing.</button></li></ul><div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Tax as mid.</p><ul><li><strong>Spec:</strong> tax-then-sum.</li><li><strong>Mid:</strong> tax computed.</li><li><strong>Sequence:</strong> <code>tax := price * rate ; total := price + tax</code>.</li><li><strong>Natural language:</strong> compute tax first.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p4_4"><p class="scenario">A bank wants to transfer <code>x</code> between accounts <code>a, b</code>. Spec: <code>a, b : [ a &ge; x, a' = a - x &and; b' = b + x ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')"><code>a := a - x ; b := b + x</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>a := b</code> alone</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>b := a</code> alone</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Nothing.</button></li></ul><div class="feedback" id="fb4_4"><p><strong>Correct.</strong> Debit then credit.</p><ul><li><strong>Spec:</strong> move x.</li><li><strong>Mid:</strong> a debited.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> classic transfer.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p4_5"><p>Monotonicity says:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')">Refining either half refines the composed sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Monotonicity fails.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Free type.</button></li></ul><div class="feedback" id="fb4_5"><p><strong>Correct.</strong> Local + refines whole.</p><ul><li>Compositional.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p4_6"><p class="scenario">A game's save-then-reset op. Spec: <code>state, backup : [ true, backup' = state &and; state' = initial ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>backup := state ; state := initial</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>state := initial</code> only</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>backup := initial</code> only</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">Nothing.</button></li></ul><div class="feedback" id="fb4_6"><p><strong>Correct.</strong> Save then reset.</p><ul><li><strong>Spec:</strong> save-reset.</li><li><strong>Mid:</strong> backup set.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> classic save-reset.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p4_7"><p>A sequencing rule splits spec into:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')"><code>[pre, mid] ; [mid, post]</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>[pre, post]</code> alone</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Three parts.</button></li></ul><div class="feedback" id="fb4_7"><p><strong>Correct.</strong> Two halves around mid.</p><ul><li>Classic split.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p4_8"><p class="scenario">An email filter: classify then route. Spec <code>routed : [ true, routed' = route(classify(msg)) ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')"><code>c := classify(msg) ; routed := route(c)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>routed := msg</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>c := msg</code></button></li></ul><div class="feedback" id="fb4_8"><p><strong>Correct.</strong> Classify then route.</p><ul><li><strong>Spec:</strong> route(classify).</li><li><strong>Mid:</strong> c = classify.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> classify-route.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p4_9"><p>Picking a good mid:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">Balances work between the two halves.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Always trivial.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Free type.</button></li></ul><div class="feedback" id="fb4_9"><p><strong>Correct.</strong> Balanced split.</p><ul><li>Art of derivation.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p4_10"><p class="scenario">A weather app: read then display. Spec <code>disp : [ true, disp' = format(sensor) ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')"><code>t := sensor ; disp := format(t)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_10')"><code>disp := sensor</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')"><code>t := disp</code></button></li></ul><div class="feedback" id="fb4_10"><p><strong>Correct.</strong> Read then format.</p><ul><li><strong>Spec:</strong> formatted reading.</li><li><strong>Mid:</strong> t = sensor.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> read-format.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p4_11"><p>Logical constants help sequential comp by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">Recording initial values for the mid.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Blocking composition.</button></li></ul><div class="feedback" id="fb4_11"><p><strong>Correct.</strong> Pre-value record.</p><ul><li>Bridge between halves.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p4_12"><p class="scenario">A compiler: parse then codegen. Spec <code>obj : [ true, obj' = codegen(parse(src)) ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')"><code>ast := parse(src) ; obj := codegen(ast)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_12')"><code>obj := src</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')"><code>ast := obj</code></button></li></ul><div class="feedback" id="fb4_12"><p><strong>Correct.</strong> Two-phase compile.</p><ul><li><strong>Spec:</strong> compile.</li><li><strong>Mid:</strong> ast built.</li><li><strong>Sequence:</strong> parse-codegen.</li><li><strong>Natural language:</strong> classic compiler.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p4_13"><p>A sequencing step uses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')">A chosen mid predicate + refinement law.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Only post.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Free type.</button></li></ul><div class="feedback" id="fb4_13"><p><strong>Correct.</strong> Mid + rule.</p><ul><li>Sequencing refinement.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p4_14"><p class="scenario">A login flow: authenticate then authorize. Spec <code>session : [ true, session' = grant(user, auth(creds)) ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')"><code>a := auth(creds) ; session := grant(user, a)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_14')"><code>session := creds</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')"><code>a := user</code></button></li></ul><div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Auth then grant.</p><ul><li><strong>Spec:</strong> authenticate-authorize.</li><li><strong>Mid:</strong> a = auth(creds).</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> two-step login.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p4_15"><p>Sequential composition's natural-language shape is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">"Do A, then do B."</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">"Always do A."</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">"Choose A or B."</button></li></ul><div class="feedback" id="fb4_15"><p><strong>Correct.</strong> Then-shape.</p><ul><li>Classic ordering.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p4_16"><p class="scenario">A weather-alert app: fetch then compare. Spec <code>alert : [ true, alert' = compare(fetch()) ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')"><code>r := fetch() ; alert := compare(r)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>alert := &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')"><code>r := alert</code></button></li></ul><div class="feedback" id="fb4_16"><p><strong>Correct.</strong> Fetch then compare.</p><ul><li><strong>Spec:</strong> alert = compare-of-fetch.</li><li><strong>Mid:</strong> r = fetch.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> fetch-compare.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p4_17"><p>Each half of a sequence:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">Can be refined independently.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Only both together.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Free type.</button></li></ul><div class="feedback" id="fb4_17"><p><strong>Correct.</strong> Local refinement.</p><ul><li>Monotonicity.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p4_18"><p class="scenario">A bookstore: check stock then charge. Spec <code>ok, bal : [ true, ok' = stock(bk) &ge; 1 &and; bal' = bal - price ]</code>. Which?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')"><code>ok := stock(bk) &ge; 1 ; bal := bal - price</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>bal := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')"><code>ok := true</code></button></li></ul><div class="feedback" id="fb4_18"><p><strong>Correct.</strong> Stock-check then charge.</p><ul><li><strong>Spec:</strong> check-charge.</li><li><strong>Mid:</strong> ok set.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> check stock first.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p4_19"><p>Composing two specs with <code>;</code>:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">Uses the first's post as the second's pre.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Ignores both.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Random.</button></li></ul><div class="feedback" id="fb4_19"><p><strong>Correct.</strong> Pipeline wiring.</p><ul><li>Mid is shared.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p4_20"><p class="scenario">A delivery tracker: receive then confirm. Spec <code>status : [ true, status' = confirmed(receive()) ]</code>. Which sequence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')"><code>pkg := receive() ; status := confirmed(pkg)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>status := &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>pkg := status</code></button></li></ul><div class="feedback" id="fb4_20"><p><strong>Correct.</strong> Receive-confirm.</p><ul><li><strong>Spec:</strong> confirm after receive.</li><li><strong>Mid:</strong> pkg = receive.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> two-step receive.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p4_21"><p>Sequential composition is the basis of:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')">Imperative programming structure.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Only functional.</button></li></ul><div class="feedback" id="fb4_21"><p><strong>Correct.</strong> Imperative primitive.</p><ul><li>Step-by-step code.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p4_22"><p class="scenario">A ride-share: locate then dispatch. Spec <code>assigned : [ true, assigned' = nearestOf(locate()) ]</code>. Which?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')"><code>d := locate() ; assigned := nearestOf(d)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_22')"><code>assigned := &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')"><code>d := assigned</code></button></li></ul><div class="feedback" id="fb4_22"><p><strong>Correct.</strong> Locate-dispatch.</p><ul><li><strong>Spec:</strong> dispatch nearest.</li><li><strong>Mid:</strong> d = locate.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> find then send.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p4_23"><p>A well-chosen mid makes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')">Both sub-proofs easier.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Harder.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Free type.</button></li></ul><div class="feedback" id="fb4_23"><p><strong>Correct.</strong> Easier halves.</p><ul><li>Splits work.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p4_24"><p class="scenario">A photo app: capture then filter. Spec <code>photo : [ true, photo' = filter(capture()) ]</code>. Which?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')"><code>raw := capture() ; photo := filter(raw)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_24')"><code>photo := &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')"><code>raw := photo</code></button></li></ul><div class="feedback" id="fb4_24"><p><strong>Correct.</strong> Capture-filter.</p><ul><li><strong>Spec:</strong> filter after capture.</li><li><strong>Mid:</strong> raw = capture.</li><li><strong>Sequence:</strong> two assigns.</li><li><strong>Natural language:</strong> pipeline photo.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p4_25"><p>Sequential composition + assignment gives:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">The straight-line program fragment.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Conditionals.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Loops.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Nothing.</button></li></ul><div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Straight-line code.</p><ul><li>Basic imperative.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 19.5 ================= -->
+<section class="page" id="page-4">
+<h2 id="c5">19.5 Conditional Statements</h2>
+
+<h3 id="s4-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="A code construct 'if G then S1 else S2 fi' that picks between two branches based on a guard.">Conditional</span> <code>if G then S1 else S2 fi</code> chooses a branch based on guard <code>G</code>.</li>
+  <li>Refinement rule: <code>w : [ pre, post ] &sube; if G then w : [ pre &and; G, post ] else w : [ pre &and; &not;G, post ] fi</code>.</li>
+  <li>Each branch is refined assuming its guard's truth value.</li>
+  <li>A multi-way <code>if ... elif ... elif ... fi</code> is valid when the guards exhaust the pre-state.</li>
+  <li>Non-exhaustive branches require adding <code>else</code> to avoid undefined behavior.</li>
+  <li>Conditional introduces case analysis &mdash; powerful when the postcondition splits by cases.</li>
+  <li>Each branch is a separate refinement; the whole spec is the merge.</li>
+  <li>The <span class="vocab" data-def="An expression that evaluates to true or false, determining branch selection.">guard</span> must be computable from the current state.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Conditional</td><td>If-then-else code.</td></tr>
+  <tr><td>Guard</td><td>Boolean expression selecting a branch.</td></tr>
+  <tr><td>Branch</td><td>One path in a conditional.</td></tr>
+  <tr><td>Exhaustive</td><td>Guards cover all pre-states.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>if</code></td><td>Conditional keyword.</td></tr>
+  <tr><td><code>then</code></td><td>Then branch.</td></tr>
+  <tr><td><code>else</code></td><td>Else branch.</td></tr>
+  <tr><td><code>fi</code></td><td>End conditional.</td></tr>
+</table>
+
+<h3>IV.1 Example: Max of Two via Conditional</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>if</code></td><td>Conditional.</td></tr>
+  <tr><td><code>else</code></td><td>Else branch.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A thermostat's <span class="key">max function</span> picks the larger reading via a <span class="key">guard a &ge; b</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>m : [ true, m' = max(a, b) ]</code>.</li>
+  <li><strong>Guard:</strong> <code>a &ge; b</code>.</li>
+  <li><strong>Code:</strong> <code>if a &ge; b then m := a else m := b fi</code>.</li>
+  <li><strong>Natural language:</strong> two cases, one assignment each.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Absolute Value</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>if</code></td><td>Conditional.</td></tr>
+  <tr><td><code>fi</code></td><td>End conditional.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A temperature-delta readout takes the <span class="key">absolute value</span> of a signed delta via a <span class="key">guard d &ge; 0</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>a : [ true, a' = |d| ]</code>.</li>
+  <li><strong>Guard:</strong> <code>d &ge; 0</code>.</li>
+  <li><strong>Code:</strong> <code>if d &ge; 0 then a := d else a := -d fi</code>.</li>
+  <li><strong>Natural language:</strong> flip sign if negative.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p5_1"><p>Conditional form is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_1')"><code>if G then S1 else S2 fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_1')"><code>while G do S</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Free type.</button></li></ul><div class="feedback" id="fb5_1"><p><strong>Correct.</strong> If-then-else-fi.</p><ul><li>Standard form.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p5_2"><p>Guards must be:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_2')">Boolean expressions computable from state.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')">Always true.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')">Free type.</button></li></ul><div class="feedback" id="fb5_2"><p><strong>Correct.</strong> Computable boolean.</p><ul><li>Executable predicate.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p5_3"><p class="scenario">A grading app sets <code>grade = "pass"</code> if <code>score &ge; 60</code>, else <code>"fail"</code>. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_3')"><code>if score &ge; 60 then grade := "pass" else grade := "fail" fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>grade := "pass"</code> always</button></li><li><button onclick="selectAnswer(this,false,'fb5_3')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>grade := score</code></button></li></ul><div class="feedback" id="fb5_3"><p><strong>Correct.</strong> Pass/fail branch.</p><ul><li><strong>Spec:</strong> two outcomes.</li><li><strong>Guard:</strong> <code>score &ge; 60</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> pass if high enough.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p5_4"><p class="scenario">An ATM withdrawal: if <code>bal &ge; amt</code> dispense, else reject. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_4')"><code>if bal &ge; amt then bal := bal - amt else reject() fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_4')"><code>bal := bal - amt</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_4')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_4')"><code>reject()</code> always</button></li></ul><div class="feedback" id="fb5_4"><p><strong>Correct.</strong> Balance-check.</p><ul><li><strong>Spec:</strong> guard on balance.</li><li><strong>Guard:</strong> <code>bal &ge; amt</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> dispense if funds.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p5_5"><p>Each branch of a conditional:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_5')">Is refined separately under its guard's assumption.</button></li><li><button onclick="selectAnswer(this,false,'fb5_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_5')">Together only.</button></li><li><button onclick="selectAnswer(this,false,'fb5_5')">Free type.</button></li></ul><div class="feedback" id="fb5_5"><p><strong>Correct.</strong> Per-branch refinement.</p><ul><li>Modular.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p5_6"><p class="scenario">A login: if <code>creds ok</code>, set session; else null. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_6')"><code>if creds = valid then session := new else session := null fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_6')"><code>session := null</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_6')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_6')"><code>session := new</code></button></li></ul><div class="feedback" id="fb5_6"><p><strong>Correct.</strong> Auth-branch.</p><ul><li><strong>Spec:</strong> session on valid.</li><li><strong>Guard:</strong> <code>creds = valid</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> login success/failure.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p5_7"><p>Guards must exhaust the pre-state when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_7')">Using multi-way conditional without an explicit else.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">Nothing.</button></li></ul><div class="feedback" id="fb5_7"><p><strong>Correct.</strong> Exhaustive required.</p><ul><li>Or include else.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p5_8"><p class="scenario">A traffic light: if <code>phase = GREEN</code> advance cars; else stop. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_8')"><code>if phase = GREEN then advance() else stop() fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_8')"><code>advance()</code> always</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')"><code>stop()</code> always</button></li></ul><div class="feedback" id="fb5_8"><p><strong>Correct.</strong> Phase-branch.</p><ul><li><strong>Spec:</strong> advance on green.</li><li><strong>Guard:</strong> <code>phase = GREEN</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> traffic control.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p5_9"><p>A non-exhaustive conditional without else:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_9')">Is undefined on states not covered.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Always safe.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Free type.</button></li></ul><div class="feedback" id="fb5_9"><p><strong>Correct.</strong> Undefined case.</p><ul><li>Needs else.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p5_10"><p class="scenario">A promo code: if entered apply 10% off, else charge full. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_10')"><code>if promo then total := 0.9 * price else total := price fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_10')"><code>total := price</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')"><code>total := 0.9 * price</code></button></li></ul><div class="feedback" id="fb5_10"><p><strong>Correct.</strong> Promo branch.</p><ul><li><strong>Spec:</strong> discounted or full.</li><li><strong>Guard:</strong> promo.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> promo applied.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p5_11"><p>The assumption in a then-branch is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_11')"><code>pre &and; G</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')"><code>pre &or; G</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">Just G.</button></li></ul><div class="feedback" id="fb5_11"><p><strong>Correct.</strong> Conjunction.</p><ul><li>Tighter assumption.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p5_12"><p class="scenario">A navigation app: if traffic heavy, reroute; else keep current. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_12')"><code>if heavy then route := reroute() else route := current fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_12')"><code>route := reroute()</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_12')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')"><code>route := current</code></button></li></ul><div class="feedback" id="fb5_12"><p><strong>Correct.</strong> Traffic branch.</p><ul><li><strong>Spec:</strong> reroute on heavy.</li><li><strong>Guard:</strong> heavy.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> condition-based routing.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p5_13"><p>Guards in Z notation are written in:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_13')">Predicate logic over state variables.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Pseudocode.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Free type.</button></li></ul><div class="feedback" id="fb5_13"><p><strong>Correct.</strong> Predicate guards.</p><ul><li>Z-style.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p5_14"><p class="scenario">A health app: if <code>bpm &gt; 100</code> warn; else continue. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_14')"><code>if bpm &gt; 100 then alert := "high" else alert := "ok" fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_14')"><code>alert := "high"</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_14')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')"><code>alert := "ok"</code></button></li></ul><div class="feedback" id="fb5_14"><p><strong>Correct.</strong> Threshold branch.</p><ul><li><strong>Spec:</strong> warn on high.</li><li><strong>Guard:</strong> <code>bpm &gt; 100</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> health threshold.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p5_15"><p>A multi-way if works when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_15')">Guards are mutually exclusive + exhaustive.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Free type.</button></li></ul><div class="feedback" id="fb5_15"><p><strong>Correct.</strong> Disjoint + complete.</p><ul><li>Safe switch.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p5_16"><p class="scenario">A food app: if <code>pH &lt; 4.6</code> acidic, else non-acidic. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_16')"><code>if pH &lt; 4.6 then cat := acidic else cat := non_acidic fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_16')"><code>cat := acidic</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_16')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')"><code>cat := non_acidic</code></button></li></ul><div class="feedback" id="fb5_16"><p><strong>Correct.</strong> pH-branch.</p><ul><li><strong>Spec:</strong> acidity classification.</li><li><strong>Guard:</strong> <code>pH &lt; 4.6</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> pH threshold.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p5_17"><p>Conditional refinement is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_17')">Case analysis within a derivation.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Only loop.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Free type.</button></li></ul><div class="feedback" id="fb5_17"><p><strong>Correct.</strong> Case split.</p><ul><li>Per-case refinement.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p5_18"><p class="scenario">A subscription: if <code>plan = "pro"</code> allow premium, else standard. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_18')"><code>if plan = "pro" then access := premium else access := standard fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_18')"><code>access := premium</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')"><code>access := standard</code></button></li></ul><div class="feedback" id="fb5_18"><p><strong>Correct.</strong> Plan-branch.</p><ul><li><strong>Spec:</strong> plan-based access.</li><li><strong>Guard:</strong> <code>plan = "pro"</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> tier-based.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p5_19"><p>An else is required when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_19')">Guards don't cover all pre-states.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Nothing.</button></li></ul><div class="feedback" id="fb5_19"><p><strong>Correct.</strong> Fallthrough required.</p><ul><li>Avoid undefined.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p5_20"><p class="scenario">A school: if <code>age &ge; 18</code> set adult else minor. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_20')"><code>if age &ge; 18 then cat := adult else cat := minor fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_20')"><code>cat := adult</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')"><code>cat := minor</code></button></li></ul><div class="feedback" id="fb5_20"><p><strong>Correct.</strong> Age-branch.</p><ul><li><strong>Spec:</strong> classify by age.</li><li><strong>Guard:</strong> <code>age &ge; 18</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> adult threshold.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p5_21"><p>Conditional plus sequential composition gives:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_21')">Structured imperative programs.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Only loops.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Free type.</button></li></ul><div class="feedback" id="fb5_21"><p><strong>Correct.</strong> Structured code.</p><ul><li>Except iteration.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p5_22"><p class="scenario">An airline: if <code>weight &gt; 23kg</code> charge excess; else free. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_22')"><code>if weight &gt; 23 then fee := excess else fee := 0 fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_22')"><code>fee := excess</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')"><code>fee := 0</code></button></li></ul><div class="feedback" id="fb5_22"><p><strong>Correct.</strong> Weight-branch.</p><ul><li><strong>Spec:</strong> excess if heavy.</li><li><strong>Guard:</strong> <code>weight &gt; 23</code>.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> baggage fee.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p5_23"><p>The conditional rule ensures:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_23')">Each branch refines the spec under its guard.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">One branch only.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">Free type.</button></li></ul><div class="feedback" id="fb5_23"><p><strong>Correct.</strong> Per-branch soundness.</p><ul><li>Guard-conditioned.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p5_24"><p class="scenario">A print job: if <code>color</code> use color printer; else grayscale. Which code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_24')"><code>if color then printer := color_p else printer := grey_p fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_24')"><code>printer := color_p</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_24')"><code>printer := grey_p</code></button></li></ul><div class="feedback" id="fb5_24"><p><strong>Correct.</strong> Color-branch.</p><ul><li><strong>Spec:</strong> route by color.</li><li><strong>Guard:</strong> color.</li><li><strong>Code:</strong> if-then-else.</li><li><strong>Natural language:</strong> printer selection.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p5_25"><p>Conditional refinement expresses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_25')">Decisions inside a derived algorithm.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Only repetition.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Free type.</button></li></ul><div class="feedback" id="fb5_25"><p><strong>Correct.</strong> In-algorithm decisions.</p><ul><li>Branching logic.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 19.6 ================= -->
+<section class="page" id="page-5">
+<h2 id="c6">19.6 Iteration</h2>
+
+<h3 id="s5-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="A code construct 'while G do S od' that repeats S as long as guard G holds.">Iteration</span> <code>while G do S od</code> repeats body <code>S</code> while guard <code>G</code> holds.</li>
+  <li>Refinement requires a <span class="vocab" data-def="A predicate that holds before the loop, after each iteration, and after the loop exits — the contract of the loop.">loop invariant</span> <code>I</code>: true before, preserved by body, and <code>I &and; &not;G &rArr; post</code>.</li>
+  <li>A <span class="vocab" data-def="A natural-number-valued expression that strictly decreases each iteration, proving loop termination.">variant</span> (or termination function) <code>V</code> proves termination: strictly decreases each iteration, bounded below.</li>
+  <li>Rule: <code>w : [ I, I &and; &not;G ] &sube; while G do w : [ I &and; G, I &and; V &lt; V<sub>0</sub> ] od</code>.</li>
+  <li>Loop body must preserve invariant + strictly reduce variant.</li>
+  <li>Choosing a good invariant is the key engineering step &mdash; it captures "what's true throughout."</li>
+  <li>Variants prevent infinite loops by forcing progress.</li>
+  <li>Iteration + conditional + sequential composition = all structured imperative programs.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Iteration</td><td>Loop construct.</td></tr>
+  <tr><td>Loop invariant</td><td>Always true during loop.</td></tr>
+  <tr><td>Variant</td><td>Decreasing measure proving termination.</td></tr>
+  <tr><td>Loop body</td><td>Code run each iteration.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>while</code></td><td>Loop keyword.</td></tr>
+  <tr><td><code>do</code></td><td>Body start.</td></tr>
+  <tr><td><code>od</code></td><td>Body end.</td></tr>
+  <tr><td><code>V</code></td><td>Variant expression.</td></tr>
+</table>
+
+<h3>IV.1 Example: Sum 1..n via Loop</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>while</code></td><td>Loop keyword.</td></tr>
+  <tr><td><code>V</code></td><td>Variant.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A receipt app computes the <span class="key">sum 1..n</span> by looping; invariant <span class="key">s = sum(1..i)</span>; variant <span class="key">n - i</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>s : [ n &ge; 0, s' = &sum;(1..n) ]</code>.</li>
+  <li><strong>Invariant:</strong> <code>s = sum(1..i) &and; 0 &le; i &le; n</code>.</li>
+  <li><strong>Code:</strong> <code>s := 0 ; i := 0 ; while i &lt; n do i := i + 1 ; s := s + i od</code>.</li>
+  <li><strong>Natural language:</strong> running sum + counter.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Find-First-Match Loop</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>while</code></td><td>Loop keyword.</td></tr>
+  <tr><td><code>V</code></td><td>Variant.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A contact-search scans a <span class="key">list l</span> until it finds <span class="key">name = target</span>; variant <span class="key">#l - i</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>idx : [ target &isin; ran l, idx' &isin; 1..#l &and; l(idx') = target ]</code>.</li>
+  <li><strong>Invariant:</strong> <code>target &notin; l &lrarr; 1..i-1</code>.</li>
+  <li><strong>Code:</strong> <code>i := 1 ; while l(i) &ne; target do i := i + 1 od ; idx := i</code>.</li>
+  <li><strong>Natural language:</strong> linear scan.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p6_1"><p>Iteration syntax is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_1')"><code>while G do S od</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_1')"><code>if G then S fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_1')">Free type.</button></li></ul><div class="feedback" id="fb6_1"><p><strong>Correct.</strong> While-do-od.</p><ul><li>Loop form.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p6_2"><p>A loop invariant holds:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_2')">Before, during, and after the loop.</button></li><li><button onclick="selectAnswer(this,false,'fb6_2')">Only after.</button></li><li><button onclick="selectAnswer(this,false,'fb6_2')">Only before.</button></li><li><button onclick="selectAnswer(this,false,'fb6_2')">Nothing.</button></li></ul><div class="feedback" id="fb6_2"><p><strong>Correct.</strong> Always true.</p><ul><li>Loop contract.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p6_3"><p class="scenario">A factorial code computes <code>f' = n!</code>. Which invariant fits <code>while i &lt; n do i := i + 1 ; f := f * i od</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_3')"><code>f = i! &and; 0 &le; i &le; n</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_3')"><code>f = n!</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_3')"><code>f = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_3')"><code>i = n</code></button></li></ul><div class="feedback" id="fb6_3"><p><strong>Correct.</strong> Running factorial.</p><ul><li><strong>Spec:</strong> factorial.</li><li><strong>Invariant:</strong> <code>f = i!</code>.</li><li><strong>Code:</strong> multiply in loop.</li><li><strong>Natural language:</strong> build up product.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p6_4"><p class="scenario">A copy-array code with index <code>i</code>. Which variant forces termination?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_4')"><code>V = n - i</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_4')"><code>V = i</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_4')"><code>V = n</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_4')"><code>V = 1</code></button></li></ul><div class="feedback" id="fb6_4"><p><strong>Correct.</strong> Remaining count.</p><ul><li><strong>Spec:</strong> copy array.</li><li><strong>Invariant:</strong> prefix copied.</li><li><strong>Code:</strong> increment i.</li><li><strong>Natural language:</strong> counts down to zero.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p6_5"><p>A variant must:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_5')">Strictly decrease each iteration, bounded below.</button></li><li><button onclick="selectAnswer(this,false,'fb6_5')">Increase.</button></li><li><button onclick="selectAnswer(this,false,'fb6_5')">Stay constant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_5')">Nothing.</button></li></ul><div class="feedback" id="fb6_5"><p><strong>Correct.</strong> Strict decrease.</p><ul><li>Termination proof.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p6_6"><p class="scenario">A word-count loops through chars. Which invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_6')"><code>count = words(s[0..i]) &and; 0 &le; i &le; #s</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_6')"><code>count = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_6')"><code>i = #s</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_6')">Nothing.</button></li></ul><div class="feedback" id="fb6_6"><p><strong>Correct.</strong> Partial-count invariant.</p><ul><li><strong>Spec:</strong> word count.</li><li><strong>Invariant:</strong> <code>count = partial</code>.</li><li><strong>Code:</strong> scan chars.</li><li><strong>Natural language:</strong> counting so far.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p6_7"><p>On loop exit, we know:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_7')"><code>I &and; &not;G</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb6_7')"><code>G</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb6_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_7')"><code>false</code>.</button></li></ul><div class="feedback" id="fb6_7"><p><strong>Correct.</strong> Invariant + negation of guard.</p><ul><li>Implies post.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p6_8"><p class="scenario">A shopping-sum iterates prices. Which invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_8')"><code>total = sum(prices[0..i]) &and; 0 &le; i &le; #prices</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_8')"><code>total = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_8')"><code>i = #prices</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_8')">Nothing.</button></li></ul><div class="feedback" id="fb6_8"><p><strong>Correct.</strong> Partial-sum invariant.</p><ul><li><strong>Spec:</strong> cart total.</li><li><strong>Invariant:</strong> running sum.</li><li><strong>Code:</strong> loop prices.</li><li><strong>Natural language:</strong> summing items.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p6_9"><p>Termination fails if:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_9')">Variant doesn't strictly decrease.</button></li><li><button onclick="selectAnswer(this,false,'fb6_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_9')">Guard is true.</button></li><li><button onclick="selectAnswer(this,false,'fb6_9')">Free type.</button></li></ul><div class="feedback" id="fb6_9"><p><strong>Correct.</strong> Non-decreasing variant.</p><ul><li>Infinite loop risk.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p6_10"><p class="scenario">A GPS's step counter loops until arrival. Which invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_10')"><code>steps = steps(path[0..i]) &and; 0 &le; i &le; #path</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_10')"><code>steps = #path</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_10')"><code>i = 0</code></button></li></ul><div class="feedback" id="fb6_10"><p><strong>Correct.</strong> Partial-steps invariant.</p><ul><li><strong>Spec:</strong> count steps.</li><li><strong>Invariant:</strong> partial steps.</li><li><strong>Code:</strong> loop path.</li><li><strong>Natural language:</strong> walking count.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p6_11"><p>The loop body's job is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_11')">Preserve invariant + decrease variant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_11')">Break invariant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_11')">Free type.</button></li></ul><div class="feedback" id="fb6_11"><p><strong>Correct.</strong> Two duties.</p><ul><li>Preserve + progress.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p6_12"><p class="scenario">A max-find scans an array. Which invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_12')"><code>m = max(arr[0..i]) &and; 0 &le; i &le; #arr</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_12')"><code>m = arr[0]</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_12')"><code>i = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_12')">Nothing.</button></li></ul><div class="feedback" id="fb6_12"><p><strong>Correct.</strong> Running max.</p><ul><li><strong>Spec:</strong> array max.</li><li><strong>Invariant:</strong> partial max.</li><li><strong>Code:</strong> scan.</li><li><strong>Natural language:</strong> max so far.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p6_13"><p>Loop invariants are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_13')">The hardest and most important part of loop design.</button></li><li><button onclick="selectAnswer(this,false,'fb6_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_13')">Trivial.</button></li><li><button onclick="selectAnswer(this,false,'fb6_13')">Free type.</button></li></ul><div class="feedback" id="fb6_13"><p><strong>Correct.</strong> Core design work.</p><ul><li>Central.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p6_14"><p class="scenario">A countdown timer loops <code>while t &gt; 0 do t := t - 1 od</code>. Which variant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_14')"><code>V = t</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_14')"><code>V = -t</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_14')"><code>V = 1</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_14')">Nothing.</button></li></ul><div class="feedback" id="fb6_14"><p><strong>Correct.</strong> Value of t.</p><ul><li><strong>Spec:</strong> countdown.</li><li><strong>Invariant:</strong> <code>t &ge; 0</code>.</li><li><strong>Code:</strong> decrement.</li><li><strong>Natural language:</strong> counting down.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p6_15"><p>The loop refinement rule proves:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_15')">Invariant preservation + termination + post on exit.</button></li><li><button onclick="selectAnswer(this,false,'fb6_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_15')">Only invariant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_15')">Free type.</button></li></ul><div class="feedback" id="fb6_15"><p><strong>Correct.</strong> Three-part proof.</p><ul><li>Standard loop rule.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p6_16"><p class="scenario">A queue-drain loops while queue non-empty. Which variant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_16')"><code>V = #queue</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_16')"><code>V = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_16')"><code>V = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_16')">Nothing.</button></li></ul><div class="feedback" id="fb6_16"><p><strong>Correct.</strong> Queue length.</p><ul><li><strong>Spec:</strong> drain queue.</li><li><strong>Invariant:</strong> drained + remainder.</li><li><strong>Code:</strong> dequeue loop.</li><li><strong>Natural language:</strong> length decreases.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p6_17"><p>Combined with conditional + sequence, iteration yields:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_17')">All structured imperative programs.</button></li><li><button onclick="selectAnswer(this,false,'fb6_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_17')">Only sorting.</button></li><li><button onclick="selectAnswer(this,false,'fb6_17')">Free type.</button></li></ul><div class="feedback" id="fb6_17"><p><strong>Correct.</strong> Turing-complete.</p><ul><li>Full expressive power.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p6_18"><p class="scenario">A search-first-true loops until predicate holds. Which invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_18')"><code>&forall; k : 0..i-1 &bull; &not;P(k)</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_18')"><code>P(0)</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_18')"><code>i = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_18')">Nothing.</button></li></ul><div class="feedback" id="fb6_18"><p><strong>Correct.</strong> Nothing-found-yet.</p><ul><li><strong>Spec:</strong> find first.</li><li><strong>Invariant:</strong> prefix all false.</li><li><strong>Code:</strong> scan.</li><li><strong>Natural language:</strong> first match.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p6_19"><p>Infinite loops occur when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_19')">No valid variant exists.</button></li><li><button onclick="selectAnswer(this,false,'fb6_19')">Invariant is strong.</button></li><li><button onclick="selectAnswer(this,false,'fb6_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_19')">Free type.</button></li></ul><div class="feedback" id="fb6_19"><p><strong>Correct.</strong> Non-termination.</p><ul><li>Variant missing.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p6_20"><p class="scenario">A GCD loop <code>while b &ne; 0 do t := a mod b ; a := b ; b := t od</code>. Which variant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_20')"><code>V = b</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_20')"><code>V = a</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_20')"><code>V = a + b</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_20')">Nothing.</button></li></ul><div class="feedback" id="fb6_20"><p><strong>Correct.</strong> b decreases.</p><ul><li><strong>Spec:</strong> GCD.</li><li><strong>Invariant:</strong> gcd preserved.</li><li><strong>Code:</strong> Euclid's.</li><li><strong>Natural language:</strong> b &rarr; 0.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p6_21"><p>Loop invariant's key property:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_21')">Holds before, during, and after the loop.</button></li><li><button onclick="selectAnswer(this,false,'fb6_21')">Holds only at end.</button></li><li><button onclick="selectAnswer(this,false,'fb6_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_21')">Free type.</button></li></ul><div class="feedback" id="fb6_21"><p><strong>Correct.</strong> Always holds.</p><ul><li>Three-phase truth.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p6_22"><p class="scenario">A file-read loops lines until EOF. Which variant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_22')"><code>V = remainingBytes</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_22')"><code>V = linesRead</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_22')"><code>V = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_22')">Nothing.</button></li></ul><div class="feedback" id="fb6_22"><p><strong>Correct.</strong> Bytes left.</p><ul><li><strong>Spec:</strong> read file.</li><li><strong>Invariant:</strong> bytes consumed.</li><li><strong>Code:</strong> read loop.</li><li><strong>Natural language:</strong> until EOF.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p6_23"><p>Refining a spec to a loop requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_23')">Choosing both invariant and variant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_23')">Only invariant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_23')">Only variant.</button></li><li><button onclick="selectAnswer(this,false,'fb6_23')">Nothing.</button></li></ul><div class="feedback" id="fb6_23"><p><strong>Correct.</strong> Both needed.</p><ul><li>Proof artifacts.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p6_24"><p class="scenario">A pour-until-full loop <code>while tank &lt; cap do tank := tank + flow od</code>. Which variant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_24')"><code>V = cap - tank</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_24')"><code>V = tank</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_24')"><code>V = flow</code></button></li><li><button onclick="selectAnswer(this,false,'fb6_24')">Nothing.</button></li></ul><div class="feedback" id="fb6_24"><p><strong>Correct.</strong> Space remaining.</p><ul><li><strong>Spec:</strong> fill tank.</li><li><strong>Invariant:</strong> <code>tank &le; cap</code>.</li><li><strong>Code:</strong> pour loop.</li><li><strong>Natural language:</strong> fill to brim.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p6_25"><p>Iteration's refinement calculus captures:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_25')">Termination + correctness of loops mathematically.</button></li><li><button onclick="selectAnswer(this,false,'fb6_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_25')">Only correctness.</button></li><li><button onclick="selectAnswer(this,false,'fb6_25')">Free type.</button></li></ul><div class="feedback" id="fb6_25"><p><strong>Correct.</strong> Both rigorously.</p><ul><li>Full loop theory.</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 6</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 19.</footer>
+
+</body>
+</html>

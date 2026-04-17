@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 23 &mdash; A Save Area</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch23-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">23.1 Specification &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">23.2 Design &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">23.3 Further Design &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">23.4 Refinement to Code &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 23 &mdash; A Save Area</h1>
+
+<!-- ================= 23.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">23.1 Specification</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="An OS module that stores records in LIFO order for check-pointing and restore.">Save area</span>:</strong> a module with two operations &mdash; <code>Save</code> (push) and <code>Restore</code> (pop).</li>
+  <li><strong>Abstract state:</strong> <code>SaveArea == [ save_area : seq Record ]</code> &mdash; a sequence used as a stack (<span class="vocab" data-def="Last-in, first-out &mdash; the most recently saved record is the first one restored.">LIFO</span>).</li>
+  <li><strong><span class="vocab" data-def="Internal choice: the operation may succeed or fail &mdash; the abstract spec does not say when.">Nondeterministic</span> Save:</strong> <code>Save &cong; Save<sub>0</sub> &or; SaveFullErr</code> &mdash; may succeed (<code>ok</code>) or fail (<code>full</code>).</li>
+  <li><strong>Why nondeterministic:</strong> free space depends on the rest of the system; modelling it would break <span class="vocab" data-def="Keeping the spec self-contained without modelling unrelated system parts.">modularity</span>.</li>
+  <li><strong><span class="vocab" data-def="A specification with a free constant whose value is fixed at a later design stage.">Loose</span> constant <code>n : &Nopf;</code>:</strong> capacity parameter, instantiated during design.</li>
+  <li><strong>Deterministic Restore:</strong> <code>Restore &cong; Restore<sub>0</sub> &or; RestoreEmptyErr</code> &mdash; disjuncts have <strong>disjoint</strong> preconditions (<code>save_area &ne; &lang;&rang;</code> vs <code>save_area = &lang;&rang;</code>).</li>
+  <li><strong>Error schemas</strong> use <code>&Xi;SaveArea</code> to leave state unchanged and emit a <span class="vocab" data-def="Output flag reporting the outcome: ok, full, or empty.">status report</span>.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Save area</td><td>OS module holding a LIFO stack of records.</td></tr>
+  <tr><td>LIFO</td><td>Last-in, first-out order.</td></tr>
+  <tr><td>Nondeterministic</td><td>Internal choice &mdash; spec allows more than one behaviour.</td></tr>
+  <tr><td>Loose specification</td><td>Constant declared without fixing its value.</td></tr>
+  <tr><td>Modularity</td><td>Spec is self-contained; doesn't model unrelated parts.</td></tr>
+  <tr><td>Status report</td><td>Output flag: ok / full / empty.</td></tr>
+  <tr><td>Check-pointing</td><td>Saving state for later restore.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq Record</code></td><td>Sequence of records.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Sequence concatenation.</td></tr>
+  <tr><td><code>&lang; &rang;</code></td><td>Sequence literal / empty sequence.</td></tr>
+  <tr><td><code>&or;</code></td><td>Schema disjunction.</td></tr>
+  <tr><td><code>&cong;</code></td><td>Schema definition.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+</table>
+
+<h3 id="s0-D">IV.1 Examples: Database Engine, Game Autosave &amp; Version Control</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq Record</code></td><td>Sequence of records.</td></tr>
+  <tr><td><code>&lang; &rang;</code></td><td>Empty sequence.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">database engine</span> boots its <span class="key">save area</span> &mdash; the checkpoint stack starts <span class="key">empty</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>SaveArea == [ save_area : <span class="vocab" data-def="Sequence of records.">seq Record</span> ]</code>.</li>
+  <li><strong>Operation:</strong> initialisation &mdash; <code>InitSaveArea == [ SaveArea&prime; | save_area&prime; = &lang;&rang; ]</code>.</li>
+  <li><strong>Nondeterminism:</strong> n/a &mdash; init is deterministic.</li>
+  <li><strong>Report:</strong> no output; simply establishes empty state.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">game autosave</span> system models its <span class="key">checkpoint stack</span> as a <span class="key">sequence of snapshots</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>save_area : seq Snapshot</code> &mdash; ordered by save time.</li>
+  <li><strong>Operation:</strong> <code>save_area&prime; = &lang;&rang;</code> at system start.</li>
+  <li><strong>Nondeterminism:</strong> n/a &mdash; deterministic boot.</li>
+  <li><strong>Report:</strong> no status needed at init.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">version control</span> system tracks <span class="key">commits</span> in a <span class="key">LIFO stack</span> for rollback.</p>
+<ul>
+  <li><strong>State:</strong> <code>save_area : seq Commit</code> &mdash; most recent at tail.</li>
+  <li><strong>Operation:</strong> <code>save_area&prime; = &lang;&rang;</code> for a fresh repository.</li>
+  <li><strong>Nondeterminism:</strong> n/a.</li>
+  <li><strong>Report:</strong> repository initialised.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Text Editor, Photo Editor &amp; Spreadsheet</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&lang; &rang;</code></td><td>Sequence literal.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">text editor</span> issues a <span class="key">checkpoint</span> &mdash; the new record is <span class="key">appended</span> to the stack tail.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Delta;SaveArea; record? : Record; status! : Status</code>.</li>
+  <li><strong>Operation:</strong> <code>save_area&prime; = save_area <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> &lang; record? &rang;</code>.</li>
+  <li><strong>Nondeterminism:</strong> Save<sub>0</sub> is total &mdash; always succeeds at this branch.</li>
+  <li><strong>Report:</strong> <code>status! = ok</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">photo editor</span> pushes a <span class="key">layer snapshot</span> onto its undo stack.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Delta;SaveArea; record? : LayerState; status! : Status</code>.</li>
+  <li><strong>Operation:</strong> <code>save_area&prime; = save_area &#x2040; &lang; record? &rang; &and; status! = ok</code>.</li>
+  <li><strong>Nondeterminism:</strong> this branch always appends.</li>
+  <li><strong>Report:</strong> <code>ok</code> &mdash; snapshot saved.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">spreadsheet</span> saves its <span class="key">cell state</span> after each edit for undo.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Delta;SaveArea; record? : CellGrid; status! : Status</code>.</li>
+  <li><strong>Operation:</strong> <code>save_area&prime; = save_area &#x2040; &lang; record? &rang; &and; status! = ok</code>.</li>
+  <li><strong>Nondeterminism:</strong> total push at this branch.</li>
+  <li><strong>Report:</strong> <code>ok</code> &mdash; grid saved.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Backup Service, Cloud Sync &amp; Archive System</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+  <tr><td><code>&cong;</code></td><td>Defined as.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">backup service</span> may refuse a save &mdash; the abstract spec <span class="key">does not model when</span> storage runs out.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Xi;SaveArea; status! : Status | status! = full</code> (SaveFullErr).</li>
+  <li><strong>Operation:</strong> <code>Save <span class="vocab" data-def="Schema definition.">&cong;</span> Save<sub>0</sub> <span class="vocab" data-def="Schema disjunction.">&or;</span> SaveFullErr</code>.</li>
+  <li><strong>Nondeterminism:</strong> either disjunct may fire &mdash; <span class="vocab" data-def="Internal choice.">internal choice</span>.</li>
+  <li><strong>Report:</strong> <code>ok</code> or <code>full</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">cloud sync</span> may fail due to <span class="key">unknown network conditions</span> &mdash; modelled as nondeterminism.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Xi;SaveArea; status! = full</code> if error fires.</li>
+  <li><strong>Operation:</strong> <code>CloudSave &cong; CloudSave<sub>0</sub> &or; CloudSaveErr</code>.</li>
+  <li><strong>Nondeterminism:</strong> network state is outside the module &rArr; <span class="vocab" data-def="Keeping the spec self-contained.">modularity</span> preserved.</li>
+  <li><strong>Report:</strong> <code>ok</code> or <code>full</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">archive system</span> may reject a record when <span class="key">tape capacity</span> is exhausted.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Xi;SaveArea; status! = full</code>.</li>
+  <li><strong>Operation:</strong> <code>Archive &cong; Archive<sub>0</sub> &or; ArchiveFullErr</code>.</li>
+  <li><strong>Nondeterminism:</strong> tape capacity is external &rArr; spec defers decision.</li>
+  <li><strong>Report:</strong> <code>ok</code> or <code>full</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Undo Manager, Transaction Log &amp; Browser History</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">undo manager</span> pops the <span class="key">most recent checkpoint</span> &mdash; only valid when the stack is <span class="key">non-empty</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Delta;SaveArea; r! : Record; status! : Status</code>.</li>
+  <li><strong>Operation:</strong> <code>save_area = save_area&prime; &#x2040; &lang; r! &rang;</code> &mdash; peel off last element.</li>
+  <li><strong>Nondeterminism:</strong> none &mdash; Restore<sub>0</sub> is deterministic.</li>
+  <li><strong>Report:</strong> <code>status! = ok</code>; precondition: <code>save_area <span class="vocab" data-def="Not equal.">&ne;</span> &lang;&rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">transaction log</span> rolls back the <span class="key">latest transaction</span> by popping it off the save stack.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Delta;SaveArea; r! : Transaction; status! : Status</code>.</li>
+  <li><strong>Operation:</strong> <code>save_area = save_area&prime; &#x2040; &lang; r! &rang; &and; status! = ok</code>.</li>
+  <li><strong>Nondeterminism:</strong> deterministic &mdash; preconditions are disjoint.</li>
+  <li><strong>Report:</strong> <code>ok</code>; pre: <code>save_area &ne; &lang;&rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">browser history</span> navigates <span class="key">back</span> by restoring the previous page from the stack.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Delta;SaveArea; r! : PageURL; status! : Status</code>.</li>
+  <li><strong>Operation:</strong> <code>save_area = save_area&prime; &#x2040; &lang; r! &rang; &and; status! = ok</code>.</li>
+  <li><strong>Nondeterminism:</strong> deterministic pop.</li>
+  <li><strong>Report:</strong> <code>ok</code>; pre: <code>save_area &ne; &lang;&rang;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Web Session, Git Stash &amp; Clipboard Stack</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+  <tr><td><code>&cong;</code></td><td>Defined as.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">web session</span> undo on an <span class="key">empty stack</span> reports <span class="key">empty</span> and leaves state unchanged.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Xi;SaveArea; status! : Status | save_area = &lang;&rang; &and; status! = empty</code>.</li>
+  <li><strong>Operation:</strong> RestoreEmptyErr &mdash; complement of Restore<sub>0</sub>&rsquo;s precondition.</li>
+  <li><strong>Nondeterminism:</strong> Restore is deterministic &mdash; disjuncts partition all states.</li>
+  <li><strong>Report:</strong> <code>Restore &cong; Restore<sub>0</sub> &or; RestoreEmptyErr</code> &rArr; total.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">git stash pop</span> on an <span class="key">empty stash</span> reports an error and changes nothing.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Xi;SaveArea; status! = empty</code> when <code>save_area = &lang;&rang;</code>.</li>
+  <li><strong>Operation:</strong> <code>StashPop &cong; StashPop<sub>0</sub> &or; StashEmptyErr</code>.</li>
+  <li><strong>Nondeterminism:</strong> deterministic &mdash; emptiness test partitions states.</li>
+  <li><strong>Report:</strong> <code>empty</code> &mdash; nothing to pop.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">clipboard stack</span> paste on <span class="key">empty clipboard</span> reports <span class="key">nothing available</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>&Xi;SaveArea; status! = empty</code> when <code>save_area = &lang;&rang;</code>.</li>
+  <li><strong>Operation:</strong> <code>Paste &cong; Paste<sub>0</sub> &or; PasteEmptyErr</code>.</li>
+  <li><strong>Nondeterminism:</strong> deterministic &mdash; disjoint preconditions.</li>
+  <li><strong>Report:</strong> <code>empty</code>.</li>
+</ul>
+</div>
+
+<h3 id="s0-E">V.1 Practice: Abstract State</h3>
+<div class="practice" id="p1_1">
+  <p>The abstract state <code>SaveArea</code> holds:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')"><code>save_area : seq Record</code> &mdash; a sequence used as a stack.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A set of records (unordered).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A bag of records.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A single record.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_1"><p><strong>Correct.</strong> Order matters for LIFO behaviour.</p><ul><li><strong>State:</strong> sequence preserves insertion order.</li><li><strong>Operation:</strong> tail = top of stack.</li><li><strong>Nondeterminism:</strong> n/a for state type.</li><li><strong>Report:</strong> n/a.</li></ul></div>
+</div>
+
+<h3>V.2 Practice: Nondeterminism Reason</h3>
+<div class="practice" id="p1_2">
+  <p><code>Save</code> is nondeterministic because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">Either <code>Save<sub>0</sub></code> or <code>SaveFullErr</code> may fire &mdash; the spec does not determine which.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">It uses random input.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">It is untyped.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')">It always fails.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_2"><p><strong>Correct.</strong> Internal choice between disjuncts preserves modularity.</p><ul><li><strong>State:</strong> free space is unknown at this abstraction.</li><li><strong>Operation:</strong> disjunction = choice.</li><li><strong>Nondeterminism:</strong> deferred design decision.</li><li><strong>Report:</strong> <code>ok</code> or <code>full</code>.</li></ul></div>
+</div>
+
+<h3>V.3 Practice: Save Success Schema</h3>
+<div class="practice" id="p1_3">
+  <p class="scenario">A <span class="key">photo editor</span> pushes a new frame onto its undo stack. Which schema captures <code>Save<sub>0</sub></code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>save_area&prime; = save_area &#x2040; &lang; record? &rang; &and; status! = ok</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>save_area&prime; = &lang; record? &rang; &#x2040; save_area</code> &mdash; wrong end.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>save_area&prime; = save_area</code> &mdash; no change.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>status! = full</code> &mdash; error branch.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_3"><p><strong>Correct.</strong> Append at tail; tail is the stack top.</p><ul><li><strong>State:</strong> <code>&Delta;SaveArea</code>.</li><li><strong>Operation:</strong> concatenate record at end.</li><li><strong>Nondeterminism:</strong> Save<sub>0</sub> itself is total.</li><li><strong>Report:</strong> <code>ok</code>.</li></ul></div>
+</div>
+
+<h3>V.4 Practice: Error Schema Structure</h3>
+<div class="practice" id="p1_4">
+  <p><code>SaveFullErr</code> uses <code>&Xi;SaveArea</code> because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')">State is left unchanged on error &mdash; <code>&Xi;</code> means no modification.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')">State is cleared to <code>&lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>&Xi;</code> means state is deleted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')">Input is optional.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_4"><p><strong>Correct.</strong> Error preserves state, only emits status.</p><ul><li><strong>State:</strong> <code>&Xi;</code> = before = after.</li><li><strong>Operation:</strong> no data modification.</li><li><strong>Nondeterminism:</strong> error disjunct leaves data intact.</li><li><strong>Report:</strong> <code>status! = full</code>.</li></ul></div>
+</div>
+
+<h3>V.5 Practice: Restore Precondition</h3>
+<div class="practice" id="p1_5">
+  <p class="scenario">A <span class="key">git stash pop</span> attempts to restore. What is the precondition of <code>Restore<sub>0</sub></code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>save_area &ne; &lang;&rang;</code> &mdash; stack must be non-empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>save_area = &lang;&rang;</code> &mdash; must be empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>true</code> &mdash; always valid.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>false</code> &mdash; never valid.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_5"><p><strong>Correct.</strong> Must have something to pop.</p><ul><li><strong>State:</strong> non-empty stack.</li><li><strong>Operation:</strong> peel off last element.</li><li><strong>Nondeterminism:</strong> Restore is deterministic.</li><li><strong>Report:</strong> <code>ok</code> if pre holds.</li></ul></div>
+</div>
+
+<h3>V.6 Practice: Restore Schema</h3>
+<div class="practice" id="p1_6">
+  <p class="scenario">A <span class="key">browser history</span> navigates back. What does <code>Restore<sub>0</sub></code>&rsquo;s predicate say?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>save_area = save_area&prime; &#x2040; &lang; r! &rang;</code> &mdash; old = new with last appended.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>save_area&prime; = save_area &#x2040; &lang; r! &rang;</code> &mdash; adds, not removes.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>save_area&prime; = save_area</code> &mdash; no change.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>r! = &lang;&rang;</code> &mdash; empty output.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_6"><p><strong>Correct.</strong> The old sequence equals the new one with the popped record appended.</p><ul><li><strong>State:</strong> split off last element.</li><li><strong>Operation:</strong> LIFO pop.</li><li><strong>Nondeterminism:</strong> deterministic.</li><li><strong>Report:</strong> <code>r!</code> = restored record, <code>status! = ok</code>.</li></ul></div>
+</div>
+
+<h3>V.7 Practice: LIFO Ordering</h3>
+<div class="practice" id="p1_7">
+  <p class="scenario">A <span class="key">printer queue</span> checkpoints pages. After three successful saves of <code>P1, P2, P3</code> from empty, <code>save_area</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>&lang; P1, P2, P3 &rang;</code> &mdash; P3 is the top (last element).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>&lang; P3, P2, P1 &rang;</code> &mdash; reversed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>&lang;&rang;</code> &mdash; empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>&lang; P1 &rang;</code> &mdash; only first.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_7"><p><strong>Correct.</strong> Tail append preserves insertion order; top = last element.</p><ul><li><strong>State:</strong> three appends from empty.</li><li><strong>Operation:</strong> each Save<sub>0</sub> concatenates at tail.</li><li><strong>Nondeterminism:</strong> assumed all succeed.</li><li><strong>Report:</strong> P3 is most recent checkpoint.</li></ul></div>
+</div>
+
+<h3>V.8 Practice: Loose vs Nondeterministic</h3>
+<div class="practice" id="p1_8">
+  <p>A <span class="key">loose</span> specification differs from a <span class="key">nondeterministic</span> one because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')">Loose leaves a constant unfixed; nondeterministic has internal choice at use-time.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')">They are identical.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')">Loose means missing predicates.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')">Nondeterministic means untyped.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_8"><p><strong>Correct.</strong> Constant-fixing vs behaviour-choice are orthogonal.</p><ul><li><strong>State:</strong> loose = parameter unfixed.</li><li><strong>Operation:</strong> nondeterministic = multiple behaviours.</li><li><strong>Nondeterminism:</strong> Save has internal choice.</li><li><strong>Report:</strong> <code>n : &Nopf;</code> is loose.</li></ul></div>
+</div>
+
+<h3>V.9 Practice: LIFO Pop Order</h3>
+<div class="practice" id="p1_9">
+  <p class="scenario">An <span class="key">ATM</span> records <code>txn1, txn2</code> then Restores. The popped record is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>txn2</code> &mdash; last in, first out.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>txn1</code> &mdash; first in.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')">Both.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')">Neither.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_9"><p><strong>Correct.</strong> LIFO: most recent is popped first.</p><ul><li><strong>State:</strong> <code>&lang; txn1, txn2 &rang;</code>.</li><li><strong>Operation:</strong> Restore pops tail.</li><li><strong>Nondeterminism:</strong> deterministic.</li><li><strong>Report:</strong> <code>r! = txn2</code>.</li></ul></div>
+</div>
+
+<h3>V.10 Practice: Save Disjunction</h3>
+<div class="practice" id="p1_10">
+  <p><code>Save &cong; Save<sub>0</sub> &or; SaveFullErr</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')">Either success OR full-error disjunct may fire.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')">Both fire simultaneously.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')">Neither fires.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')">Only <code>Save<sub>0</sub></code> fires.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_10"><p><strong>Correct.</strong> <code>&or;</code> = nondeterministic choice between branches.</p><ul><li><strong>State:</strong> one disjunct applies.</li><li><strong>Operation:</strong> implementation decides which.</li><li><strong>Nondeterminism:</strong> core of the Save spec.</li><li><strong>Report:</strong> <code>ok</code> or <code>full</code>.</li></ul></div>
+</div>
+
+<h3>V.11 Practice: Status Type</h3>
+<div class="practice" id="p1_11">
+  <p>The status type is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>Status ::= ok | full | empty</code> &mdash; a free type with three tags.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>Status ::= &Zopf;</code> &mdash; integer.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>Status ::= true | false</code> &mdash; boolean.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>Status ::= Record</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Three report codes for the two operations.</p><ul><li><strong>State:</strong> n/a.</li><li><strong>Operation:</strong> each branch sets one tag.</li><li><strong>Nondeterminism:</strong> n/a.</li><li><strong>Report:</strong> ok / full / empty.</li></ul></div>
+</div>
+
+<h3>V.12 Practice: Save Full Error</h3>
+<div class="practice" id="p1_12">
+  <p class="scenario">A <span class="key">game engine</span> tries to <span class="key">Save</span> but storage is exhausted. The result is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>status! = full &and; save_area&prime; = save_area</code> &mdash; state preserved.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>status! = empty</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>save_area&prime; = &lang;&rang;</code> &mdash; cleared.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>status! = ok</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_12"><p><strong>Correct.</strong> SaveFullErr leaves state unchanged and reports full.</p><ul><li><strong>State:</strong> <code>&Xi;</code> preserves data.</li><li><strong>Operation:</strong> error branch.</li><li><strong>Nondeterminism:</strong> this disjunct fired.</li><li><strong>Report:</strong> <code>full</code>.</li></ul></div>
+</div>
+
+<h3>V.13 Practice: Deterministic Restore</h3>
+<div class="practice" id="p1_13">
+  <p>Which operation is deterministic at the abstract level?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>Restore</code> &mdash; its disjuncts have disjoint preconditions.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>Save</code> &mdash; both disjuncts overlap.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')">Both are nondeterministic.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')">Neither is defined.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_13"><p><strong>Correct.</strong> Restore partitions states by emptiness; Save's disjuncts overlap.</p><ul><li><strong>State:</strong> non-empty vs empty.</li><li><strong>Operation:</strong> exactly one disjunct applies.</li><li><strong>Nondeterminism:</strong> only in Save.</li><li><strong>Report:</strong> Restore gives a unique answer.</li></ul></div>
+</div>
+
+<h3>V.14 Practice: Empty Restore Error</h3>
+<div class="practice" id="p1_14">
+  <p class="scenario">A <span class="key">web session</span> save stack is <code>&lang;&rang;</code>. A user clicks <span class="key">Undo</span>. The spec fires:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>RestoreEmptyErr</code> &mdash; <code>status! = empty</code>, state unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>Restore<sub>0</sub></code> &mdash; pops a record.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>SaveFullErr</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">Undefined behaviour.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_14"><p><strong>Correct.</strong> Empty precondition triggers the empty error branch.</p><ul><li><strong>State:</strong> <code>save_area = &lang;&rang;</code>.</li><li><strong>Operation:</strong> RestoreEmptyErr fires.</li><li><strong>Nondeterminism:</strong> deterministic choice.</li><li><strong>Report:</strong> <code>empty</code>.</li></ul></div>
+</div>
+
+<h3>V.15 Practice: Precondition Table</h3>
+<div class="practice" id="p1_15">
+  <p>The precondition of <code>Save</code> (the full disjunction) is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')"><code>true</code> &mdash; both <code>Save<sub>0</sub></code> and <code>SaveFullErr</code> have precondition <code>true</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>save_area &ne; &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>false</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>save_area = &lang;&rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_15"><p><strong>Correct.</strong> Save is total &mdash; always applicable.</p><ul><li><strong>State:</strong> any state.</li><li><strong>Operation:</strong> one disjunct always fires.</li><li><strong>Nondeterminism:</strong> but which one is undetermined.</li><li><strong>Report:</strong> Table 23.1 lists all preconditions as true.</li></ul></div>
+</div>
+
+<h3>V.16 Practice: Single-Element Restore</h3>
+<div class="practice" id="p1_16">
+  <p class="scenario">A <span class="key">checkpoint manager</span> has <code>save_area = &lang; r1 &rang;</code>. Restore fires. The new state is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>save_area&prime; = &lang;&rang; &and; r! = r1 &and; status! = ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>save_area&prime; = &lang; r1 &rang;</code> &mdash; unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>status! = empty</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>r! = &lang;&rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Pop the single element; stack becomes empty.</p><ul><li><strong>State:</strong> singleton &rarr; empty.</li><li><strong>Operation:</strong> Restore<sub>0</sub>.</li><li><strong>Nondeterminism:</strong> deterministic.</li><li><strong>Report:</strong> <code>r1</code> returned, <code>ok</code>.</li></ul></div>
+</div>
+
+<h3>V.17 Practice: Modularity Reason</h3>
+<div class="practice" id="p1_17">
+  <p>The reason we don't model free space explicitly is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')">It would force modelling the rest of the system, breaking modularity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">It's impossible in Z.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">Free space is always infinite.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')">The spec already models it.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_17"><p><strong>Correct.</strong> Nondeterminism preserves abstraction and modularity.</p><ul><li><strong>State:</strong> free space depends on external factors.</li><li><strong>Operation:</strong> defer the decision.</li><li><strong>Nondeterminism:</strong> admits all possible implementations.</li><li><strong>Report:</strong> design will resolve it.</li></ul></div>
+</div>
+
+<h3>V.18 Practice: Loose Constant</h3>
+<div class="practice" id="p1_18">
+  <p class="scenario">A <span class="key">logging service</span> declares <code>n : &Nopf;</code>. This is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">A loose declaration &mdash; <code>n</code> is a parameter fixed at design time.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">Nondeterminism in the operation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">A free type definition.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">A state variable.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_18"><p><strong>Correct.</strong> Loose constants delay commitment.</p><ul><li><strong>State:</strong> n parameterises capacity.</li><li><strong>Operation:</strong> used in design, not spec.</li><li><strong>Nondeterminism:</strong> distinct from loose.</li><li><strong>Report:</strong> n fixed at refinement.</li></ul></div>
+</div>
+
+<h3>V.19 Practice: Tightening vs Refinement</h3>
+<div class="practice" id="p1_19">
+  <p>Restricting <code>n : &Nopf;</code> to <code>n : 1 .. 10</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')">Instantiation of a loose constant &mdash; not data refinement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')">Forward simulation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')">Promotion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')">Schema hiding.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Same spec, tighter parameter &mdash; not a refinement in the technical sense.</p><ul><li><strong>State:</strong> unchanged structure.</li><li><strong>Operation:</strong> same operations.</li><li><strong>Nondeterminism:</strong> unaffected.</li><li><strong>Report:</strong> just a range restriction on n.</li></ul></div>
+</div>
+
+<h3>V.20 Practice: Multi-Step LIFO</h3>
+<div class="practice" id="p1_20">
+  <p class="scenario">A <span class="key">VM</span> pushes <code>A</code>, then <code>B</code>, then Restores twice. After both Restores:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')"><code>save_area&prime; = &lang;&rang;</code>; first pop yields <code>B</code>, second yields <code>A</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>save_area&prime; = &lang; A &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Both pops yield <code>A</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Both pops yield <code>B</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_20"><p><strong>Correct.</strong> LIFO: B pushed last, popped first; then A.</p><ul><li><strong>State:</strong> <code>&lang; A, B &rang;</code> &rarr; <code>&lang; A &rang;</code> &rarr; <code>&lang;&rang;</code>.</li><li><strong>Operation:</strong> two pops.</li><li><strong>Nondeterminism:</strong> Restore is deterministic.</li><li><strong>Report:</strong> <code>B</code> then <code>A</code>.</li></ul></div>
+</div>
+
+<h3>V.21 Practice: Restore Signature</h3>
+<div class="practice" id="p1_21">
+  <p>The signature of <code>Restore<sub>0</sub></code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')"><code>&Delta;SaveArea; r! : Record; status! : Status</code> &mdash; changes state, outputs record + status.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&Xi;SaveArea; record? : Record</code> &mdash; no change, takes input.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&Delta;SaveArea; record? : Record</code> &mdash; takes input, no output.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&Xi;SaveArea; status! : Status</code> &mdash; error schema.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_21"><p><strong>Correct.</strong> Restore changes state and produces two outputs.</p><ul><li><strong>State:</strong> <code>&Delta;</code> = state change.</li><li><strong>Operation:</strong> pop yields record.</li><li><strong>Nondeterminism:</strong> deterministic.</li><li><strong>Report:</strong> <code>r!</code> + <code>status!</code>.</li></ul></div>
+</div>
+
+<h3>V.22 Practice: Input Convention</h3>
+<div class="practice" id="p1_22">
+  <p class="scenario">A <span class="key">snapshot archiver</span> uses <code>Save</code>. The record input is named:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')"><code>record?</code> &mdash; trailing <code>?</code> marks input in Z.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')"><code>record!</code> &mdash; that's output.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')"><code>record&prime;</code> &mdash; that's after-state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')"><code>record</code> &mdash; that's state.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_22"><p><strong>Correct.</strong> Z convention: <code>?</code> = input, <code>!</code> = output, <code>&prime;</code> = after.</p><ul><li><strong>State:</strong> <code>record?</code> is the data to save.</li><li><strong>Operation:</strong> Save<sub>0</sub> uses it.</li><li><strong>Nondeterminism:</strong> n/a.</li><li><strong>Report:</strong> <code>status!</code> is the output.</li></ul></div>
+</div>
+
+<h3>V.23 Practice: Total Operations</h3>
+<div class="practice" id="p1_23">
+  <p>Both <code>Save</code> and <code>Restore</code> (the full disjunctions) are total because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">Their preconditions are <code>true</code> &mdash; error branches cover the complement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">They have no error branches.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">Their preconditions are <code>false</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">They are partial.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_23"><p><strong>Correct.</strong> Disjunction with error branches makes each operation total.</p><ul><li><strong>State:</strong> any state handled.</li><li><strong>Operation:</strong> success or error fires.</li><li><strong>Nondeterminism:</strong> Save: either may fire. Restore: exactly one fires.</li><li><strong>Report:</strong> always produces a status.</li></ul></div>
+</div>
+
+<h3>V.24 Practice: Tail Pop</h3>
+<div class="practice" id="p1_24">
+  <p class="scenario">A <span class="key">kernel routine</span> has <code>save_area = &lang; a, b &rang;</code> and issues Restore. Which record is output?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')"><code>r! = b</code> &mdash; tail element is popped.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>r! = a</code> &mdash; head element.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>r! = &lang; a, b &rang;</code> &mdash; entire sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>status! = empty</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_24"><p><strong>Correct.</strong> The last element is the stack top in this convention.</p><ul><li><strong>State:</strong> <code>&lang; a, b &rang; = &lang; a &rang; &#x2040; &lang; b &rang;</code>.</li><li><strong>Operation:</strong> split off <code>b</code>.</li><li><strong>Nondeterminism:</strong> deterministic.</li><li><strong>Report:</strong> <code>r! = b</code>, <code>status! = ok</code>.</li></ul></div>
+</div>
+
+<h3>V.25 Practice: Abstraction Benefit</h3>
+<div class="practice" id="p1_25">
+  <p>The abstract spec defers implementation decisions because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Design choices (two-level memory, arrays) belong to refinement, not the contract.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Z cannot express implementation details.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Implementation is irrelevant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">The spec is incomplete.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_25"><p><strong>Correct.</strong> Separation of concerns: spec = what; design = how.</p><ul><li><strong>State:</strong> abstract sequence.</li><li><strong>Operation:</strong> push/pop contract.</li><li><strong>Nondeterminism:</strong> defers storage decision.</li><li><strong>Report:</strong> refinement adds structure.</li></ul></div>
+</div>
+
+</section>
+
+<!-- ================= 23.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">23.2 Design</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>First design decision:</strong> <span class="vocab" data-def="Concrete state split into fast, limited main memory and slower, unlimited secondary memory.">two-level memory</span> &mdash; main (bounded) + secondary (unlimited).</li>
+  <li><strong>Fix capacity:</strong> <code>n : &Nopf;; n &ge; 1</code> &mdash; <span class="vocab" data-def="Loose constant fixed at design-time: the main-memory capacity.">capacity parameter</span> now bound.</li>
+  <li><strong><span class="vocab" data-def="A sequence whose length does not exceed n.">Bounded sequence</span>:</strong> <code>bseq[X] = { s : seq X | #s &le; n }</code>.</li>
+  <li><strong><span class="vocab" data-def="A sequence whose length equals n exactly &mdash; a full main-memory block.">Full sequence</span>:</strong> <code>fseq[X] = { s : seq X | #s = n }</code>.</li>
+  <li><strong>Concrete state:</strong> <code>CSaveArea</code>: <code>main : bseq[Record]</code>, <code>secondary : seq(fseq[Record])</code>.</li>
+  <li><strong><span class="vocab" data-def="Schema linking abstract and concrete states via distributed concatenation.">Retrieve</span>:</strong> <code>save_area = (<span class="vocab" data-def="Concatenate all sequences in a list into one.">&#x2040;/</span> secondary) &#x2040; main</code> &mdash; total bijection.</li>
+  <li><strong>Concrete Save:</strong> two disjuncts &mdash; <code>#main = n</code> (flush + seed) vs <code>#main &lt; n</code> (append).</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Two-level memory</td><td>Main (limited) + secondary (unlimited).</td></tr>
+  <tr><td>Capacity parameter</td><td>Max length of main memory, n &ge; 1.</td></tr>
+  <tr><td>Bounded sequence</td><td>Length &le; n.</td></tr>
+  <tr><td>Full sequence</td><td>Length = n exactly.</td></tr>
+  <tr><td>Retrieve relation</td><td>Links concrete to abstract state.</td></tr>
+  <tr><td>Distributed concatenation</td><td>Flatten a list of sequences into one.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>bseq[X]</code></td><td>Bounded sequence (&le; n).</td></tr>
+  <tr><td><code>fseq[X]</code></td><td>Full sequence (= n).</td></tr>
+  <tr><td><code>#s</code></td><td>Sequence length.</td></tr>
+  <tr><td><code>&#x2040;/</code></td><td>Distributed concatenation.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&or;</code></td><td>Schema disjunction.</td></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+</table>
+
+<h3 id="s1-D">IV.1 Examples: Cache Line, Write Buffer &amp; Page Pool</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>bseq[X]</code></td><td>Bounded sequence.</td></tr>
+  <tr><td><code>fseq[X]</code></td><td>Full sequence.</td></tr>
+  <tr><td><code>#s</code></td><td>Length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">cache line</span> holds at most <span class="key">n records</span>; a <span class="key">flushed block</span> holds exactly n.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>save_area : seq Record</code> &mdash; unbounded.</li>
+  <li><strong>Concrete:</strong> <code><span class="vocab" data-def="Sequence with length &le; n.">bseq</span>[X] = { s : seq X | #s &le; n }</code>.</li>
+  <li><strong>Retrieve:</strong> bounded main holds the active portion.</li>
+  <li><strong>Cases:</strong> <code><span class="vocab" data-def="Sequence with length = n.">fseq</span>[X] = { s : seq X | #s = n }</code> for flushed blocks.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">write buffer</span> accumulates data up to <span class="key">capacity n</span> before flushing to disk.</p>
+<ul>
+  <li><strong>Abstract:</strong> unbounded log of writes.</li>
+  <li><strong>Concrete:</strong> <code>bseq[WriteOp]</code> &mdash; buffer &le; n entries.</li>
+  <li><strong>Retrieve:</strong> flushed blocks + active buffer = full log.</li>
+  <li><strong>Cases:</strong> flushed blocks are <code>fseq[WriteOp]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">page pool</span> caches at most <span class="key">n pages</span> in RAM; full pools are archived.</p>
+<ul>
+  <li><strong>Abstract:</strong> unbounded page sequence.</li>
+  <li><strong>Concrete:</strong> <code>bseq[Page]</code> for active pool.</li>
+  <li><strong>Retrieve:</strong> archived pools (full) + active pool = total sequence.</li>
+  <li><strong>Cases:</strong> archived pools are <code>fseq[Page]</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Two-Tier Storage, Hot/Cold Archive &amp; RAM/Disk Split</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>bseq[X]</code></td><td>Bounded sequence.</td></tr>
+  <tr><td><code>fseq[X]</code></td><td>Full sequence.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">two-tier storage</span> system has a <span class="key">fast main buffer</span> and a <span class="key">list of flushed blocks</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>save_area : seq Record</code>.</li>
+  <li><strong>Concrete:</strong> <code>main : bseq[Record]; secondary : seq(fseq[Record])</code>.</li>
+  <li><strong>Retrieve:</strong> <code>save_area = (&#x2040;/ secondary) &#x2040; main</code>.</li>
+  <li><strong>Cases:</strong> CSaveArea &mdash; concrete state schema.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">hot/cold archive</span> keeps recent items in <span class="key">hot storage</span> and older batches in <span class="key">cold</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> full item timeline.</li>
+  <li><strong>Concrete:</strong> <code>hot : bseq[Item]; cold : seq(fseq[Item])</code>.</li>
+  <li><strong>Retrieve:</strong> <code>timeline = (&#x2040;/ cold) &#x2040; hot</code>.</li>
+  <li><strong>Cases:</strong> same two-level pattern.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">RAM/disk split</span> keeps the current batch in <span class="key">RAM</span> and completed batches on <span class="key">disk</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> total data sequence.</li>
+  <li><strong>Concrete:</strong> <code>ram : bseq[Record]; disk : seq(fseq[Record])</code>.</li>
+  <li><strong>Retrieve:</strong> <code>data = (&#x2040;/ disk) &#x2040; ram</code>.</li>
+  <li><strong>Cases:</strong> disk blocks are exactly n records each.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Block Flattener, Log Assembler &amp; Segment Joiner</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2040;/</code></td><td>Distributed concatenation.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">block flattener</span> recovers the abstract state by <span class="key">concatenating all flushed blocks</span>, then appending <span class="key">main</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> single sequence.</li>
+  <li><strong>Concrete:</strong> list of full blocks + bounded buffer.</li>
+  <li><strong>Retrieve:</strong> <code>save_area = (<span class="vocab" data-def="Flatten a list of sequences into one.">&#x2040;/</span> secondary) <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> main</code>.</li>
+  <li><strong>Cases:</strong> unique split &rArr; <span class="vocab" data-def="Links abstract and concrete states.">Retrieve</span> is a total bijection.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">log assembler</span> rebuilds a full audit trail from <span class="key">archived segments</span> and the <span class="key">active buffer</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> full audit trail.</li>
+  <li><strong>Concrete:</strong> archived segments (full) + active buffer (bounded).</li>
+  <li><strong>Retrieve:</strong> <code>trail = (&#x2040;/ archived) &#x2040; active</code>.</li>
+  <li><strong>Cases:</strong> total bijection &mdash; unique reconstruction.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">segment joiner</span> flattens <span class="key">completed segments</span> and appends the <span class="key">current segment</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> one continuous data stream.</li>
+  <li><strong>Concrete:</strong> list of full segments + partial segment.</li>
+  <li><strong>Retrieve:</strong> <code>stream = (&#x2040;/ completed) &#x2040; current</code>.</li>
+  <li><strong>Cases:</strong> invariant: each completed segment has length n.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Fresh Cache, Empty Buffer &amp; New Partition</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&lang; &rang;</code></td><td>Empty sequence.</td></tr>
+  <tr><td><code>&#x2040;/</code></td><td>Distributed concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">fresh cache</span> starts with <span class="key">empty main</span> and <span class="key">no flushed blocks</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>save_area&prime; = &lang;&rang;</code>.</li>
+  <li><strong>Concrete:</strong> <code>main&prime; = &lang;&rang; &and; secondary&prime; = &lang;&rang;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>(&#x2040;/ &lang;&rang;) &#x2040; &lang;&rang; = &lang;&rang; &#x2040; &lang;&rang; = &lang;&rang;</code> &check;.</li>
+  <li><strong>Cases:</strong> derived uniquely from Retrieve + abstract init.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">empty write buffer</span> and <span class="key">no archived blocks</span> represent a clean system.</p>
+<ul>
+  <li><strong>Abstract:</strong> empty log.</li>
+  <li><strong>Concrete:</strong> <code>main&prime; = &lang;&rang;; secondary&prime; = &lang;&rang;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>&lang;&rang; &#x2040; &lang;&rang; = &lang;&rang;</code> &check;.</li>
+  <li><strong>Cases:</strong> InitCSaveArea.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">new disk partition</span> has <span class="key">no data in RAM</span> and <span class="key">no completed blocks on disk</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> empty data sequence.</li>
+  <li><strong>Concrete:</strong> <code>ram&prime; = &lang;&rang;; disk&prime; = &lang;&rang;</code>.</li>
+  <li><strong>Retrieve:</strong> both empty &rArr; abstract empty &check;.</li>
+  <li><strong>Cases:</strong> concrete init is uniquely determined.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Flush-and-Seed, Append-to-Main &amp; Error Branch</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>#s</code></td><td>Length.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">checkpoint</span> arrives when main is <span class="key">full</span>: flush main to secondary, seed new main with the record.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>save_area&prime; = save_area &#x2040; &lang; record? &rang;</code>.</li>
+  <li><strong>Concrete:</strong> case <code><span class="vocab" data-def="Sequence length.">#</span>main = n</code>: <code>main&prime; = &lang; record? &rang; <span class="vocab" data-def="Conjunction.">&and;</span> secondary&prime; = secondary &#x2040; &lang; main &rang;</code>.</li>
+  <li><strong>Retrieve:</strong> old main becomes a new fseq block in secondary.</li>
+  <li><strong>Cases:</strong> flush-and-seed when full.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">checkpoint</span> arrives when main has <span class="key">room</span>: just append to main.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>save_area&prime; = save_area &#x2040; &lang; record? &rang;</code>.</li>
+  <li><strong>Concrete:</strong> case <code>#main &lt; n</code>: <code>main&prime; = main &#x2040; &lang; record? &rang; &and; secondary&prime; = secondary</code>.</li>
+  <li><strong>Retrieve:</strong> secondary unchanged; main grows by one.</li>
+  <li><strong>Cases:</strong> simple append when room exists.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">error branch</span> at the concrete level mirrors the abstract: <code>CSaveFullErr</code>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>SaveFullErr</code> &mdash; <code>&Xi;</code>, <code>status! = full</code>.</li>
+  <li><strong>Concrete:</strong> <code>CSaveFullErr</code> &mdash; <code>&Xi;CSaveArea; status! = full</code>.</li>
+  <li><strong>Retrieve:</strong> state unchanged in both.</li>
+  <li><strong>Cases:</strong> <code>CSave &cong; CSave<sub>0</sub> <span class="vocab" data-def="Schema disjunction.">&or;</span> CSaveFullErr</code>.</li>
+</ul>
+</div>
+
+<h3 id="s1-E">V.1 Practice: Bounded Sequence Definition</h3>
+<div class="practice" id="p2_1">
+  <p>A bounded sequence <code>bseq[X]</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>{ s : seq X | #s &le; n }</code> &mdash; length capped at n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>{ s : seq X | #s = n }</code> &mdash; exactly n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>{ s : seq X | #s &gt; n }</code> &mdash; exceeds n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>{ s : seq X | true }</code> &mdash; unbounded.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_1"><p><strong>Correct.</strong> At most n elements &mdash; room to grow.</p><ul><li><strong>Abstract:</strong> unbounded <code>seq</code>.</li><li><strong>Concrete:</strong> bounded <code>bseq</code>.</li><li><strong>Retrieve:</strong> main : bseq[Record].</li><li><strong>Cases:</strong> length &le; n.</li></ul></div>
+</div>
+
+<h3>V.2 Practice: Full Sequence Definition</h3>
+<div class="practice" id="p2_2">
+  <p>A full sequence <code>fseq[X]</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>{ s : seq X | #s = n }</code> &mdash; exactly n elements.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>{ s : seq X | #s &le; n }</code> &mdash; at most n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>{ s : seq X | #s &ne; n }</code> &mdash; not n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')">Empty sequence.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_2"><p><strong>Correct.</strong> Exactly n &mdash; used for flushed blocks in secondary memory.</p><ul><li><strong>Abstract:</strong> n/a.</li><li><strong>Concrete:</strong> <code>fseq</code> for flushed blocks.</li><li><strong>Retrieve:</strong> each secondary element is full.</li><li><strong>Cases:</strong> blocks have uniform size.</li></ul></div>
+</div>
+
+<h3>V.3 Practice: Retrieve Computation</h3>
+<div class="practice" id="p2_3">
+  <p class="scenario">A <span class="key">cache</span> has <code>n = 4</code>, <code>main = &lang; a, b, c &rang;</code>, <code>secondary = &lang; &lang; w, x, y, z &rang; &rang;</code>. What is <code>save_area</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>&lang; w, x, y, z, a, b, c &rang;</code> &mdash; secondary flattened, then main.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>&lang; a, b, c, w, x, y, z &rang;</code> &mdash; wrong order.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>&lang; a, b, c &rang;</code> &mdash; main only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>&lang; w, x, y, z &rang;</code> &mdash; secondary only.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Retrieve: <code>(&#x2040;/ secondary) &#x2040; main</code>.</p><ul><li><strong>Abstract:</strong> 7-element sequence.</li><li><strong>Concrete:</strong> 1 flushed block + 3 in main.</li><li><strong>Retrieve:</strong> flatten + append.</li><li><strong>Cases:</strong> old data first, then active buffer.</li></ul></div>
+</div>
+
+<h3>V.4 Practice: Concrete State Schema</h3>
+<div class="practice" id="p2_4">
+  <p>The concrete state <code>CSaveArea</code> declares:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>main : bseq[Record]; secondary : seq(fseq[Record])</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>main, secondary : seq Record</code> &mdash; both unbounded.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>main : fseq[Record]</code> &mdash; always full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')">A single sequence.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Main bounded; secondary is a list of full blocks.</p><ul><li><strong>Abstract:</strong> one <code>seq</code>.</li><li><strong>Concrete:</strong> two-level split.</li><li><strong>Retrieve:</strong> links them.</li><li><strong>Cases:</strong> bseq for main, seq(fseq) for secondary.</li></ul></div>
+</div>
+
+<h3>V.5 Practice: Flush Trigger</h3>
+<div class="practice" id="p2_5">
+  <p class="scenario">A <span class="key">log buffer</span> with <code>n = 3</code>. Flushing fires when:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')"><code>#main = n</code> &mdash; main is full, must flush before saving.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>#main &lt; n</code> &mdash; main has room.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>secondary = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">Always.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Full main triggers flush-and-seed.</p><ul><li><strong>Abstract:</strong> simple append.</li><li><strong>Concrete:</strong> case <code>#main = n</code>.</li><li><strong>Retrieve:</strong> main becomes fseq block in secondary.</li><li><strong>Cases:</strong> flush + seed with new record.</li></ul></div>
+</div>
+
+<h3>V.6 Practice: Retrieve Bijectivity</h3>
+<div class="practice" id="p2_6">
+  <p>Retrieve is a total bijection because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')">For each <code>save_area</code> there is exactly one split into main/secondary respecting invariants.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">It is one-to-many.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">It is partial.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">It maps to the empty set.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_6"><p><strong>Correct.</strong> The full-block constraint pins the split uniquely.</p><ul><li><strong>Abstract:</strong> one sequence.</li><li><strong>Concrete:</strong> unique decomposition.</li><li><strong>Retrieve:</strong> bijection.</li><li><strong>Cases:</strong> fseq blocks are exactly n long.</li></ul></div>
+</div>
+
+<h3>V.7 Practice: Append Case</h3>
+<div class="practice" id="p2_7">
+  <p class="scenario">A <span class="key">doc editor</span> cache with <code>n = 2</code>, <code>main = &lang; p1 &rang;</code>, <code>secondary = &lang;&rang;</code>. Save <code>p2</code>. New state:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')"><code>main&prime; = &lang; p1, p2 &rang;</code>, <code>secondary&prime; = &lang;&rang;</code> &mdash; append, room exists.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>main&prime; = &lang; p2 &rang;</code>, <code>secondary&prime; = &lang; &lang; p1 &rang; &rang;</code> &mdash; flush (but main wasn't full).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>main&prime; = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>status! = full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_7"><p><strong>Correct.</strong> <code>#main = 1 &lt; 2</code>, so the append branch fires.</p><ul><li><strong>Abstract:</strong> simple append.</li><li><strong>Concrete:</strong> case <code>#main &lt; n</code>.</li><li><strong>Retrieve:</strong> secondary unchanged.</li><li><strong>Cases:</strong> main grows by one.</li></ul></div>
+</div>
+
+<h3>V.8 Practice: Flush Case</h3>
+<div class="practice" id="p2_8">
+  <p class="scenario">Same editor, now <code>main = &lang; p1, p2 &rang;</code>, <code>secondary = &lang;&rang;</code>. Save <code>p3</code>. New state:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>main&prime; = &lang; p3 &rang;</code>, <code>secondary&prime; = &lang; &lang; p1, p2 &rang; &rang;</code> &mdash; flush-and-seed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>main&prime; = &lang; p1, p2, p3 &rang;</code> &mdash; exceeds n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>main&prime; = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>status! = full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_8"><p><strong>Correct.</strong> <code>#main = 2 = n</code>, so flush main to secondary, seed with p3.</p><ul><li><strong>Abstract:</strong> <code>&lang; p1, p2, p3 &rang;</code>.</li><li><strong>Concrete:</strong> case <code>#main = n</code>.</li><li><strong>Retrieve:</strong> <code>(&#x2040;/ &lang; &lang; p1, p2 &rang; &rang;) &#x2040; &lang; p3 &rang; = &lang; p1, p2, p3 &rang;</code> &check;.</li><li><strong>Cases:</strong> flush-and-seed.</li></ul></div>
+</div>
+
+<h3>V.9 Practice: Distributed Concatenation</h3>
+<div class="practice" id="p2_9">
+  <p><code>&#x2040;/ &lang; &lang; a, b &rang;, &lang; c &rang; &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')"><code>&lang; a, b, c &rang;</code> &mdash; flatten left-to-right.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&lang; c, a, b &rang;</code> &mdash; reversed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&lang; &lang; a, b &rang;, &lang; c &rang; &rang;</code> &mdash; unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&lang;&rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Flatten all inner sequences in order.</p><ul><li><strong>Abstract:</strong> single sequence.</li><li><strong>Concrete:</strong> list of blocks.</li><li><strong>Retrieve:</strong> &#x2040;/ flattens.</li><li><strong>Cases:</strong> left-to-right concatenation.</li></ul></div>
+</div>
+
+<h3>V.10 Practice: Capacity Constraint</h3>
+<div class="practice" id="p2_10">
+  <p>Why insist <code>n &ge; 1</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')">With <code>n = 0</code> main could never hold any record &mdash; the design is useless.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">To satisfy Z type-checking only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Arbitrary convention.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>n = 0</code> would still work.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_10"><p><strong>Correct.</strong> At least one slot required in main memory.</p><ul><li><strong>Abstract:</strong> n/a.</li><li><strong>Concrete:</strong> bseq needs capacity.</li><li><strong>Retrieve:</strong> n = 0 makes bseq = {&lang;&rang;} only.</li><li><strong>Cases:</strong> design sanity check.</li></ul></div>
+</div>
+
+<h3>V.11 Practice: Abstract Length</h3>
+<div class="practice" id="p2_11">
+  <p class="scenario">An <span class="key">embedded logger</span> has <code>n = 3</code>, <code>main = &lang; a, b, c &rang;</code>, <code>secondary = &lang; &lang; u, v, w &rang; &rang;</code>. Length of abstract <code>save_area</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>6</code> &mdash; 3 flushed + 3 main.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>3</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>1</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>0</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_11"><p><strong>Correct.</strong> Sum of all block lengths + main length.</p><ul><li><strong>Abstract:</strong> 6-element sequence.</li><li><strong>Concrete:</strong> one fseq block + full main.</li><li><strong>Retrieve:</strong> flatten + append.</li><li><strong>Cases:</strong> 3 + 3 = 6.</li></ul></div>
+</div>
+
+<h3>V.12 Practice: Secondary Elements</h3>
+<div class="practice" id="p2_12">
+  <p>Each element of <code>secondary</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')">A full sequence of length <code>n</code> &mdash; <code>fseq[Record]</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')">A bounded sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')">A set of records.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')">A single record.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_12"><p><strong>Correct.</strong> Each flushed block was a full main &mdash; exactly n records.</p><ul><li><strong>Abstract:</strong> n/a.</li><li><strong>Concrete:</strong> uniform full blocks.</li><li><strong>Retrieve:</strong> each block contributes n records.</li><li><strong>Cases:</strong> <code>fseq</code> type ensures exactness.</li></ul></div>
+</div>
+
+<h3>V.13 Practice: Empty State</h3>
+<div class="practice" id="p2_13">
+  <p class="scenario">A cache has <code>main = &lang;&rang;</code>, <code>secondary = &lang;&rang;</code>. Abstract state?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')"><code>save_area = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')"><code>save_area = &lang; &lang;&rang; &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')"><code>save_area = &lang; n &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_13"><p><strong>Correct.</strong> Both parts empty &rArr; abstract empty.</p><ul><li><strong>Abstract:</strong> <code>&lang;&rang;</code>.</li><li><strong>Concrete:</strong> init state.</li><li><strong>Retrieve:</strong> <code>(&#x2040;/ &lang;&rang;) &#x2040; &lang;&rang; = &lang;&rang;</code>.</li><li><strong>Cases:</strong> InitCSaveArea.</li></ul></div>
+</div>
+
+<h3>V.14 Practice: Invariant Preservation</h3>
+<div class="practice" id="p2_14">
+  <p>The invariant <code>main &isin; bseq[Record]</code> is preserved by Save because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')">Both branches ensure <code>#main&prime; &le; n</code>: append keeps it &le; n; flush resets to 1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>main</code> never changes.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">It isn't preserved.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>#main&prime; = n</code> always.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Append: <code>#main + 1 &le; n</code>. Flush: <code>#main&prime; = 1 &le; n</code>.</p><ul><li><strong>Abstract:</strong> no length constraint.</li><li><strong>Concrete:</strong> bseq invariant.</li><li><strong>Retrieve:</strong> preserved by both cases.</li><li><strong>Cases:</strong> complementary guards maintain bound.</li></ul></div>
+</div>
+
+<h3>V.15 Practice: Flush-and-Seed Behaviour</h3>
+<div class="practice" id="p2_15">
+  <p class="scenario">A <span class="key">VM snapshot buffer</span> is at main-full state. On Save, what happens?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">Main is pushed as a new fseq block onto secondary; new main = <code>&lang; record? &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">Secondary is cleared.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">Main is discarded.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')"><code>status! = full</code> always.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Flush-and-seed: promote full main to secondary, seed with new record.</p><ul><li><strong>Abstract:</strong> append.</li><li><strong>Concrete:</strong> case <code>#main = n</code>.</li><li><strong>Retrieve:</strong> old main becomes fseq block.</li><li><strong>Cases:</strong> seed = <code>&lang; record? &rang;</code>.</li></ul></div>
+</div>
+
+<h3>V.16 Practice: Error Schema Decoration</h3>
+<div class="practice" id="p2_16">
+  <p><code>CSaveFullErr</code> uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>&Xi;CSaveArea</code> &mdash; state unchanged on error.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')"><code>&Delta;CSaveArea</code> &mdash; state changes.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')"><code>CSaveArea&prime;</code> only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">No state at all.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Error branch preserves concrete state.</p><ul><li><strong>Abstract:</strong> mirrors <code>SaveFullErr</code>.</li><li><strong>Concrete:</strong> <code>&Xi;</code> = no change.</li><li><strong>Retrieve:</strong> both abstract + concrete unchanged.</li><li><strong>Cases:</strong> <code>status! = full</code>.</li></ul></div>
+</div>
+
+<h3>V.17 Practice: Multi-Save Trace</h3>
+<div class="practice" id="p2_17">
+  <p class="scenario">A <span class="key">replica service</span> uses <code>n = 2</code>. Saves: <code>a, b, c</code> from empty. Final concrete state?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')"><code>main = &lang; c &rang;</code>, <code>secondary = &lang; &lang; a, b &rang; &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')"><code>main = &lang; a, b, c &rang;</code> &mdash; exceeds n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')"><code>main = &lang; a, b &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')"><code>secondary = &lang;&rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_17"><p><strong>Correct.</strong> a, b fill main; c triggers flush-and-seed.</p><ul><li><strong>Abstract:</strong> <code>&lang; a, b, c &rang;</code>.</li><li><strong>Concrete:</strong> flush at c.</li><li><strong>Retrieve:</strong> <code>(&#x2040;/ &lang;&lang;a,b&rang;&rang;) &#x2040; &lang;c&rang; = &lang;a,b,c&rang;</code> &check;.</li><li><strong>Cases:</strong> one flush, one seed.</li></ul></div>
+</div>
+
+<h3>V.18 Practice: Distributed Concatenation of Empty</h3>
+<div class="practice" id="p2_18">
+  <p><code>&#x2040;/ &lang;&rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>&lang;&rang;</code> &mdash; identity of concatenation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">Undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')"><code>&lang; &lang;&rang; &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">Error.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Distributed concatenation of no blocks is the empty sequence.</p><ul><li><strong>Abstract:</strong> <code>&lang;&rang;</code>.</li><li><strong>Concrete:</strong> no secondary blocks.</li><li><strong>Retrieve:</strong> <code>&lang;&rang; &#x2040; main = main</code>.</li><li><strong>Cases:</strong> base case.</li></ul></div>
+</div>
+
+<h3>V.19 Practice: Total Record Count</h3>
+<div class="practice" id="p2_19">
+  <p class="scenario">A <span class="key">database WAL</span> has <code>n = 4</code>, <code>main = &lang; r1, r2 &rang;</code>, <code>secondary = &lang; &lang;a,b,c,d&rang;, &lang;e,f,g,h&rang; &rang;</code>. <code>#save_area</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>10</code> &mdash; 8 flushed + 2 main.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>8</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>2</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>4</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Two full blocks (4 each) + 2 in main = 10.</p><ul><li><strong>Abstract:</strong> 10 records.</li><li><strong>Concrete:</strong> 2 fseq blocks + partial main.</li><li><strong>Retrieve:</strong> sum lengths.</li><li><strong>Cases:</strong> 4 + 4 + 2 = 10.</li></ul></div>
+</div>
+
+<h3>V.20 Practice: Retrieve Schema</h3>
+<div class="practice" id="p2_20">
+  <p>The Retrieve relation is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>[ SaveArea; CSaveArea | save_area = (&#x2040;/ secondary) &#x2040; main ]</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>[ SaveArea | save_area = main ]</code> &mdash; ignores secondary.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>[ CSaveArea | main = secondary ]</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')">Not defined.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Includes both states and the linking predicate.</p><ul><li><strong>Abstract:</strong> <code>SaveArea</code>.</li><li><strong>Concrete:</strong> <code>CSaveArea</code>.</li><li><strong>Retrieve:</strong> distributed concat + append.</li><li><strong>Cases:</strong> total bijection.</li></ul></div>
+</div>
+
+<h3>V.21 Practice: Valid Concrete State</h3>
+<div class="practice" id="p2_21">
+  <p class="scenario"><code>n = 3</code>, <code>main = &lang;&rang;</code>, <code>secondary = &lang; &lang; a, b, c &rang; &rang;</code>. Is this valid?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">Yes &mdash; <code>#main = 0 &le; n</code> is fine; secondary holds one full block.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">No &mdash; main must be non-empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">No &mdash; secondary must match main.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">No &mdash; main must be full.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_21"><p><strong>Correct.</strong> bseq allows empty main; this state arises right after a flush.</p><ul><li><strong>Abstract:</strong> <code>&lang; a, b, c &rang;</code>.</li><li><strong>Concrete:</strong> valid CSaveArea.</li><li><strong>Retrieve:</strong> <code>(&#x2040;/ &lang;&lang;a,b,c&rang;&rang;) &#x2040; &lang;&rang; = &lang;a,b,c&rang;</code> &check;.</li><li><strong>Cases:</strong> possible mid-state.</li></ul></div>
+</div>
+
+<h3>V.22 Practice: Disjunct Guards</h3>
+<div class="practice" id="p2_22">
+  <p>The two disjuncts of <code>CSave<sub>0</sub></code> are disjoint on:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>#main = n</code> vs <code>#main &lt; n</code> &mdash; complementary guards.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>secondary = &lang;&rang;</code> vs not.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">Record type.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">They overlap.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Partition by main-fullness &mdash; no overlap.</p><ul><li><strong>Abstract:</strong> single branch.</li><li><strong>Concrete:</strong> two complementary cases.</li><li><strong>Retrieve:</strong> both maintain invariant.</li><li><strong>Cases:</strong> exactly one fires.</li></ul></div>
+</div>
+
+<h3>V.23 Practice: CSave Structure</h3>
+<div class="practice" id="p2_23">
+  <p><code>CSave &cong; CSave<sub>0</sub> &or; CSaveFullErr</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Concrete save = success OR error &mdash; same shape as the abstract Save.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Unrelated to abstract Save.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Deterministic.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Only error fires.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Structure preserved from §23.1 &mdash; same disjunctive pattern.</p><ul><li><strong>Abstract:</strong> <code>Save &cong; Save<sub>0</sub> &or; SaveFullErr</code>.</li><li><strong>Concrete:</strong> lifted to concrete state.</li><li><strong>Retrieve:</strong> refinement preserves structure.</li><li><strong>Cases:</strong> concrete versions of both branches.</li></ul></div>
+</div>
+
+<h3>V.24 Practice: Distributed Concatenation of Singleton</h3>
+<div class="practice" id="p2_24">
+  <p><code>&#x2040;/ &lang; &lang; a, b &rang; &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')"><code>&lang; a, b &rang;</code> &mdash; single block unwrapped.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')"><code>&lang; &lang; a, b &rang; &rang;</code> &mdash; unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')"><code>&lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Identity on singletons &mdash; one block flattens to itself.</p><ul><li><strong>Abstract:</strong> same sequence.</li><li><strong>Concrete:</strong> one fseq block.</li><li><strong>Retrieve:</strong> unwrap.</li><li><strong>Cases:</strong> base case of distributed concat.</li></ul></div>
+</div>
+
+<h3>V.25 Practice: Data Refinement</h3>
+<div class="practice" id="p2_25">
+  <p>The design step from <code>SaveArea</code> to <code>CSaveArea</code> is a:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">Data refinement &mdash; new representation with Retrieve linking it to abstract.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Tightening of a loose constant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Promotion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Schema hiding.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_25"><p><strong>Correct.</strong> New concrete state + Retrieve relation = data refinement.</p><ul><li><strong>Abstract:</strong> <code>SaveArea</code>.</li><li><strong>Concrete:</strong> <code>CSaveArea</code>.</li><li><strong>Retrieve:</strong> total bijection linking them.</li><li><strong>Cases:</strong> two-level memory commitment.</li></ul></div>
+</div>
+
+</section>
+
+<!-- ================= 23.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">23.3 Further Design</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Second design decision:</strong> implement <code>main</code> as a <span class="vocab" data-def="A total function from index range 1..n to the record type &mdash; models a physical fixed-length array.">fixed-length array</span> <code>Array[X] = (1..n) &rarr; X</code>.</li>
+  <li><strong>Add a <span class="vocab" data-def="Natural-number variable 0..n tracking how many array cells are currently in use.">counter</span>:</strong> <code>count : 0..n</code> replaces <code>#main</code>.</li>
+  <li><strong>New state:</strong> <code>CSaveArea1</code>: <code>array : Array[Record]; count : 0..n; secondary : seq(fseq[Record])</code>.</li>
+  <li><strong><span class="vocab" data-def="Keep only array cells with indices up to count: (1..count) ◁ array.">Domain restriction</span>:</strong> <code>main = (1..count) &#x25C1; array</code> recovers the bounded sequence.</li>
+  <li><strong>Retrieve<sub>1</sub>:</strong> <code>main = (1..count) &#x25C1; array</code> &mdash; total surjective function.</li>
+  <li><strong><span class="vocab" data-def="Set a cell to a new value: array &oplus; {k &map; v}.">Function override</span> <code>&oplus;</code>:</strong> write into cell <code>count + 1</code> on append.</li>
+  <li><strong>CCSave<sub>0</sub>:</strong> two cases &mdash; <code>count = n</code> (flush: <code>count&prime; = 1</code>, archive array) vs <code>count &lt; n</code> (increment + override).</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Fixed-length array</td><td>Total function (1..n) &rarr; X.</td></tr>
+  <tr><td>Counter</td><td>Current element count, 0..n.</td></tr>
+  <tr><td>Domain restriction</td><td>Keep only cells 1..count.</td></tr>
+  <tr><td>Function override</td><td>Set one cell: array &oplus; {k &map; v}.</td></tr>
+  <tr><td>Surjective Retrieve</td><td>Every abstract state has a concrete preimage.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Array[X]</code></td><td>Fixed-length array type.</td></tr>
+  <tr><td><code>1..n</code></td><td>Index range.</td></tr>
+  <tr><td><code>&rarr;</code></td><td>Total function.</td></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&map;</code></td><td>Maplet (index &map; value).</td></tr>
+  <tr><td><code>&or;</code></td><td>Schema disjunction.</td></tr>
+</table>
+
+<h3 id="s2-D">IV.1 Examples: C Array, Java Buffer &amp; Rust Vec</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Array[X]</code></td><td>Array type.</td></tr>
+  <tr><td><code>1..n</code></td><td>Index range.</td></tr>
+  <tr><td><code>&rarr;</code></td><td>Total function.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">C-style array</span> of size <span class="key">n</span> is a total map from <span class="key">index</span> to record.</p>
+<ul>
+  <li><strong>Sequence:</strong> <code>main : bseq[Record]</code> &mdash; previous design.</li>
+  <li><strong>Array:</strong> <code><span class="vocab" data-def="Total function (1..n) &rarr; X.">Array</span>[X] = (1..n) <span class="vocab" data-def="Total function.">&rarr;</span> X</code>.</li>
+  <li><strong>Counter:</strong> <code>count : 0..n</code> tracks used cells.</li>
+  <li><strong>Override:</strong> all n cells always exist; only 1..count are &ldquo;live.&rdquo;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">Java buffer</span> of fixed capacity <span class="key">n</span> backs its bounded sequence with an array.</p>
+<ul>
+  <li><strong>Sequence:</strong> abstract bounded sequence.</li>
+  <li><strong>Array:</strong> <code>Array[Record] = (1..n) &rarr; Record</code>.</li>
+  <li><strong>Counter:</strong> <code>count</code> = number of valid entries.</li>
+  <li><strong>Override:</strong> cells beyond count hold stale data (don&rsquo;t matter).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">Rust Vec</span> with fixed capacity models its backing storage as a total function.</p>
+<ul>
+  <li><strong>Sequence:</strong> <code>bseq</code> from previous level.</li>
+  <li><strong>Array:</strong> <code>(1..n) &rarr; Record</code> &mdash; all cells allocated.</li>
+  <li><strong>Counter:</strong> <code>len : 0..n</code> &mdash; valid prefix.</li>
+  <li><strong>Override:</strong> write at <code>len + 1</code> on push.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Index Tracker, Usage Counter &amp; Fill Level</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>0..n</code></td><td>Counter range.</td></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">index tracker</span> in a database page uses <span class="key">count</span> to know which slots hold valid data.</p>
+<ul>
+  <li><strong>Sequence:</strong> <code>main = (1..count) <span class="vocab" data-def="Keep only cells with indices up to count.">&#x25C1;</span> array</code>.</li>
+  <li><strong>Array:</strong> full array always allocated.</li>
+  <li><strong>Counter:</strong> <code>count : 0..n</code>.</li>
+  <li><strong>Override:</strong> <code>#main = count</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">usage counter</span> in a ring buffer tracks how many entries are live.</p>
+<ul>
+  <li><strong>Sequence:</strong> <code>main = (1..count) &#x25C1; array</code>.</li>
+  <li><strong>Array:</strong> cells beyond count are garbage.</li>
+  <li><strong>Counter:</strong> valid entries = count.</li>
+  <li><strong>Override:</strong> Retrieve1 links count-restricted array to bseq.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">fill level</span> indicator on a tank sensor mirrors the counter concept &mdash; how full is the container?</p>
+<ul>
+  <li><strong>Sequence:</strong> abstract: number of items stored.</li>
+  <li><strong>Array:</strong> physical slots.</li>
+  <li><strong>Counter:</strong> <code>count</code> = fill level = <code>#main</code>.</li>
+  <li><strong>Override:</strong> simplifies <code>#((1..count) &#x25C1; array) = count</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Slice Extract, Window View &amp; Range Lookup</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>1..n</code></td><td>Index range.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">slice extract</span> retrieves the first <span class="key">count</span> elements from an array &mdash; the live portion.</p>
+<ul>
+  <li><strong>Sequence:</strong> <code>main = (1..count) &#x25C1; array</code>.</li>
+  <li><strong>Array:</strong> <code>array : (1..n) &rarr; Record</code>.</li>
+  <li><strong>Counter:</strong> slice length = count.</li>
+  <li><strong>Override:</strong> Retrieve<sub>1</sub> &mdash; total surjective from CSaveArea1 to CSaveArea.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">window view</span> over a data array shows only the first <span class="key">count</span> cells.</p>
+<ul>
+  <li><strong>Sequence:</strong> bounded sequence = restricted array.</li>
+  <li><strong>Array:</strong> full backing store.</li>
+  <li><strong>Counter:</strong> window size = count.</li>
+  <li><strong>Override:</strong> cells outside window are ignored.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">range lookup</span> on <code>array</code> for indices <code>1..count</code> yields the active portion.</p>
+<ul>
+  <li><strong>Sequence:</strong> result is a sequence of length count.</li>
+  <li><strong>Array:</strong> domain = 1..n; restriction to 1..count.</li>
+  <li><strong>Counter:</strong> determines lookup range.</li>
+  <li><strong>Override:</strong> <code>#((1..count) &#x25C1; array) = count</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Cell Write, Slot Update &amp; Position Set</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&map;</code></td><td>Maplet.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">cell write</span> stores a new record at position <code>count + 1</code> when the array has room.</p>
+<ul>
+  <li><strong>Sequence:</strong> append to bseq.</li>
+  <li><strong>Array:</strong> <code>array&prime; = array <span class="vocab" data-def="Set one cell to a new value.">&oplus;</span> {count + 1 <span class="vocab" data-def="Maplet.">&map;</span> record?}</code>.</li>
+  <li><strong>Counter:</strong> <code>count&prime; = count + 1</code>.</li>
+  <li><strong>Override:</strong> only one cell changes; rest of array untouched.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">slot update</span> in a hash table overwrites one position using function override.</p>
+<ul>
+  <li><strong>Sequence:</strong> abstract insert.</li>
+  <li><strong>Array:</strong> <code>table&prime; = table &oplus; {slot &map; value}</code>.</li>
+  <li><strong>Counter:</strong> increment if new slot.</li>
+  <li><strong>Override:</strong> <code>&oplus;</code> replaces the single mapping.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">position set</span> in a priority queue writes a record to cell <code>count + 1</code>.</p>
+<ul>
+  <li><strong>Sequence:</strong> abstract push.</li>
+  <li><strong>Array:</strong> <code>pq&prime; = pq &oplus; {count + 1 &map; record?}</code>.</li>
+  <li><strong>Counter:</strong> <code>count&prime; = count + 1</code>.</li>
+  <li><strong>Override:</strong> single-cell write via <code>&oplus;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Full-Array Flush, Overflow Handler &amp; Capacity Reset</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">full-array flush</span>: when <code>count = n</code>, archive the whole array and reset counter to 1.</p>
+<ul>
+  <li><strong>Sequence:</strong> main flushed to secondary.</li>
+  <li><strong>Array:</strong> <code>array&prime; 1 = record?</code>; <code>secondary&prime; = secondary &#x2040; &lang; array &rang;</code>.</li>
+  <li><strong>Counter:</strong> <code>count&prime; = 1</code>.</li>
+  <li><strong>Override:</strong> CCSave<sub>0</sub> case <code>count = n</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">overflow handler</span>: when a log buffer fills, dump it to disk and start fresh.</p>
+<ul>
+  <li><strong>Sequence:</strong> full buffer archived.</li>
+  <li><strong>Array:</strong> <code>log_buf&prime; 1 = new_entry</code>; <code>disk&prime; = disk &#x2040; &lang; log_buf &rang;</code>.</li>
+  <li><strong>Counter:</strong> <code>count&prime; = 1</code>.</li>
+  <li><strong>Override:</strong> same flush-and-seed at array level.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">capacity reset</span>: the full CCSave is <code>CCSave<sub>0</sub> <span class="vocab" data-def="Schema disjunction.">&or;</span> CCSaveFullErr</code>.</p>
+<ul>
+  <li><strong>Sequence:</strong> mirrors CSave structure.</li>
+  <li><strong>Array:</strong> error branch: <code>&Xi;CSaveArea1</code>.</li>
+  <li><strong>Counter:</strong> unchanged on error.</li>
+  <li><strong>Override:</strong> <code>CCSave &cong; CCSave<sub>0</sub> &or; CCSaveFullErr</code>.</li>
+</ul>
+</div>
+
+<h3 id="s2-E">V.1 Practice: Array Type Definition</h3>
+<div class="practice" id="p3_1">
+  <p><code>Array[X]</code> is defined as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')"><code>(1..n) &rarr; X</code> &mdash; total function from indices to values.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')"><code>seq X</code> &mdash; unbounded sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')"><code>&Popf; X</code> &mdash; power set.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')"><code>X &rarr; &Nopf;</code> &mdash; reversed.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Fixed-length array = total function from 1..n.</p><ul><li><strong>Sequence:</strong> replaced by array.</li><li><strong>Array:</strong> all n cells always exist.</li><li><strong>Counter:</strong> tracks live cells.</li><li><strong>Override:</strong> write via &oplus;.</li></ul></div>
+</div>
+
+<h3>V.2 Practice: Counter Purpose</h3>
+<div class="practice" id="p3_2">
+  <p>The counter <code>count : 0..n</code> tracks:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">How many array cells currently hold valid data.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">The total capacity of the array.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">The number of secondary blocks.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">Nothing &mdash; it&rsquo;s decorative.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_2"><p><strong>Correct.</strong> count = #main = number of valid entries.</p><ul><li><strong>Sequence:</strong> length was implicit.</li><li><strong>Array:</strong> all cells allocated but only 1..count are live.</li><li><strong>Counter:</strong> makes length explicit.</li><li><strong>Override:</strong> simplifies operations.</li></ul></div>
+</div>
+
+<h3>V.3 Practice: Domain Restriction Retrieve</h3>
+<div class="practice" id="p3_3">
+  <p class="scenario">A <span class="key">database page</span> has <code>array</code> of size <code>n = 5</code> and <code>count = 3</code>. <code>main</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>(1..3) &#x25C1; array</code> &mdash; first 3 cells.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>(1..5) &#x25C1; array</code> &mdash; all cells.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>(4..5) &#x25C1; array</code> &mdash; last 2 cells.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>array</code> unrestricted.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Domain restriction keeps only cells 1 through count.</p><ul><li><strong>Sequence:</strong> <code>main</code> has length 3.</li><li><strong>Array:</strong> cells 4, 5 hold stale data.</li><li><strong>Counter:</strong> determines restriction range.</li><li><strong>Override:</strong> Retrieve<sub>1</sub>.</li></ul></div>
+</div>
+
+<h3>V.4 Practice: Function Override</h3>
+<div class="practice" id="p3_4">
+  <p class="scenario">A <span class="key">cell write</span> stores <code>record?</code> at position <code>count + 1</code>. The array update is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>array&prime; = array &oplus; {count + 1 &map; record?}</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>array&prime; = array \ {count + 1}</code> &mdash; deletion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>array&prime; = &empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>array&prime; = array</code> &mdash; no change.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Override writes one cell; rest unchanged.</p><ul><li><strong>Sequence:</strong> append at end.</li><li><strong>Array:</strong> <code>&oplus;</code> sets one maplet.</li><li><strong>Counter:</strong> incremented separately.</li><li><strong>Override:</strong> single-cell update.</li></ul></div>
+</div>
+
+<h3>V.5 Practice: CCSave Append Case</h3>
+<div class="practice" id="p3_5">
+  <p class="scenario">A <span class="key">log buffer</span> has <code>count = 2</code>, <code>n = 4</code>. Save <code>r</code>. What changes?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>count&prime; = 3</code>, <code>array&prime; = array &oplus; {3 &map; r}</code>, <code>secondary&prime; = secondary</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>count&prime; = 1</code> &mdash; flush.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>array&prime; = &empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>status! = full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_5"><p><strong>Correct.</strong> <code>count &lt; n</code> &rArr; increment + override + secondary unchanged.</p><ul><li><strong>Sequence:</strong> append.</li><li><strong>Array:</strong> write at position 3.</li><li><strong>Counter:</strong> 2 &rarr; 3.</li><li><strong>Override:</strong> <code>&oplus; {3 &map; r}</code>.</li></ul></div>
+</div>
+
+<h3>V.6 Practice: CCSave Flush Case</h3>
+<div class="practice" id="p3_6">
+  <p class="scenario">Same buffer, now <code>count = 4 = n</code>. Save <code>r</code>. What changes?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>count&prime; = 1</code>, <code>array&prime; 1 = r</code>, <code>secondary&prime; = secondary &#x2040; &lang; array &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>count&prime; = 5</code> &mdash; exceeds n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>secondary&prime; = secondary</code> &mdash; no flush.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>status! = full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_6"><p><strong>Correct.</strong> <code>count = n</code> &rArr; archive array, reset counter, seed cell 1.</p><ul><li><strong>Sequence:</strong> flush-and-seed.</li><li><strong>Array:</strong> old array archived as fseq block.</li><li><strong>Counter:</strong> reset to 1.</li><li><strong>Override:</strong> <code>array&prime; 1 = r</code>.</li></ul></div>
+</div>
+
+<h3>V.7 Practice: Count Simplification</h3>
+<div class="practice" id="p3_7">
+  <p><code>#((1..count) &#x25C1; array)</code> simplifies to:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')"><code>count</code> &mdash; domain restriction preserves domain size.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>n</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>0</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>#array</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_7"><p><strong>Correct.</strong> The restricted domain has exactly count elements.</p><ul><li><strong>Sequence:</strong> <code>#main = count</code>.</li><li><strong>Array:</strong> domain = 1..count.</li><li><strong>Counter:</strong> equals length.</li><li><strong>Override:</strong> key simplification in the textbook.</li></ul></div>
+</div>
+
+<h3>V.8 Practice: CSaveArea1 State</h3>
+<div class="practice" id="p3_8">
+  <p><code>CSaveArea1</code> declares:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')"><code>array : Array[Record]; count : 0..n; secondary : seq(fseq[Record])</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')"><code>main : bseq[Record]; secondary : seq(fseq[Record])</code> &mdash; previous level.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')"><code>save_area : seq Record</code> &mdash; abstract.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')"><code>array : seq Record</code> &mdash; wrong type.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_8"><p><strong>Correct.</strong> Array + counter + secondary at this refinement level.</p><ul><li><strong>Sequence:</strong> replaced by array + count.</li><li><strong>Array:</strong> <code>Array[Record]</code>.</li><li><strong>Counter:</strong> <code>0..n</code>.</li><li><strong>Override:</strong> secondary unchanged from 23.2.</li></ul></div>
+</div>
+
+<h3>V.9 Practice: Retrieve1</h3>
+<div class="practice" id="p3_9">
+  <p>Retrieve<sub>1</sub> links CSaveArea1 to CSaveArea via:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>main = (1..count) &#x25C1; array</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>main = array</code> unrestricted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>main = secondary</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>main = &lang;&rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_9"><p><strong>Correct.</strong> Domain restriction recovers the bounded sequence.</p><ul><li><strong>Sequence:</strong> bseq from 23.2.</li><li><strong>Array:</strong> restricted to live cells.</li><li><strong>Counter:</strong> determines restriction.</li><li><strong>Override:</strong> total surjective Retrieve.</li></ul></div>
+</div>
+
+<h3>V.10 Practice: Function Override</h3>
+<div class="practice" id="p3_10">
+  <p class="scenario">An <span class="key">array</span> has <code>array = {1 &map; a, 2 &map; b, 3 &map; c}</code>. After <code>array &oplus; {2 &map; x}</code>:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')"><code>{1 &map; a, 2 &map; x, 3 &map; c}</code> &mdash; cell 2 overridden.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')"><code>{1 &map; a, 2 &map; b, 3 &map; c, 2 &map; x}</code> &mdash; duplicate key.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')"><code>{2 &map; x}</code> &mdash; rest deleted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')"><code>{1 &map; a, 2 &map; b, 3 &map; c}</code> &mdash; unchanged.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_10"><p><strong>Correct.</strong> <code>&oplus;</code> replaces the mapping for key 2; other keys untouched.</p><ul><li><strong>Sequence:</strong> replace element.</li><li><strong>Array:</strong> single-cell update.</li><li><strong>Counter:</strong> unchanged if overwriting existing cell.</li><li><strong>Override:</strong> <code>&oplus;</code> = replace one maplet.</li></ul></div>
+</div>
+
+<h3>V.11 Practice: Append Case with Array</h3>
+<div class="practice" id="p3_11">
+  <p class="scenario">A <span class="key">buffer</span> has <code>n = 3</code>, <code>count = 1</code>, <code>array 1 = a</code>. Save <code>b</code>. New count and array update:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>count&prime; = 2</code>, <code>array&prime; = array &oplus; {2 &map; b}</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')"><code>count&prime; = 1</code>, flush.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')"><code>count&prime; = 0</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')"><code>status! = full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_11"><p><strong>Correct.</strong> <code>count = 1 &lt; 3 = n</code> &rArr; increment + write at position 2.</p><ul><li><strong>Sequence:</strong> append.</li><li><strong>Array:</strong> <code>&oplus; {2 &map; b}</code>.</li><li><strong>Counter:</strong> 1 &rarr; 2.</li><li><strong>Override:</strong> single cell.</li></ul></div>
+</div>
+
+<h3>V.12 Practice: Flush Case with Array</h3>
+<div class="practice" id="p3_12">
+  <p class="scenario">Same buffer, now <code>count = 3 = n</code>, <code>array = {1&map;a, 2&map;b, 3&map;c}</code>. Save <code>d</code>. New state:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')"><code>count&prime; = 1</code>, <code>array&prime; 1 = d</code>, <code>secondary&prime; = secondary &#x2040; &lang; array &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')"><code>count&prime; = 4</code> &mdash; exceeds n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')"><code>secondary&prime; = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')"><code>status! = full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_12"><p><strong>Correct.</strong> <code>count = n</code> &rArr; archive entire array, reset to 1, seed cell 1 with d.</p><ul><li><strong>Sequence:</strong> flush-and-seed.</li><li><strong>Array:</strong> archived as fseq block.</li><li><strong>Counter:</strong> reset to 1.</li><li><strong>Override:</strong> <code>array&prime; 1 = d</code>.</li></ul></div>
+</div>
+
+<h3>V.13 Practice: Stale Data</h3>
+<div class="practice" id="p3_13">
+  <p>After a flush, cells <code>2..n</code> in <code>array&prime;</code> contain:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">Stale data from the previous cycle &mdash; only cell 1 is live (<code>count&prime; = 1</code>).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">Fresh data.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">Zeros.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">Undefined &mdash; the function is partial.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Array is total (all cells exist) but only 1..count are meaningful.</p><ul><li><strong>Sequence:</strong> main = 1 element.</li><li><strong>Array:</strong> total function; stale cells ignored.</li><li><strong>Counter:</strong> 1 &mdash; only cell 1 is live.</li><li><strong>Override:</strong> Retrieve restricts to live range.</li></ul></div>
+</div>
+
+<h3>V.14 Practice: CCSaveFullErr</h3>
+<div class="practice" id="p3_14">
+  <p><code>CCSaveFullErr</code> at this level uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')"><code>&Xi;CSaveArea1; status! = full</code> &mdash; state unchanged, report full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>&Delta;CSaveArea1</code> &mdash; changes state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>status! = ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')">No error schema.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Error branch preserves state at every refinement level.</p><ul><li><strong>Sequence:</strong> mirrors CSaveFullErr.</li><li><strong>Array:</strong> unchanged.</li><li><strong>Counter:</strong> unchanged.</li><li><strong>Override:</strong> <code>&Xi;</code> = no modification.</li></ul></div>
+</div>
+
+<h3>V.15 Practice: Multi-Save with Array</h3>
+<div class="practice" id="p3_15">
+  <p class="scenario">A <span class="key">buffer</span> with <code>n = 2</code>. Saves: <code>x, y, z</code> from empty. Final <code>count</code> and <code>secondary</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')"><code>count = 1</code>, <code>secondary = &lang; &lang; x, y &rang; &rang;</code> &mdash; one flush, seed with z.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')"><code>count = 3</code> &mdash; exceeds n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')"><code>count = 2</code>, <code>secondary = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')"><code>count = 0</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_15"><p><strong>Correct.</strong> x fills cell 1, y fills cell 2 (full), z triggers flush.</p><ul><li><strong>Sequence:</strong> three saves.</li><li><strong>Array:</strong> old array {1&map;x, 2&map;y} archived.</li><li><strong>Counter:</strong> reset to 1 after flush.</li><li><strong>Override:</strong> <code>array&prime; 1 = z</code>.</li></ul></div>
+</div>
+
+<h3>V.16 Practice: Surjectivity of Retrieve1</h3>
+<div class="practice" id="p3_16">
+  <p>Retrieve<sub>1</sub> is surjective because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">Every bounded sequence can be represented as (1..count) &#x25C1; some array.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">It is injective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">It is partial.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">It maps to the empty set.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_16"><p><strong>Correct.</strong> For any bseq, we can construct an array + count that maps to it.</p><ul><li><strong>Sequence:</strong> any bseq has a preimage.</li><li><strong>Array:</strong> fill cells 1..#bseq, rest arbitrary.</li><li><strong>Counter:</strong> = #bseq.</li><li><strong>Override:</strong> surjective = every abstract state reachable.</li></ul></div>
+</div>
+
+<h3>V.17 Practice: Two Refinement Levels</h3>
+<div class="practice" id="p3_17">
+  <p>The chain of refinements so far is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')"><code>SaveArea &rarr; CSaveArea &rarr; CSaveArea1</code> &mdash; seq &rarr; two-level &rarr; array+counter.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')"><code>CSaveArea1 &rarr; CSaveArea &rarr; SaveArea</code> &mdash; reversed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">Only one level.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">No refinement occurred.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Abstract &rarr; two-level memory &rarr; array + counter.</p><ul><li><strong>Sequence:</strong> abstract seq.</li><li><strong>Array:</strong> replaces bseq at level 2.</li><li><strong>Counter:</strong> added at level 2.</li><li><strong>Override:</strong> each level adds implementation detail.</li></ul></div>
+</div>
+
+<h3>V.18 Practice: Domain Restriction Effect</h3>
+<div class="practice" id="p3_18">
+  <p class="scenario">An <span class="key">array</span> = <code>{1&map;a, 2&map;b, 3&map;c}</code>, <code>count = 2</code>. <code>(1..2) &#x25C1; array</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')"><code>{1 &map; a, 2 &map; b}</code> &mdash; cell 3 excluded.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')"><code>{1 &map; a, 2 &map; b, 3 &map; c}</code> &mdash; all cells.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')"><code>{3 &map; c}</code> &mdash; only cell 3.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')"><code>&empty;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_18"><p><strong>Correct.</strong> Domain restriction keeps only keys in 1..count.</p><ul><li><strong>Sequence:</strong> <code>&lang; a, b &rang;</code>.</li><li><strong>Array:</strong> restricted to {1, 2}.</li><li><strong>Counter:</strong> 2 determines range.</li><li><strong>Override:</strong> cell 3 is stale.</li></ul></div>
+</div>
+
+<h3>V.19 Practice: CCSave Disjunction</h3>
+<div class="practice" id="p3_19">
+  <p><code>CCSave &cong; CCSave<sub>0</sub> &or; CCSaveFullErr</code>. This mirrors:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">The same success-or-error pattern from §23.1 and §23.2.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">A completely new structure.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">Only the error branch.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">No disjunction.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Disjunctive structure preserved through every refinement level.</p><ul><li><strong>Sequence:</strong> Save = Save<sub>0</sub> &or; Err.</li><li><strong>Array:</strong> same pattern at array level.</li><li><strong>Counter:</strong> guards now use count.</li><li><strong>Override:</strong> structural refinement.</li></ul></div>
+</div>
+
+<h3>V.20 Practice: Append vs Flush Guard</h3>
+<div class="practice" id="p3_20">
+  <p>In CCSave<sub>0</sub>, the guard for the append case is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')"><code>count &lt; n</code> &mdash; room exists in the array.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')"><code>count = n</code> &mdash; array full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')"><code>count = 0</code> &mdash; array empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')"><code>secondary = &lang;&rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_20"><p><strong>Correct.</strong> Room available &rArr; increment count and override one cell.</p><ul><li><strong>Sequence:</strong> append case.</li><li><strong>Array:</strong> write at count + 1.</li><li><strong>Counter:</strong> <code>count &lt; n</code> guard.</li><li><strong>Override:</strong> <code>&oplus; {count + 1 &map; record?}</code>.</li></ul></div>
+</div>
+
+<h3>V.21 Practice: Array vs Sequence Trade-off</h3>
+<div class="practice" id="p3_21">
+  <p>The move from bounded sequence to array + counter is motivated by:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">Arrays with counters map directly to physical memory; sequences are abstract.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">Arrays are shorter.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">Sequences cannot hold records.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">No benefit.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_21"><p><strong>Correct.</strong> Closer to implementable data structures.</p><ul><li><strong>Sequence:</strong> abstract mathematical object.</li><li><strong>Array:</strong> maps to RAM/registers.</li><li><strong>Counter:</strong> maps to an integer variable.</li><li><strong>Override:</strong> maps to indexed assignment.</li></ul></div>
+</div>
+
+<h3>V.22 Practice: Secondary Unchanged</h3>
+<div class="practice" id="p3_22">
+  <p>The secondary memory type at CSaveArea1 level is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>seq(fseq[Record])</code> &mdash; unchanged from CSaveArea.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')"><code>Array[Record]</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')"><code>seq Record</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">Removed.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Only main is refined to array + counter; secondary stays.</p><ul><li><strong>Sequence:</strong> secondary untouched.</li><li><strong>Array:</strong> replaces only main.</li><li><strong>Counter:</strong> new addition.</li><li><strong>Override:</strong> secondary refined separately later.</li></ul></div>
+</div>
+
+<h3>V.23 Practice: Init at Array Level</h3>
+<div class="practice" id="p3_23">
+  <p>The initialisation at CSaveArea1 level sets:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')"><code>count&prime; = 0</code>, <code>secondary&prime; = &lang;&rang;</code> &mdash; no live cells, no archived blocks.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')"><code>count&prime; = n</code> &mdash; all cells live.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')"><code>array&prime; = &empty;</code> &mdash; but Array is total.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')"><code>secondary&prime; = &lang; array &rang;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_23"><p><strong>Correct.</strong> Zero live cells + no secondary blocks = empty save area.</p><ul><li><strong>Sequence:</strong> main = &lang;&rang;.</li><li><strong>Array:</strong> exists but all stale (count = 0).</li><li><strong>Counter:</strong> 0.</li><li><strong>Override:</strong> Retrieve: (1..0) &#x25C1; array = &empty; = &lang;&rang;.</li></ul></div>
+</div>
+
+<h3>V.24 Practice: Total Function Property</h3>
+<div class="practice" id="p3_24">
+  <p>Because <code>Array[X] = (1..n) &rarr; X</code> is a total function:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">Every index 1..n has a value, even cells beyond count (which hold stale data).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">Only cells 1..count exist.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">The function may be undefined at some indices.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">Array is partial.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Total function &rArr; every index in domain has a mapping.</p><ul><li><strong>Sequence:</strong> bseq was variable-length.</li><li><strong>Array:</strong> fixed-length, all cells allocated.</li><li><strong>Counter:</strong> distinguishes live from stale.</li><li><strong>Override:</strong> totality is key to physical memory model.</li></ul></div>
+</div>
+
+<h3>V.25 Practice: Maplet Notation</h3>
+<div class="practice" id="p3_25">
+  <p><code>{count + 1 &map; record?}</code> denotes:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">A singleton function mapping index <code>count + 1</code> to <code>record?</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">A set containing both values.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">A sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">An ordered pair only.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Maplet = single key-value pair used with &oplus; for override.</p><ul><li><strong>Sequence:</strong> abstract append.</li><li><strong>Array:</strong> <code>&oplus;</code> uses the maplet.</li><li><strong>Counter:</strong> index = count + 1.</li><li><strong>Override:</strong> singleton function merged into array.</li></ul></div>
+</div>
+
+</section>
+
+<!-- ================= 23.4 ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">23.4 Refinement to Code</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Decompose CCSave<sub>0</sub>:</strong> split into <span class="vocab" data-def="Schema handling the count = n case: archive array to secondary, reset counter, seed cell 1.">CCUpdateSM</span> (secondary-memory update) and <span class="vocab" data-def="Schema handling the count &lt; n case: increment counter, override cell count + 1.">CCUpdateMM</span> (main-memory update).</li>
+  <li><strong><span class="vocab" data-def="Refinement calculus rule: if guard &rarr; branch1 &#x25A1; &not;guard &rarr; branch2 fi.">Conditional introduction</span>:</strong> split on <code>count &lt; n</code> vs <code>count = n</code>.</li>
+  <li><strong><span class="vocab" data-def="Replace a specification statement with a concrete assignment: var := expr.">Assignment introduction</span>:</strong> for <code>count &lt; n</code> branch &rArr; <code>count, array, status! := count + 1, array &oplus; {count + 1 &map; record?}, ok</code>.</li>
+  <li><strong><span class="vocab" data-def="Refine a specification into S1; S2 where S1 handles one part and S2 handles the rest.">Sequential composition</span>:</strong> for <code>count = n</code> branch &mdash; first update status/secondary, then reset count/array.</li>
+  <li><strong>Nested conditional:</strong> within the <code>count = n</code> branch, split on <code>status! = ok</code> vs <code>status! = full</code>.</li>
+  <li><strong><span class="vocab" data-def="The remaining specification statement is the original save-area interface for secondary memory &mdash; the design is recursive.">Recursive structure</span>:</strong> the secondary-memory interface has the same shape as the original save area.</li>
+  <li><strong>Result:</strong> executable code with <code>if</code>/<code>fi</code>, assignments, and a recursive module boundary.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>CCUpdateSM</td><td>Secondary-memory update (count = n case).</td></tr>
+  <tr><td>CCUpdateMM</td><td>Main-memory update (count &lt; n case).</td></tr>
+  <tr><td>Conditional introduction</td><td>Split on a guard into two branches.</td></tr>
+  <tr><td>Assignment introduction</td><td>Replace spec statement with assignment.</td></tr>
+  <tr><td>Sequential composition</td><td>Refine into S1 ; S2.</td></tr>
+  <tr><td>Recursive structure</td><td>Secondary interface mirrors the original module.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>;</code></td><td>Sequential composition.</td></tr>
+  <tr><td><code>if .. fi</code></td><td>Guarded conditional.</td></tr>
+  <tr><td><code>&#x25A1;</code></td><td>Alternative guard separator.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&sqsube;</code></td><td>Refinement relation.</td></tr>
+</table>
+
+<h3 id="s3-D">IV.1 Examples: Memory Updater, State Splitter &amp; Branch Isolator</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">memory updater</span> splits CCSave<sub>0</sub> into the <span class="key">secondary-memory update</span> (CCUpdateSM) and the <span class="key">main-memory update</span> (CCUpdateMM).</p>
+<ul>
+  <li><strong>Decompose:</strong> <span class="vocab" data-def="count = n case.">CCUpdateSM</span>: <code>count = n; count&prime; = 1; array&prime; 1 = record?; secondary&prime; = secondary &#x2040; &lang; array &rang;</code>.</li>
+  <li><strong>Conditional:</strong> <span class="vocab" data-def="count &lt; n case.">CCUpdateMM</span>: <code>count &lt; n; count&prime; = count + 1; array&prime; = array &oplus; {count + 1 &map; record?}</code>.</li>
+  <li><strong>Assignment:</strong> each disjunct becomes a branch in the final code.</li>
+  <li><strong>Code:</strong> <code>save &cong; CSaveArea1, status! : [true, CCSave]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">state splitter</span> in a logging system separates the <span class="key">disk-write path</span> from the <span class="key">buffer-append path</span>.</p>
+<ul>
+  <li><strong>Decompose:</strong> disk-write = flush to secondary when full.</li>
+  <li><strong>Conditional:</strong> buffer-append = increment + override when room.</li>
+  <li><strong>Assignment:</strong> each path maps to distinct variable updates.</li>
+  <li><strong>Code:</strong> conditional on <code>count &lt; n</code> vs <code>count = n</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">branch isolator</span> in a compiler separates code-generation paths for <span class="key">full</span> vs <span class="key">partial</span> buffers.</p>
+<ul>
+  <li><strong>Decompose:</strong> full path and partial path.</li>
+  <li><strong>Conditional:</strong> guard on buffer fullness.</li>
+  <li><strong>Assignment:</strong> each branch emits different assignments.</li>
+  <li><strong>Code:</strong> <code>if count &lt; n &rarr; ... &#x25A1; count = n &rarr; ... fi</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Guard Selector, Path Chooser &amp; Branch Router</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>if .. fi</code></td><td>Guarded conditional.</td></tr>
+  <tr><td><code>&#x25A1;</code></td><td>Alternative guard.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">guard selector</span> uses <span class="key">conditional introduction</span> to split the save operation by fullness.</p>
+<ul>
+  <li><strong>Decompose:</strong> CCSave = CCUpdateMM &or; CCUpdateSM &or; CCSaveFullErr.</li>
+  <li><strong>Conditional:</strong> <code><span class="vocab" data-def="Split on a guard.">if</span> count &lt; n &rarr; CCUpdateMM <span class="vocab" data-def="Alternative guard.">&#x25A1;</span> count = n &rarr; CCUpdateSM &or; CCSaveFullErr <span class="vocab" data-def="End conditional.">fi</span></code>.</li>
+  <li><strong>Assignment:</strong> first branch refined to assignment.</li>
+  <li><strong>Code:</strong> <code>count &lt; n</code> branch is straightforward.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">path chooser</span> in a network router decides <span class="key">forward</span> vs <span class="key">queue</span> based on buffer status.</p>
+<ul>
+  <li><strong>Decompose:</strong> forward (room) vs queue (full).</li>
+  <li><strong>Conditional:</strong> <code>if space_avail &rarr; forward &#x25A1; &not;space_avail &rarr; queue fi</code>.</li>
+  <li><strong>Assignment:</strong> each branch becomes concrete statements.</li>
+  <li><strong>Code:</strong> guarded conditional pattern.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">branch router</span> in an OS scheduler chooses <span class="key">run</span> vs <span class="key">enqueue</span> based on CPU availability.</p>
+<ul>
+  <li><strong>Decompose:</strong> run (CPU free) vs enqueue (CPU busy).</li>
+  <li><strong>Conditional:</strong> <code>if cpu_free &rarr; run &#x25A1; &not;cpu_free &rarr; enqueue fi</code>.</li>
+  <li><strong>Assignment:</strong> refinement calculus rules apply.</li>
+  <li><strong>Code:</strong> same conditional-introduction pattern.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Increment-and-Write, Bump-and-Store &amp; Advance-and-Set</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">count &lt; n</span> branch refines to <span class="key">increment counter</span> and <span class="key">write cell</span>.</p>
+<ul>
+  <li><strong>Decompose:</strong> CCUpdateMM spec statement.</li>
+  <li><strong>Conditional:</strong> guard <code>count &lt; n</code> already selected.</li>
+  <li><strong>Assignment:</strong> <code>count, array, status! <span class="vocab" data-def="Assignment.">:=</span> count + 1, array <span class="vocab" data-def="Function override.">&oplus;</span> {count + 1 &map; record?}, ok</code>.</li>
+  <li><strong>Code:</strong> single parallel assignment.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">bump-and-store</span> in a ring buffer increments the write pointer and stores the data.</p>
+<ul>
+  <li><strong>Decompose:</strong> pointer increment + data write.</li>
+  <li><strong>Conditional:</strong> room available.</li>
+  <li><strong>Assignment:</strong> <code>ptr, buf[ptr + 1] := ptr + 1, data</code>.</li>
+  <li><strong>Code:</strong> direct assignment introduction.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">advance-and-set</span> in a stack machine pushes by incrementing SP and writing.</p>
+<ul>
+  <li><strong>Decompose:</strong> SP increment + memory write.</li>
+  <li><strong>Conditional:</strong> stack not full.</li>
+  <li><strong>Assignment:</strong> <code>SP, mem[SP + 1] := SP + 1, value</code>.</li>
+  <li><strong>Code:</strong> assignment introduction from spec.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Flush-Then-Seed, Archive-Then-Reset &amp; Swap-Then-Init</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>;</code></td><td>Sequential composition.</td></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">count = n</span> branch uses <span class="key">sequential composition</span>: first update secondary, then reset count/array.</p>
+<ul>
+  <li><strong>Decompose:</strong> CCUpdateSM into two phases.</li>
+  <li><strong>Conditional:</strong> guard <code>count = n</code>.</li>
+  <li><strong>Assignment:</strong> phase 1: <code>status!, secondary</code> update <span class="vocab" data-def="Sequence into S1; S2.">;</span> phase 2: reset.</li>
+  <li><strong>Code:</strong> <code>secondary := secondary &#x2040; &lang; array &rang; ; count, array := 1, array &oplus; {1 &map; record?}</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">archive-then-reset</span> in a WAL: flush current log to archive, then start a new segment.</p>
+<ul>
+  <li><strong>Decompose:</strong> archive phase ; reset phase.</li>
+  <li><strong>Conditional:</strong> log full.</li>
+  <li><strong>Assignment:</strong> sequential: archive ; new segment.</li>
+  <li><strong>Code:</strong> two-phase sequential composition.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">swap-then-init</span> in double buffering: submit current buffer, then initialise the alternate.</p>
+<ul>
+  <li><strong>Decompose:</strong> submit phase ; init phase.</li>
+  <li><strong>Conditional:</strong> current buffer full.</li>
+  <li><strong>Assignment:</strong> sequential: submit ; init alternate.</li>
+  <li><strong>Code:</strong> same sequential composition pattern.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Recursive Interface, Layered Storage &amp; Nested Module</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>if .. fi</code></td><td>Guarded conditional.</td></tr>
+  <tr><td><code>;</code></td><td>Sequential composition.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">remaining spec statement</span> for secondary memory has the <span class="key">same shape</span> as the original save area &mdash; the design is <span class="key">recursive</span>.</p>
+<ul>
+  <li><strong>Decompose:</strong> main-memory code is done; secondary interface remains.</li>
+  <li><strong>Conditional:</strong> secondary could use another two-level split.</li>
+  <li><strong>Assignment:</strong> or implement directly.</li>
+  <li><strong>Code:</strong> <span class="vocab" data-def="Secondary interface has the same shape as the original.">recursive</span> module boundary.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">layered storage</span> system (L1 cache &rarr; L2 cache &rarr; disk) has the same flush-and-seed pattern at each level.</p>
+<ul>
+  <li><strong>Decompose:</strong> each level has the same interface.</li>
+  <li><strong>Conditional:</strong> level-full triggers push to next level.</li>
+  <li><strong>Assignment:</strong> same code template at each level.</li>
+  <li><strong>Code:</strong> recursive architecture.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">nested module</span> design: the save-area interface is <span class="key">self-similar</span> &mdash; secondary memory could be implemented by yet another save area.</p>
+<ul>
+  <li><strong>Decompose:</strong> main handled; secondary deferred.</li>
+  <li><strong>Conditional:</strong> tertiary memory possible.</li>
+  <li><strong>Assignment:</strong> each level adds one array + counter.</li>
+  <li><strong>Code:</strong> potentially infinite nesting (bounded in practice).</li>
+</ul>
+</div>
+
+<h3 id="s3-E">V.1 Practice: Decomposition Purpose</h3>
+<div class="practice" id="p4_1">
+  <p>CCSave<sub>0</sub> is decomposed into CCUpdateSM and CCUpdateMM to:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">Isolate the two disjuncts so each can be refined to code independently.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">Merge them into one operation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">Remove the error branch.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">Delete secondary memory.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_1"><p><strong>Correct.</strong> Separate the cases for targeted refinement.</p><ul><li><strong>Decompose:</strong> two disjuncts isolated.</li><li><strong>Conditional:</strong> each becomes a branch.</li><li><strong>Assignment:</strong> independent refinement.</li><li><strong>Code:</strong> cleaner code generation.</li></ul></div>
+</div>
+
+<h3>V.2 Practice: Conditional Introduction Rule</h3>
+<div class="practice" id="p4_2">
+  <p>Conditional introduction splits a specification into:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')"><code>if guard &rarr; branch1 &#x25A1; &not;guard &rarr; branch2 fi</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')">A single assignment.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')">A loop.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')">Nothing.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_2"><p><strong>Correct.</strong> Guarded conditional with complementary guards.</p><ul><li><strong>Decompose:</strong> identify the guard.</li><li><strong>Conditional:</strong> split into two branches.</li><li><strong>Assignment:</strong> refine each branch separately.</li><li><strong>Code:</strong> if/fi structure.</li></ul></div>
+</div>
+
+<h3>V.3 Practice: Main-Memory Assignment</h3>
+<div class="practice" id="p4_3">
+  <p class="scenario">The <span class="key">count &lt; n</span> branch refines to which assignment?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>count, array, status! := count + 1, array &oplus; {count + 1 &map; record?}, ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>count := 1; array 1 := record?</code> &mdash; flush case.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>status! := full</code> &mdash; error case.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>skip</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Increment counter, override next cell, report ok.</p><ul><li><strong>Decompose:</strong> CCUpdateMM.</li><li><strong>Conditional:</strong> count &lt; n guard.</li><li><strong>Assignment:</strong> parallel triple assignment.</li><li><strong>Code:</strong> direct from spec.</li></ul></div>
+</div>
+
+<h3>V.4 Practice: Sequential Composition</h3>
+<div class="practice" id="p4_4">
+  <p class="scenario">The <span class="key">count = n</span> branch is refined using <span class="key">sequential composition</span> because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')">The secondary update and the counter/array reset are separate phases that must happen in order.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">Both updates can happen simultaneously.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">No sequential composition is needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">Only one assignment suffices.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_4"><p><strong>Correct.</strong> Two-phase: first handle secondary, then reset main.</p><ul><li><strong>Decompose:</strong> CCUpdateSM split further.</li><li><strong>Conditional:</strong> within count = n branch.</li><li><strong>Assignment:</strong> phase 1 ; phase 2.</li><li><strong>Code:</strong> semicolon = sequential composition.</li></ul></div>
+</div>
+
+<h3>V.5 Practice: Nested Conditional</h3>
+<div class="practice" id="p4_5">
+  <p class="scenario">Within the <code>count = n</code> branch, a <span class="key">nested conditional</span> splits on:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')"><code>status! = ok</code> vs <code>status! = full</code> &mdash; success or error from secondary update.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')"><code>count &lt; n</code> again.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')"><code>secondary = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')">No nested conditional.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_5"><p><strong>Correct.</strong> After the secondary update, branch on its result.</p><ul><li><strong>Decompose:</strong> secondary update may succeed or fail.</li><li><strong>Conditional:</strong> status! = ok &rarr; reset ; status! = full &rarr; skip.</li><li><strong>Assignment:</strong> ok branch resets count and array.</li><li><strong>Code:</strong> inner if/fi.</li></ul></div>
+</div>
+
+<h3>V.6 Practice: CCUpdateSM Schema</h3>
+<div class="practice" id="p4_6">
+  <p>CCUpdateSM handles the case when:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>count = n</code> &mdash; array is full; archive it and seed cell 1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>count &lt; n</code> &mdash; room available.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>count = 0</code> &mdash; array empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')">Error case.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_6"><p><strong>Correct.</strong> Full array triggers secondary-memory update.</p><ul><li><strong>Decompose:</strong> count = n disjunct.</li><li><strong>Conditional:</strong> guard satisfied.</li><li><strong>Assignment:</strong> archive + reset + seed.</li><li><strong>Code:</strong> CCUpdateSM.</li></ul></div>
+</div>
+
+<h3>V.7 Practice: CCUpdateMM Schema</h3>
+<div class="practice" id="p4_7">
+  <p>CCUpdateMM handles the case when:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')"><code>count &lt; n</code> &mdash; room in array; increment and override.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')"><code>count = n</code> &mdash; full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')"><code>count = 0</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">Error case.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_7"><p><strong>Correct.</strong> Simple append when room exists.</p><ul><li><strong>Decompose:</strong> count &lt; n disjunct.</li><li><strong>Conditional:</strong> guard satisfied.</li><li><strong>Assignment:</strong> count + 1, override cell.</li><li><strong>Code:</strong> CCUpdateMM.</li></ul></div>
+</div>
+
+<h3>V.8 Practice: Assignment for count &lt; n</h3>
+<div class="practice" id="p4_8">
+  <p class="scenario">A <span class="key">log buffer</span> with <code>count = 2, n = 4</code>. Save <code>r</code>. The assignment is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')"><code>count, array, status! := 3, array &oplus; {3 &map; r}, ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')"><code>count := 1; secondary := secondary &#x2040; &lang; array &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')"><code>status! := full</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')"><code>skip</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_8"><p><strong>Correct.</strong> count &lt; n &rArr; increment + override + ok.</p><ul><li><strong>Decompose:</strong> CCUpdateMM.</li><li><strong>Conditional:</strong> 2 &lt; 4.</li><li><strong>Assignment:</strong> count = 3, cell 3 = r.</li><li><strong>Code:</strong> parallel assignment.</li></ul></div>
+</div>
+
+<h3>V.9 Practice: Sequential Composition for count = n</h3>
+<div class="practice" id="p4_9">
+  <p class="scenario">A <span class="key">buffer</span> with <code>count = n</code>. The <code>count = n</code> branch refines into:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">Phase 1: update status + secondary ; Phase 2: if ok &rarr; reset count/array &#x25A1; full &rarr; skip.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')">A single assignment.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')">Only the error branch.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')">No refinement needed.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_9"><p><strong>Correct.</strong> Two phases with a nested conditional on the result.</p><ul><li><strong>Decompose:</strong> secondary update then reset.</li><li><strong>Conditional:</strong> nested on status!.</li><li><strong>Assignment:</strong> ok &rarr; reset; full &rarr; skip.</li><li><strong>Code:</strong> S1 ; if ok &rarr; S2 &#x25A1; full &rarr; skip fi.</li></ul></div>
+</div>
+
+<h3>V.10 Practice: Recursive Observation</h3>
+<div class="practice" id="p4_10">
+  <p>The secondary-memory interface is recursive because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">It has the same shape as the original save-area interface &mdash; push/pop with a bounded buffer.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">It uses a loop.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">It calls itself directly.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">It has no structure.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_10"><p><strong>Correct.</strong> Same interface pattern at each level &mdash; self-similar design.</p><ul><li><strong>Decompose:</strong> main-memory code done.</li><li><strong>Conditional:</strong> remaining spec = save-area for secondary.</li><li><strong>Assignment:</strong> could use tertiary memory, etc.</li><li><strong>Code:</strong> recursive module boundary.</li></ul></div>
+</div>
+
+<h3>V.11 Practice: Strengthen Postcondition</h3>
+<div class="practice" id="p4_11">
+  <p>The refinement step &ldquo;strengthen postcondition&rdquo; means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">Replace the abstract postcondition with a stronger (more specific) concrete one that implies it.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Weaken the postcondition.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Remove the postcondition.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Negate the postcondition.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_11"><p><strong>Correct.</strong> Concrete postcondition &rArr; abstract postcondition.</p><ul><li><strong>Decompose:</strong> spec postcondition.</li><li><strong>Conditional:</strong> find a stronger version.</li><li><strong>Assignment:</strong> assignment gives exact values.</li><li><strong>Code:</strong> assignments are maximally strong.</li></ul></div>
+</div>
+
+<h3>V.12 Practice: Error Branch at Code Level</h3>
+<div class="practice" id="p4_12">
+  <p class="scenario">In the <code>count = n</code> branch, if <code>status! = full</code> after secondary update:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')"><code>skip</code> &mdash; no further state change needed; full is already reported.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')"><code>count := 1</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')"><code>array := &empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')">Abort.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_12"><p><strong>Correct.</strong> Skip introduction: nothing more to do on the error path.</p><ul><li><strong>Decompose:</strong> error branch.</li><li><strong>Conditional:</strong> status! = full.</li><li><strong>Assignment:</strong> skip (no-op).</li><li><strong>Code:</strong> skip refines the spec trivially.</li></ul></div>
+</div>
+
+<h3>V.13 Practice: Full Code Structure</h3>
+<div class="practice" id="p4_13">
+  <p>The final code for the save operation has the form:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')"><code>if count &lt; n &rarr; assignment &#x25A1; count = n &rarr; secondary-update ; nested-if fi</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">A single assignment.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">A loop.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">No structure.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_13"><p><strong>Correct.</strong> Outer conditional + inner sequential + inner conditional.</p><ul><li><strong>Decompose:</strong> two-level structure.</li><li><strong>Conditional:</strong> outer on count; inner on status.</li><li><strong>Assignment:</strong> in each leaf.</li><li><strong>Code:</strong> nested if with semicolon.</li></ul></div>
+</div>
+
+<h3>V.14 Practice: Refinement Relation</h3>
+<div class="practice" id="p4_14">
+  <p>The symbol <code>&sqsube;</code> between specification statements means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')">The right-hand side refines (implements) the left-hand side.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')">The two are identical.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')">The left refines the right.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')">No relationship.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Refinement: code satisfies spec.</p><ul><li><strong>Decompose:</strong> spec on left.</li><li><strong>Conditional:</strong> code on right.</li><li><strong>Assignment:</strong> each step is a valid &sqsube;.</li><li><strong>Code:</strong> chain of refinements.</li></ul></div>
+</div>
+
+<h3>V.15 Practice: Why Sequential Composition</h3>
+<div class="practice" id="p4_15">
+  <p>Sequential composition is needed for the <code>count = n</code> case because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">The secondary update must complete before we know whether to reset count/array or skip.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">Both can happen in parallel.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">No reason.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">Only one phase exists.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_15"><p><strong>Correct.</strong> The result of phase 1 determines phase 2.</p><ul><li><strong>Decompose:</strong> dependency between phases.</li><li><strong>Conditional:</strong> phase 2 depends on phase 1&rsquo;s status.</li><li><strong>Assignment:</strong> S1 ; S2.</li><li><strong>Code:</strong> order matters.</li></ul></div>
+</div>
+
+<h3>V.16 Practice: Assignment for Flush Reset</h3>
+<div class="practice" id="p4_16">
+  <p class="scenario">After a successful secondary update (<code>status! = ok</code>) in the <code>count = n</code> branch, the reset assignment is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')"><code>count, array := 1, array &oplus; {1 &map; record?}</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')"><code>count := count + 1</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')"><code>skip</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')"><code>status! := full</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_16"><p><strong>Correct.</strong> Reset counter to 1, seed cell 1 with the new record.</p><ul><li><strong>Decompose:</strong> phase 2 of count = n branch.</li><li><strong>Conditional:</strong> status = ok.</li><li><strong>Assignment:</strong> count = 1, cell 1 = record?.</li><li><strong>Code:</strong> assignment introduction.</li></ul></div>
+</div>
+
+<h3>V.17 Practice: Guard Completeness</h3>
+<div class="practice" id="p4_17">
+  <p>The guards <code>count &lt; n</code> and <code>count = n</code> are complete because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')"><code>count : 0..n</code> means <code>count &le; n</code>, so either <code>&lt; n</code> or <code>= n</code> holds.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')"><code>count &gt; n</code> is possible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')">They overlap.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')">They don&rsquo;t cover all cases.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_17"><p><strong>Correct.</strong> Exhaustive partition of 0..n.</p><ul><li><strong>Decompose:</strong> two disjoint guards.</li><li><strong>Conditional:</strong> cover all values of count.</li><li><strong>Assignment:</strong> each branch handles its case.</li><li><strong>Code:</strong> no missing case.</li></ul></div>
+</div>
+
+<h3>V.18 Practice: Skip Introduction</h3>
+<div class="practice" id="p4_18">
+  <p>Skip introduction is used when:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')">The specification statement is already satisfied &mdash; no further action needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">The spec requires complex computation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">An assignment is needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">A loop is needed.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_18"><p><strong>Correct.</strong> Skip = no-op; the postcondition holds already.</p><ul><li><strong>Decompose:</strong> nothing to do.</li><li><strong>Conditional:</strong> error path: state already correct.</li><li><strong>Assignment:</strong> skip.</li><li><strong>Code:</strong> trivial refinement.</li></ul></div>
+</div>
+
+<h3>V.19 Practice: Recursive Implication</h3>
+<div class="practice" id="p4_19">
+  <p>The recursive structure means secondary memory could be implemented by:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">Another save-area module with its own array + counter + tertiary memory.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')">Only direct implementation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')">Removing it entirely.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')">No further refinement possible.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_19"><p><strong>Correct.</strong> Self-similar design: each level can use the same module pattern.</p><ul><li><strong>Decompose:</strong> tertiary memory at next level.</li><li><strong>Conditional:</strong> same flush-and-seed interface.</li><li><strong>Assignment:</strong> same code template.</li><li><strong>Code:</strong> recursive application.</li></ul></div>
+</div>
+
+<h3>V.20 Practice: Full Refinement Chain</h3>
+<div class="practice" id="p4_20">
+  <p>The complete refinement chain for the save operation is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')">Abstract spec &rarr; two-level &rarr; array+counter &rarr; refinement calculus &rarr; executable code.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">Direct implementation from abstract spec.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">Only one refinement step.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">No refinement occurred.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_20"><p><strong>Correct.</strong> Four levels of refinement from abstract to code.</p><ul><li><strong>Decompose:</strong> §23.1 &rarr; §23.2 &rarr; §23.3 &rarr; §23.4.</li><li><strong>Conditional:</strong> each adds implementation detail.</li><li><strong>Assignment:</strong> final level produces assignments.</li><li><strong>Code:</strong> executable program.</li></ul></div>
+</div>
+
+<h3>V.21 Practice: Refinement Calculus Rules Used</h3>
+<div class="practice" id="p4_21">
+  <p>The three main refinement calculus rules used in this section are:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')">Conditional introduction, assignment introduction, and sequential composition introduction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">Only assignment introduction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">Loop introduction and recursion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">No rules were used.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_21"><p><strong>Correct.</strong> Three rules drive the entire derivation.</p><ul><li><strong>Decompose:</strong> conditional splits cases.</li><li><strong>Conditional:</strong> if/fi from conditional intro.</li><li><strong>Assignment:</strong> := from assignment intro.</li><li><strong>Code:</strong> ; from sequential composition.</li></ul></div>
+</div>
+
+<h3>V.22 Practice: Strengthen Postcondition Application</h3>
+<div class="practice" id="p4_22">
+  <p class="scenario">Before assignment introduction, the spec postcondition is <span class="key">strengthened</span>. For the <code>count &lt; n</code> branch this means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">Giving explicit values: <code>count&prime; = count + 1</code>, <code>array&prime; = array &oplus; {count + 1 &map; record?}</code>, <code>status! = ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Weakening to <code>true</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Removing the postcondition.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Adding a loop invariant.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_22"><p><strong>Correct.</strong> Explicit equations enable direct assignment introduction.</p><ul><li><strong>Decompose:</strong> abstract postcondition.</li><li><strong>Conditional:</strong> count &lt; n guard.</li><li><strong>Assignment:</strong> strengthened to equations.</li><li><strong>Code:</strong> equations &rarr; assignments.</li></ul></div>
+</div>
+
+<h3>V.23 Practice: Parallel Assignment</h3>
+<div class="practice" id="p4_23">
+  <p>The assignment <code>count, array, status! := count + 1, array &oplus; {count + 1 &map; record?}, ok</code> is a:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')">Parallel (simultaneous) assignment &mdash; all three updated at once.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Sequential triple assignment.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Only count is updated.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">No assignment occurs.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_23"><p><strong>Correct.</strong> All variables updated simultaneously using old values.</p><ul><li><strong>Decompose:</strong> three targets.</li><li><strong>Conditional:</strong> n/a.</li><li><strong>Assignment:</strong> parallel := .</li><li><strong>Code:</strong> all RHS evaluated before any LHS updated.</li></ul></div>
+</div>
+
+<h3>V.24 Practice: Secondary Memory Spec Statement</h3>
+<div class="practice" id="p4_24">
+  <p>The remaining spec statement after all refinement steps is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')">The original save-area interface applied to secondary memory &mdash; recursive module.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')">Nothing remains.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')">The entire original spec unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')">Only the error branch.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_24"><p><strong>Correct.</strong> Self-similar: secondary needs the same push/pop module.</p><ul><li><strong>Decompose:</strong> main code complete.</li><li><strong>Conditional:</strong> secondary deferred.</li><li><strong>Assignment:</strong> could use another array+counter.</li><li><strong>Code:</strong> recursive module design.</li></ul></div>
+</div>
+
+<h3>V.25 Practice: Design Summary</h3>
+<div class="practice" id="p4_25">
+  <p>The chapter demonstrates that formal refinement can produce:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">Executable code from an abstract Z specification through a chain of verified design steps.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">Only abstract specifications.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">Code without any verification.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">Nothing useful.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Spec &rarr; design &rarr; further design &rarr; code, each step justified.</p><ul><li><strong>Decompose:</strong> four-stage development.</li><li><strong>Conditional:</strong> each step verified.</li><li><strong>Assignment:</strong> final code is provably correct.</li><li><strong>Code:</strong> executable result.</li></ul></div>
+</div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 4</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 23.</footer>
+
+</body>
+</html>

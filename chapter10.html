@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 10 — Free Types</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch10-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">10.1 The Natural Numbers &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">10.2 Free Type Definitions &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">10.3 Proof by Induction &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 10 &mdash; Free Types</h1>
+
+<!-- ================= 10.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">10.1 The Natural Numbers</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Set with explicit structuring information &mdash; lists, arrays, trees from basic types.">Free types</span> offer concise, structured alternatives to verbose set/relation models.</li>
+  <li><strong>Building <code>nat</code>:</strong> start with a <span class="vocab" data-def="Base element constant of a free type.">zero</span> element and a <span class="vocab" data-def="Function mapping each element to the next in the chain.">successor</span> function <code>succ</code>.</li>
+  <li><strong>First attempt:</strong> <code>succ</code> as a <span class="vocab" data-def="Function that may be undefined for some inputs.">partial function</span> &rarr; allows loops and dead-ends.</li>
+  <li><strong>Exclude base from range:</strong> <code>{zero} &cap; ran succ = &empty;</code> &rarr; still allows dead-end elements with no successor.</li>
+  <li><strong>Make <code>succ</code> a <span class="vocab" data-def="Function defined for every element of its domain.">total function</span>:</strong> <code>succ : nat &rarr; nat</code> &rarr; still allows collisions (two predecessors map to same successor).</li>
+  <li><strong>Make <code>succ</code> <span class="vocab" data-def="One-to-one &mdash; distinct inputs always produce distinct outputs.">injective</span>:</strong> <code>succ : nat &#x21A3; nat</code> &rarr; still allows extra &ldquo;phantom&rdquo; elements beyond the chain.</li>
+  <li><strong><span class="vocab" data-def="The intersection of all sets meeting the given constraints &mdash; no extra elements.">Smallest set</span> requirement:</strong> <code>nat</code> must be the minimum set containing <code>zero</code> and closed under <code>succ</code>.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Free type</td><td>Set with explicit structuring information &mdash; lists, arrays, trees from basic types.</td></tr>
+  <tr><td>zero</td><td>Base element constant of a free type.</td></tr>
+  <tr><td>Successor (succ)</td><td>Function mapping each element to the next in the chain.</td></tr>
+  <tr><td>Partial function</td><td>Function that may be undefined for some inputs.</td></tr>
+  <tr><td>Total function</td><td>Function defined for every element of its domain.</td></tr>
+  <tr><td>Injective</td><td>One-to-one &mdash; distinct inputs always produce distinct outputs.</td></tr>
+  <tr><td>Smallest set</td><td>The intersection of all sets meeting the given constraints &mdash; no extra elements.</td></tr>
+  <tr><td>Range (ran)</td><td>The set of all outputs of a function.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function (may be undefined for some inputs).</td></tr>
+  <tr><td><code>&rarr;</code></td><td>Total function (defined for every input).</td></tr>
+  <tr><td><code>&#x21A3;</code></td><td>Injective function (one-to-one).</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all (universal quantifier).</td></tr>
+  <tr><td><code>&exist;</code></td><td>There exists (existential quantifier).</td></tr>
+  <tr><td><code>&or;</code></td><td>Or (disjunction).</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+  <tr><td><code>&cap;</code></td><td>Set intersection.</td></tr>
+  <tr><td><code>ran</code></td><td>Range of a function.</td></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+</table>
+
+<h3>IV.1 Examples: Version Tracker, Student Grade Ladder &amp; Delivery Pipeline</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+  <tr><td><code>&exist;</code></td><td>There exists.</td></tr>
+  <tr><td><code>&or;</code></td><td>Or.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A software team tracks <span class="key">versions</span> starting from <span class="key">v0</span>, each version having a <span class="key">next release</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> model a chain of <span class="vocab" data-def="Set with explicit structuring information &mdash; lists, arrays, trees from basic types.">free type</span> elements: <code>v0</code>, then each version has a <span class="vocab" data-def="Function mapping each element to the next in the chain.">successor</span>.</li>
+  <li><strong>Attempt:</strong> <code>v0 : Version</code>, <code>next : Version &#x21F8; Version</code>, <code>&forall; v : Version &bull; v = v0 &or; &exist; u : Version &bull; v = next u</code>.</li>
+  <li><strong>Flaw:</strong> <code>next</code> is <span class="vocab" data-def="Function that may be undefined for some inputs.">partial</span> &mdash; <code>next</code> could map <code>v0</code> back to itself (loop), creating a single-element cycle.</li>
+  <li><strong>Fix:</strong> need additional constraints to rule out loops.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A school defines <span class="key">grade levels</span> from <span class="key">kindergarten</span>, each grade promoting to the <span class="key">next</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> model a ladder: <code>K</code>, then each grade has a <span class="vocab" data-def="Function mapping each element to the next in the chain.">successor</span>.</li>
+  <li><strong>Attempt:</strong> <code>K : Grade</code>, <code>promote : Grade &#x21F8; Grade</code>, <code>&forall; g : Grade &bull; g = K &or; &exist; h : Grade &bull; g = promote h</code>.</li>
+  <li><strong>Flaw:</strong> <code>promote</code> could cycle <code>K</code> back to itself &mdash; a student &ldquo;promoted&rdquo; from kindergarten back to kindergarten.</li>
+  <li><strong>Fix:</strong> must add constraints so the base element is not in the <span class="vocab" data-def="The set of all outputs of a function.">range</span> of <code>promote</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A logistics company tracks <span class="key">delivery stages</span> from <span class="key">placed</span>, each advancing to the <span class="key">next stage</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> chain: <code>placed</code>, then each stage has a successor.</li>
+  <li><strong>Attempt:</strong> <code>placed : Stage</code>, <code>advance : Stage &#x21F8; Stage</code>, <code>&forall; s : Stage &bull; s = placed &or; &exist; t : Stage &bull; s = advance t</code>.</li>
+  <li><strong>Flaw:</strong> <code>advance(placed) = placed</code> is allowed &mdash; order never actually moves.</li>
+  <li><strong>Fix:</strong> exclude <code>placed</code> from the range of <code>advance</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Bike Gear Chain, Restaurant Queue &amp; Factory Assembly Line</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&cap;</code></td><td>Set intersection.</td></tr>
+  <tr><td><code>ran</code></td><td>Range of a function.</td></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set.</td></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bicycle has <span class="key">gears</span> starting from <span class="key">gear 1</span>; shifting up moves to the <span class="key">next gear</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> ensure <code>gear_1</code> is never the output of shifting up.</li>
+  <li><strong>Attempt:</strong> add <code>{gear_1} <span class="vocab" data-def="Set intersection.">&cap;</span> <span class="vocab" data-def="The set of all outputs of a function.">ran</span> shift_up = <span class="vocab" data-def="Empty set.">&empty;</span></code> to prevent loops.</li>
+  <li><strong>Flaw:</strong> <code>shift_up</code> is still <span class="vocab" data-def="Function that may be undefined for some inputs.">partial</span> &mdash; some gears may have <em>no</em> next gear (dead-end in middle of chain).</li>
+  <li><strong>Fix:</strong> make <code>shift_up</code> a <span class="vocab" data-def="Function defined for every element of its domain.">total function</span> so every gear has a successor.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A restaurant uses a <span class="key">queue</span> starting from <span class="key">position 1</span>; each position advances to the <span class="key">next</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>{pos_1} &cap; ran advance = &empty;</code> &mdash; position 1 is never someone's &ldquo;next.&rdquo;</li>
+  <li><strong>Attempt:</strong> <code>advance : Pos &#x21F8; Pos</code> with base excluded from range.</li>
+  <li><strong>Flaw:</strong> <code>advance</code> partial &rarr; some positions never advance &mdash; customers stuck forever.</li>
+  <li><strong>Fix:</strong> make <code>advance</code> total: every position has a next one.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A factory has <span class="key">assembly stations</span> from <span class="key">station A</span>; each feeds into the <span class="key">next station</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>{station_A} &cap; ran next_station = &empty;</code> &mdash; no product re-enters the first station.</li>
+  <li><strong>Attempt:</strong> <code>next_station : Station &#x21F8; Station</code> with base excluded.</li>
+  <li><strong>Flaw:</strong> partial function &rarr; some stations have no follow-up &mdash; products pile up.</li>
+  <li><strong>Fix:</strong> <code>next_station : Station &rarr; Station</code> &mdash; total, so every station leads somewhere.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Hotel Floor Plan, Chess Rating Ladder &amp; Airport Gate Sequence</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&rarr;</code></td><td>Total function.</td></tr>
+  <tr><td><code>&cap;</code></td><td>Set intersection.</td></tr>
+  <tr><td><code>ran</code></td><td>Range.</td></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A hotel numbers <span class="key">floors</span> from <span class="key">ground</span>; each floor has a <span class="key">next floor above</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>next_floor : Floor &rarr; Floor</code> (total) and <code>{ground} &cap; ran next_floor = &empty;</code>.</li>
+  <li><strong>Attempt:</strong> total function prevents dead-ends; base excluded from range prevents loops.</li>
+  <li><strong>Flaw:</strong> <code>next_floor</code> not <span class="vocab" data-def="One-to-one &mdash; distinct inputs always produce distinct outputs.">injective</span> &mdash; floors 3 and 7 could both map to floor 8 as their successor.</li>
+  <li><strong>Fix:</strong> make <code>next_floor</code> injective so each floor has a <em>unique</em> predecessor.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A chess federation defines <span class="key">rating tiers</span> from <span class="key">novice</span>; each tier promotes to the <span class="key">next</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>promote : Tier &rarr; Tier</code>, <code>{novice} &cap; ran promote = &empty;</code>.</li>
+  <li><strong>Attempt:</strong> total + base-excluded definition.</li>
+  <li><strong>Flaw:</strong> not injective &mdash; both &ldquo;club player&rdquo; and &ldquo;tournament player&rdquo; could promote to the same tier.</li>
+  <li><strong>Fix:</strong> <code>promote : Tier &#x21A3; Tier</code> &mdash; distinct tiers always promote to distinct tiers.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An airport assigns <span class="key">gate numbers</span> from <span class="key">gate 1</span>; each gate leads to the <span class="key">next gate</span> down the terminal.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>next_gate : Gate &rarr; Gate</code>, <code>{gate_1} &cap; ran next_gate = &empty;</code>.</li>
+  <li><strong>Attempt:</strong> total + base-excluded.</li>
+  <li><strong>Flaw:</strong> not injective &mdash; gates 5 and 12 could both point to gate 13 as successor.</li>
+  <li><strong>Fix:</strong> <code>next_gate : Gate &#x21A3; Gate</code> guarantees a unique linear sequence.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Race Bib Numbers, Bus Stop Route &amp; Bookshelf Positions</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21A3;</code></td><td>Injective function.</td></tr>
+  <tr><td><code>&cap;</code></td><td>Set intersection.</td></tr>
+  <tr><td><code>ran</code></td><td>Range.</td></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A race assigns <span class="key">bib numbers</span> from <span class="key">bib 1</span>; each bib has a unique <span class="key">next bib</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>next_bib : Bib &#x21A3; Bib</code>, <code>{bib_1} &cap; ran next_bib = &empty;</code>, <code>{bib_1} &cup; ran next_bib = Bib</code>.</li>
+  <li><strong>Attempt:</strong> injective + base-excluded + coverage &mdash; looks correct.</li>
+  <li><strong>Flaw:</strong> the set <code>Bib</code> might contain &ldquo;phantom&rdquo; bibs not reachable from <code>bib_1</code> via <code>next_bib</code>.</li>
+  <li><strong>Fix:</strong> require <code>Bib</code> to be the <span class="vocab" data-def="The intersection of all sets meeting the given constraints &mdash; no extra elements.">smallest set</span> containing <code>bib_1</code> and closed under <code>next_bib</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A bus route has <span class="key">stops</span> from <span class="key">stop A</span>; each stop leads to a unique <span class="key">next stop</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>next_stop : Stop &#x21A3; Stop</code>, <code>{stop_A} &cap; ran next_stop = &empty;</code>.</li>
+  <li><strong>Attempt:</strong> injective + base-excluded.</li>
+  <li><strong>Flaw:</strong> extra &ldquo;orphan&rdquo; stops might exist in <code>Stop</code> that are not on the actual route.</li>
+  <li><strong>Fix:</strong> <code>Stop</code> = smallest set satisfying the constraints &mdash; only reachable stops count.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A library indexes <span class="key">shelf positions</span> from <span class="key">pos 1</span>; each has a unique <span class="key">next position</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>next_pos : Pos &#x21A3; Pos</code>, <code>{pos_1} &cap; ran next_pos = &empty;</code>.</li>
+  <li><strong>Attempt:</strong> injective + base-excluded &mdash; but the set could include unreachable &ldquo;ghost&rdquo; positions.</li>
+  <li><strong>Flaw:</strong> without the <span class="vocab" data-def="The intersection of all sets meeting the given constraints &mdash; no extra elements.">smallest set</span> requirement, extra phantom positions pollute the type.</li>
+  <li><strong>Fix:</strong> <code>Pos</code> must be the <em>smallest</em> set containing <code>pos_1</code> and closed under <code>next_pos</code>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Elevator Floors, Train Platforms &amp; Parking Garage Levels</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21A3;</code></td><td>Injective function.</td></tr>
+  <tr><td><code>&cap;</code></td><td>Set intersection.</td></tr>
+  <tr><td><code>ran</code></td><td>Range.</td></tr>
+  <tr><td><code>&empty;</code></td><td>Empty set.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+  <tr><td><code>&forall;</code></td><td>For all.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An elevator serves <span class="key">floors</span> from <span class="key">ground</span>; the system must guarantee <span class="key">every floor is reachable</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> <code>nat</code>-like structure &mdash; no loops, no dead-ends, no collisions, no phantoms.</li>
+  <li><strong>Attempt:</strong> <code>up : Floor &#x21A3; Floor</code>, <code>{ground} &cap; ran up = &empty;</code>, <code>{ground} &cup; ran up = Floor</code>, smallest set.</li>
+  <li><strong>Flaw:</strong> none &mdash; all four requirements met.</li>
+  <li><strong>Fix:</strong> this is the complete <code>nat</code> definition: <code>zero : nat</code>, <code>succ : nat &#x21A3; nat</code>, <code>{zero} &cap; ran succ = &empty;</code>, <code>{zero} &cup; ran succ = nat</code>, <code>nat</code> = smallest.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A train station numbers <span class="key">platforms</span> from <span class="key">platform 1</span>; each must have a unique <span class="key">next platform</span> with <span class="key">no extras</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> all four nat constraints applied to platforms.</li>
+  <li><strong>Attempt:</strong> injective + base-excluded + total coverage + smallest set.</li>
+  <li><strong>Flaw:</strong> none &mdash; the definition is complete.</li>
+  <li><strong>Fix:</strong> platforms form a <code>nat</code>-isomorphic chain: <code>&forall; p : Platform &bull; p = plat_1 &or; &exist; q : Platform &bull; p = next q</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A parking garage labels <span class="key">levels</span> from <span class="key">ground</span>; each level leads to exactly one <span class="key">next level</span> with <span class="key">no phantom levels</span>.</p>
+<ul>
+  <li><strong>Goal:</strong> all four nat constraints: base not in range, total, injective, smallest.</li>
+  <li><strong>Attempt:</strong> <code>up : Level &#x21A3; Level</code>, <code>{ground} &cap; ran up = &empty;</code>, smallest.</li>
+  <li><strong>Flaw:</strong> none &mdash; this captures exactly the natural numbers.</li>
+  <li><strong>Fix:</strong> the four requirements together uniquely determine a <code>nat</code>-shaped set: <code>ground, up(ground), up(up(ground)), &hellip;</code></li>
+</ul>
+</div>
+
+<h3>V.1 Practice: Free Type Motivation</h3>
+<div class="practice" id="p1_1"><p>Free types offer an alternative to modeling data structures with:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">Sets and relations (which can be verbose for recursive structures).</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Only natural numbers.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Only propositional logic.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Only schemas.</button></li></ul><div class="feedback" id="fb1_1"><p><strong>Correct.</strong> Free types provide concise structuring.</p><ul><li><strong>Goal:</strong> model lists, trees, arrays from basic types.</li><li><strong>Attempt:</strong> sets + relations work but are verbose.</li><li><strong>Flaw:</strong> no explicit structuring information.</li><li><strong>Fix:</strong> free types add structure directly.</li></ul></div></div>
+
+<h3>V.2 Practice: Natural Number Components</h3>
+<div class="practice" id="p1_2"><p>The natural numbers require which two components?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_2')">A set and a predicate.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">A base element (<code>zero</code>) and a successor function (<code>succ</code>).</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Two total functions.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">A schema and a relation.</button></li></ul><div class="feedback" id="fb1_2"><p><strong>Correct.</strong> zero + succ generate all of <code>nat</code>.</p><ul><li><strong>Goal:</strong> define the natural numbers.</li><li><strong>Attempt:</strong> <code>zero : nat</code>, <code>succ : nat &#x21A3; nat</code>.</li><li><strong>Flaw:</strong> additional constraints also needed.</li><li><strong>Fix:</strong> base + successor + four constraints = <code>nat</code>.</li></ul></div></div>
+
+<h3>V.3 Practice: Successor Chain Properties</h3>
+<div class="practice" id="p1_3"><p class="scenario">A fitness app tracks <span class="key">workout levels</span> from <span class="key">beginner</span>, each promoting to the <span class="key">next level</span>. The successor function must prevent <span class="key">beginner from being anyone's successor</span>.</p><p>Which constraint achieves this?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>succ : Level &#x21F8; Level</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>{beginner} &cap; ran succ = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>succ : Level &rarr; Level</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>beginner &isin; ran succ</code></button></li></ul><div class="feedback" id="fb1_3"><p><strong>Correct.</strong> Base element excluded from range.</p><ul><li><strong>Goal:</strong> beginner is never a successor output.</li><li><strong>Attempt:</strong> <code>{beginner} &cap; ran succ = &empty;</code>.</li><li><strong>Flaw:</strong> without this, succ could loop beginner to itself.</li><li><strong>Fix:</strong> intersection with range = empty set.</li></ul></div></div>
+
+<h3>V.4 Practice: Successor Chain Properties</h3>
+<div class="practice" id="p1_4"><p class="scenario">A ticketing system assigns <span class="key">queue numbers</span> from <span class="key">ticket 1</span>. Every ticket must have a <span class="key">next ticket</span> &mdash; no dead ends.</p><p>Which property ensures this?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>next : Ticket &#x21F8; Ticket</code> (partial)</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>{ticket_1} &cap; ran next = &empty;</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>next : Ticket &rarr; Ticket</code> (total)</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>next : Ticket &#x21A3; Ticket</code> (injective only)</button></li></ul><div class="feedback" id="fb1_4"><p><strong>Correct.</strong> Totality eliminates dead-ends.</p><ul><li><strong>Goal:</strong> every ticket has a successor.</li><li><strong>Attempt:</strong> total function &rarr; defined for all inputs.</li><li><strong>Flaw:</strong> partial function allows undefined successors.</li><li><strong>Fix:</strong> <code>&rarr;</code> (total) guarantees every element maps somewhere.</li></ul></div></div>
+
+<h3>V.5 Practice: Successor Chain Properties</h3>
+<div class="practice" id="p1_5"><p class="scenario">A music streaming service numbers <span class="key">playlists</span> from <span class="key">playlist 0</span>. Two different playlists must never share the <span class="key">same successor</span>.</p><p>Which property prevents collisions?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>succ : Playlist &rarr; Playlist</code> (total only)</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>{playlist_0} &cap; ran succ = &empty;</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>succ : Playlist &#x21A3; Playlist</code> (injective)</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>succ : Playlist &#x21F8; Playlist</code> (partial)</button></li></ul><div class="feedback" id="fb1_5"><p><strong>Correct.</strong> Injectivity prevents two inputs mapping to one output.</p><ul><li><strong>Goal:</strong> distinct playlists &rarr; distinct successors.</li><li><strong>Attempt:</strong> <code>&#x21A3;</code> = injective.</li><li><strong>Flaw:</strong> without injectivity, playlist 3 and 7 could both map to 8.</li><li><strong>Fix:</strong> injective function guarantees one-to-one mapping.</li></ul></div></div>
+
+<h3>V.6 Practice: Successor Chain Properties</h3>
+<div class="practice" id="p1_6"><p class="scenario">A warehouse numbers <span class="key">storage bins</span> from <span class="key">bin 1</span>. The definition must ensure <span class="key">bin 1 is never output</span> by the successor, every bin has a next, and <span class="key">no two bins share a successor</span>.</p><p>Which combination is needed?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>succ : Bin &#x21F8; Bin</code>, <code>{bin_1} &cap; ran succ = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>succ : Bin &rarr; Bin</code> only</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>succ : Bin &#x21A3; Bin</code> only</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>succ : Bin &#x21A3; Bin</code>, <code>{bin_1} &cap; ran succ = &empty;</code>, smallest set</button></li></ul><div class="feedback" id="fb1_6"><p><strong>Correct.</strong> All four properties combined.</p><ul><li><strong>Goal:</strong> no loops, no dead-ends, no collisions, no phantoms.</li><li><strong>Attempt:</strong> injective (includes totality) + base exclusion + smallest.</li><li><strong>Flaw:</strong> any single constraint alone is insufficient.</li><li><strong>Fix:</strong> the complete nat-like definition requires all four.</li></ul></div></div>
+
+<h3>V.7 Practice: Successor Chain Properties</h3>
+<div class="practice" id="p1_7"><p class="scenario">An elevator control system numbers <span class="key">floors</span> from <span class="key">ground</span>. The <span class="key">up</span> function must be defined for <span class="key">every floor</span>.</p><p>What does this requirement correspond to?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>up : Floor &#x21F8; Floor</code> (partial)</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>up : Floor &rarr; Floor</code> (total function)</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>{ground} &cap; ran up = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>up = &empty;</code></button></li></ul><div class="feedback" id="fb1_7"><p><strong>Correct.</strong> &ldquo;Defined for every floor&rdquo; = total.</p><ul><li><strong>Goal:</strong> no dead-end floors.</li><li><strong>Attempt:</strong> <code>&rarr;</code> means total.</li><li><strong>Flaw:</strong> <code>&#x21F8;</code> (partial) allows undefined outputs.</li><li><strong>Fix:</strong> total function ensures completeness.</li></ul></div></div>
+
+<h3>V.8 Practice: Successor Chain Properties</h3>
+<div class="practice" id="p1_8"><p class="scenario">A board game has <span class="key">spaces</span> from <span class="key">start</span>. The <span class="key">advance</span> function must ensure <span class="key">start is never reached by advancing</span>.</p><p>Which constraint is this?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>advance : Space &#x21A3; Space</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>advance : Space &rarr; Space</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>{start} &cap; ran advance = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>start &isin; ran advance</code></button></li></ul><div class="feedback" id="fb1_8"><p><strong>Correct.</strong> Base excluded from range of successor.</p><ul><li><strong>Goal:</strong> start is not anyone&rsquo;s successor.</li><li><strong>Attempt:</strong> intersect {start} with range.</li><li><strong>Flaw:</strong> without this, advance could loop back to start.</li><li><strong>Fix:</strong> empty intersection means start is unreachable via advance.</li></ul></div></div>
+
+<h3>V.9 Practice: Structural Flaw Detection</h3>
+<div class="practice" id="p1_9"><p class="scenario">A definition states: <code>base : T</code>, <code>f : T &#x21F8; T</code>, <code>&forall; t : T &bull; t = base &or; &exist; u : T &bull; t = f u</code>. A model exists where <span class="key">f maps base to itself</span>.</p><p>Which flaw is present?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')">Loop &mdash; <code>f(base) = base</code> creates a cycle.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Dead-end &mdash; some element has no successor.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Collision &mdash; two elements share a successor.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Phantom &mdash; extra unreachable elements.</button></li></ul><div class="feedback" id="fb1_9"><p><strong>Correct.</strong> The partial function allows the base to loop.</p><ul><li><strong>Goal:</strong> identify the structural flaw.</li><li><strong>Attempt:</strong> only partial function + universal property.</li><li><strong>Flaw:</strong> no constraint prevents <code>base &isin; ran f</code> &rarr; loop.</li><li><strong>Fix:</strong> add <code>{base} &cap; ran f = &empty;</code>.</li></ul></div></div>
+
+<h3>V.10 Practice: Structural Flaw Detection</h3>
+<div class="practice" id="p1_10"><p class="scenario">A definition adds <code>{base} &cap; ran f = &empty;</code> but keeps <code>f : T &#x21F8; T</code> partial. A model exists where <span class="key">some elements have no successor</span>.</p><p>Which flaw persists?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_10')">Loop &mdash; base maps to itself.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')">Dead-end &mdash; partial function leaves gaps in the chain.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">Collision &mdash; two inputs share one output.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">Phantom &mdash; extra unreachable elements.</button></li></ul><div class="feedback" id="fb1_10"><p><strong>Correct.</strong> Partial function can be undefined for some inputs.</p><ul><li><strong>Goal:</strong> identify remaining flaw after base exclusion.</li><li><strong>Attempt:</strong> base excluded, but f still partial.</li><li><strong>Flaw:</strong> <code>&#x21F8;</code> allows f(x) to be undefined &rarr; dead-end.</li><li><strong>Fix:</strong> make f total: <code>f : T &rarr; T</code>.</li></ul></div></div>
+
+<h3>V.11 Practice: Structural Flaw Detection</h3>
+<div class="practice" id="p1_11"><p class="scenario">A definition uses <code>f : T &rarr; T</code> (total) and <code>{base} &cap; ran f = &empty;</code>. A model exists where <span class="key">f(a) = f(b)</span> for distinct <span class="key">a &ne; b</span>.</p><p>Which flaw persists?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_11')">Loop &mdash; base maps to itself.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Dead-end &mdash; some element has no successor.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')">Collision &mdash; two distinct elements share the same successor.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Phantom &mdash; extra unreachable elements.</button></li></ul><div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Total function does not guarantee injectivity.</p><ul><li><strong>Goal:</strong> identify remaining flaw after totality.</li><li><strong>Attempt:</strong> total + base-excluded.</li><li><strong>Flaw:</strong> <code>&rarr;</code> allows <code>f(a) = f(b)</code> for <code>a &ne; b</code>.</li><li><strong>Fix:</strong> <code>f : T &#x21A3; T</code> (injective).</li></ul></div></div>
+
+<h3>V.12 Practice: Structural Flaw Detection</h3>
+<div class="practice" id="p1_12"><p class="scenario">A definition uses <code>f : T &#x21A3; T</code> and <code>{base} &cap; ran f = &empty;</code>, but does <em>not</em> require T to be the smallest such set. A model has <span class="key">extra elements disconnected from the chain</span>.</p><p>Which flaw persists?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_12')">Loop.</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">Dead-end.</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">Collision.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')">Phantom &mdash; T contains unreachable junk elements.</button></li></ul><div class="feedback" id="fb1_12"><p><strong>Correct.</strong> Without smallest-set, extra elements creep in.</p><ul><li><strong>Goal:</strong> identify flaw when minimality is missing.</li><li><strong>Attempt:</strong> injective + base-excluded but not smallest.</li><li><strong>Flaw:</strong> T may contain elements not built from base + f.</li><li><strong>Fix:</strong> require T = smallest set meeting all constraints.</li></ul></div></div>
+
+<h3>V.13 Practice: Structural Flaw Detection</h3>
+<div class="practice" id="p1_13"><p class="scenario">A definition of <code>nat</code> omits the constraint <code>{zero} &cap; ran succ = &empty;</code>. Everything else is present.</p><p>What can go wrong?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>succ(n) = zero</code> for some <code>n</code> &mdash; creating a loop back to the base.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Some elements have no successor.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Two elements share the same successor.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Extra phantom elements appear.</button></li></ul><div class="feedback" id="fb1_13"><p><strong>Correct.</strong> Without base exclusion, succ can map back to zero.</p><ul><li><strong>Goal:</strong> diagnose missing <code>{zero} &cap; ran succ = &empty;</code>.</li><li><strong>Attempt:</strong> injective + total + smallest but no base exclusion.</li><li><strong>Flaw:</strong> <code>zero &isin; ran succ</code> is allowed &rarr; loop.</li><li><strong>Fix:</strong> add the base-exclusion constraint.</li></ul></div></div>
+
+<h3>V.14 Practice: Structural Flaw Detection</h3>
+<div class="practice" id="p1_14"><p class="scenario">A definition of <code>nat</code> uses <code>succ : nat &#x21F8; nat</code> (partial) instead of <code>succ : nat &#x21A3; nat</code>.</p><p>Which two flaws are possible?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')">Dead-ends (partial allows undefined) and collisions (not injective).</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')">Loops and phantoms only.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')">Only dead-ends.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')">Only collisions.</button></li></ul><div class="feedback" id="fb1_14"><p><strong>Correct.</strong> Partial = possibly undefined; non-injective = possible collisions.</p><ul><li><strong>Goal:</strong> compare <code>&#x21F8;</code> vs <code>&#x21A3;</code>.</li><li><strong>Attempt:</strong> <code>&#x21F8;</code> is partial and non-injective.</li><li><strong>Flaw:</strong> both dead-ends and collisions are possible.</li><li><strong>Fix:</strong> <code>&#x21A3;</code> is total + injective, fixing both.</li></ul></div></div>
+
+<h3>V.15 Practice: Smallest Set Requirement</h3>
+<div class="practice" id="p1_15"><p class="scenario">A type <code>T</code> satisfies: <code>base : T</code>, <code>f : T &#x21A3; T</code>, <code>{base} &cap; ran f = &empty;</code>. But T contains <span class="key">elements not reachable</span> from base via f.</p><p>What is missing?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_15')"><code>f</code> should be partial.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')"><code>base</code> should be in <code>ran f</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">T must be the smallest set containing base and closed under f.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')"><code>f</code> should not be injective.</button></li></ul><div class="feedback" id="fb1_15"><p><strong>Correct.</strong> Minimality excludes unreachable junk.</p><ul><li><strong>Goal:</strong> eliminate phantom elements.</li><li><strong>Attempt:</strong> injective + base-excluded but no minimality.</li><li><strong>Flaw:</strong> T can contain extra copies of <code>nat</code> or disconnected elements.</li><li><strong>Fix:</strong> smallest set = no junk.</li></ul></div></div>
+
+<h3>V.16 Practice: Smallest Set Requirement</h3>
+<div class="practice" id="p1_16"><p class="scenario">Two models both satisfy the <code>nat</code> constraints. Model A = {0, 1, 2, &hellip;}. Model B = {0, 1, 2, &hellip;} &cup; {&alpha;, &beta;}. The <span class="key">smallest set</span> requirement selects:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')">Model A &mdash; no extra elements beyond the chain.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Model B &mdash; more elements is better.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Both are equally valid.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Neither &mdash; nat must be finite.</button></li></ul><div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Smallest set excludes &alpha;, &beta;.</p><ul><li><strong>Goal:</strong> choose between two models.</li><li><strong>Attempt:</strong> both satisfy basic constraints.</li><li><strong>Flaw:</strong> Model B has phantom elements.</li><li><strong>Fix:</strong> smallest-set picks Model A.</li></ul></div></div>
+
+<h3>V.17 Practice: Smallest Set Requirement</h3>
+<div class="practice" id="p1_17"><p class="scenario">A system defines <code>Level</code> with base <code>L0</code> and injective <code>up</code>. The set includes <span class="key">a disconnected element x</span> with <span class="key">x &ne; L0</span> and <span class="key">x &notin; ran up</span>.</p><p>Why is this model invalid under the smallest-set rule?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_17')">Because x has no successor.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Because up is not injective.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')">Because x is not reachable from L0 via up &mdash; it is junk.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Because L0 is in the range of up.</button></li></ul><div class="feedback" id="fb1_17"><p><strong>Correct.</strong> Smallest set excludes unreachable elements.</p><ul><li><strong>Goal:</strong> explain why disconnected x is rejected.</li><li><strong>Attempt:</strong> x satisfies &forall; constraint but is unreachable.</li><li><strong>Flaw:</strong> x is phantom junk.</li><li><strong>Fix:</strong> smallest set contains only base + iterated images of up.</li></ul></div></div>
+
+<h3>V.18 Practice: Smallest Set Requirement</h3>
+<div class="practice" id="p1_18"><p class="scenario">For the complete <code>nat</code> definition, <code>{zero} &cup; ran succ = nat</code> states that every element is either <span class="key">zero</span> or in the <span class="key">range of succ</span>. Combined with the smallest-set rule, this means:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_18')">nat is finite.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">Every element of nat is built from zero by finitely many applications of succ.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">nat contains only zero.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">succ is partial.</button></li></ul><div class="feedback" id="fb1_18"><p><strong>Correct.</strong> Coverage + minimality = constructive generation.</p><ul><li><strong>Goal:</strong> interpret the coverage + smallest-set axioms.</li><li><strong>Attempt:</strong> <code>{zero} &cup; ran succ = nat</code> + smallest.</li><li><strong>Flaw:</strong> none &mdash; this is the correct reading.</li><li><strong>Fix:</strong> nat = {zero, succ(zero), succ(succ(zero)), &hellip;}.</li></ul></div></div>
+
+<h3>V.19 Practice: Smallest Set Requirement</h3>
+<div class="practice" id="p1_19"><p class="scenario">If we drop the smallest-set requirement from the <code>nat</code> definition, the remaining constraints are satisfied by <span class="key">any set</span> that:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')">Contains a copy of &Nopf; plus possibly extra elements.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Is exactly &Nopf; &mdash; nothing changes.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Is empty.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Is finite.</button></li></ul><div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Without minimality, extra junk is allowed.</p><ul><li><strong>Goal:</strong> understand what smallest-set prevents.</li><li><strong>Attempt:</strong> all constraints except minimality.</li><li><strong>Flaw:</strong> any superset of &Nopf; with the right structure qualifies.</li><li><strong>Fix:</strong> smallest-set pins the type to exactly &Nopf;.</li></ul></div></div>
+
+<h3>V.20 Practice: Smallest Set Requirement</h3>
+<div class="practice" id="p1_20"><p class="scenario">A parking garage defines <code>Level</code> with <span class="key">ground</span> and injective <span class="key">up</span>. The garage has exactly 5 physical levels. The <span class="key">smallest set</span> contains:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_20')">Only ground.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">Infinitely many levels (like &Nopf;).</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')">Infinitely many levels &mdash; nat is always infinite (the physical constraint is separate from the type).</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">Exactly 5 levels.</button></li></ul><div class="feedback" id="fb1_20"><p><strong>Correct.</strong> The nat-shaped type is always infinite.</p><ul><li><strong>Goal:</strong> clarify that nat is infinite.</li><li><strong>Attempt:</strong> injective + base-excluded + smallest.</li><li><strong>Flaw:</strong> physical limits don&rsquo;t constrain the mathematical type.</li><li><strong>Fix:</strong> nat = {zero, succ zero, succ(succ zero), &hellip;} = infinite.</li></ul></div></div>
+
+<h3>V.21 Practice: Partial vs Total Functions</h3>
+<div class="practice" id="p1_21"><p class="scenario">A definition uses <code>f : A &#x21F8; B</code>. A colleague proposes <code>f : A &rarr; B</code>.</p><p>What is the key difference?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_21')">No difference &mdash; both are total.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')"><code>&#x21F8;</code> allows f to be undefined for some inputs; <code>&rarr;</code> requires f to be defined everywhere.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')"><code>&rarr;</code> is partial; <code>&#x21F8;</code> is total.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Both are injective.</button></li></ul><div class="feedback" id="fb1_21"><p><strong>Correct.</strong> <code>&#x21F8;</code> = partial; <code>&rarr;</code> = total.</p><ul><li><strong>Goal:</strong> distinguish function arrow types.</li><li><strong>Attempt:</strong> compare the two notations.</li><li><strong>Flaw:</strong> confusing them leads to dead-end elements.</li><li><strong>Fix:</strong> <code>&rarr;</code> guarantees every input has an output.</li></ul></div></div>
+
+<h3>V.22 Practice: Injectivity Guarantee</h3>
+<div class="practice" id="p1_22"><p class="scenario">A total function <code>f : A &rarr; B</code> maps <code>f(3) = 7</code> and <code>f(5) = 7</code>.</p><p>Is <code>f</code> injective?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_22')">Yes &mdash; total implies injective.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">No &mdash; <code>f(3) = f(5)</code> but <code>3 &ne; 5</code>, violating injectivity.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Only if <code>A = B</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Cannot determine.</button></li></ul><div class="feedback" id="fb1_22"><p><strong>Correct.</strong> Injectivity requires distinct inputs &rarr; distinct outputs.</p><ul><li><strong>Goal:</strong> test understanding of <code>&#x21A3;</code>.</li><li><strong>Attempt:</strong> check if f(a) = f(b) &rArr; a = b.</li><li><strong>Flaw:</strong> f(3) = f(5) = 7 with 3 &ne; 5 &rarr; not injective.</li><li><strong>Fix:</strong> use <code>&#x21A3;</code> to enforce one-to-one.</li></ul></div></div>
+
+<h3>V.23 Practice: Base Element Exclusion</h3>
+<div class="practice" id="p1_23"><p class="scenario">In the nat definition, <code>{zero} &cap; ran succ = &empty;</code> means:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_23')">zero has no successor.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">zero is not the successor of any natural number.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">succ is undefined at zero.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">ran succ is empty.</button></li></ul><div class="feedback" id="fb1_23"><p><strong>Correct.</strong> zero &notin; ran succ &mdash; nothing maps to zero.</p><ul><li><strong>Goal:</strong> interpret the base-exclusion constraint.</li><li><strong>Attempt:</strong> <code>{zero} &cap; ran succ = &empty;</code>.</li><li><strong>Flaw:</strong> without it, succ(n) = zero is allowed for some n.</li><li><strong>Fix:</strong> this prevents the chain from looping back to the start.</li></ul></div></div>
+
+<h3>V.24 Practice: Iterative Refinement</h3>
+<div class="practice" id="p1_24"><p class="scenario">The textbook builds the nat definition through <span class="key">four successive attempts</span>, each fixing a flaw. The correct order of fixes is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_24')">Injective &rarr; total &rarr; base excluded &rarr; smallest.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Smallest &rarr; base excluded &rarr; total &rarr; injective.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')">Base excluded &rarr; total &rarr; injective &rarr; smallest.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Total &rarr; injective &rarr; smallest &rarr; base excluded.</button></li></ul><div class="feedback" id="fb1_24"><p><strong>Correct.</strong> Each fix addresses the current top flaw.</p><ul><li><strong>Goal:</strong> recall the iterative refinement order.</li><li><strong>Attempt:</strong> loop fix &rarr; dead-end fix &rarr; collision fix &rarr; phantom fix.</li><li><strong>Flaw:</strong> each attempt reveals the next problem.</li><li><strong>Fix:</strong> base excluded, then total, then injective, then smallest.</li></ul></div></div>
+
+<h3>V.25 Practice: Free Type vs Set Model</h3>
+<div class="practice" id="p1_25"><p class="scenario">Modeling a binary tree using sets and relations requires multiple definitions. A <span class="key">free type</span> achieves the same in a single line.</p><p>What is the main advantage of free types?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_25')">They are always finite.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">They eliminate the need for functions.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Concise, explicit structuring information that replaces verbose set/relation definitions.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">They cannot be recursive.</button></li></ul><div class="feedback" id="fb1_25"><p><strong>Correct.</strong> Conciseness + explicit structure.</p><ul><li><strong>Goal:</strong> compare free types to set/relation models.</li><li><strong>Attempt:</strong> sets + relations can model trees but verbosely.</li><li><strong>Flaw:</strong> multiple axioms needed for each structure.</li><li><strong>Fix:</strong> free type definition captures it in one line.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 10.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">10.2 Free Type Definitions</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="The ::= syntax that introduces a new basic type with named alternatives.">Free type definition</span>:</strong> special mechanism for introducing sets like <code>nat</code>.</li>
+  <li><strong><span class="vocab" data-def="Free type with only constant alternatives &mdash; a finite set of distinct names.">Enumerated types</span>:</strong> <code>Colours ::= red | orange | yellow | green | blue | indigo | violet</code> &mdash; seven distinct constants.</li>
+  <li><strong>Abbreviation vs. free type:</strong> <code>Colours == {red, &hellip;}</code> does <em>not</em> introduce names or guarantee distinctness; <code>::=</code> does both.</li>
+  <li><strong><span class="vocab" data-def="Injective function that embeds elements of a source set into the free type.">Constructor functions</span>:</strong> <code>FreeType ::= constructor &laquo;source&raquo;</code> &mdash; one element per source value, constructor is injective.</li>
+  <li><strong><span class="vocab" data-def="Free type whose constructor source references the type being defined.">Recursive types</span>:</strong> source may refer to the type itself &rarr; <code>nat ::= zero | succ &laquo;nat&raquo;</code>.</li>
+  <li><strong>Inference rule 1 &mdash; <span class="vocab" data-def="Constants are distinct and constructor ranges share no elements.">disjointness</span>:</strong> all constants are distinct; constructor ranges are pairwise <span class="vocab" data-def="Sets that share no elements.">disjoint</span>.</li>
+  <li><strong>Inference rule 2 &mdash; <span class="vocab" data-def="Any subset containing all constants and closed under constructors equals the whole type.">closure/induction</span>:</strong> any subset containing all constants and <span class="vocab" data-def="Applying a constructor to elements of a set keeps the result in that set.">closed</span> under all constructors must equal the entire type.</li>
+  <li><strong>Order independence:</strong> the order of alternatives in a <code>::=</code> definition does not matter.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Free type definition</td><td>The ::= syntax that introduces a new basic type with named alternatives.</td></tr>
+  <tr><td>Enumerated type</td><td>Free type with only constant alternatives &mdash; a finite set of distinct names.</td></tr>
+  <tr><td>Constructor function</td><td>Injective function that embeds elements of a source set into the free type.</td></tr>
+  <tr><td>Recursive type</td><td>Free type whose constructor source references the type being defined.</td></tr>
+  <tr><td>Disjointness</td><td>Constants are distinct and constructor ranges share no elements.</td></tr>
+  <tr><td>Disjoint</td><td>Sets that share no elements.</td></tr>
+  <tr><td>Closed (under constructors)</td><td>Applying a constructor to elements of a set keeps the result in that set.</td></tr>
+  <tr><td>Closure/induction rule</td><td>Any subset containing all constants and closed under constructors equals the whole type.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>::=</code></td><td>Free type definition (freely generated by).</td></tr>
+  <tr><td><code>|</code></td><td>Alternative (choice between constructors).</td></tr>
+  <tr><td><code>&laquo; &raquo;</code></td><td>Constructor source brackets.</td></tr>
+  <tr><td><code>&#x21A3;</code></td><td>Injection (constructor is one-to-one).</td></tr>
+  <tr><td><code>disjoint</code></td><td>Pairwise disjoint sets or ranges.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset or equal.</td></tr>
+  <tr><td><code>(| |)</code></td><td>Relational image.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+
+<h3>IV.1 Examples: Traffic Signals, Playing Card Suits &amp; Seasons</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>::=</code></td><td>Free type definition.</td></tr>
+  <tr><td><code>|</code></td><td>Alternative.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A city installs <span class="key">smart traffic lights</span> with exactly <span class="key">three signal states</span>.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Signal ::= red | amber | green</code> &mdash; a <span class="vocab" data-def="The ::= syntax that introduces a new basic type with named alternatives.">free type definition</span> with three constants.</li>
+  <li><strong>Semantics:</strong> three distinct elements; <code>red &ne; amber</code>, <code>amber &ne; green</code>, <code>red &ne; green</code>.</li>
+  <li><strong>Inference:</strong> <span class="vocab" data-def="Constants are distinct and constructor ranges share no elements.">disjointness</span> gives distinctness automatically.</li>
+  <li><strong>Outcome:</strong> <code>Signal</code> is an <span class="vocab" data-def="Free type with only constant alternatives &mdash; a finite set of distinct names.">enumerated type</span> with exactly 3 inhabitants.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A card game needs exactly <span class="key">four suits</span> for a standard deck.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Suit ::= clubs | diamonds | hearts | spades</code>.</li>
+  <li><strong>Semantics:</strong> four distinct constants; e.g., <code>clubs &ne; spades</code>.</li>
+  <li><strong>Inference:</strong> disjointness guarantees no two suits are the same.</li>
+  <li><strong>Outcome:</strong> enumerated type with exactly 4 inhabitants.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A weather app classifies months into exactly <span class="key">four seasons</span>.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Season ::= spring | summer | autumn | winter</code>.</li>
+  <li><strong>Semantics:</strong> four distinct constants; order of alternatives is irrelevant.</li>
+  <li><strong>Inference:</strong> <code>spring &ne; winter</code>, etc. &mdash; all pairs distinct.</li>
+  <li><strong>Outcome:</strong> rewriting as <code>winter | autumn | summer | spring</code> has the same effect.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: University Degrees, Employee Badges &amp; Product Tiers</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>::=</code></td><td>Free type definition.</td></tr>
+  <tr><td><code>&laquo; &raquo;</code></td><td>Constructor source brackets.</td></tr>
+  <tr><td><code>&#x21A3;</code></td><td>Injection.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A university awards <span class="key">four degrees</span> ranked by <span class="key">status number</span> 0&ndash;3 (BA, MSc, DPhil, MA).</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Degree ::= status &laquo;0 .. 3&raquo;</code> &mdash; <span class="vocab" data-def="Injective function that embeds elements of a source set into the free type.">constructor function</span> <code>status</code> maps 0..3 into <code>Degree</code>.</li>
+  <li><strong>Semantics:</strong> <code>status</code> is injective (<code>&#x21A3;</code>), so <code>status 0 &ne; status 1 &ne; status 2 &ne; status 3</code>.</li>
+  <li><strong>Inference:</strong> ordering via <code>status</code>: <code>ba = status 0</code>, <code>msc = status 1</code>, <code>dphil = status 2</code>, <code>ma = status 3</code>.</li>
+  <li><strong>Outcome:</strong> 4 distinct degrees, ordered by their status number.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A company assigns <span class="key">badge levels</span> numbered <span class="key">1 through 5</span> to employees.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Badge ::= level &laquo;1 .. 5&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>level</code> is injective: <code>level 1 &ne; level 2</code>, etc.</li>
+  <li><strong>Inference:</strong> 5 distinct badges, inheriting the ordering of 1..5.</li>
+  <li><strong>Outcome:</strong> each employee maps to exactly one badge level.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A SaaS product defines <span class="key">subscription tiers</span> indexed <span class="key">0 through 2</span> (free, pro, enterprise).</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Tier ::= plan &laquo;0 .. 2&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>plan</code> is injective: <code>plan 0 &ne; plan 1 &ne; plan 2</code>.</li>
+  <li><strong>Inference:</strong> free = plan 0, pro = plan 1, enterprise = plan 2.</li>
+  <li><strong>Outcome:</strong> 3 tiers, comparable via their index.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Version History, File System &amp; Expression Tree</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>::=</code></td><td>Free type definition.</td></tr>
+  <tr><td><code>|</code></td><td>Alternative.</td></tr>
+  <tr><td><code>&laquo; &raquo;</code></td><td>Constructor source brackets.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A version control system tracks <span class="key">commits</span>: an <span class="key">initial commit</span> or a <span class="key">successor of a previous commit</span>.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Commit ::= initial | next &laquo;Commit&raquo;</code> &mdash; a <span class="vocab" data-def="Free type whose constructor source references the type being defined.">recursive type</span>.</li>
+  <li><strong>Semantics:</strong> every commit is either <code>initial</code> or <code>next(c)</code> for some earlier commit <code>c</code>.</li>
+  <li><strong>Inference:</strong> <code>initial &ne; next(c)</code> for any <code>c</code> (disjointness); <code>next</code> is injective.</li>
+  <li><strong>Outcome:</strong> the commit chain is isomorphic to <code>nat</code>: <code>initial, next(initial), next(next(initial)), &hellip;</code></li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A file system models <span class="key">entries</span>: a <span class="key">file</span> (containing data) or a <span class="key">directory</span> (containing a list of entries).</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Entry ::= file &laquo;Data&raquo; | dir &laquo;seq Entry&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>file</code> embeds data; <code>dir</code> embeds a sequence of entries (recursive).</li>
+  <li><strong>Inference:</strong> a file is never a directory: <code>disjoint(ran file, ran dir)</code>.</li>
+  <li><strong>Outcome:</strong> tree-structured file system with arbitrary nesting.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A calculator parses <span class="key">expressions</span>: a <span class="key">number literal</span> or an <span class="key">operation</span> on two sub-expressions.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Expr ::= lit &laquo;&Zopf;&raquo; | add &laquo;Expr &times; Expr&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>lit</code> wraps integers; <code>add</code> combines two sub-expressions (recursive + <code>&times;</code>).</li>
+  <li><strong>Inference:</strong> <code>lit(5) &ne; add(lit 2, lit 3)</code> &mdash; disjoint constructors.</li>
+  <li><strong>Outcome:</strong> binary expression tree, like textbook <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: HTTP Responses, Sensor Readings &amp; Permission Categories</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>disjoint</code></td><td>Pairwise disjoint.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+  <tr><td><code>&#x21A3;</code></td><td>Injection.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An API returns <span class="key">responses</span>: a <span class="key">success</span> with payload or an <span class="key">error</span> with code+message. The system must guarantee <span class="key">a success is never an error</span>.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Resp ::= ok &laquo;Data&raquo; | err &laquo;&Nopf; &times; String&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>ok</code> and <code>err</code> are both injective constructors (<code>&#x21A3;</code>).</li>
+  <li><strong>Inference:</strong> <code>disjoint(ran ok, ran err)</code> &mdash; no response is both a success and an error.</li>
+  <li><strong>Outcome:</strong> pattern matching on <code>Resp</code> is exhaustive and unambiguous.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A sensor network reports <span class="key">readings</span>: a <span class="key">temperature</span> value or a <span class="key">humidity</span> value. A reading is <span class="key">never both</span>.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Reading ::= temp &laquo;&Zopf;&raquo; | humid &laquo;&Nopf;&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>temp</code> and <code>humid</code> are injective; <code>temp(20) &ne; humid(20)</code> even for the same number.</li>
+  <li><strong>Inference:</strong> <code>disjoint(ran temp, ran humid)</code> &mdash; disjoint ranges.</li>
+  <li><strong>Outcome:</strong> a reading of 20&deg;C is distinct from 20% humidity.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An OS defines <span class="key">permissions</span>: <span class="key">read</span>, <span class="key">write</span>, <span class="key">execute</span>. No permission can equal another.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Perm ::= read | write | execute</code>.</li>
+  <li><strong>Semantics:</strong> three constants &mdash; all pairwise distinct.</li>
+  <li><strong>Inference:</strong> <code>disjoint({read}, {write}, {execute})</code> is automatic for constants.</li>
+  <li><strong>Outcome:</strong> <code>read &ne; write &ne; execute</code> &mdash; guaranteed by the free type definition.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Membership Tiers, Process Lifecycle &amp; Data Records</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset or equal.</td></tr>
+  <tr><td><code>(| |)</code></td><td>Relational image.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Union.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A gym defines <span class="key">membership tiers</span>: <span class="key">basic</span> or <span class="key">upgrade of an existing tier</span>. Any subset containing <code>basic</code> and <span class="key">closed under upgrade</span> must equal all tiers.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>Tier ::= basic | upgrade &laquo;Tier&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>basic</code> is a constant; <code>upgrade</code> is injective on <code>Tier</code>.</li>
+  <li><strong>Inference:</strong> <code>&forall; S : &Popf; Tier &bull; ({basic} &cup; upgrade(| S |) &sube; S) &rArr; S = Tier</code> &mdash; <span class="vocab" data-def="Any subset containing all constants and closed under constructors equals the whole type.">closure/induction</span> rule.</li>
+  <li><strong>Outcome:</strong> every tier is built from <code>basic</code> by finitely many upgrades.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A workflow engine defines <span class="key">process states</span>: <span class="key">idle</span> or <span class="key">running with a sub-state</span>. Any subset containing <code>idle</code> and <span class="key">closed under run</span> must be all states.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>State ::= idle | run &laquo;State&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> recursive: <code>run(idle)</code>, <code>run(run(idle))</code>, etc.</li>
+  <li><strong>Inference:</strong> <code>&forall; S : &Popf; State &bull; ({idle} &cup; run(| S |) &sube; S) &rArr; S = State</code>.</li>
+  <li><strong>Outcome:</strong> induction/closure guarantees no junk states exist outside the chain.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A database defines <span class="key">record IDs</span>: <span class="key">root</span> or <span class="key">child of an existing ID</span>. Any subset with <code>root</code> and <span class="key">closed under child</span> equals all IDs.</p>
+<ul>
+  <li><strong>Syntax:</strong> <code>RecID ::= root | child &laquo;RecID&raquo;</code>.</li>
+  <li><strong>Semantics:</strong> <code>root</code> is the base; <code>child</code> builds deeper nesting.</li>
+  <li><strong>Inference:</strong> <code>&forall; S : &Popf; RecID &bull; ({root} &cup; child(| S |) &sube; S) &rArr; S = RecID</code>.</li>
+  <li><strong>Outcome:</strong> the closure rule ensures every record ID is reachable from <code>root</code>.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice: Free Type Syntax</h3>
+<div class="practice" id="p2_1"><p>A free type definition uses which symbol?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>==</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>::=</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>:</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_1')"><code>&sube;</code></button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> <code>::=</code> introduces a free type.</p><ul><li><strong>Syntax:</strong> <code>T ::= alternatives</code>.</li><li><strong>Semantics:</strong> introduces a new basic type.</li><li><strong>Inference:</strong> distinctness + closure follow automatically.</li><li><strong>Outcome:</strong> <code>==</code> is abbreviation, not free type.</li></ul></div></div>
+
+<h3>V.2 Practice: Enumeration vs Abbreviation</h3>
+<div class="practice" id="p2_2"><p>The key difference between <code>Colours ::= red | green | blue</code> and <code>Colours == {red, green, blue}</code> is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_2')">No difference.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>::=</code> introduces the names and guarantees they are distinct; <code>==</code> does neither.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>==</code> is more powerful.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')"><code>::=</code> requires numbers.</button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> Free type defines names + forces distinctness.</p><ul><li><strong>Syntax:</strong> <code>::=</code> vs <code>==</code>.</li><li><strong>Semantics:</strong> abbreviation is just an alias; free type creates new things.</li><li><strong>Inference:</strong> <code>red &ne; green</code> only guaranteed by <code>::=</code>.</li><li><strong>Outcome:</strong> always prefer <code>::=</code> for enumerated types.</li></ul></div></div>
+
+<h3>V.3 Practice: Enumerated Type Definition</h3>
+<div class="practice" id="p2_3"><p class="scenario">A hospital system needs exactly <span class="key">four blood types</span>: <span class="key">A, B, AB, O</span>. All must be <span class="key">distinct</span>.</p><p>Which definition is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>BloodType ::= typeA | typeB | typeAB | typeO</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>BloodType == {A, B, AB, O}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>BloodType : &Nopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>BloodType &sube; String</code></button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Free type guarantees distinctness.</p><ul><li><strong>Syntax:</strong> <code>::=</code> with four constant alternatives.</li><li><strong>Semantics:</strong> four distinct inhabitants.</li><li><strong>Inference:</strong> <code>typeA &ne; typeB &ne; typeAB &ne; typeO</code>.</li><li><strong>Outcome:</strong> abbreviation (<code>==</code>) would not guarantee distinctness.</li></ul></div></div>
+
+<h3>V.4 Practice: Enumerated Type Definition</h3>
+<div class="practice" id="p2_4"><p class="scenario">A chess app defines <span class="key">six piece types</span>: <span class="key">king, queen, rook, bishop, knight, pawn</span>.</p><p>Which definition is correct?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>Piece == {king, queen, rook, bishop, knight, pawn}</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>Piece ::= king | queen | rook | bishop | knight | pawn</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>Piece : &Nopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>Piece ::= piece &laquo;1 .. 6&raquo;</code></button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Named constants with <code>::=</code>.</p><ul><li><strong>Syntax:</strong> six named alternatives.</li><li><strong>Semantics:</strong> six distinct, named inhabitants.</li><li><strong>Inference:</strong> <code>king &ne; pawn</code>, etc.</li><li><strong>Outcome:</strong> names are more readable than numeric indices.</li></ul></div></div>
+
+<h3>V.5 Practice: Enumerated Type Definition</h3>
+<div class="practice" id="p2_5"><p class="scenario">A restaurant app classifies <span class="key">meal types</span>: <span class="key">breakfast, lunch, dinner</span>.</p><p>How many inhabitants does <code>Meal ::= breakfast | lunch | dinner</code> have?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">Exactly 3 &mdash; one per constant.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">0 &mdash; no inhabitants.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Infinitely many.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Depends on the restaurant.</button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Enumerated type = exactly as many inhabitants as constants.</p><ul><li><strong>Syntax:</strong> three constant alternatives.</li><li><strong>Semantics:</strong> three distinct elements.</li><li><strong>Inference:</strong> smallest set = exactly these three.</li><li><strong>Outcome:</strong> finite, fixed-size type.</li></ul></div></div>
+
+<h3>V.6 Practice: Enumerated Type Definition</h3>
+<div class="practice" id="p2_6"><p class="scenario">A compiler defines <span class="key">token types</span>: <span class="key">keyword, identifier, literal, operator, punctuation</span>.</p><p>Which is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>TokenType ::= keyword | identifier | literal | operator | punctuation</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>TokenType == {keyword, identifier, literal, operator, punctuation}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>TokenType : &Nopf;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>TokenType &sube; String</code></button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> Named constants guarantee distinctness.</p><ul><li><strong>Syntax:</strong> five alternatives with <code>::=</code>.</li><li><strong>Semantics:</strong> five distinct elements.</li><li><strong>Inference:</strong> <code>keyword &ne; literal</code>, etc.</li><li><strong>Outcome:</strong> exhaustive token classification.</li></ul></div></div>
+
+<h3>V.7 Practice: Enumerated Type Definition</h3>
+<div class="practice" id="p2_7"><p class="scenario">Does <code>Dir ::= north | south | east | west</code> mean the same as <code>Dir ::= west | east | south | north</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">Yes &mdash; the order of alternatives in a free type does not matter.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">No &mdash; the first is the default.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">No &mdash; order determines an ordering relation.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Only if there are exactly four.</button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> Order independence.</p><ul><li><strong>Syntax:</strong> same constants, different order.</li><li><strong>Semantics:</strong> identical type, same inhabitants.</li><li><strong>Inference:</strong> same disjointness properties.</li><li><strong>Outcome:</strong> reordering alternatives changes nothing.</li></ul></div></div>
+
+<h3>V.8 Practice: Enumerated Type Definition</h3>
+<div class="practice" id="p2_8"><p class="scenario">A logging system tags entries with <span class="key">severity</span>: <span class="key">debug, info, warn, error, fatal</span>.</p><p>Which definition correctly introduces the names?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>Severity == {debug, info, warn, error, fatal}</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>Severity ::= debug | info | warn | error | fatal</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>Severity : 1 .. 5</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>Severity &sube; String</code></button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> <code>::=</code> introduces names + guarantees distinctness.</p><ul><li><strong>Syntax:</strong> five named alternatives.</li><li><strong>Semantics:</strong> five distinct severity levels.</li><li><strong>Inference:</strong> <code>debug &ne; fatal</code>, etc.</li><li><strong>Outcome:</strong> <code>==</code> abbreviation would not introduce names.</li></ul></div></div>
+
+<h3>V.9 Practice: Constructor Function Application</h3>
+<div class="practice" id="p2_9"><p class="scenario">A type is defined as <code>Grade ::= rank &laquo;1 .. 5&raquo;</code>. The constructor <code>rank</code> is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_9')">A partial function.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')">An injective function from <code>1 .. 5</code> to <code>Grade</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">A surjection from <code>Grade</code> to <code>1 .. 5</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">A constant.</button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Constructor = injection from source to target type.</p><ul><li><strong>Syntax:</strong> <code>rank &laquo;1 .. 5&raquo;</code> &mdash; constructor with source.</li><li><strong>Semantics:</strong> <code>rank : 1 .. 5 &#x21A3; Grade</code>.</li><li><strong>Inference:</strong> <code>rank 1 &ne; rank 2</code>, etc.</li><li><strong>Outcome:</strong> 5 distinct grade values.</li></ul></div></div>
+
+<h3>V.10 Practice: Constructor Function Application</h3>
+<div class="practice" id="p2_10"><p class="scenario">For <code>Degree ::= status &laquo;0 .. 3&raquo;</code>, is <code>status 0 = status 2</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_10')">Yes &mdash; both are degrees.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')">No &mdash; <code>status</code> is injective, so <code>0 &ne; 2 &rArr; status 0 &ne; status 2</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_10')">Only if the ordering says so.</button></li><li><button onclick="selectAnswer(this,false,'fb2_10')">Cannot determine.</button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> Injectivity: different args &rarr; different results.</p><ul><li><strong>Syntax:</strong> <code>status &laquo;0 .. 3&raquo;</code>.</li><li><strong>Semantics:</strong> <code>status : 0 .. 3 &#x21A3; Degree</code>.</li><li><strong>Inference:</strong> <code>0 &ne; 2</code> so <code>status 0 &ne; status 2</code>.</li><li><strong>Outcome:</strong> injectivity means the constructor preserves distinctness.</li></ul></div></div>
+
+<h3>V.11 Practice: Constructor Function Application</h3>
+<div class="practice" id="p2_11"><p class="scenario">A type mixes constants and constructors: <code>Shape ::= circle | rect &laquo;&Nopf; &times; &Nopf;&raquo;</code>. Is <code>circle = rect(5, 3)</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_11')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')">No &mdash; <code>disjoint({circle}, ran rect)</code> &mdash; constants and constructor ranges are disjoint.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Depends on the values.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Only for certain shapes.</button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> Disjointness separates constants from constructor outputs.</p><ul><li><strong>Syntax:</strong> constant + constructor in one definition.</li><li><strong>Semantics:</strong> <code>{circle}</code> and <code>ran rect</code> are disjoint.</li><li><strong>Inference:</strong> a circle is never a rectangle.</li><li><strong>Outcome:</strong> pattern matching is exhaustive.</li></ul></div></div>
+
+<h3>V.12 Practice: Constructor Function Application</h3>
+<div class="practice" id="p2_12"><p class="scenario">For <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>, the notation <code>&laquo; &raquo;</code> denotes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')">The source set whose elements the constructor embeds.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">A comment.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">An optional parameter.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">A type constraint.</button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> <code>&laquo; &raquo;</code> = constructor source brackets.</p><ul><li><strong>Syntax:</strong> <code>leaf &laquo;&Nopf;&raquo;</code> means leaf embeds natural numbers.</li><li><strong>Semantics:</strong> <code>leaf : &Nopf; &#x21A3; Tree</code>.</li><li><strong>Inference:</strong> one tree element per natural number.</li><li><strong>Outcome:</strong> <code>branch</code> embeds pairs of trees.</li></ul></div></div>
+
+<h3>V.13 Practice: Constructor Function Application</h3>
+<div class="practice" id="p2_13"><p class="scenario">For <code>Resp ::= ok &laquo;Data&raquo; | err &laquo;&Nopf; &times; String&raquo;</code>, is <code>ok(d1) = ok(d2)</code> when <code>d1 &ne; d2</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_13')">Yes &mdash; both are successes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">No &mdash; <code>ok</code> is injective: <code>d1 &ne; d2 &rArr; ok(d1) &ne; ok(d2)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Only if Data is finite.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Cannot determine.</button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> Constructors are injective.</p><ul><li><strong>Syntax:</strong> <code>ok &laquo;Data&raquo;</code>.</li><li><strong>Semantics:</strong> <code>ok : Data &#x21A3; Resp</code>.</li><li><strong>Inference:</strong> distinct data &rarr; distinct responses.</li><li><strong>Outcome:</strong> injectivity is automatic for constructors.</li></ul></div></div>
+
+<h3>V.14 Practice: Constructor Function Application</h3>
+<div class="practice" id="p2_14"><p class="scenario">A type <code>SequenceTree ::= tree &laquo;&Nopf; &times; seq SequenceTree&raquo;</code> is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_14')">An enumeration.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">A simple constant definition.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')">A recursive type &mdash; the source <code>&Nopf; &times; seq SequenceTree</code> references the type itself.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">Invalid &mdash; no base case.</button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Recursive: source includes <code>seq SequenceTree</code>.</p><ul><li><strong>Syntax:</strong> single constructor <code>tree</code> with self-referencing source.</li><li><strong>Semantics:</strong> each element is a pair: a number and a sequence of sub-trees.</li><li><strong>Inference:</strong> valid because <code>seq SequenceTree</code> includes the empty sequence (base).</li><li><strong>Outcome:</strong> complex recursive data structure.</li></ul></div></div>
+
+<h3>V.15 Practice: Recursive Type Definition</h3>
+<div class="practice" id="p2_15"><p class="scenario">A messaging system models <span class="key">threads</span>: an <span class="key">original post</span> or a <span class="key">reply to another thread</span>.</p><p>Which definition is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')"><code>Thread ::= original | reply &laquo;Thread&raquo;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>Thread == original | reply</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>Thread ::= reply &laquo;Thread&raquo;</code> (no base case)</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>Thread &sube; String</code></button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Base case + recursive constructor.</p><ul><li><strong>Syntax:</strong> <code>original</code> (constant) + <code>reply &laquo;Thread&raquo;</code> (recursive).</li><li><strong>Semantics:</strong> every thread is original or a reply to another thread.</li><li><strong>Inference:</strong> <code>original &ne; reply(t)</code> for any t (disjointness).</li><li><strong>Outcome:</strong> well-founded: finitely many replies to reach an original.</li></ul></div></div>
+
+<h3>V.16 Practice: Recursive Type Definition</h3>
+<div class="practice" id="p2_16"><p class="scenario">Is <code>T ::= wrap &laquo;T&raquo;</code> a valid (consistent) free type?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_16')">Yes &mdash; it has one constructor.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')">No &mdash; no base case; every element requires a prior element, so no finite inhabitants exist.</button></li><li><button onclick="selectAnswer(this,false,'fb2_16')">Only if T = &Nopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb2_16')">Only for finite sets.</button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> No base case &rarr; no inhabitants.</p><ul><li><strong>Syntax:</strong> only recursive constructor, no constant.</li><li><strong>Semantics:</strong> building any element requires an existing element.</li><li><strong>Inference:</strong> smallest set = empty set &mdash; inconsistent.</li><li><strong>Outcome:</strong> recursive types need at least one non-recursive (constant) alternative.</li></ul></div></div>
+
+<h3>V.17 Practice: Recursive Type Definition</h3>
+<div class="practice" id="p2_17"><p class="scenario">A file system defines <code>Entry ::= file &laquo;Data&raquo; | dir &laquo;seq Entry&raquo;</code>. This type is valid because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')"><code>file &laquo;Data&raquo;</code> provides a base (non-recursive elements exist when Data is non-empty).</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Both constructors are recursive.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">It has no constructors.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">The empty sequence counts as a constant.</button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> <code>file &laquo;Data&raquo;</code> gives non-recursive inhabitants.</p><ul><li><strong>Syntax:</strong> <code>file</code> embeds Data (not Entry); <code>dir</code> embeds <code>seq Entry</code> (recursive).</li><li><strong>Semantics:</strong> files exist without needing other entries.</li><li><strong>Inference:</strong> <code>dir &laquo;seq Entry&raquo;</code> can also start with the empty sequence.</li><li><strong>Outcome:</strong> well-founded recursive type.</li></ul></div></div>
+
+<h3>V.18 Practice: Recursive Type Definition</h3>
+<div class="practice" id="p2_18"><p class="scenario">The textbook defines <code>nat ::= zero | succ &laquo;nat&raquo;</code>. The elements of <code>nat</code> are:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_18')">Only <code>zero</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>zero, succ(zero), succ(succ(zero)), &hellip;</code> &mdash; the smallest set.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">All integers.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">Undefined &mdash; recursive types have no elements.</button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> nat = {zero, succ zero, succ(succ zero), &hellip;}.</p><ul><li><strong>Syntax:</strong> <code>zero</code> (constant) + <code>succ &laquo;nat&raquo;</code> (recursive constructor).</li><li><strong>Semantics:</strong> each element is either zero or succ of a smaller nat.</li><li><strong>Inference:</strong> smallest set &mdash; only elements reachable from zero.</li><li><strong>Outcome:</strong> isomorphic to the natural numbers.</li></ul></div></div>
+
+<h3>V.19 Practice: Recursive Type Definition</h3>
+<div class="practice" id="p2_19"><p class="scenario">A binary tree type is defined as <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>. An example element is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>branch(leaf 3, leaf 5)</code> &mdash; a branching point joining two leaves.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>branch(3, 5)</code> &mdash; branch takes raw numbers.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>leaf(leaf 3)</code> &mdash; leaf wraps another leaf.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>3</code> &mdash; plain number.</button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> <code>branch</code> takes a pair of Trees.</p><ul><li><strong>Syntax:</strong> <code>branch &laquo;Tree &times; Tree&raquo;</code>.</li><li><strong>Semantics:</strong> <code>branch(leaf 3, leaf 5)</code> is a Tree whose children are leaves.</li><li><strong>Inference:</strong> <code>leaf 3 &ne; branch(&hellip;)</code> (disjointness).</li><li><strong>Outcome:</strong> recursive nesting builds arbitrarily deep trees.</li></ul></div></div>
+
+<h3>V.20 Practice: Recursive Type Definition</h3>
+<div class="practice" id="p2_20"><p class="scenario">For <code>Commit ::= initial | next &laquo;Commit&raquo;</code>, the third commit is represented as:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>initial(3)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>next(3)</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>next(next(initial))</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>next | next | initial</code></button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Two applications of next to initial.</p><ul><li><strong>Syntax:</strong> <code>initial</code> = first, <code>next(initial)</code> = second, <code>next(next(initial))</code> = third.</li><li><strong>Semantics:</strong> each next wraps a previous commit.</li><li><strong>Inference:</strong> <code>next(next(initial)) &ne; next(initial)</code> (injectivity).</li><li><strong>Outcome:</strong> commit chain = nat structure.</li></ul></div></div>
+
+<h3>V.21 Practice: Disjointness Rule</h3>
+<div class="practice" id="p2_21"><p class="scenario">For <code>nat ::= zero | succ &laquo;nat&raquo;</code>, the disjointness rule gives:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')"><code>disjoint({zero}, ran succ)</code> &mdash; zero is not the successor of anything.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>zero = succ(zero)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>ran succ = &empty;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>nat = &empty;</code>.</button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Constants and constructor ranges are disjoint.</p><ul><li><strong>Syntax:</strong> <code>zero</code> (constant) vs <code>succ</code> (constructor).</li><li><strong>Semantics:</strong> <code>{zero} &cap; ran succ = &empty;</code>.</li><li><strong>Inference:</strong> zero is never the output of succ.</li><li><strong>Outcome:</strong> first inference rule of free type definitions.</li></ul></div></div>
+
+<h3>V.22 Practice: Closure Principle</h3>
+<div class="practice" id="p2_22"><p class="scenario">For <code>nat ::= zero | succ &laquo;nat&raquo;</code>, the closure/induction rule states:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_22')">nat is finite.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>&forall; S : &Popf; nat &bull; ({zero} &cup; succ(| S |) &sube; S) &rArr; S = nat</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>succ</code> is surjective.</button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>nat &sube; &empty;</code>.</button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Any subset with zero and closed under succ = nat.</p><ul><li><strong>Syntax:</strong> second inference rule of free type definitions.</li><li><strong>Semantics:</strong> S must contain zero, and if n &isin; S then succ n &isin; S.</li><li><strong>Inference:</strong> the only such S is nat itself.</li><li><strong>Outcome:</strong> this is the basis for proof by induction.</li></ul></div></div>
+
+<h3>V.23 Practice: Constants vs Constructors</h3>
+<div class="practice" id="p2_23"><p class="scenario">In <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>, which are constructor functions and which are constants?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_23')">Both are constants.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Both are constructor functions &mdash; <code>leaf</code> embeds &Nopf;, <code>branch</code> embeds <code>Tree &times; Tree</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')"><code>leaf</code> is a constant; <code>branch</code> is a constructor.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Neither &mdash; they are predicates.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Both take source arguments &mdash; neither is a bare constant.</p><ul><li><strong>Syntax:</strong> both use <code>&laquo; &raquo;</code> brackets.</li><li><strong>Semantics:</strong> <code>leaf : &Nopf; &#x21A3; Tree</code>, <code>branch : Tree &times; Tree &#x21A3; Tree</code>.</li><li><strong>Inference:</strong> <code>disjoint(ran leaf, ran branch)</code>.</li><li><strong>Outcome:</strong> a constant has no <code>&laquo; &raquo;</code>; a constructor does.</li></ul></div></div>
+
+<h3>V.24 Practice: Axiomatic Equivalent</h3>
+<div class="practice" id="p2_24"><p class="scenario">A free type <code>T ::= c | d &laquo;E&raquo;</code> could equivalently be introduced axiomatically. The axiomatic version would declare:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')"><code>c : T</code>, <code>d : E &#x21A3; T</code>, <code>disjoint({c}, ran d)</code>, plus a closure axiom.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>c : T</code>, <code>d : T</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>T == {c, d}</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>c &isin; T</code> only.</button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Free type = constant declarations + injective constructors + disjointness + closure.</p><ul><li><strong>Syntax:</strong> axiomatic definition mirrors <code>::=</code>.</li><li><strong>Semantics:</strong> same mathematical content, different notation.</li><li><strong>Inference:</strong> same disjointness and closure rules.</li><li><strong>Outcome:</strong> <code>::=</code> is syntactic sugar for the axiomatic version.</li></ul></div></div>
+
+<h3>V.25 Practice: Order Independence</h3>
+<div class="practice" id="p2_25"><p class="scenario">The textbook states that <code>Colours ::= red | orange | &hellip; | violet</code> has the same effect as <code>Colours ::= violet | &hellip; | red</code>. Why?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">The free type introduces a set of distinct constants &mdash; the listing order does not impose structure.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">The first listed constant is the default.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Order determines an ordering relation on the type.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Only true for enumerations, not recursive types.</button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> Free type = smallest set, independent of listing order.</p><ul><li><strong>Syntax:</strong> alternatives separated by <code>|</code> &mdash; order irrelevant.</li><li><strong>Semantics:</strong> same set of constants and constructors either way.</li><li><strong>Inference:</strong> same disjointness and closure properties.</li><li><strong>Outcome:</strong> the textbook demonstrates this with the Colours example.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 10.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">10.3 Proof by Induction</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="Proof method: show P holds for constants (base) and is preserved by constructors (step) &rarr; P holds for all.">Induction principle</span>:</strong> derived from the closure inference rule of a free type.</li>
+  <li><strong><span class="vocab" data-def="The set {t : T | P t} of elements satisfying predicate P.">Characteristic set</span>:</strong> given <span class="vocab" data-def="A property that may hold for elements of a type.">predicate</span> <code>P</code> on type <code>T</code>, define <code>S == {t : T | P t}</code>.</li>
+  <li><strong>From closure:</strong> if <code>S</code> contains all constants and is <span class="vocab" data-def="Applying a constructor to elements satisfying P still satisfies P.">closed under constructors</span> &rarr; <code>S = T</code> &rarr; <code>&forall; t : T &bull; P t</code>.</li>
+  <li><strong>General template:</strong> prove <code>P c<sub>1</sub>, &hellip;, P c<sub>m</sub></code> (<span class="vocab" data-def="Proving P holds for all constants of the type.">base cases</span>) and <code>&forall; e &bull; P(d<sub>i</sub> e)</code> (<span class="vocab" data-def="Proving P is preserved when a constructor is applied.">inductive steps</span>) &rarr; conclude <code>&forall; t : T &bull; P t</code>.</li>
+  <li><strong>nat induction:</strong> <code>P zero</code> and <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code> &rarr; <code>&forall; n : nat &bull; P n</code>.</li>
+  <li><strong>Tree induction:</strong> <code>&forall; n : &Nopf; &bull; P(leaf n)</code> and <code>&forall; l, r : Tree &bull; P l &and; P r &rArr; P(branch(l, r))</code> &rarr; <code>&forall; t : Tree &bull; P t</code>.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Induction principle</td><td>Proof method: show P holds for constants (base) and is preserved by constructors (step) &rarr; P holds for all.</td></tr>
+  <tr><td>Characteristic set</td><td>The set {t : T | P t} of elements satisfying predicate P.</td></tr>
+  <tr><td>Predicate</td><td>A property that may hold for elements of a type.</td></tr>
+  <tr><td>Base case</td><td>Proving P holds for all constants of the type.</td></tr>
+  <tr><td>Inductive step</td><td>Proving P is preserved when a constructor is applied.</td></tr>
+  <tr><td>Closed under constructors</td><td>Applying a constructor to elements satisfying P still satisfies P.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P</code></td><td>Predicate on type elements.</td></tr>
+  <tr><td><code>S == {t : T | P t}</code></td><td>Characteristic set.</td></tr>
+  <tr><td><code>&forall; t : T &bull; P t</code></td><td>P holds for every element of T.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of (membership).</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset or equal.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+</table>
+
+<h3>IV.1 Examples: Quality Scores, Employee Certifications &amp; Building Codes</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P</code></td><td>Predicate.</td></tr>
+  <tr><td><code>S == {t : T | P t}</code></td><td>Characteristic set.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A factory wants to prove that <span class="key">every product</span> in its <span class="key">quality tier system</span> (base tier + upgrades) meets a <span class="key">minimum standard</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(t) = &ldquo;tier t meets the minimum standard.&rdquo;</code></li>
+  <li><strong>Base:</strong> define <code>S == {t : Tier | P t}</code> &mdash; the <span class="vocab" data-def="The set {t : T | P t} of elements satisfying predicate P.">characteristic set</span> of tiers meeting the standard.</li>
+  <li><strong>Step:</strong> since <code>S &sube; Tier</code>, the closure rule says: if constants &isin; S and constructors preserve S, then S = Tier.</li>
+  <li><strong>Conclude:</strong> proving <code>P</code> for base and upgrades means <code>&forall; t : Tier &bull; P t</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A company wants to show <span class="key">every employee</span> in a <span class="key">certification chain</span> (entry cert + advanced certs) has <span class="key">valid credentials</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(c) = &ldquo;certification c has valid credentials.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>S == {c : Cert | P c}</code> &mdash; certs with valid credentials.</li>
+  <li><strong>Step:</strong> <code>S &sube; Cert</code>; if entry cert &isin; S and advancing preserves S, then S = Cert.</li>
+  <li><strong>Conclude:</strong> all certifications are valid.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An inspector wants to prove <span class="key">every floor</span> of a building (ground + additions) meets <span class="key">safety codes</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(f) = &ldquo;floor f meets safety code.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>S == {f : Floor | P f}</code>.</li>
+  <li><strong>Step:</strong> if ground &isin; S and adding a floor above a safe floor stays safe, then S = Floor.</li>
+  <li><strong>Conclude:</strong> <code>&forall; f : Floor &bull; P f</code> &mdash; every floor is safe.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Recipe Validation, Code Review Checklist &amp; Safety Inspection</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P</code></td><td>Predicate.</td></tr>
+  <tr><td><code>&forall; t : T &bull; P t</code></td><td>P holds for all.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bakery wants to prove <span class="key">every recipe version</span> (original + revisions) <span class="key">passes taste testing</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(r) = &ldquo;recipe r passes taste test.&rdquo;</code></li>
+  <li><strong>Base:</strong> show <code>P(original)</code> &mdash; the original recipe passes.</li>
+  <li><strong>Step:</strong> <code>&forall; r : Recipe &bull; P r &rArr; P(revise r)</code> &mdash; revising a passing recipe still passes.</li>
+  <li><strong>Conclude:</strong> <code>&forall; r : Recipe &bull; P r</code> &mdash; every version passes.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A team wants to prove <span class="key">every code commit</span> (initial + updates) <span class="key">passes review</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(c) = &ldquo;commit c passes code review.&rdquo;</code></li>
+  <li><strong>Base:</strong> show <code>P(initial)</code>.</li>
+  <li><strong>Step:</strong> <code>&forall; c : Commit &bull; P c &rArr; P(update c)</code>.</li>
+  <li><strong>Conclude:</strong> <code>&forall; c : Commit &bull; P c</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An inspector proves <span class="key">every wagon</span> in a <span class="key">train</span> (engine + coupled wagons) <span class="key">passes brake inspection</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(w) = &ldquo;wagon w passes brake inspection.&rdquo;</code></li>
+  <li><strong>Base:</strong> show <code>P(engine)</code> &mdash; the engine passes.</li>
+  <li><strong>Step:</strong> <code>&forall; w : Train &bull; P w &rArr; P(couple w)</code> &mdash; coupling a passing wagon still passes.</li>
+  <li><strong>Conclude:</strong> <code>&forall; w : Train &bull; P w</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Savings Account, Message Chain &amp; Level Progression</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P</code></td><td>Predicate.</td></tr>
+  <tr><td><code>&forall; m : nat &bull; P m &rArr; P(succ m)</code></td><td>nat inductive step.</td></tr>
+  <tr><td><code>&forall; n : nat &bull; P n</code></td><td>Conclusion.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bank wants to prove that a <span class="key">savings balance</span> is always <span class="key">non-negative</span> after any number of <span class="key">monthly deposits</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(n) = &ldquo;balance after n months &ge; 0.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>P(zero)</code> &mdash; initial balance = 0 &ge; 0. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code> &mdash; if balance &ge; 0 before deposit, balance + deposit &ge; 0 after.</li>
+  <li><strong>Conclude:</strong> <code>&forall; n : nat &bull; P n</code> &mdash; balance is always non-negative.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A messaging app proves that <span class="key">every message</span> in a <span class="key">forwarding chain</span> retains its <span class="key">original sender</span> field.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(n) = &ldquo;message after n forwards retains original sender.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>P(zero)</code> &mdash; original message has the sender field. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code> &mdash; forwarding preserves the sender field.</li>
+  <li><strong>Conclude:</strong> <code>&forall; n : nat &bull; P n</code> &mdash; sender is always preserved.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A game proves that <span class="key">every level</span> in a <span class="key">progression chain</span> has a <span class="key">difficulty rating &ge; 1</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(n) = &ldquo;level n has difficulty &ge; 1.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>P(zero)</code> &mdash; first level has difficulty 1 &ge; 1. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code> &mdash; difficulty increases or stays, never drops below 1.</li>
+  <li><strong>Conclude:</strong> <code>&forall; n : nat &bull; P n</code> &mdash; every level has difficulty &ge; 1.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: File System Integrity, Org Chart Roles &amp; Tournament Bracket</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P</code></td><td>Predicate.</td></tr>
+  <tr><td><code>&forall; t : T &bull; P t</code></td><td>P holds for all.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Element of.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A file system (<code>Entry ::= file &laquo;Data&raquo; | dir &laquo;seq Entry&raquo;</code>) must prove <span class="key">every entry</span> has a <span class="key">valid path</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(e) = &ldquo;entry e has a valid path.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>&forall; d : Data &bull; P(file d)</code> &mdash; every file has a valid path. &#10003;</li>
+  <li><strong>Step:</strong> if all entries in a directory have valid paths, then <code>P(dir es)</code> &mdash; the directory itself has a valid path.</li>
+  <li><strong>Conclude:</strong> <code>&forall; e : Entry &bull; P e</code> &mdash; every entry in the file system has a valid path.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An org chart (<code>Org ::= person &laquo;Name&raquo; | team &laquo;Org &times; Org&raquo;</code>) must prove <span class="key">every node</span> has an assigned <span class="key">department</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(o) = &ldquo;node o has a department.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>&forall; n : Name &bull; P(person n)</code> &mdash; every individual has a department. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; l, r : Org &bull; P l &and; P r &rArr; P(team(l, r))</code> &mdash; combining assigned sub-orgs stays assigned.</li>
+  <li><strong>Conclude:</strong> <code>&forall; o : Org &bull; P o</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A tournament bracket (<code>Bracket ::= player &laquo;Name&raquo; | match &laquo;Bracket &times; Bracket&raquo;</code>) proves <span class="key">every node</span> has a <span class="key">scheduled time</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(b) = &ldquo;bracket node b has a scheduled time.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>&forall; n : Name &bull; P(player n)</code> &mdash; each player has a start time. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; l, r : Bracket &bull; P l &and; P r &rArr; P(match(l, r))</code>.</li>
+  <li><strong>Conclude:</strong> <code>&forall; b : Bracket &bull; P b</code>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Stack Depth, Queue Capacity &amp; Buffer Size</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P</code></td><td>Predicate.</td></tr>
+  <tr><td><code>&forall; n : nat &bull; P n</code></td><td>Conclusion.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implies.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A runtime proves that <span class="key">stack depth</span> after <span class="key">n push operations</span> equals <span class="key">n</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(n) = &ldquo;depth after n pushes = n.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>P(zero)</code>: depth after 0 pushes = 0. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code>: push adds 1 to depth, so depth = m + 1 = succ m. &#10003;</li>
+  <li><strong>Conclude:</strong> <code>&forall; n : nat &bull; P n</code> &mdash; depth always equals push count.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A queue system proves that <span class="key">capacity used</span> after <span class="key">n enqueues</span> (with no dequeues) equals <span class="key">n</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(n) = &ldquo;used capacity after n enqueues = n.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>P(zero)</code>: empty queue uses 0 capacity. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code>: enqueue adds 1.</li>
+  <li><strong>Conclude:</strong> <code>&forall; n : nat &bull; P n</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A buffer system proves that <span class="key">bytes written</span> after <span class="key">n writes</span> of 1 byte each equals <span class="key">n</span>.</p>
+<ul>
+  <li><strong>Predicate:</strong> <code>P(n) = &ldquo;bytes written after n single-byte writes = n.&rdquo;</code></li>
+  <li><strong>Base:</strong> <code>P(zero)</code>: 0 writes = 0 bytes. &#10003;</li>
+  <li><strong>Step:</strong> <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code>: one more write adds 1 byte.</li>
+  <li><strong>Conclude:</strong> <code>&forall; n : nat &bull; P n</code>.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice: Induction Purpose</h3>
+<div class="practice" id="p3_1"><p>The induction principle for a free type is derived from:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_1')">The disjointness rule.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">The closure/induction inference rule (second rule of free type definitions).</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">The axiom of choice.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Set comprehension.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Closure rule &rarr; induction principle.</p><ul><li><strong>Predicate:</strong> P is the property to prove.</li><li><strong>Base:</strong> the closure rule requires constants &isin; S.</li><li><strong>Step:</strong> the rule requires constructors to preserve S.</li><li><strong>Conclude:</strong> S = T, i.e., &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.2 Practice: Characteristic Set</h3>
+<div class="practice" id="p3_2"><p>The characteristic set <code>S == {t : T | P t}</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">The set of all elements of T that satisfy predicate P.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">The empty set.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">The power set of T.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">A constructor function.</button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> S collects elements satisfying P.</p><ul><li><strong>Predicate:</strong> P defines which elements are in S.</li><li><strong>Base:</strong> S &sube; T by definition.</li><li><strong>Step:</strong> if S includes constants + closed under constructors &rarr; S = T.</li><li><strong>Conclude:</strong> P holds for all of T.</li></ul></div></div>
+
+<h3>V.3 Practice: Base Case Verification</h3>
+<div class="practice" id="p3_3"><p class="scenario">To prove <span class="key">every natural number</span> satisfies <span class="key">P</span>, the base case requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>P zero</code> &mdash; P holds for the constant zero.</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>P(succ zero)</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&forall; n : nat &bull; P n</code> (that's the conclusion, not a step).</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>P</code> is undefined at zero.</button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Base case = P applied to the constant.</p><ul><li><strong>Predicate:</strong> P is the property to prove for all of nat.</li><li><strong>Base:</strong> must show P(zero) holds.</li><li><strong>Step:</strong> then show preservation under succ.</li><li><strong>Conclude:</strong> &forall; n : nat &bull; P n.</li></ul></div></div>
+
+<h3>V.4 Practice: Base Case Verification</h3>
+<div class="practice" id="p3_4"><p class="scenario">A factory proves that <span class="key">every product tier</span> (<code>Tier ::= basic | upgrade &laquo;Tier&raquo;</code>) meets <span class="key">quality standard Q</span>. The base case is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>Q(basic)</code> &mdash; the basic tier meets Q.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>Q(upgrade(basic))</code> &mdash; the first upgrade meets Q.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&forall; t : Tier &bull; Q t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>Q</code> is undefined at basic.</button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Base case = predicate on the constant.</p><ul><li><strong>Predicate:</strong> Q = quality standard.</li><li><strong>Base:</strong> Q(basic) must be shown.</li><li><strong>Step:</strong> then show upgrade preserves Q.</li><li><strong>Conclude:</strong> all tiers meet Q.</li></ul></div></div>
+
+<h3>V.5 Practice: Base Case Verification</h3>
+<div class="practice" id="p3_5"><p class="scenario">For <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>, proving <span class="key">P for all trees</span> requires how many base-case checks?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_5')">One: <code>P(leaf 0)</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>&forall; n : &Nopf; &bull; P(leaf n)</code> &mdash; P must hold for every leaf.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Zero &mdash; no base case needed for trees.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>P(branch(leaf 0, leaf 0))</code> only.</button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> leaf is a constructor (not a bare constant), so base covers all leaves.</p><ul><li><strong>Predicate:</strong> P for all trees.</li><li><strong>Base:</strong> &forall; n : &Nopf; &bull; P(leaf n) &mdash; one check per leaf value.</li><li><strong>Step:</strong> then show P preserved by branch.</li><li><strong>Conclude:</strong> &forall; t : Tree &bull; P t.</li></ul></div></div>
+
+<h3>V.6 Practice: Base Case Verification</h3>
+<div class="practice" id="p3_6"><p class="scenario">A messaging system defines <code>Thread ::= original | reply &laquo;Thread&raquo;</code>. To prove every thread has property <span class="key">P</span>, the base case is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>P(original)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>P(reply(original))</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>&forall; t : Thread &bull; P t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>P(reply(reply(original)))</code>.</button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> original is the sole constant.</p><ul><li><strong>Predicate:</strong> P on threads.</li><li><strong>Base:</strong> P(original) &mdash; the root thread satisfies P.</li><li><strong>Step:</strong> &forall; t : Thread &bull; P t &rArr; P(reply t).</li><li><strong>Conclude:</strong> &forall; t : Thread &bull; P t.</li></ul></div></div>
+
+<h3>V.7 Practice: Base Case Verification</h3>
+<div class="practice" id="p3_7"><p class="scenario">A commit chain uses <code>Commit ::= initial | next &laquo;Commit&raquo;</code>. To prove every commit passes <span class="key">CI</span>, which base case is needed?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')"><code>CI(initial)</code> &mdash; the initial commit passes CI.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>CI(next(initial))</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>&forall; c : Commit &bull; CI c</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">No base case needed.</button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Constant = base case target.</p><ul><li><strong>Predicate:</strong> CI = passes continuous integration.</li><li><strong>Base:</strong> CI(initial).</li><li><strong>Step:</strong> CI preserved by next.</li><li><strong>Conclude:</strong> all commits pass CI.</li></ul></div></div>
+
+<h3>V.8 Practice: Base Case Verification</h3>
+<div class="practice" id="p3_8"><p class="scenario">A type has <em>two</em> constants: <code>T ::= a | b | wrap &laquo;T&raquo;</code>. How many base cases are needed?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_8')">One: <code>P(a)</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">Two: <code>P(a)</code> and <code>P(b)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Three: <code>P(a)</code>, <code>P(b)</code>, and <code>P(wrap(a))</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Zero.</button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> One base case per constant.</p><ul><li><strong>Predicate:</strong> P on T.</li><li><strong>Base:</strong> P(a) and P(b) &mdash; both constants.</li><li><strong>Step:</strong> &forall; t : T &bull; P t &rArr; P(wrap t).</li><li><strong>Conclude:</strong> &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.9 Practice: Inductive Step</h3>
+<div class="practice" id="p3_9"><p class="scenario">For nat induction, the inductive step is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>P(zero)</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>&forall; m : nat &bull; P m &rArr; P(succ m)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&forall; n : nat &bull; P n</code> (conclusion, not a step).</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>P(succ zero)</code> only.</button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> If P holds for m, it holds for succ m.</p><ul><li><strong>Predicate:</strong> P on nat.</li><li><strong>Base:</strong> P(zero) (separate step).</li><li><strong>Step:</strong> &forall; m : nat &bull; P m &rArr; P(succ m).</li><li><strong>Conclude:</strong> together, they give &forall; n : nat &bull; P n.</li></ul></div></div>
+
+<h3>V.10 Practice: Inductive Step</h3>
+<div class="practice" id="p3_10"><p class="scenario">For <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>, the inductive step for <span class="key">branch</span> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')"><code>&forall; l, r : Tree &bull; P l &and; P r &rArr; P(branch(l, r))</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>P(branch(leaf 0, leaf 0))</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>&forall; t : Tree &bull; P t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>P(leaf n) &rArr; P(branch(leaf n, leaf n))</code>.</button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> If both subtrees satisfy P, the branch does too.</p><ul><li><strong>Predicate:</strong> P on trees.</li><li><strong>Base:</strong> &forall; n &bull; P(leaf n).</li><li><strong>Step:</strong> P l &and; P r &rArr; P(branch(l, r)).</li><li><strong>Conclude:</strong> &forall; t : Tree &bull; P t.</li></ul></div></div>
+
+<h3>V.11 Practice: Inductive Step</h3>
+<div class="practice" id="p3_11"><p class="scenario">A type <code>T ::= a | f &laquo;T&raquo; | g &laquo;T &times; T&raquo;</code> has <span class="key">two constructors</span>. The inductive step requires:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_11')">One step for f only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">One step for g only.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')">Two steps: <code>&forall; t &bull; P t &rArr; P(f t)</code> and <code>&forall; t1, t2 &bull; P t1 &and; P t2 &rArr; P(g(t1, t2))</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">No inductive steps &mdash; only the base case P(a).</button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> One inductive step per constructor function.</p><ul><li><strong>Predicate:</strong> P on T.</li><li><strong>Base:</strong> P(a).</li><li><strong>Step:</strong> one for f, one for g.</li><li><strong>Conclude:</strong> all three together &rArr; &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.12 Practice: Inductive Step</h3>
+<div class="practice" id="p3_12"><p class="scenario">In the inductive step <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code>, the hypothesis <code>P m</code> is called:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">The inductive hypothesis &mdash; we assume P holds for m to prove it for succ m.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">The base case.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">The conclusion.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">A contradiction.</button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> The assumption in the &rArr; antecedent.</p><ul><li><strong>Predicate:</strong> P m is assumed true.</li><li><strong>Base:</strong> separate from this step.</li><li><strong>Step:</strong> use P m to derive P(succ m).</li><li><strong>Conclude:</strong> valid by the induction principle.</li></ul></div></div>
+
+<h3>V.13 Practice: Inductive Step</h3>
+<div class="practice" id="p3_13"><p class="scenario">For <code>Tier ::= basic | upgrade &laquo;Tier&raquo;</code>, the inductive step for property Q is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>Q(basic)</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')"><code>&forall; t : Tier &bull; Q t &rArr; Q(upgrade t)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>&forall; t : Tier &bull; Q t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>Q(upgrade(basic))</code> only.</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> If Q holds for a tier, it holds for its upgrade.</p><ul><li><strong>Predicate:</strong> Q on Tier.</li><li><strong>Base:</strong> Q(basic).</li><li><strong>Step:</strong> Q t &rArr; Q(upgrade t).</li><li><strong>Conclude:</strong> &forall; t : Tier &bull; Q t.</li></ul></div></div>
+
+<h3>V.14 Practice: Inductive Step</h3>
+<div class="practice" id="p3_14"><p class="scenario">What does <span class="key">&ldquo;closed under constructors&rdquo;</span> mean in the context of induction?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_14')">The set is finite.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')">Applying a constructor to elements of S that satisfy P keeps the result in S (still satisfies P).</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">The set equals &empty;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Constructors are undefined.</button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Closure = constructors preserve membership in S.</p><ul><li><strong>Predicate:</strong> P defines S.</li><li><strong>Base:</strong> constants &isin; S.</li><li><strong>Step:</strong> constructors map S into S.</li><li><strong>Conclude:</strong> S = T &rArr; &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.15 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p3_15"><p class="scenario">A bank proves <span class="key">balance &ge; 0</span> after any number of deposits. <code>P(n) = &ldquo;balance after n deposits &ge; 0.&rdquo;</code> Base: <code>P(zero)</code> &#10003;. Step: <code>&forall; m &bull; P m &rArr; P(succ m)</code> &#10003;.</p><p>The conclusion is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')"><code>&forall; n : nat &bull; P n</code> &mdash; balance is always non-negative.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>P(zero)</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Cannot conclude anything.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>P(succ zero)</code> only.</button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Base + step = universal conclusion.</p><ul><li><strong>Predicate:</strong> P(n) = balance after n deposits &ge; 0.</li><li><strong>Base:</strong> P(zero) holds.</li><li><strong>Step:</strong> deposit preserves non-negativity.</li><li><strong>Conclude:</strong> &forall; n : nat &bull; P n by induction.</li></ul></div></div>
+
+<h3>V.16 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p3_16"><p class="scenario">To prove <span class="key">every binary tree</span> has at least <span class="key">one leaf</span>: <code>P(t) = &ldquo;t contains &ge; 1 leaf.&rdquo;</code></p><p>Base: <code>&forall; n &bull; P(leaf n)</code> &#10003;. Step: <code>P l &and; P r &rArr; P(branch(l,r))</code> &#10003;. Conclusion?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')"><code>&forall; t : Tree &bull; P t</code> &mdash; every tree has at least one leaf.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Only leaf trees have leaves.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Cannot conclude.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Only for finite trees.</button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Induction on Tree structure.</p><ul><li><strong>Predicate:</strong> P(t) = contains &ge; 1 leaf.</li><li><strong>Base:</strong> every leaf has itself &mdash; trivially true.</li><li><strong>Step:</strong> branch(l,r) inherits leaves from l and r.</li><li><strong>Conclude:</strong> &forall; t : Tree &bull; P t.</li></ul></div></div>
+
+<h3>V.17 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p3_17"><p class="scenario">A proof attempts: base case <code>P(zero)</code> &#10003;, but the inductive step <code>&forall; m &bull; P m &rArr; P(succ m)</code> <strong>fails</strong>.</p><p>What can we conclude?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&forall; n : nat &bull; P n</code> still holds.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">The proof is incomplete &mdash; we cannot conclude <code>&forall; n : nat &bull; P n</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>P</code> holds only for zero.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>P</code> holds for no element.</button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Both parts are needed for the conclusion.</p><ul><li><strong>Predicate:</strong> P on nat.</li><li><strong>Base:</strong> P(zero) succeeds.</li><li><strong>Step:</strong> fails &mdash; proof blocked.</li><li><strong>Conclude:</strong> cannot draw universal conclusion (P may still hold, but not proven by induction).</li></ul></div></div>
+
+<h3>V.18 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p3_18"><p class="scenario">A game proves <span class="key">every level</span> (<code>Level ::= start | advance &laquo;Level&raquo;</code>) has <span class="key">difficulty &ge; 1</span>. Base: <code>diff(start) = 1 &ge; 1</code> &#10003;. Step: <code>&forall; l &bull; diff(l) &ge; 1 &rArr; diff(advance l) &ge; 1</code> &#10003;.</p><p>Conclusion?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')"><code>&forall; l : Level &bull; diff(l) &ge; 1</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Only start has difficulty &ge; 1.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Cannot conclude.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Only the first two levels.</button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> Base + step &rArr; universal.</p><ul><li><strong>Predicate:</strong> diff(l) &ge; 1.</li><li><strong>Base:</strong> diff(start) = 1 &ge; 1.</li><li><strong>Step:</strong> advancing preserves &ge; 1.</li><li><strong>Conclude:</strong> all levels have difficulty &ge; 1.</li></ul></div></div>
+
+<h3>V.19 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p3_19"><p class="scenario">An induction proof on <code>T ::= a | b | f &laquo;T&raquo;</code> requires:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_19')">P(a) only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">P(a), P(b) only.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">P(a), P(b), and &forall; t &bull; P t &rArr; P(f t).</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">&forall; t &bull; P(f t) only.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Two base cases + one inductive step.</p><ul><li><strong>Predicate:</strong> P on T.</li><li><strong>Base:</strong> P(a) and P(b) &mdash; one per constant.</li><li><strong>Step:</strong> P t &rArr; P(f t) &mdash; one per constructor.</li><li><strong>Conclude:</strong> &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.20 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p3_20"><p class="scenario">A runtime proves <span class="key">stack depth = n</span> after <span class="key">n pushes</span>. <code>P(n) = &ldquo;depth = n.&rdquo;</code></p><p>Base: <code>P(zero)</code>: depth = 0. &#10003;. Step: <code>P m &rArr; P(succ m)</code>: push adds 1. &#10003;. Result?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')"><code>&forall; n : nat &bull; P n</code> &mdash; depth always equals push count.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Depth is always zero.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Only for n &le; 100.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Cannot conclude.</button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> Classic nat induction.</p><ul><li><strong>Predicate:</strong> depth = n.</li><li><strong>Base:</strong> depth after 0 pushes = 0.</li><li><strong>Step:</strong> each push increments depth.</li><li><strong>Conclude:</strong> by induction, depth = n for all n.</li></ul></div></div>
+
+<h3>V.21 Practice: Predicate Selection</h3>
+<div class="practice" id="p3_21"><p class="scenario">To use induction, the first step is to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">Choose a predicate P that captures the property you want to prove.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">List all elements of the type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Find a counterexample.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Define a new free type.</button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> P defines what you are proving.</p><ul><li><strong>Predicate:</strong> choose P carefully.</li><li><strong>Base:</strong> then verify P for constants.</li><li><strong>Step:</strong> then verify P preserved by constructors.</li><li><strong>Conclude:</strong> &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.22 Practice: Closure Under Constructors</h3>
+<div class="practice" id="p3_22"><p class="scenario">A set S is <span class="key">closed under succ</span> if:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>succ</code> is undefined on S.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>&forall; n &isin; S &bull; succ n &isin; S</code> &mdash; applying succ stays in S.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>S = &empty;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>S = nat</code> always.</button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Closure = constructor preserves set membership.</p><ul><li><strong>Predicate:</strong> membership in S.</li><li><strong>Base:</strong> S must contain zero.</li><li><strong>Step:</strong> &forall; n &isin; S &bull; succ n &isin; S.</li><li><strong>Conclude:</strong> then S = nat.</li></ul></div></div>
+
+<h3>V.23 Practice: General Induction Template</h3>
+<div class="practice" id="p3_23"><p class="scenario">The general induction principle for <code>T ::= c<sub>1</sub> | &hellip; | c<sub>m</sub> | d<sub>1</sub> &laquo;E<sub>1</sub>&raquo; | &hellip; | d<sub>n</sub> &laquo;E<sub>n</sub>&raquo;</code> requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')"><code>m</code> base cases (one per constant) and <code>n</code> inductive steps (one per constructor).</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Only 1 base case and 1 step.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')"><code>m + n</code> base cases.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">No base cases.</button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> One base per constant, one step per constructor.</p><ul><li><strong>Predicate:</strong> P on T.</li><li><strong>Base:</strong> P(c<sub>1</sub>), &hellip;, P(c<sub>m</sub>).</li><li><strong>Step:</strong> one &forall;&hellip;&rArr; per d<sub>i</sub>.</li><li><strong>Conclude:</strong> &forall; t : T &bull; P t.</li></ul></div></div>
+
+<h3>V.24 Practice: Nat Induction</h3>
+<div class="practice" id="p3_24"><p class="scenario">The nat-specific induction principle is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')"><code>P zero</code>, <code>&forall; m : nat &bull; P m &rArr; P(succ m)</code> &mdash; conclude <code>&forall; n : nat &bull; P n</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>P(succ zero)</code> only &mdash; conclude <code>&forall; n &bull; P n</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>&forall; n &bull; P n &rArr; P zero</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>P(zero) &and; P(succ zero)</code> only.</button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> One constant (zero) + one constructor (succ).</p><ul><li><strong>Predicate:</strong> P on nat.</li><li><strong>Base:</strong> P zero.</li><li><strong>Step:</strong> P m &rArr; P(succ m).</li><li><strong>Conclude:</strong> &forall; n : nat &bull; P n.</li></ul></div></div>
+
+<h3>V.25 Practice: Tree Induction</h3>
+<div class="practice" id="p3_25"><p class="scenario">For <code>Tree ::= leaf &laquo;&Nopf;&raquo; | branch &laquo;Tree &times; Tree&raquo;</code>, the full induction principle is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_25')"><code>P(leaf 0)</code> and <code>P(branch(leaf 0, leaf 0))</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Only <code>&forall; l, r &bull; P(branch(l,r))</code>.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')"><code>&forall; n : &Nopf; &bull; P(leaf n)</code>, <code>&forall; l, r : Tree &bull; P l &and; P r &rArr; P(branch(l, r))</code> &mdash; conclude <code>&forall; t : Tree &bull; P t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')"><code>P(leaf 0)</code> only.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Two constructors: leaf (base over &Nopf;) + branch (inductive step).</p><ul><li><strong>Predicate:</strong> P on Tree.</li><li><strong>Base:</strong> &forall; n : &Nopf; &bull; P(leaf n).</li><li><strong>Step:</strong> P l &and; P r &rArr; P(branch(l, r)).</li><li><strong>Conclude:</strong> &forall; t : Tree &bull; P t.</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 3</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 10.</footer>
+
+</body>
+</html>

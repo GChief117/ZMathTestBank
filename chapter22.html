@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 22 — A Bounded Buffer Module</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch22-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">22.1 Specification &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">22.2 Design &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">22.3 Retrieve Relation &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">22.4 Implementation &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(4, event)">22.5 Executable Code &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s4-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s4-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s4-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s4-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 22 &mdash; A Bounded Buffer Module</h1>
+
+<!-- ================= 22.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">22.1 Specification</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="A finite data store that behaves as a first-in first-out queue with a fixed capacity.">Bounded buffer</span>:</strong> FIFO queue with fixed <span class="vocab" data-def="Maximum number of values the buffer can hold (max_size).">capacity</span> &mdash; values leave in arrival order.</li>
+  <li><strong>Abstract state:</strong> <code>Buffer[X]</code> has <code>buffer : seq X</code>, <code>size : &Nopf;</code>, <code>max_size : &Nopf;</code> with invariant <code>size = #buffer &and; size &le; max_size</code>.</li>
+  <li><strong>Generic parameter:</strong> <code>X</code> is the type of stored values &mdash; the buffer is reusable for any type.</li>
+  <li><strong>Three operations:</strong> <code>BufferInit</code> (initialise), <code>BufferIn</code> (insert), <code>BufferOut</code> (extract).</li>
+  <li><strong><span class="vocab" data-def="An operation defined only when certain preconditions hold.">Partial ops</span>:</strong> <code>BufferIn&#8320;</code> requires <code>size &lt; max_size</code>; <code>BufferOut&#8320;</code> requires <code>buffer &ne; &langle;&rangle;</code>.</li>
+  <li><strong><span class="vocab" data-def="A free type of outcome labels: ok for success, full when insert refused, empty when extract refused.">Report</span> free type:</strong> <code>Report ::= ok | full | empty</code>; <span class="vocab" data-def="A schema emitting report! = ok with no constraint on state.">Success</span> emits <code>report! = ok</code>.</li>
+  <li><strong><span class="vocab" data-def="An operation defined on every valid state, formed by disjoining success and error branches.">Total ops</span>:</strong> <code>BufferIn &cong; (BufferIn&#8320; &and; Success) &or; BufferInError</code>; precondition = <code>true</code>.</li>
+  <li><strong><span class="vocab" data-def="The UpdateBuffer schema ensures max_size cannot change after instantiation.">UpdateBuffer</span>:</strong> includes <code>Buffer</code> and <code>Buffer&prime;</code> with <code>max_size&prime; = max_size</code> &mdash; capacity fixed.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Bounded buffer</td><td>Fixed-capacity FIFO queue.</td></tr>
+  <tr><td>Capacity</td><td>Maximum values the buffer can hold (<code>max_size</code>).</td></tr>
+  <tr><td>Partial operation</td><td>Op defined only when certain preconditions hold.</td></tr>
+  <tr><td>Total operation</td><td>Op defined on every valid state (precondition = <code>true</code>).</td></tr>
+  <tr><td>Report</td><td>Free-type outcome label: <code>ok | full | empty</code>.</td></tr>
+  <tr><td>Success</td><td>Schema emitting <code>report! = ok</code>.</td></tr>
+  <tr><td>Error schema</td><td>Schema handling a refused input with &Xi; (state unchanged).</td></tr>
+  <tr><td>UpdateBuffer</td><td>Schema enforcing <code>max_size&prime; = max_size</code> across operations.</td></tr>
+  <tr><td>Totalisation</td><td>Forming <code>(Partial &and; Success) &or; Error</code> to cover all inputs.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq X</code></td><td>Sequence of values of type X.</td></tr>
+  <tr><td><code>#buffer</code></td><td>Length (cardinality) of the sequence.</td></tr>
+  <tr><td><code>&langle;&rangle;</code></td><td>Empty sequence.</td></tr>
+  <tr><td><code>&frown;</code></td><td>Sequence concatenation.</td></tr>
+  <tr><td><code>head</code></td><td>First element of a non-empty sequence.</td></tr>
+  <tr><td><code>tail</code></td><td>All but the first element.</td></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged (used in error schemas).</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change (before and after copies).</td></tr>
+  <tr><td><code>::=</code></td><td>Free type declaration.</td></tr>
+  <tr><td><code>&and;</code></td><td>Schema conjunction.</td></tr>
+  <tr><td><code>&or;</code></td><td>Schema disjunction.</td></tr>
+  <tr><td><code>&le;</code></td><td>Less than or equal to.</td></tr>
+  <tr><td><code>&lt;</code></td><td>Strictly less than.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal to.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+  <tr><td><code>&Nopf;</code></td><td>Natural numbers.</td></tr>
+</table>
+
+<h3 id="s0-D">IV.1 Examples: BufferInit &mdash; Conveyor Belt, Ticket Queue &amp; Print Spool</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq X</code></td><td>Sequence type.</td></tr>
+  <tr><td><code>&langle;&rangle;</code></td><td>Empty sequence.</td></tr>
+  <tr><td><code>#buffer</code></td><td>Sequence length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">shipping conveyor</span> powers on with <span class="key">no packages</span> queued and a <span class="key">capacity of 50</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>Buffer&prime;[Package]</code>; <code>buffer : <span class="vocab" data-def="Sequence of values of type X.">seq</span> Package</code>, <code>size, max_size : <span class="vocab" data-def="Natural numbers.">&Nopf;</span></code>.</li>
+  <li><strong>Operation:</strong> <code>BufferInit</code> &mdash; sets <code>buffer&prime; = <span class="vocab" data-def="Empty sequence.">&langle;&rangle;</span></code>.</li>
+  <li><strong>Pre/Post:</strong> <code>size&prime; = 0</code> by invariant (<code>size = <span class="vocab" data-def="Sequence length.">#buffer</span></code>); <code>max_size</code> unconstrained.</li>
+  <li><strong>Report:</strong> none &mdash; init is unconditional (<code>pre BufferInit = true</code>).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">theme-park ride queue</span> resets at park opening with <span class="key">zero riders</span> and a <span class="key">capacity of 30</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>Buffer&prime;[Rider]</code>; empty start.</li>
+  <li><strong>Operation:</strong> <code>BufferInit</code> &mdash; <code>buffer&prime; = <span class="vocab" data-def="Empty sequence.">&langle;&rangle;</span></code>.</li>
+  <li><strong>Pre/Post:</strong> <code>size&prime; = 0</code>; <code>max_size</code> chosen per ride.</li>
+  <li><strong>Report:</strong> none &mdash; unconditional.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">print spool</span> boots with <span class="key">no jobs</span> queued and a <span class="key">capacity of 100</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>Buffer&prime;[Job]</code>; empty buffer.</li>
+  <li><strong>Operation:</strong> <code>BufferInit</code> &mdash; <code>buffer&prime; = <span class="vocab" data-def="Empty sequence.">&langle;&rangle;</span></code>.</li>
+  <li><strong>Pre/Post:</strong> <code>size&prime; = 0</code>; <code>max_size</code> fixed at installation.</li>
+  <li><strong>Report:</strong> none &mdash; always succeeds.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: BufferIn&#8320; (Partial Insert) &mdash; Printer, Airport Gate &amp; Call Centre</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&frown;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&lt;</code></td><td>Strictly less than.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">printer spool</span> has <span class="key">room</span>; a new job <span class="key">x?</span> is appended at the end.</p>
+<ul>
+  <li><strong>State:</strong> <code>UpdateBuffer[Job]</code>; input <code>x? : Job</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferIn&#8320;</code> &mdash; append when not full.</li>
+  <li><strong>Pre/Post:</strong> <code>size <span class="vocab" data-def="Strictly less than.">&lt;</span> max_size</code> &rarr; <code>buffer&prime; = buffer <span class="vocab" data-def="Sequence concatenation.">&frown;</span> &langle;x?&rangle;</code>.</li>
+  <li><strong>Report:</strong> none at partial level; <span class="vocab" data-def="Forming (Partial &and; Success) &or; Error to cover all inputs.">totalised</span> later.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">airport boarding lane</span> (capacity 50) has <span class="key">49 passengers</span>; one more arrives.</p>
+<ul>
+  <li><strong>State:</strong> <code>UpdateBuffer[Passenger]</code>; input <code>x? : Passenger</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferIn&#8320;</code> &mdash; <code>49 <span class="vocab" data-def="Strictly less than.">&lt;</span> 50</code>, so room exists.</li>
+  <li><strong>Pre/Post:</strong> <code>buffer&prime; = buffer <span class="vocab" data-def="Sequence concatenation.">&frown;</span> &langle;x?&rangle;</code>; <code>size&prime; = 50</code>.</li>
+  <li><strong>Report:</strong> Success adds <code>report! = ok</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">call-centre queue</span> (capacity 20) has <span class="key">12 callers</span> holding; a new call arrives.</p>
+<ul>
+  <li><strong>State:</strong> <code>UpdateBuffer[Call]</code>; input <code>x? : Call</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferIn&#8320;</code> &mdash; <code>12 <span class="vocab" data-def="Strictly less than.">&lt;</span> 20</code>.</li>
+  <li><strong>Pre/Post:</strong> <code>buffer&prime; = buffer <span class="vocab" data-def="Sequence concatenation.">&frown;</span> &langle;x?&rangle;</code>; <code>size&prime; = 13</code>.</li>
+  <li><strong>Report:</strong> totalised form returns <code>ok</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: BufferOut&#8320; (Partial Extract) &mdash; Ticket Window, Deli Counter &amp; Library Returns</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>tail</code></td><td>Rest of sequence.</td></tr>
+  <tr><td><code>&ne;</code></td><td>Not equal.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">ticket window</span> serves the <span class="key">front person</span> and the line shuffles forward.</p>
+<ul>
+  <li><strong>State:</strong> <code>UpdateBuffer[Person]</code>; output <code>x! : Person</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferOut&#8320;</code> &mdash; remove head.</li>
+  <li><strong>Pre/Post:</strong> <code>buffer <span class="vocab" data-def="Not equal.">&ne;</span> &langle;&rangle;</code> &rarr; <code>x! = <span class="vocab" data-def="First element.">head</span> buffer</code>, <code>buffer&prime; = <span class="vocab" data-def="Rest of sequence.">tail</span> buffer</code>.</li>
+  <li><strong>Report:</strong> Success appends <code>ok</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">deli counter</span> calls the <span class="key">next ticket number</span>; 5 customers waiting.</p>
+<ul>
+  <li><strong>State:</strong> <code>UpdateBuffer[Ticket]</code>; output <code>x! : Ticket</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferOut&#8320;</code> &mdash; <code>buffer <span class="vocab" data-def="Not equal.">&ne;</span> &langle;&rangle;</code>.</li>
+  <li><strong>Pre/Post:</strong> <code>x! = <span class="vocab" data-def="First element.">head</span> buffer</code>; <code>buffer&prime; = <span class="vocab" data-def="Rest of sequence.">tail</span> buffer</code>; <code>size&prime; = 4</code>.</li>
+  <li><strong>Report:</strong> <code>report! = ok</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">library returns machine</span> processes the <span class="key">next book</span> from a non-empty bin.</p>
+<ul>
+  <li><strong>State:</strong> <code>UpdateBuffer[Book]</code>; output <code>x! : Book</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferOut&#8320;</code> &mdash; bin not empty.</li>
+  <li><strong>Pre/Post:</strong> <code>x! = <span class="vocab" data-def="First element.">head</span> buffer</code>; <code>buffer&prime; = <span class="vocab" data-def="Rest of sequence.">tail</span> buffer</code>.</li>
+  <li><strong>Report:</strong> <code>ok</code> on success.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Error Schemas &mdash; Garage Full, Coffee Queue Empty &amp; Help Desk Full</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Xi;</code></td><td>State unchanged.</td></tr>
+  <tr><td><code>::=</code></td><td>Free-type declaration.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">parking garage app</span> refuses a new car when <span class="key">every spot is taken</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code><span class="vocab" data-def="State unchanged.">&Xi;</span>Buffer[Car]</code>; output <code>report! : Report</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferInError</code> &mdash; full case.</li>
+  <li><strong>Pre/Post:</strong> <code>size <span class="vocab" data-def="Equality.">=</span> max_size</code> &rarr; state unchanged; <code>report! = full</code>.</li>
+  <li><strong>Report:</strong> <code>Report <span class="vocab" data-def="Free-type declaration.">::=</span> ok | full | empty</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">coffee-shop order pager</span> has <span class="key">zero active pagers</span>; barista tries to call next.</p>
+<ul>
+  <li><strong>State:</strong> <code><span class="vocab" data-def="State unchanged.">&Xi;</span>Buffer[Order]</code>; output <code>report! : Report</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferOutError</code> &mdash; empty case.</li>
+  <li><strong>Pre/Post:</strong> <code>buffer <span class="vocab" data-def="Equality.">=</span> &langle;&rangle;</code> &rarr; state unchanged; <code>report! = empty</code>.</li>
+  <li><strong>Report:</strong> <code>empty</code> signalled.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">help-desk intake</span> (capacity 15) is <span class="key">completely full</span>; another ticket arrives.</p>
+<ul>
+  <li><strong>State:</strong> <code><span class="vocab" data-def="State unchanged.">&Xi;</span>Buffer[Ticket]</code>; output <code>report! : Report</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferInError</code> &mdash; <code>size = max_size</code>.</li>
+  <li><strong>Pre/Post:</strong> state unchanged; <code>report! = full</code>.</li>
+  <li><strong>Report:</strong> <code>full</code> &mdash; caller informed.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Total Operations &mdash; Help Desk, Food Truck &amp; Conference Check-In</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">help-desk intake</span> must <span class="key">always respond</span>: ticket accepted or queue full.</p>
+<ul>
+  <li><strong>State:</strong> <code>Buffer[Ticket]</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferIn &cong; (BufferIn&#8320; <span class="vocab" data-def="Schema conjunction.">&and;</span> Success) <span class="vocab" data-def="Schema disjunction.">&or;</span> BufferInError</code>.</li>
+  <li><strong>Pre/Post:</strong> <code>pre BufferIn = true</code> (covers all states).</li>
+  <li><strong>Report:</strong> <code>ok</code> on insert, <code>full</code> otherwise.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">food-truck window</span> either <span class="key">serves the front order</span> or reports <span class="key">no orders pending</span>.</p>
+<ul>
+  <li><strong>State:</strong> <code>Buffer[FoodOrder]</code>.</li>
+  <li><strong>Operation:</strong> <code>BufferOut &cong; (BufferOut&#8320; <span class="vocab" data-def="Schema conjunction.">&and;</span> Success) <span class="vocab" data-def="Schema disjunction.">&or;</span> BufferOutError</code>.</li>
+  <li><strong>Pre/Post:</strong> <code>pre BufferOut = true</code>.</li>
+  <li><strong>Report:</strong> <code>ok</code> on extract, <code>empty</code> otherwise.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">conference check-in desk</span> must always give a badge or a reason; the <span class="key">totalisation pattern</span> guarantees this.</p>
+<ul>
+  <li><strong>State:</strong> <code>Buffer[Attendee]</code>.</li>
+  <li><strong>Operation:</strong> <code>(Partial <span class="vocab" data-def="Schema conjunction.">&and;</span> Success) <span class="vocab" data-def="Schema disjunction.">&or;</span> Error</code> &mdash; the universal pattern.</li>
+  <li><strong>Pre/Post:</strong> precondition = <code>true</code> because success and error partition all states.</li>
+  <li><strong>Report:</strong> exactly one of <code>ok</code>, <code>full</code>, or <code>empty</code>.</li>
+</ul>
+</div>
+
+<!-- === 22.1 Practice === -->
+<h3 id="s0-E">V.1 Practice: Buffer Behaviour</h3>
+<div class="practice" id="p1_1">
+  <p>A <span class="vocab" data-def="Fixed-capacity FIFO queue.">bounded buffer</span> behaves as a:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">First-in first-out queue with a fixed capacity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Last-in first-out stack.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Hash set with no ordering.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Random-access array.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_1">
+    <p><strong>Correct.</strong> Values leave in the order they arrived; capacity is fixed.</p>
+    <ul>
+      <li><strong>State:</strong> <code>buffer : seq X</code>.</li>
+      <li><strong>Operation:</strong> FIFO discipline.</li>
+      <li><strong>Pre/Post:</strong> <code>size &le; max_size</code>.</li>
+      <li><strong>Report:</strong> <code>ok | full | empty</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Report Free Type</h3>
+<div class="practice" id="p1_2">
+  <p>The <code>Report</code> free type has elements:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')"><code>ok | full | empty</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>true | false</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>yes | no</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>0 | 1 | 2</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_2">
+    <p><strong>Correct.</strong> Three outcome labels declared via <code>::=</code>.</p>
+    <ul>
+      <li><strong>State:</strong> no state change by Report itself.</li>
+      <li><strong>Operation:</strong> attached as output to each total op.</li>
+      <li><strong>Pre/Post:</strong> determined by branch.</li>
+      <li><strong>Report:</strong> <code>ok</code> = success, <code>full</code> = insert refused, <code>empty</code> = extract refused.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Full Insert Refused</h3>
+<div class="practice" id="p1_3">
+  <p class="scenario">A <span class="key">print spool</span> has capacity 10 with <span class="key">10 jobs queued</span>. User sends another. Which schema applies?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>BufferInError: &Xi;Buffer &and; size = max_size &and; report! = full</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>BufferIn&#8320;: buffer&prime; = buffer &frown; &langle;x?&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>BufferInit: buffer&prime; = &langle;&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>BufferOutError: report! = empty</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_3">
+    <p><strong>Correct.</strong> Buffer is full; insert refused with state unchanged.</p>
+    <ul>
+      <li><strong>State:</strong> <code>&Xi;Buffer</code> &mdash; no change.</li>
+      <li><strong>Operation:</strong> <code>BufferInError</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>size = max_size</code>.</li>
+      <li><strong>Report:</strong> <code>full</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Empty Extract Refused</h3>
+<div class="practice" id="p1_4">
+  <p class="scenario">A <span class="key">coffee-shop pager</span> holds 0 active pagers. Barista tries to call next. Which schema?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>BufferOutError: &Xi;Buffer &and; buffer = &langle;&rangle; &and; report! = empty</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>BufferOut&#8320;: x! = head buffer</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>BufferInError: report! = full</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>BufferInit: buffer&prime; = &langle;&rangle;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_4">
+    <p><strong>Correct.</strong> Buffer is empty; extract refused.</p>
+    <ul>
+      <li><strong>State:</strong> <code>&Xi;Buffer</code> &mdash; unchanged.</li>
+      <li><strong>Operation:</strong> <code>BufferOutError</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>buffer = &langle;&rangle;</code>.</li>
+      <li><strong>Report:</strong> <code>empty</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Successful Extract</h3>
+<div class="practice" id="p1_5">
+  <p class="scenario">A <span class="key">ticket queue</span> has 3 people. Attendant calls the next. Which schema captures a successful extract?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>BufferOut&#8320;: buffer &ne; &langle;&rangle; &and; buffer&prime; = tail buffer &and; x! = head buffer</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>BufferIn&#8320;: buffer&prime; = buffer &frown; &langle;x?&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>BufferOutError: report! = empty</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>&Xi;Buffer</code> (no change)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_5">
+    <p><strong>Correct.</strong> Head is served; rest becomes the new buffer.</p>
+    <ul>
+      <li><strong>State:</strong> <code>UpdateBuffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferOut&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> non-empty &rarr; head removed.</li>
+      <li><strong>Report:</strong> Success adds <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Buffer Invariant</h3>
+<div class="practice" id="p1_6">
+  <p>The invariant of <code>Buffer[X]</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>size = #buffer &and; size &le; max_size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>size &gt; max_size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>buffer = &langle;&rangle;</code> always</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>size = 0</code> always</button></li>
+  </ul>
+  <div class="feedback" id="fb1_6">
+    <p><strong>Correct.</strong> Length matches size; count never exceeds capacity.</p>
+    <ul>
+      <li><strong>State:</strong> two predicates in the schema.</li>
+      <li><strong>Operation:</strong> all ops must preserve this.</li>
+      <li><strong>Pre/Post:</strong> invariant holds before and after.</li>
+      <li><strong>Report:</strong> not affected by invariant.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: BufferInit Schema</h3>
+<div class="practice" id="p1_7">
+  <p class="scenario">A <span class="key">bakery order tracker</span> boots for the morning. Which schema initialises state?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>BufferInit: Buffer&prime;[X] &and; buffer&prime; = &langle;&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>BufferIn&#8320;</code> (insert, not init)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>BufferOut&#8320;</code> (extract, not init)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>&Xi;Buffer</code> (no-change, not init)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_7">
+    <p><strong>Correct.</strong> Init sets buffer to empty; size becomes 0 by invariant.</p>
+    <ul>
+      <li><strong>State:</strong> <code>Buffer&prime;</code> (after-state only).</li>
+      <li><strong>Operation:</strong> <code>BufferInit</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>buffer&prime; = &langle;&rangle;</code>.</li>
+      <li><strong>Report:</strong> none.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Total Precondition</h3>
+<div class="practice" id="p1_8">
+  <p>The precondition of <code>BufferIn</code> (total version) is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>true</code> &mdash; always defined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>size &lt; max_size</code> (partial only)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>size = max_size</code> (error only)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>false</code> (never defined)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_8">
+    <p><strong>Correct.</strong> The total op covers all states: success when room exists, error when full.</p>
+    <ul>
+      <li><strong>State:</strong> any valid <code>Buffer</code>.</li>
+      <li><strong>Operation:</strong> <code>(BufferIn&#8320; &and; Success) &or; BufferInError</code>.</li>
+      <li><strong>Pre/Post:</strong> union of disjoint preconditions = <code>true</code>.</li>
+      <li><strong>Report:</strong> <code>ok</code> or <code>full</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Partial Insert Precondition</h3>
+<div class="practice" id="p1_9">
+  <p>The precondition of the partial <code>BufferIn&#8320;</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>size &lt; max_size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>true</code> (that&rsquo;s the total version)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>buffer = &langle;&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>false</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_9">
+    <p><strong>Correct.</strong> There must be room for one more value.</p>
+    <ul>
+      <li><strong>State:</strong> <code>size &lt; max_size</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferIn&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> appends <code>&langle;x?&rangle;</code>.</li>
+      <li><strong>Report:</strong> none at partial level.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Partial Extract Precondition</h3>
+<div class="practice" id="p1_10">
+  <p>The precondition of <code>BufferOut&#8320;</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>buffer &ne; &langle;&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>buffer = &langle;&rangle;</code> (that&rsquo;s the error condition)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>size = max_size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>false</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_10">
+    <p><strong>Correct.</strong> The buffer must contain at least one value.</p>
+    <ul>
+      <li><strong>State:</strong> non-empty buffer.</li>
+      <li><strong>Operation:</strong> <code>BufferOut&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> outputs <code>head</code>, leaves <code>tail</code>.</li>
+      <li><strong>Report:</strong> none at partial level.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Totalisation Pattern</h3>
+<div class="practice" id="p1_11">
+  <p class="scenario">A <span class="key">conference check-in</span> must always respond. Which construction totalises <code>BufferOut&#8320;</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>BufferOut &cong; (BufferOut&#8320; &and; Success) &or; BufferOutError</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>BufferOut &cong; BufferOut&#8320;</code> (still partial)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>BufferOut &cong; &Xi;Buffer</code> (no-op)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>BufferOut &cong; BufferInError</code> (wrong error)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_11">
+    <p><strong>Correct.</strong> Disjoin success branch with error branch to cover all states.</p>
+    <ul>
+      <li><strong>State:</strong> any valid Buffer.</li>
+      <li><strong>Operation:</strong> <code>(Partial &and; Success) &or; Error</code>.</li>
+      <li><strong>Pre/Post:</strong> precondition = <code>true</code>.</li>
+      <li><strong>Report:</strong> <code>ok</code> or <code>empty</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Success Schema</h3>
+<div class="practice" id="p1_12">
+  <p>The <code>Success</code> schema emits:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>report! = ok</code> with no constraint on state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>report! = full</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>report! = empty</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">No output at all.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_12">
+    <p><strong>Correct.</strong> Success is a pure output schema &mdash; it only sets the report.</p>
+    <ul>
+      <li><strong>State:</strong> no state constraint.</li>
+      <li><strong>Operation:</strong> conjoined with partial op.</li>
+      <li><strong>Pre/Post:</strong> adds <code>report! = ok</code>.</li>
+      <li><strong>Report:</strong> <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Successful Insert</h3>
+<div class="practice" id="p1_13">
+  <p class="scenario">An <span class="key">airport gate</span> (capacity 50) has <span class="key">49 passengers</span>. Next arrives. Which schema fires?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>BufferIn&#8320; &and; Success: buffer&prime; = buffer &frown; &langle;x?&rangle; &and; report! = ok</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>BufferInError: report! = full</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>BufferOut&#8320;</code> (wrong direction)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>BufferInit</code> (reinitialise)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_13">
+    <p><strong>Correct.</strong> 49 &lt; 50, so room exists; passenger appended.</p>
+    <ul>
+      <li><strong>State:</strong> <code>UpdateBuffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferIn&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>size &lt; max_size</code> &rarr; append.</li>
+      <li><strong>Report:</strong> <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Xi in Errors</h3>
+<div class="practice" id="p1_14">
+  <p>Error schemas include <code>&Xi;Buffer</code> because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')">The state must be unchanged when an operation is refused.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">The state is reset to empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">The buffer grows by one.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')">Nothing happens internally.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_14">
+    <p><strong>Correct.</strong> <code>&Xi;</code> constrains all components to equal before and after.</p>
+    <ul>
+      <li><strong>State:</strong> <code>buffer&prime; = buffer &and; size&prime; = size &and; max_size&prime; = max_size</code>.</li>
+      <li><strong>Operation:</strong> error branch.</li>
+      <li><strong>Pre/Post:</strong> no data modification.</li>
+      <li><strong>Report:</strong> only <code>report!</code> is set.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: First Insert into Empty</h3>
+<div class="practice" id="p1_15">
+  <p class="scenario">A <span class="key">van dispatch queue</span> (capacity 8) is <span class="key">empty</span>. Rider #7 arrives. Which schema activates?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')"><code>BufferIn&#8320; &and; Success</code> with <code>buffer&prime; = &langle;x?&rangle;</code>, <code>report! = ok</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>BufferInError: report! = full</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>BufferOut&#8320;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>BufferOutError: report! = empty</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_15">
+    <p><strong>Correct.</strong> 0 &lt; 8, so room exists; first value appended to empty sequence.</p>
+    <ul>
+      <li><strong>State:</strong> <code>UpdateBuffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferIn&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>buffer&prime; = &langle;&rangle; &frown; &langle;x?&rangle; = &langle;x?&rangle;</code>.</li>
+      <li><strong>Report:</strong> <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: UpdateBuffer Capacity</h3>
+<div class="practice" id="p1_16">
+  <p>The <code>UpdateBuffer</code> schema enforces:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>max_size&prime; = max_size</code> &mdash; capacity cannot change after instantiation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>buffer&prime; = buffer</code> (no change at all)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>size&prime; = 0</code> always</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')"><code>max_size&prime; = 0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_16">
+    <p><strong>Correct.</strong> Capacity is fixed at installation; all update operations include this constraint.</p>
+    <ul>
+      <li><strong>State:</strong> <code>Buffer &and; Buffer&prime;</code>.</li>
+      <li><strong>Operation:</strong> included by <code>BufferIn&#8320;</code> and <code>BufferOut&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>max_size&prime; = max_size</code>.</li>
+      <li><strong>Report:</strong> not affected.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Full Refuse Post</h3>
+<div class="practice" id="p1_17">
+  <p class="scenario">A <span class="key">food-truck window</span> rejects an order when queue is full. What is the postcondition?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')"><code>size = max_size &and; report! = full &and; state unchanged</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>buffer&prime; = buffer &frown; &langle;x?&rangle;</code> (inserts anyway)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>buffer&prime; = &langle;&rangle;</code> (resets)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>report! = ok</code> (wrong report)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_17">
+    <p><strong>Correct.</strong> Error branch: state unchanged via <code>&Xi;</code>, report set to <code>full</code>.</p>
+    <ul>
+      <li><strong>State:</strong> <code>&Xi;Buffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferInError</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>size = max_size</code>.</li>
+      <li><strong>Report:</strong> <code>full</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Output Convention</h3>
+<div class="practice" id="p1_18">
+  <p>The Z convention for output variables is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')"><code>x!</code> &mdash; trailing exclamation mark.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')"><code>x?</code> (that&rsquo;s input)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')"><code>x&prime;</code> (that&rsquo;s after-state)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')"><code>x</code> (undecorated = before-state)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_18">
+    <p><strong>Correct.</strong> <code>?</code> = input, <code>!</code> = output, <code>&prime;</code> = after-state.</p>
+    <ul>
+      <li><strong>State:</strong> undecorated = before.</li>
+      <li><strong>Operation:</strong> <code>x?</code> goes in, <code>x!</code> comes out.</li>
+      <li><strong>Pre/Post:</strong> primed = after.</li>
+      <li><strong>Report:</strong> <code>report!</code> is an output.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Extract Postcondition</h3>
+<div class="practice" id="p1_19">
+  <p class="scenario">A <span class="key">library returns machine</span> processes the next return from a <span class="key">non-empty</span> bin. Which postcondition?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>x! = head buffer &and; buffer&prime; = tail buffer &and; report! = ok</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>buffer&prime; = buffer &frown; &langle;x?&rangle;</code> (insert, not extract)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>report! = empty</code> (error, not success)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>buffer&prime; = &langle;&rangle;</code> (empties everything)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_19">
+    <p><strong>Correct.</strong> Head is output; tail becomes the new buffer.</p>
+    <ul>
+      <li><strong>State:</strong> <code>UpdateBuffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferOut&#8320; &and; Success</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>buffer &ne; &langle;&rangle;</code>.</li>
+      <li><strong>Report:</strong> <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Max Size at Init</h3>
+<div class="practice" id="p1_20">
+  <p><code>BufferInit</code> leaves <code>max_size</code>:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')">Unconstrained &mdash; chosen per instance at instantiation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Always 0.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Always infinite.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')">Always 1.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_20">
+    <p><strong>Correct.</strong> The specification leaves capacity as a free parameter, fixed once chosen.</p>
+    <ul>
+      <li><strong>State:</strong> <code>Buffer&prime;</code> only.</li>
+      <li><strong>Operation:</strong> <code>BufferInit</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>buffer&prime; = &langle;&rangle;</code>; <code>max_size</code> unconstrained.</li>
+      <li><strong>Report:</strong> none.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Scenario &mdash; Call Centre Insert</h3>
+<div class="practice" id="p1_21">
+  <p class="scenario">A <span class="key">call-centre phone queue</span> (capacity 5) has <span class="key">4 calls</span> holding. A new call arrives. Which schema?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')"><code>BufferIn&#8320; &and; Success</code> &mdash; <code>size &lt; max_size</code>, <code>report! = ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>BufferInError</code> (not full yet)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>BufferOut&#8320;</code> (wrong direction)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')"><code>BufferInit</code> (not resetting)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_21">
+    <p><strong>Correct.</strong> 4 &lt; 5 &mdash; room for one more.</p>
+    <ul>
+      <li><strong>State:</strong> <code>UpdateBuffer</code>.</li>
+      <li><strong>Operation:</strong> insert.</li>
+      <li><strong>Pre/Post:</strong> <code>size &lt; max_size</code>.</li>
+      <li><strong>Report:</strong> <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Generic Parameter</h3>
+<div class="practice" id="p1_22">
+  <p>The generic parameter <code>X</code> in <code>Buffer[X]</code> represents:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">The type of values stored &mdash; unconstrained, making the buffer reusable.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">A natural number.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">A report label.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">An operation name.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_22">
+    <p><strong>Correct.</strong> Generic parameterisation allows the same buffer to hold any type.</p>
+    <ul>
+      <li><strong>State:</strong> <code>buffer : seq X</code>.</li>
+      <li><strong>Operation:</strong> <code>x? : X</code>, <code>x! : X</code>.</li>
+      <li><strong>Pre/Post:</strong> type-agnostic.</li>
+      <li><strong>Report:</strong> independent of <code>X</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Scenario &mdash; Empty Extract</h3>
+<div class="practice" id="p1_23">
+  <p class="scenario">A <span class="key">help-desk ticket system</span> attempts to pop a ticket from an <span class="key">empty queue</span>. Result?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')"><code>BufferOutError</code> &mdash; state unchanged, <code>report! = empty</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>BufferOut&#8320; &and; Success</code> (can&rsquo;t extract from empty)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>BufferInError</code> (wrong error)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>BufferInit</code> (not resetting)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_23">
+    <p><strong>Correct.</strong> <code>buffer = &langle;&rangle;</code> triggers the error branch.</p>
+    <ul>
+      <li><strong>State:</strong> <code>&Xi;Buffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferOutError</code>.</li>
+      <li><strong>Pre/Post:</strong> <code>buffer = &langle;&rangle;</code>.</li>
+      <li><strong>Report:</strong> <code>empty</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Totalisation Formula</h3>
+<div class="practice" id="p1_24">
+  <p>The general totalisation pattern is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')"><code>(Partial &and; Success) &or; Error</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>Partial &and; Error</code> (conjunction is too strict)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>Success &or; Partial</code> (missing error branch)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>Partial</code> alone (still partial)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_24">
+    <p><strong>Correct.</strong> Conjunction adds the report to the success branch; disjunction covers the error case.</p>
+    <ul>
+      <li><strong>State:</strong> any valid state.</li>
+      <li><strong>Operation:</strong> one of two branches fires.</li>
+      <li><strong>Pre/Post:</strong> precondition = <code>true</code>.</li>
+      <li><strong>Report:</strong> exactly one outcome.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Scenario &mdash; Diner Wait-List</h3>
+<div class="practice" id="p1_25">
+  <p class="scenario">A <span class="key">diner wait-list</span> (capacity 12) holds <span class="key">8 parties</span>. Host seats the <span class="key">front party</span>. Which schema?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')"><code>BufferOut&#8320; &and; Success</code> &mdash; <code>buffer &ne; &langle;&rangle;</code>, <code>x! = head buffer</code>, <code>report! = ok</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')"><code>BufferOutError</code> (not empty)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')"><code>BufferIn&#8320;</code> (adding, not seating)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')"><code>BufferInit</code> (not resetting)</button></li>
+  </ul>
+  <div class="feedback" id="fb1_25">
+    <p><strong>Correct.</strong> 8 &gt; 0, so buffer is non-empty; front party extracted.</p>
+    <ul>
+      <li><strong>State:</strong> <code>UpdateBuffer</code>.</li>
+      <li><strong>Operation:</strong> <code>BufferOut&#8320;</code>.</li>
+      <li><strong>Pre/Post:</strong> non-empty &rarr; head served.</li>
+      <li><strong>Report:</strong> <code>ok</code>.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 22.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">22.2 Design</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="An array whose two ends are considered joined; indices wrap from max_size back to 1.">Circular array</span>:</strong> design refines the abstract buffer into a fixed-length array with two index pointers.</li>
+  <li><strong>Five components:</strong> <code>array : seq X</code>, <code>max_size : &Nopf;</code>, <code>bot : &Nopf;</code> (first live value), <code>top : &Nopf;</code> (last live value), <code>size : &Nopf;</code> (count of live values).</li>
+  <li><strong>Invariant:</strong> <code>bot, top &isin; 1..max_size</code>; <code>size &isin; 0..max_size</code>; <code>#array = max_size</code>; <code>size mod max_size = (top &minus; bot + 1) mod max_size</code>.</li>
+  <li><strong>Why <code>size</code> needed:</strong> empty (<code>size = 0</code>) and full (<code>size = max_size</code>) both satisfy <code>top + 1 mod max_size = bot</code> &mdash; <span class="vocab" data-def="When empty and full states produce the same bot/top relationship, requiring an explicit size to tell them apart.">index collision</span> is ambiguous.</li>
+  <li><strong><span class="vocab" data-def="Going past max_size returns to index 1.">Wrap-around</span>:</strong> next index after <code>max_size</code> is 1; modular arithmetic governs pointer movement.</li>
+  <li><strong><code>UpdateArray</code>:</strong> includes <code>Array</code> and <code>Array&prime;</code> with <code>max_size&prime; = max_size</code> &mdash; capacity pinned at design level too.</li>
+  <li><strong>O(1) operations:</strong> insert advances <code>top</code>; extract advances <code>bot</code> &mdash; no element shifting needed.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Circular array</td><td>Array whose ends are joined; indices wrap.</td></tr>
+  <tr><td>bot</td><td>Index of the first live value.</td></tr>
+  <tr><td>top</td><td>Index of the last live value.</td></tr>
+  <tr><td>size</td><td>Explicit count of live values (disambiguates empty/full).</td></tr>
+  <tr><td>Wrap-around</td><td>Going past <code>max_size</code> returns to 1.</td></tr>
+  <tr><td>Index collision</td><td>Empty and full produce the same bot/top relation.</td></tr>
+  <tr><td>State invariant</td><td>Predicate always true of valid Array state.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>1..max_size</code></td><td>Integer range, inclusive.</td></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic for wrap-around.</td></tr>
+  <tr><td><code>#array</code></td><td>Length of the array sequence.</td></tr>
+  <tr><td><code>seq X</code></td><td>Sequence used as fixed-length array.</td></tr>
+  <tr><td><code>&isin;</code></td><td>Set membership.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+  <tr><td><code>&le;</code></td><td>Less than or equal to.</td></tr>
+</table>
+
+<h3 id="s1-D">IV.1 Examples: Array State Schema &mdash; Baggage Carousel, Sushi Belt &amp; Parking Deck</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>1..max_size</code></td><td>Inclusive range.</td></tr>
+  <tr><td><code>mod</code></td><td>Wrap arithmetic.</td></tr>
+  <tr><td><code>#array</code></td><td>Array length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">baggage carousel</span> of 8 slots holds luggage; two pointers track <span class="key">first</span> and <span class="key">last</span> bag.</p>
+<ul>
+  <li><strong>State:</strong> <code>array : seq Bag</code>, <code>max_size, bot, top, size : &Nopf;</code>.</li>
+  <li><strong>Invariant:</strong> <code>bot, top <span class="vocab" data-def="Set membership.">&isin;</span> <span class="vocab" data-def="Inclusive integer range.">1..max_size</span></code>, <code>size &isin; 0..max_size</code>.</li>
+  <li><strong>Indices:</strong> <code><span class="vocab" data-def="Array length.">#array</span> = max_size</code> (fixed-length).</li>
+  <li><strong>Wrap-around:</strong> <code>size <span class="vocab" data-def="Modular arithmetic.">mod</span> max_size = (top &minus; bot + 1) mod max_size</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">rotating sushi belt</span> of 10 plates uses the same circular structure.</p>
+<ul>
+  <li><strong>State:</strong> <code>array : seq Plate</code>, 10 slots.</li>
+  <li><strong>Invariant:</strong> <code>bot, top &isin; 1..10</code>, <code>size &isin; 0..10</code>.</li>
+  <li><strong>Indices:</strong> <code>#array = 10</code>.</li>
+  <li><strong>Wrap-around:</strong> same modular formula.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">parking deck</span> monitor of 120 bays tracks entry/exit with a circular log.</p>
+<ul>
+  <li><strong>State:</strong> <code>array : seq Event</code>, 120 slots.</li>
+  <li><strong>Invariant:</strong> <code>bot, top &isin; 1..120</code>, <code>size &isin; 0..120</code>.</li>
+  <li><strong>Indices:</strong> <code>#array = 120</code>.</li>
+  <li><strong>Wrap-around:</strong> <code>max_size&prime; = max_size</code> (capacity pinned by <code>UpdateArray</code>).</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Empty vs Full Collision &mdash; Conveyor Ring, Jukebox &amp; Tram</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">conveyor ring</span> of 6 slots is <span class="key">completely empty</span>; <code>bot</code> and <code>top</code> wrap together.</p>
+<ul>
+  <li><strong>State:</strong> <code>size = 0</code>.</li>
+  <li><strong>Invariant:</strong> <code>top + 1 <span class="vocab" data-def="Modular arithmetic.">mod</span> max_size <span class="vocab" data-def="Equality.">=</span> bot</code>.</li>
+  <li><strong>Indices:</strong> same collision as full &mdash; only <code>size</code> distinguishes.</li>
+  <li><strong>Wrap-around:</strong> explicit <span class="vocab" data-def="Explicit count disambiguating empty/full.">size</span> = 0 says empty.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">jukebox ring</span> of 20 tracks is <span class="key">completely full</span>; same collision as empty.</p>
+<ul>
+  <li><strong>State:</strong> <code>size = 20 = max_size</code>.</li>
+  <li><strong>Invariant:</strong> <code>top + 1 mod 20 = bot</code> &mdash; identical to empty case.</li>
+  <li><strong>Indices:</strong> collision is ambiguous without <code>size</code>.</li>
+  <li><strong>Wrap-around:</strong> <code>size = max_size</code> says full.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">tram ring</span> of 8 stops: whether <span class="key">no passengers</span> or <span class="key">all stops occupied</span>, <code>top + 1 mod 8 = bot</code>.</p>
+<ul>
+  <li><strong>State:</strong> <code>size = 0</code> or <code>size = 8</code>.</li>
+  <li><strong>Invariant:</strong> both satisfy the same index equation.</li>
+  <li><strong>Indices:</strong> indistinguishable by pointers alone.</li>
+  <li><strong>Wrap-around:</strong> <span class="vocab" data-def="When empty and full states produce the same bot/top relationship.">index collision</span> is why <code>size</code> is needed.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Wrapped Live Region &mdash; Printer Ring, Taxi Stand &amp; Bus Bay</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+  <tr><td><code>1..max_size</code></td><td>Valid index range.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">5-slot printer ring</span> has <code>bot = 3, top = 2, size = 5</code> &mdash; the live region wraps through index 1.</p>
+<ul>
+  <li><strong>State:</strong> full buffer (<code>size = max_size</code>).</li>
+  <li><strong>Invariant:</strong> <code>5 <span class="vocab" data-def="Modular arithmetic.">mod</span> 5 = (2 &minus; 3 + 1) mod 5 = 0</code> &check;.</li>
+  <li><strong>Indices:</strong> live region: 3, 4, 5, 1, 2.</li>
+  <li><strong>Wrap-around:</strong> crosses the boundary between index 5 and 1.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">7-slot taxi stand ring</span> has <code>bot = 7, top = 2, size = 3</code> &mdash; wraps from 7 through 1 to 2.</p>
+<ul>
+  <li><strong>State:</strong> 3 live values.</li>
+  <li><strong>Invariant:</strong> <code>3 mod 7 = (2 &minus; 7 + 1) mod 7 = &minus;4 mod 7 = 3</code> &check;.</li>
+  <li><strong>Indices:</strong> live region: 7, 1, 2.</li>
+  <li><strong>Wrap-around:</strong> yes &mdash; <code>bot &gt; top</code> means the region wraps.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">5-slot bus bay ring</span> has <code>bot = 3, top = 1, size = 4</code> &mdash; live region 3, 4, 5, 1.</p>
+<ul>
+  <li><strong>State:</strong> 4 live values out of 5.</li>
+  <li><strong>Invariant:</strong> <code>4 mod 5 = (1 &minus; 3 + 1) mod 5 = &minus;1 mod 5 = 4</code> &check;.</li>
+  <li><strong>Indices:</strong> spans the wrap boundary.</li>
+  <li><strong>Wrap-around:</strong> through index 5 to 1.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Single Element &amp; Contiguous Region &mdash; Warehouse, Reservation &amp; Dispatch</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">6-slot warehouse conveyor</span> has <code>bot = 5, top = 5, size = 1</code> &mdash; exactly one item at index 5.</p>
+<ul>
+  <li><strong>State:</strong> single element.</li>
+  <li><strong>Invariant:</strong> <code>1 mod 6 = (5 &minus; 5 + 1) mod 6 = 1</code> &check;.</li>
+  <li><strong>Indices:</strong> <code>bot = top</code> &mdash; one-element case.</li>
+  <li><strong>Wrap-around:</strong> not needed for a single element.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">12-slot reservation ring</span> has <code>bot = 4, top = 7, size = 4</code> &mdash; contiguous, no wrap.</p>
+<ul>
+  <li><strong>State:</strong> 4 live values, indices 4 through 7.</li>
+  <li><strong>Invariant:</strong> <code>4 mod 12 = (7 &minus; 4 + 1) mod 12 = 4</code> &check;.</li>
+  <li><strong>Indices:</strong> <code>bot &le; top</code> &mdash; no wrapping.</li>
+  <li><strong>Wrap-around:</strong> not active.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">4-slot dispatch ring</span> has <code>bot = 2, top = 4, size = 3</code> &mdash; live region 2, 3, 4.</p>
+<ul>
+  <li><strong>State:</strong> 3 of 4 slots in use.</li>
+  <li><strong>Invariant:</strong> <code>3 mod 4 = (4 &minus; 2 + 1) mod 4 = 3</code> &check;.</li>
+  <li><strong>Indices:</strong> contiguous.</li>
+  <li><strong>Wrap-around:</strong> next insert would go to <code>(4 mod 4) + 1 = 1</code> &mdash; wraps.</li>
+</ul>
+</div>
+
+<!-- === 22.2 Practice === -->
+<h3 id="s1-E">V.1 Practice: Circular Array Definition</h3>
+<div class="practice" id="p2_1">
+  <p>A circular array&rsquo;s two ends are:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')">Considered joined &mdash; indices wrap from <code>max_size</code> back to 1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')">Disjoint and unbounded.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')">Infinite in one direction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')">Duplicated.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_1"><p><strong>Correct.</strong> Ring topology &mdash; modular arithmetic governs pointer movement.</p><ul><li><strong>State:</strong> <code>Array[X]</code>.</li><li><strong>Invariant:</strong> indices in <code>1..max_size</code>.</li><li><strong>Indices:</strong> wrap via <code>mod</code>.</li><li><strong>Wrap-around:</strong> core design idea.</li></ul></div>
+</div>
+
+<h3>V.2 Practice: Array Components</h3>
+<div class="practice" id="p2_2">
+  <p>The state schema <code>Array[X]</code> has components:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>array, max_size, bot, top, size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>buffer, size, max_size</code> (abstract spec)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>x?, x!, report!</code> (operation I/O)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>head, tail, init</code> (operations)</button></li>
+  </ul>
+  <div class="feedback" id="fb2_2"><p><strong>Correct.</strong> Five concrete state components.</p><ul><li><strong>State:</strong> <code>array</code> + indices + count.</li><li><strong>Invariant:</strong> all constrained.</li><li><strong>Indices:</strong> <code>bot</code>, <code>top</code>.</li><li><strong>Wrap-around:</strong> modular formula links them.</li></ul></div>
+</div>
+
+<h3>V.3 Practice: Design Invariant</h3>
+<div class="practice" id="p2_3">
+  <p class="scenario">A <span class="key">rotating sushi belt</span> has 10 slots. Which invariant is correct?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>#array = max_size &and; size mod max_size = (top &minus; bot + 1) mod max_size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>size &gt; max_size</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>array = &langle;&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>bot &gt; max_size</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Array is pre-sized to capacity; the modular formula links size to pointer positions.</p><ul><li><strong>State:</strong> <code>Array[Plate]</code>.</li><li><strong>Invariant:</strong> length + mod formula.</li><li><strong>Indices:</strong> in <code>1..10</code>.</li><li><strong>Wrap-around:</strong> mod governs.</li></ul></div>
+</div>
+
+<h3>V.4 Practice: Full Buffer Indices</h3>
+<div class="practice" id="p2_4">
+  <p class="scenario">A <span class="key">5-slot printer ring</span> has <code>bot = 3, top = 2, size = 5</code>. This represents:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')">A full buffer &mdash; live region wraps through index 1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')">An empty buffer.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')">An invalid state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')">A size-2 buffer.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_4"><p><strong>Correct.</strong> <code>size = max_size = 5</code>; live region: 3, 4, 5, 1, 2.</p><ul><li><strong>State:</strong> full.</li><li><strong>Invariant:</strong> <code>top + 1 mod 5 = bot</code>.</li><li><strong>Indices:</strong> wrapped.</li><li><strong>Wrap-around:</strong> yes.</li></ul></div>
+</div>
+
+<h3>V.5 Practice: Why Size Needed</h3>
+<div class="practice" id="p2_5">
+  <p>Why is explicit <code>size</code> needed, not just <code>bot</code> and <code>top</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">Empty and full both satisfy <code>top + 1 mod max_size = bot</code> &mdash; ambiguous without <code>size</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">For execution speed only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">For aesthetic reasons.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">Legacy compatibility.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Index collision makes bot/top alone ambiguous between empty and full.</p><ul><li><strong>State:</strong> empty: <code>size = 0</code>; full: <code>size = max_size</code>.</li><li><strong>Invariant:</strong> same mod equation.</li><li><strong>Indices:</strong> collide in both cases.</li><li><strong>Wrap-around:</strong> <code>size</code> disambiguates.</li></ul></div>
+</div>
+
+<h3>V.6 Practice: Empty Collision</h3>
+<div class="practice" id="p2_6">
+  <p class="scenario">A <span class="key">tram ring</span> of 8 stops has <code>size = 0</code>. What must hold?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>top + 1 mod max_size = bot</code> (empty collision).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>bot &gt; top</code> always.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>array = &langle;&rangle;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>max_size = 0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_6"><p><strong>Correct.</strong> Empty and full share the same index equation; <code>size</code> distinguishes them.</p><ul><li><strong>State:</strong> <code>size = 0</code>.</li><li><strong>Invariant:</strong> <code>0 mod 8 = (top &minus; bot + 1) mod 8</code>.</li><li><strong>Indices:</strong> collide.</li><li><strong>Wrap-around:</strong> same as full.</li></ul></div>
+</div>
+
+<h3>V.7 Practice: Capacity Fixed</h3>
+<div class="practice" id="p2_7">
+  <p>The capacity <code>max_size</code> in the design:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">Cannot change after installation &mdash; <code>max_size&prime; = max_size</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Changes every operation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Is always zero.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Is infinite.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_7"><p><strong>Correct.</strong> <code>UpdateArray</code> enforces <code>max_size&prime; = max_size</code>.</p><ul><li><strong>State:</strong> <code>Array &and; Array&prime;</code>.</li><li><strong>Invariant:</strong> capacity invariant.</li><li><strong>Indices:</strong> may change.</li><li><strong>Wrap-around:</strong> mod still uses same <code>max_size</code>.</li></ul></div>
+</div>
+
+<h3>V.8 Practice: Valid State Check</h3>
+<div class="practice" id="p2_8">
+  <p class="scenario">A <span class="key">12-slot reservation ring</span> has <code>bot = 4, top = 7, size = 4</code>. Valid?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')">Valid &mdash; <code>4 mod 12 = (7 &minus; 4 + 1) mod 12 = 4</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')">Invalid.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')">Full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')">Empty.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Invariant satisfied; 4 live values at indices 4, 5, 6, 7.</p><ul><li><strong>State:</strong> valid.</li><li><strong>Invariant:</strong> mod check passes.</li><li><strong>Indices:</strong> contiguous.</li><li><strong>Wrap-around:</strong> not needed here.</li></ul></div>
+</div>
+
+<h3>V.9 Practice: Array Length</h3>
+<div class="practice" id="p2_9">
+  <p><code>#array</code> in the design state equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')"><code>max_size</code> &mdash; the array is pre-sized to capacity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>size</code> (that&rsquo;s live count)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">0</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">1</button></li>
+  </ul>
+  <div class="feedback" id="fb2_9"><p><strong>Correct.</strong> The array is always full-length; only the live region (delimited by <code>bot</code>/<code>top</code>) holds valid data.</p><ul><li><strong>State:</strong> <code>#array = max_size</code>.</li><li><strong>Invariant:</strong> part of the design schema.</li><li><strong>Indices:</strong> delimit the live portion.</li><li><strong>Wrap-around:</strong> unused slots contain stale data.</li></ul></div>
+</div>
+
+<h3>V.10 Practice: Full Jukebox</h3>
+<div class="practice" id="p2_10">
+  <p class="scenario">A <span class="key">jukebox ring</span> of 20 tracks has <code>size = 20</code>. What is implied?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')">Buffer is full; <code>top + 1 mod 20 = bot</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Buffer is empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Invalid state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Half full.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_10"><p><strong>Correct.</strong> <code>size = max_size</code> means full; same index collision as empty, but <code>size</code> distinguishes.</p><ul><li><strong>State:</strong> full.</li><li><strong>Invariant:</strong> <code>size = max_size</code>.</li><li><strong>Indices:</strong> collide.</li><li><strong>Wrap-around:</strong> full case.</li></ul></div>
+</div>
+
+<h3>V.11 Practice: Array Type</h3>
+<div class="practice" id="p2_11">
+  <p>In the design, <code>array</code> has type:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>seq X</code> used as a fixed-length array.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>&Popf; X</code> (power set)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>X &rarr; &Nopf;</code> (function)</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')">No type.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_11"><p><strong>Correct.</strong> A sequence models a fixed-length array with integer indices starting at 1.</p><ul><li><strong>State:</strong> <code>seq X</code>.</li><li><strong>Invariant:</strong> <code>#array = max_size</code>.</li><li><strong>Indices:</strong> 1-based.</li><li><strong>Wrap-around:</strong> modular index access.</li></ul></div>
+</div>
+
+<h3>V.12 Practice: Full Refuse at Design</h3>
+<div class="practice" id="p2_12">
+  <p class="scenario">A <span class="key">4-slot delivery ring</span> has <code>bot = 1, top = 4, size = 4</code>. Next insert:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')">Refused &mdash; buffer is full (<code>size = max_size</code>).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')">Appended at index 5 (out of bounds).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')">Stored at <code>bot</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')">Overwrites index 1.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_12"><p><strong>Correct.</strong> No room &mdash; <code>size = max_size</code> triggers <code>ArrayInError</code>.</p><ul><li><strong>State:</strong> full.</li><li><strong>Invariant:</strong> <code>size = max_size</code>.</li><li><strong>Indices:</strong> saturated.</li><li><strong>Wrap-around:</strong> n/a for error.</li></ul></div>
+</div>
+
+<h3>V.13 Practice: Modular Invariant Scope</h3>
+<div class="practice" id="p2_13">
+  <p>The modular invariant <code>size mod max_size = (top &minus; bot + 1) mod max_size</code> holds:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">Always &mdash; in every valid state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Only when empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Only when full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Never.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_13"><p><strong>Correct.</strong> It is a state invariant &mdash; true in every reachable state.</p><ul><li><strong>State:</strong> any valid <code>Array</code>.</li><li><strong>Invariant:</strong> always holds.</li><li><strong>Indices:</strong> constrained by it.</li><li><strong>Wrap-around:</strong> governs the relationship.</li></ul></div>
+</div>
+
+<h3>V.14 Practice: Wrapped Region Validation</h3>
+<div class="practice" id="p2_14">
+  <p class="scenario">A <span class="key">7-slot taxi stand ring</span> has <code>bot = 7, top = 2, size = 3</code>. Valid?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')">Valid &mdash; <code>(2 &minus; 7 + 1) mod 7 = &minus;4 mod 7 = 3 = size mod 7</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">Invalid.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">Full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')">Empty.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Live region wraps: indices 7, 1, 2.</p><ul><li><strong>State:</strong> valid.</li><li><strong>Invariant:</strong> mod check passes.</li><li><strong>Indices:</strong> 7, 1, 2 (wrapped).</li><li><strong>Wrap-around:</strong> yes.</li></ul></div>
+</div>
+
+<h3>V.15 Practice: 1-Based Indices</h3>
+<div class="practice" id="p2_15">
+  <p><code>bot &isin; 1..max_size</code> requires that indices are:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">1-based and bounded by capacity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">0-based.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">Unbounded.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">Negative.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Z uses 1-based sequences; indices range from 1 to <code>max_size</code>.</p><ul><li><strong>State:</strong> <code>bot, top &isin; 1..max_size</code>.</li><li><strong>Invariant:</strong> bounded.</li><li><strong>Indices:</strong> 1-based Z convention.</li><li><strong>Wrap-around:</strong> <code>mod</code> + 1 gives next.</li></ul></div>
+</div>
+
+<h3>V.16 Practice: Extract Advances Bot</h3>
+<div class="practice" id="p2_16">
+  <p class="scenario">A <span class="key">3-slot baggage ring</span> has <code>bot = 1, top = 3, size = 3</code>. After extraction:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>bot&prime; = 2, top&prime; = 3, size&prime; = 2</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')"><code>bot&prime; = 1, top&prime; = 2, size&prime; = 2</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')"><code>bot&prime; = 0</code> (out of range).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')"><code>size&prime; = 4</code> (increases).</button></li>
+  </ul>
+  <div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Extract advances <code>bot</code> by one; <code>top</code> unchanged; <code>size</code> decrements.</p><ul><li><strong>State:</strong> <code>bot&prime; = (bot mod max_size) + 1</code>.</li><li><strong>Invariant:</strong> still holds.</li><li><strong>Indices:</strong> bot moves forward.</li><li><strong>Wrap-around:</strong> not needed here (1 &rarr; 2).</li></ul></div>
+</div>
+
+<h3>V.17 Practice: UpdateArray Schema</h3>
+<div class="practice" id="p2_17">
+  <p><code>UpdateArray</code> includes:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">Both <code>Array[X]</code> and <code>Array&prime;[X]</code>, plus <code>max_size&prime; = max_size</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">Only <code>Array&prime;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">Neither state copy.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')"><code>&Xi;Array</code> (no change at all).</button></li>
+  </ul>
+  <div class="feedback" id="fb2_17"><p><strong>Correct.</strong> Like <code>UpdateBuffer</code> at the spec level &mdash; capacity is pinned.</p><ul><li><strong>State:</strong> before + after copies.</li><li><strong>Invariant:</strong> <code>max_size&prime; = max_size</code>.</li><li><strong>Indices:</strong> may change.</li><li><strong>Wrap-around:</strong> same <code>max_size</code>.</li></ul></div>
+</div>
+
+<h3>V.18 Practice: Single Element State</h3>
+<div class="practice" id="p2_18">
+  <p class="scenario">A <span class="key">6-slot warehouse conveyor</span> has <code>bot = 5, top = 5, size = 1</code>. Meaning?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')">Exactly one item at index 5.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">Empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">Full.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">Invalid.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_18"><p><strong>Correct.</strong> <code>bot = top</code> with <code>size = 1</code> means exactly one element.</p><ul><li><strong>State:</strong> single element.</li><li><strong>Invariant:</strong> <code>1 mod 6 = (5 &minus; 5 + 1) mod 6 = 1</code>.</li><li><strong>Indices:</strong> equal.</li><li><strong>Wrap-around:</strong> n/a.</li></ul></div>
+</div>
+
+<h3>V.19 Practice: O(1) Benefit</h3>
+<div class="practice" id="p2_19">
+  <p>Why use a circular array instead of shifting elements?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')">Both insert and extract become O(1) &mdash; only pointer and count updates, no element movement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')">It uses less memory.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')">It is simpler to prove correct.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')">Historical convention only.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Pointer movement is constant-time; shifting would be O(n).</p><ul><li><strong>State:</strong> array stays in place.</li><li><strong>Invariant:</strong> maintained by pointer moves.</li><li><strong>Indices:</strong> only <code>bot</code>/<code>top</code> change.</li><li><strong>Wrap-around:</strong> enables the trick.</li></ul></div>
+</div>
+
+<h3>V.20 Practice: Insert Advances Top</h3>
+<div class="practice" id="p2_20">
+  <p class="scenario">A <span class="key">10-slot ring</span> has <code>bot = 10, top = 1, size = 2</code>. After insert:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>top&prime; = (1 mod 10) + 1 = 2</code>, <code>size&prime; = 3</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>top&prime; = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>top&prime; = 11</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>bot&prime; = 9</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_20"><p><strong>Correct.</strong> <code>top</code> advances by one via mod; <code>bot</code> unchanged; <code>size</code> increments.</p><ul><li><strong>State:</strong> <code>Array</code>.</li><li><strong>Invariant:</strong> holds after.</li><li><strong>Indices:</strong> <code>top&prime; = 2</code>.</li><li><strong>Wrap-around:</strong> 1 &rarr; 2, no boundary crossing.</li></ul></div>
+</div>
+
+<h3>V.21 Practice: Shared Collision</h3>
+<div class="practice" id="p2_21">
+  <p>States with <code>size = 0</code> and <code>size = max_size</code> share:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')"><code>top + 1 mod max_size = bot</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')"><code>bot = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')"><code>top = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')"><code>array = &langle;&rangle;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Index collision &mdash; the same equation holds for both extremes.</p><ul><li><strong>State:</strong> empty or full.</li><li><strong>Invariant:</strong> same mod equation.</li><li><strong>Indices:</strong> collide.</li><li><strong>Wrap-around:</strong> <code>size</code> is the tiebreaker.</li></ul></div>
+</div>
+
+<h3>V.22 Practice: Top Holds Last Value</h3>
+<div class="practice" id="p2_22">
+  <p class="scenario">A <span class="key">4-slot dispatch ring</span> has <code>bot = 2, top = 4, size = 3</code>. Which index holds the <em>last</em> live value?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')">Index <code>top = 4</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">Index <code>bot = 2</code> (that&rsquo;s the first).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">Index 1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')">Index 3.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_22"><p><strong>Correct.</strong> <code>top</code> points to the last (most recently inserted) live value.</p><ul><li><strong>State:</strong> 3 live values at 2, 3, 4.</li><li><strong>Invariant:</strong> holds.</li><li><strong>Indices:</strong> <code>bot</code> = first, <code>top</code> = last.</li><li><strong>Wrap-around:</strong> not active here.</li></ul></div>
+</div>
+
+<h3>V.23 Practice: Size Bound</h3>
+<div class="practice" id="p2_23">
+  <p>The invariant <code>size &isin; 0..max_size</code> prevents:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Overflow (more than capacity) or negative counts.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Indices from wrapping.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Operations from being invoked.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">Generic parameters.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Count is bounded below by 0 and above by capacity.</p><ul><li><strong>State:</strong> <code>size &isin; 0..max_size</code>.</li><li><strong>Invariant:</strong> safety bound.</li><li><strong>Indices:</strong> constrained separately.</li><li><strong>Wrap-around:</strong> mod ensures valid wrapping.</li></ul></div>
+</div>
+
+<h3>V.24 Practice: Wrapped Bus Bay</h3>
+<div class="practice" id="p2_24">
+  <p class="scenario">A <span class="key">5-slot bus bay ring</span> has <code>bot = 3, top = 1, size = 4</code>. Is wrap-around active?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">Yes &mdash; live region spans 3, 4, 5, 1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">No, contiguous.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Invalid state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Full.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_24"><p><strong>Correct.</strong> <code>bot &gt; top</code> means the live region crosses the boundary.</p><ul><li><strong>State:</strong> 4 of 5 slots.</li><li><strong>Invariant:</strong> mod check passes.</li><li><strong>Indices:</strong> 3, 4, 5, 1.</li><li><strong>Wrap-around:</strong> yes &mdash; through index 5 to 1.</li></ul></div>
+</div>
+
+<h3>V.25 Practice: Design Role</h3>
+<div class="practice" id="p2_25">
+  <p>The role of the design schema is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">A concrete state closer to implementation that the abstract spec refines to.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Replacing the spec entirely.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Removing invariants.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Decoration only.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_25"><p><strong>Correct.</strong> The design is an intermediate refinement between spec and code.</p><ul><li><strong>State:</strong> concrete.</li><li><strong>Invariant:</strong> preserved.</li><li><strong>Indices:</strong> implementation-oriented.</li><li><strong>Wrap-around:</strong> enables efficient operations.</li></ul></div>
+</div>
+
+</section>
+
+<!-- ================= 22.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">22.3 A Retrieve Relation</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="A relation connecting each concrete state to the abstract state(s) it represents.">Retrieve relation</span>:</strong> maps concrete <code>Array</code> to abstract <code>Buffer</code> &mdash; tells us which abstract state a concrete state represents.</li>
+  <li><strong><span class="vocab" data-def="A binary operator that cyclically rotates a sequence by n positions to the left.">Shift operator</span> <code>&laquo;</code>:</strong> rotates a sequence left by <code>n</code> positions; axioms: <code>n &laquo; &langle;&rangle; = &langle;&rangle;</code>, <code>0 &laquo; s = s</code>, <code>1 &laquo; (&langle;x&rangle; &frown; s) = s &frown; &langle;x&rangle;</code>.</li>
+  <li><strong>Retrieve formula:</strong> <code>buffer = (1..size) &#9665; ((bot &minus; 1) &laquo; array)</code> &mdash; shift so <code>bot</code> lands at position 1, then keep the first <code>size</code> elements.</li>
+  <li><strong><span class="vocab" data-def="The retrieve relation is a function from concrete to abstract (one abstract per concrete).">Functional refinement</span>:</strong> the retrieve is a total, <span class="vocab" data-def="Every abstract state has at least one concrete pre-image.">surjective</span> function &rarr; we can <em>calculate</em> (not just verify) concrete operations.</li>
+  <li><strong>Calculated concrete ops:</strong> <code>ArrayIn&#8320;</code>: <code>size&prime; = size + 1; bot&prime; = bot; top&prime; = (top mod max_size) + 1; array&prime; = array &oplus; {top&prime; &#8614; x?}</code>.</li>
+  <li><strong>Calculated <code>ArrayOut&#8320;</code>:</strong> <code>size&prime; = size &minus; 1; bot&prime; = (bot mod max_size) + 1; array&prime; = array; x! = array bot</code>.</li>
+  <li><strong>Error schemas:</strong> <code>ArrayInError</code> simplifies to <code>size = max_size &and; &Xi;Array &and; report! = full</code>; <code>ArrayOutError</code> to <code>size = 0 &and; &Xi;Array &and; report! = empty</code>.</li>
+  <li><strong>Key identity:</strong> <code>#((1..size) &#9665; ((bot &minus; 1) &laquo; array)) = size</code> &mdash; proved by calculation using properties of restriction and shifting.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Retrieve relation</td><td>Concrete &rarr; abstract state mapping.</td></tr>
+  <tr><td>Shift operator</td><td>Cyclic rotation of a sequence by <code>n</code> positions.</td></tr>
+  <tr><td>Domain restriction</td><td>Keep only entries whose keys lie in a given set.</td></tr>
+  <tr><td>Functional refinement</td><td>Retrieve is a function (one abstract per concrete).</td></tr>
+  <tr><td>Surjective</td><td>Every abstract state has at least one concrete witness.</td></tr>
+  <tr><td>Calculated refinement</td><td>Deriving concrete ops from abstract ones via the retrieve.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&laquo;</code></td><td>Shift (cyclic rotate left).</td></tr>
+  <tr><td><code>&#9665;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override (later wins at same key).</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet (key &rarr; value pair).</td></tr>
+  <tr><td><code>dom</code></td><td>Domain of a function/sequence.</td></tr>
+  <tr><td><code>1..n</code></td><td>Integer range from 1 to n.</td></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+  <tr><td><code>#</code></td><td>Sequence length.</td></tr>
+</table>
+
+<h3 id="s2-D">IV.1 Examples: Shift Axioms &mdash; Playlist, Card Deck &amp; Conveyor</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&laquo;</code></td><td>Cyclic shift.</td></tr>
+  <tr><td><code>&frown;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">playlist</span> of 8 tracks is rotated <span class="key">two positions</span> left; nothing is lost.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>s = &langle;1,2,3,4,5,6,7,8&rangle;</code>.</li>
+  <li><strong>Shift:</strong> <code>2 <span class="vocab" data-def="Cyclic shift.">&laquo;</span> s = &langle;3,4,5,6,7,8,1,2&rangle;</code>.</li>
+  <li><strong>Restrict:</strong> not needed here.</li>
+  <li><strong>Abstract:</strong> rotation preserves the multiset.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">card deck</span> of 5 cards is cut <span class="key">one position</span>: top card goes to bottom.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>s = &langle;A,K,Q,J,10&rangle;</code>.</li>
+  <li><strong>Shift:</strong> <code>1 <span class="vocab" data-def="Cyclic shift.">&laquo;</span> s = &langle;K,Q,J,10,A&rangle;</code> &mdash; axiom <code>1 &laquo; (&langle;x&rangle; <span class="vocab" data-def="Concatenation.">&frown;</span> s) = s &frown; &langle;x&rangle;</code>.</li>
+  <li><strong>Restrict:</strong> n/a.</li>
+  <li><strong>Abstract:</strong> same cards, rotated.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">conveyor</span> is shifted by <span class="key">zero</span> positions: identity.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>s = &langle;p,q,r&rangle;</code>.</li>
+  <li><strong>Shift:</strong> <code>0 <span class="vocab" data-def="Cyclic shift.">&laquo;</span> s = s = &langle;p,q,r&rangle;</code> &mdash; zero-shift axiom.</li>
+  <li><strong>Restrict:</strong> n/a.</li>
+  <li><strong>Abstract:</strong> unchanged.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Retrieve Calculation &mdash; Carousel, Storeroom &amp; Concert Ring</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#9665;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>&laquo;</code></td><td>Shift.</td></tr>
+  <tr><td><code>1..n</code></td><td>Range.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">8-slot carousel</span> has <code>array = &langle;1,2,3,4,5,6,7,8&rangle;</code>, <code>bot = 3</code>, <code>size = 4</code>.</p>
+<ul>
+  <li><strong>Concrete:</strong> 8-element array.</li>
+  <li><strong>Shift:</strong> <code>(3 &minus; 1) <span class="vocab" data-def="Cyclic shift.">&laquo;</span> array = &langle;3,4,5,6,7,8,1,2&rangle;</code>.</li>
+  <li><strong>Restrict:</strong> <code>(<span class="vocab" data-def="Range.">1..4</span>) <span class="vocab" data-def="Domain restriction.">&#9665;</span> &langle;3,4,5,6,7,8,1,2&rangle; = &langle;3,4,5,6&rangle;</code>.</li>
+  <li><strong>Abstract:</strong> <code>buffer = &langle;3,4,5,6&rangle;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">4-slot storeroom ring</span> has <code>array = &langle;a,b,c,d&rangle;</code>, <code>bot = 3</code>, <code>size = 4</code> (full).</p>
+<ul>
+  <li><strong>Concrete:</strong> full ring.</li>
+  <li><strong>Shift:</strong> <code>2 &laquo; &langle;a,b,c,d&rangle; = &langle;c,d,a,b&rangle;</code>.</li>
+  <li><strong>Restrict:</strong> <code>(1..4) &#9665; &langle;c,d,a,b&rangle; = &langle;c,d,a,b&rangle;</code> (keep all).</li>
+  <li><strong>Abstract:</strong> <code>buffer = &langle;c,d,a,b&rangle;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">7-slot concert ring</span> has <code>bot = 5</code>, <code>size = 0</code>.</p>
+<ul>
+  <li><strong>Concrete:</strong> empty buffer.</li>
+  <li><strong>Shift:</strong> <code>4 &laquo; array</code> (irrelevant).</li>
+  <li><strong>Restrict:</strong> <code>(1..0) &#9665; ... = &langle;&rangle;</code> (empty range).</li>
+  <li><strong>Abstract:</strong> <code>buffer = &langle;&rangle;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Calculated ArrayIn&#8320; &mdash; Pet Clinic, Library &amp; Bakery</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet.</td></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">pet-clinic waiting ring</span> has room; a new patient is placed just after the current <code>top</code>.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>size &lt; max_size</code>.</li>
+  <li><strong>Shift:</strong> calculation yields <code>top&prime; = (top <span class="vocab" data-def="Modular arithmetic.">mod</span> max_size) + 1</code>.</li>
+  <li><strong>Restrict:</strong> <code>array&prime; = array <span class="vocab" data-def="Override.">&oplus;</span> {top&prime; <span class="vocab" data-def="Maplet.">&#8614;</span> x?}</code> &mdash; only one slot updated.</li>
+  <li><strong>Abstract:</strong> <code>size&prime; = size + 1; bot&prime; = bot</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">library hold shelf</span> (ring of 20) inserts a reserved book at the new <code>top</code>.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>size &lt; 20</code>.</li>
+  <li><strong>Shift:</strong> <code>top&prime; = (top mod 20) + 1</code>.</li>
+  <li><strong>Restrict:</strong> <code>array&prime; = array &oplus; {top&prime; &#8614; x?}</code>.</li>
+  <li><strong>Abstract:</strong> extends the abstract buffer by one.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">bakery order ring</span> (capacity 15) appends order #42 at top.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>size &lt; 15</code>.</li>
+  <li><strong>Shift:</strong> <code>top&prime; = (top mod 15) + 1</code>.</li>
+  <li><strong>Restrict:</strong> <code>array&prime; = array &oplus; {top&prime; &#8614; order42}</code>.</li>
+  <li><strong>Abstract:</strong> <code>size&prime; = size + 1; bot&prime; = bot</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Calculated ArrayOut&#8320; &mdash; Luggage Belt, Bus Queue &amp; Pharmacy</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">luggage belt</span> removes the bag at <code>bot</code> and advances the read pointer one step.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>size &ne; 0</code>.</li>
+  <li><strong>Shift:</strong> <code>bot&prime; = (bot <span class="vocab" data-def="Modular arithmetic.">mod</span> max_size) + 1</code>.</li>
+  <li><strong>Restrict:</strong> <code>array&prime; = array</code> (no write needed).</li>
+  <li><strong>Abstract:</strong> <code>x! = array bot; size&prime; = size &minus; 1; top&prime; = top</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">bus queue ring</span> (6 slots) serves the person at <code>bot = 6</code>; pointer wraps to 1.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>size &ne; 0</code>, <code>bot = 6</code>.</li>
+  <li><strong>Shift:</strong> <code>bot&prime; = (6 mod 6) + 1 = 1</code> &mdash; wrap-around.</li>
+  <li><strong>Restrict:</strong> <code>array&prime; = array</code>.</li>
+  <li><strong>Abstract:</strong> <code>x! = array 6; size&prime; = size &minus; 1</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">pharmacy pickup ring</span> (8 slots) serves prescription at <code>bot = 3</code>.</p>
+<ul>
+  <li><strong>Concrete:</strong> <code>size &ne; 0</code>, <code>bot = 3</code>.</li>
+  <li><strong>Shift:</strong> <code>bot&prime; = (3 mod 8) + 1 = 4</code>.</li>
+  <li><strong>Restrict:</strong> <code>array&prime; = array</code>.</li>
+  <li><strong>Abstract:</strong> <code>x! = array 3; size&prime; = size &minus; 1</code>.</li>
+</ul>
+</div>
+
+<!-- === 22.3 Practice (abbreviated for length — 25 problems) === -->
+<h3 id="s2-E">V.1 Practice: Retrieve Direction</h3>
+<div class="practice" id="p3_1"><p>The retrieve relation maps:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">Concrete state to abstract state.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Abstract to concrete only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Input to output.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Nothing.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Direction: concrete &rarr; abstract.</p><ul><li><strong>Concrete:</strong> <code>Array</code>.</li><li><strong>Shift:</strong> aligns <code>bot</code> to position 1.</li><li><strong>Restrict:</strong> keeps first <code>size</code>.</li><li><strong>Abstract:</strong> <code>Buffer</code>.</li></ul></div></div>
+
+<h3>V.2 Practice: Zero Shift</h3>
+<div class="practice" id="p3_2"><p>The shift axiom <code>0 &laquo; s</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')"><code>s</code> (unchanged).</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>&langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>tail s</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_2')"><code>head s</code></button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> Zero shift is the identity.</p><ul><li><strong>Concrete:</strong> <code>s</code>.</li><li><strong>Shift:</strong> 0 positions.</li><li><strong>Restrict:</strong> n/a.</li><li><strong>Abstract:</strong> same.</li></ul></div></div>
+
+<h3>V.3 Practice: Shift by 1</h3>
+<div class="practice" id="p3_3"><p class="scenario">A ring of 6 slots <code>&langle;a,b,c,d,e,f&rangle;</code> is shifted by 1. Result?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>&langle;b,c,d,e,f,a&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&langle;f,a,b,c,d,e&rangle;</code> (right shift)</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&langle;a,b,c,d,e&rangle;</code> (truncated)</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&langle;&rangle;</code></button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Head moves to tail: <code>1 &laquo; (&langle;a&rangle; &frown; &langle;b..f&rangle;) = &langle;b..f&rangle; &frown; &langle;a&rangle;</code>.</p><ul><li><strong>Concrete:</strong> 6-element sequence.</li><li><strong>Shift:</strong> by 1 left.</li><li><strong>Restrict:</strong> n/a.</li><li><strong>Abstract:</strong> rotated.</li></ul></div></div>
+
+<h3>V.4 Practice: Retrieve Calculation</h3>
+<div class="practice" id="p3_4"><p class="scenario">A <span class="key">5-slot buffer</span> has <code>array = &langle;10,20,30,40,50&rangle;</code>, <code>bot = 4</code>, <code>size = 3</code>. Abstract buffer?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>&langle;40,50,10&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&langle;10,20,30&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&langle;20,30,40&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&langle;50,10,20&rangle;</code></button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Shift by 3, take first 3: <code>&langle;40,50,10,20,30&rangle;</code> &rarr; <code>&langle;40,50,10&rangle;</code>.</p><ul><li><strong>Concrete:</strong> bot=4, size=3.</li><li><strong>Shift:</strong> 3 positions.</li><li><strong>Restrict:</strong> 1..3.</li><li><strong>Abstract:</strong> <code>&langle;40,50,10&rangle;</code>.</li></ul></div></div>
+
+<h3>V.5 Practice: Retrieve Formula</h3>
+<div class="practice" id="p3_5"><p>The retrieve formula is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>buffer = (1..size) &#9665; ((bot &minus; 1) &laquo; array)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>buffer = array</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>buffer = &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>buffer = array &frown; &langle;bot&rangle;</code></button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> Shift-then-restrict extracts the abstract buffer from the circular array.</p><ul><li><strong>Concrete:</strong> <code>Array</code>.</li><li><strong>Shift:</strong> by <code>bot &minus; 1</code>.</li><li><strong>Restrict:</strong> first <code>size</code>.</li><li><strong>Abstract:</strong> <code>Buffer</code>.</li></ul></div></div>
+
+<h3>V.6 Practice: Retrieve Type</h3>
+<div class="practice" id="p3_6"><p>The retrieve relation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')">A total surjective function from concrete to abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">A partial injection.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">A bijection.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">An arbitrary relation.</button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> Total + surjective + functional &rarr; we can calculate the refinement.</p><ul><li><strong>Concrete:</strong> every concrete state maps to exactly one abstract state.</li><li><strong>Shift:</strong> deterministic.</li><li><strong>Restrict:</strong> deterministic.</li><li><strong>Abstract:</strong> every abstract state has at least one concrete witness.</li></ul></div></div>
+
+<h3>V.7 Practice: Identity Case</h3>
+<div class="practice" id="p3_7"><p class="scenario">A <span class="key">4-slot ring</span> has <code>bot = 1, size = 4</code>. Retrieve simplifies to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')"><code>buffer = array</code> (shift 0, take all 4).</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>buffer = &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>buffer = tail array</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_7')"><code>buffer = head array</code></button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> <code>bot = 1</code> means shift by 0; <code>size = max_size</code> means take everything.</p><ul><li><strong>Concrete:</strong> aligned, full.</li><li><strong>Shift:</strong> 0.</li><li><strong>Restrict:</strong> 1..4.</li><li><strong>Abstract:</strong> = array.</li></ul></div></div>
+
+<h3>V.8 Practice: Domain Restriction</h3>
+<div class="practice" id="p3_8"><p>Domain restriction <code>(1..n) &#9665; s</code> keeps:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">Entries with index in <code>1..n</code> (the first <code>n</code> elements).</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Entries with <em>value</em> in <code>1..n</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">All entries.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">No entries.</button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> <code>&#9665;</code> filters by key (index), not value.</p><ul><li><strong>Concrete:</strong> sequence.</li><li><strong>Shift:</strong> prior step.</li><li><strong>Restrict:</strong> <code>(1..n) &#9665;</code>.</li><li><strong>Abstract:</strong> first <code>n</code> elements.</li></ul></div></div>
+
+<h3>V.9 Practice: Empty Retrieve</h3>
+<div class="practice" id="p3_9"><p class="scenario">A 7-slot ring has <code>bot = 5, size = 0</code>. Retrieve?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>&langle;&rangle;</code> &mdash; empty buffer.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&langle;p5&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>array</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_9')"><code>&langle;p5,p6,p7&rangle;</code></button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> <code>(1..0) &#9665; ... = &langle;&rangle;</code>.</p><ul><li><strong>Concrete:</strong> size=0.</li><li><strong>Shift:</strong> irrelevant.</li><li><strong>Restrict:</strong> empty range.</li><li><strong>Abstract:</strong> <code>&langle;&rangle;</code>.</li></ul></div></div>
+
+<h3>V.10 Practice: Length Identity</h3>
+<div class="practice" id="p3_10"><p>The key identity used in the derivation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')"><code>#((1..size) &#9665; ((bot &minus; 1) &laquo; array)) = size</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>#array = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>#buffer = max_size</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_10')"><code>size = 0</code></button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> The restricted shifted sequence has exactly <code>size</code> elements.</p><ul><li><strong>Concrete:</strong> array of <code>max_size</code>.</li><li><strong>Shift:</strong> by <code>bot &minus; 1</code>.</li><li><strong>Restrict:</strong> 1..size.</li><li><strong>Abstract:</strong> length = size.</li></ul></div></div>
+
+<h3>V.11 Practice: ArrayIn&#8320; Effect</h3>
+<div class="practice" id="p3_11"><p class="scenario">A <span class="key">5-slot ring</span> has a successful insert. The concrete change is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>size&prime; = size+1, bot&prime; = bot, top&prime; = (top mod max_size)+1, array&prime; = array &oplus; {top&prime; &#8614; x?}</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>bot&prime; = bot+1</code> (extract, not insert)</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">All components reset.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>size&prime; = 0</code></button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> Insert: advance <code>top</code>, write value, increment <code>size</code>, keep <code>bot</code>.</p><ul><li><strong>Concrete:</strong> <code>ArrayIn&#8320;</code>.</li><li><strong>Shift:</strong> <code>top</code> advances by mod.</li><li><strong>Restrict:</strong> single maplet update.</li><li><strong>Abstract:</strong> buffer extended.</li></ul></div></div>
+
+<h3>V.12 Practice: Override Semantics</h3>
+<div class="practice" id="p3_12"><p><code>&oplus;</code> (override) semantics:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">Later mappings win over earlier ones at the same key.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Earlier wins.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Both kept.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Both deleted.</button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> The right operand&rsquo;s value replaces the left&rsquo;s at the given key.</p><ul><li><strong>Concrete:</strong> <code>array &oplus; {top&prime; &#8614; x?}</code>.</li><li><strong>Shift:</strong> n/a.</li><li><strong>Restrict:</strong> only one slot changed.</li><li><strong>Abstract:</strong> new value appended.</li></ul></div></div>
+
+<h3>V.13 Practice: ArrayOut&#8320; Effect</h3>
+<div class="practice" id="p3_13"><p class="scenario">A <span class="key">6-slot ring</span> has a successful extract. The concrete change is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')"><code>size&prime; = size &minus; 1, bot&prime; = (bot mod max_size)+1, array&prime; = array, x! = array bot</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>top&prime; = top+1</code> (insert, not extract)</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>array&prime; = &langle;&rangle;</code> (empties)</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>size&prime; = size+1</code> (increases)</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Extract: output <code>array bot</code>, advance <code>bot</code>, decrement <code>size</code>, array untouched.</p><ul><li><strong>Concrete:</strong> <code>ArrayOut&#8320;</code>.</li><li><strong>Shift:</strong> bot advances.</li><li><strong>Restrict:</strong> array unchanged.</li><li><strong>Abstract:</strong> head removed.</li></ul></div></div>
+
+<h3>V.14 Practice: Concrete Error Schemas</h3>
+<div class="practice" id="p3_14"><p>The concrete error schemas simplify to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')"><code>ArrayInError: size = max_size</code>; <code>ArrayOutError: size = 0</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Both use <code>bot = 0</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Neither exists at concrete level.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">They use <code>array = &langle;&rangle;</code>.</button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> The length identity simplifies the original conditions to simple <code>size</code> checks.</p><ul><li><strong>Concrete:</strong> <code>&Xi;Array</code>.</li><li><strong>Shift:</strong> n/a.</li><li><strong>Restrict:</strong> n/a.</li><li><strong>Abstract:</strong> <code>full</code> or <code>empty</code> report.</li></ul></div></div>
+
+<h3>V.15 Practice: Wrapped Retrieve</h3>
+<div class="practice" id="p3_15"><p class="scenario">A 3-slot ring: <code>&langle;x,y,z&rangle;</code>, <code>bot = 2, size = 2</code>. Retrieve?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')"><code>&langle;y,z&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&langle;x,y&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&langle;z,x&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&langle;&rangle;</code></button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Shift 1, take 2: <code>&langle;y,z,x&rangle;</code> &rarr; <code>&langle;y,z&rangle;</code>.</p><ul><li><strong>Concrete:</strong> bot=2.</li><li><strong>Shift:</strong> 1.</li><li><strong>Restrict:</strong> 1..2.</li><li><strong>Abstract:</strong> <code>&langle;y,z&rangle;</code>.</li></ul></div></div>
+
+<h3>V.16 Practice: Restriction Size Property</h3>
+<div class="practice" id="p3_16"><p>The property <code>#(A &#9665; R) = #(A &cap; dom R)</code> is used to prove:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">The length of the restricted shifted array equals <code>size</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>#(A &#9665; R) = #A + #R</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>#(A &#9665; R) = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_16')"><code>#(A &#9665; R) = max_size</code></button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Size of restricted relation = size of domain intersection.</p><ul><li><strong>Concrete:</strong> array of <code>max_size</code>.</li><li><strong>Shift:</strong> by <code>bot &minus; 1</code>.</li><li><strong>Restrict:</strong> <code>1..size</code>.</li><li><strong>Abstract:</strong> length = <code>size</code>.</li></ul></div></div>
+
+<h3>V.17 Practice: Full Ring Retrieve</h3>
+<div class="practice" id="p3_17"><p class="scenario">A 4-slot ring <code>&langle;a,b,c,d&rangle;</code>, <code>bot = 3, size = 4</code>. Retrieve?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')"><code>&langle;c,d,a,b&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&langle;a,b,c,d&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&langle;b,c,d,a&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_17')"><code>&langle;d,c,b,a&rangle;</code></button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Shift 2, keep all 4.</p><ul><li><strong>Concrete:</strong> full ring, bot=3.</li><li><strong>Shift:</strong> 2.</li><li><strong>Restrict:</strong> 1..4.</li><li><strong>Abstract:</strong> <code>&langle;c,d,a,b&rangle;</code>.</li></ul></div></div>
+
+<h3>V.18 Practice: Calculation Advantage</h3>
+<div class="practice" id="p3_18"><p>Why is calculation used instead of guessing the concrete ops?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">It derives a correct concrete op from the abstract op and retrieve &mdash; guaranteed correct.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">It is faster to write.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">It gives arbitrary results.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Historical tradition.</button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> Calculated refinement is sound by construction.</p><ul><li><strong>Concrete:</strong> derived, not guessed.</li><li><strong>Shift:</strong> algebraic manipulation.</li><li><strong>Restrict:</strong> simplification steps.</li><li><strong>Abstract:</strong> equivalence guaranteed.</li></ul></div></div>
+
+<h3>V.19 Practice: Wrapped Retrieve 2</h3>
+<div class="practice" id="p3_19"><p class="scenario">A 5-slot bus ring: <code>&langle;1,2,3,4,5&rangle;, bot = 5, size = 3</code>. Retrieve?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')"><code>&langle;5,1,2&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_19')"><code>&langle;1,2,3&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_19')"><code>&langle;3,4,5&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_19')"><code>&langle;&rangle;</code></button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Shift 4, take 3: <code>&langle;5,1,2,3,4&rangle;</code> &rarr; <code>&langle;5,1,2&rangle;</code>.</p><ul><li><strong>Concrete:</strong> bot=5.</li><li><strong>Shift:</strong> 4.</li><li><strong>Restrict:</strong> 1..3.</li><li><strong>Abstract:</strong> <code>&langle;5,1,2&rangle;</code>.</li></ul></div></div>
+
+<h3>V.20 Practice: Maplet Insert</h3>
+<div class="practice" id="p3_20"><p>The maplet <code>{top&prime; &#8614; x?}</code> inserts:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')">Value <code>x?</code> at index <code>top&prime;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Value at index 1.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>max_size</code> values.</button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> A singleton maplet overriding one slot.</p><ul><li><strong>Concrete:</strong> <code>array &oplus; {top&prime; &#8614; x?}</code>.</li><li><strong>Shift:</strong> n/a.</li><li><strong>Restrict:</strong> single key.</li><li><strong>Abstract:</strong> one value appended.</li></ul></div></div>
+
+<h3>V.21 Practice: Shift Axiom 1</h3>
+<div class="practice" id="p3_21"><p><code>1 &laquo; (&langle;x&rangle; &frown; s)</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')"><code>s &frown; &langle;x&rangle;</code> &mdash; head wraps to tail.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')"><code>&langle;x&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_21')"><code>&langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_21')"><code>s</code></button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> Base axiom: first element moves to the end.</p><ul><li><strong>Concrete:</strong> <code>&langle;x&rangle; &frown; s</code>.</li><li><strong>Shift:</strong> 1 position left.</li><li><strong>Restrict:</strong> n/a.</li><li><strong>Abstract:</strong> <code>s &frown; &langle;x&rangle;</code>.</li></ul></div></div>
+
+<h3>V.22 Practice: ArrayInError Simplified</h3>
+<div class="practice" id="p3_22"><p><code>ArrayInError</code> simplifies to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>size = max_size &and; &Xi;Array &and; report! = full</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>size = 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>report! = ok</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>bot&prime; = bot + 1</code></button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> The length identity simplifies the complex restriction predicate to <code>size = max_size</code>.</p><ul><li><strong>Concrete:</strong> <code>&Xi;Array</code>.</li><li><strong>Shift:</strong> n/a.</li><li><strong>Restrict:</strong> n/a.</li><li><strong>Abstract:</strong> <code>full</code>.</li></ul></div></div>
+
+<h3>V.23 Practice: Output on Extract</h3>
+<div class="practice" id="p3_23"><p class="scenario">An 8-slot ring: <code>bot = 1, top = 8, size = 8</code>. On extract, <code>array(bot)</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">The output <code>x!</code> &mdash; the first live value.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">The last live value.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">The capacity.</button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> <code>x! = array bot</code> &mdash; the calculation shows <code>head</code> of the abstract buffer equals <code>array bot</code>.</p><ul><li><strong>Concrete:</strong> full ring.</li><li><strong>Shift:</strong> bot advances.</li><li><strong>Restrict:</strong> array unchanged.</li><li><strong>Abstract:</strong> head served.</li></ul></div></div>
+
+<h3>V.24 Practice: ArrayOutError Simplified</h3>
+<div class="practice" id="p3_24"><p><code>ArrayOutError</code> simplifies to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')"><code>size = 0 &and; &Xi;Array &and; report! = empty</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>size = max_size</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>report! = ok</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_24')"><code>bot&prime; = 0</code></button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Empty condition simplifies to <code>size = 0</code>.</p><ul><li><strong>Concrete:</strong> <code>&Xi;Array</code>.</li><li><strong>Shift:</strong> n/a.</li><li><strong>Restrict:</strong> n/a.</li><li><strong>Abstract:</strong> <code>empty</code>.</li></ul></div></div>
+
+<h3>V.25 Practice: Wrapped Extract</h3>
+<div class="practice" id="p3_25"><p class="scenario">A 6-slot ring <code>&langle;A,B,C,D,E,F&rangle;, bot = 6, size = 2</code>. After extract:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')"><code>x! = F, bot&prime; = 1, size&prime; = 1</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')"><code>x! = A, bot&prime; = 7</code> (out of range).</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')"><code>x! = F, bot&prime; = 6, size&prime; = 2</code> (no change).</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')"><code>x! = B</code>.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> <code>x! = array 6 = F</code>; <code>bot&prime; = (6 mod 6) + 1 = 1</code>; <code>size&prime; = 1</code>.</p><ul><li><strong>Concrete:</strong> bot=6.</li><li><strong>Shift:</strong> bot wraps to 1.</li><li><strong>Restrict:</strong> array unchanged.</li><li><strong>Abstract:</strong> <code>&langle;A&rangle;</code> remaining.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 22.4 ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">22.4 Implementation</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="A calculus of specification statements refined into executable imperative code by laws.">Refinement calculus</span>:</strong> transforms specification statements into code via monotone laws.</li>
+  <li><strong>Spec statement:</strong> <code>w : [pre, post]</code> &mdash; a frame <code>w</code>, precondition, postcondition.</li>
+  <li><strong><span class="vocab" data-def="Split a specification into guarded alternatives based on disjoint conditions.">Conditional introduction</span>:</strong> split on <code>size &lt; max_size</code> vs <code>size = max_size</code> (or <code>size &ne; 0</code> vs <code>size = 0</code>).</li>
+  <li><strong><span class="vocab" data-def="Replace a postcondition with a stronger one that still meets the specification.">Strengthen postcondition</span>:</strong> replace post with stronger predicate the spec still satisfies.</li>
+  <li><strong><span class="vocab" data-def="Replace a fully-determined spec with an assignment statement.">Assignment introduction</span>:</strong> when post uniquely determines each variable, emit <code>:=</code> statements.</li>
+  <li><strong>Insert procedure:</strong> <code>BufferIn(val x : X; res report! : Report)</code> &mdash; if room, update <code>size, top, ibuffer[top], report!</code>; else <code>report! := full</code>.</li>
+  <li><strong>Extract procedure:</strong> <code>BufferOut(res report! : Report)</code> &mdash; if non-empty, update <code>size, bot, report!</code> and output <code>x! = ibuffer[bot]</code>; else <code>report! := empty</code>.</li>
+  <li><strong>Additional procedures:</strong> <code>ResetBuffer(val x : X)</code> resets to single-element state; <code>initially bot, top, size := 1, max_size, 0</code>.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Refinement calculus</td><td>Stepwise laws transforming spec statements into code.</td></tr>
+  <tr><td>Conditional introduction</td><td>Split a spec into guarded alternatives.</td></tr>
+  <tr><td>Strengthen postcondition</td><td>Replace post with a stronger predicate.</td></tr>
+  <tr><td>Assignment introduction</td><td>Replace a determined spec by <code>:=</code> statements.</td></tr>
+  <tr><td>Procedure</td><td>A named, parameterised block of code.</td></tr>
+  <tr><td>val parameter</td><td>Input passed by value.</td></tr>
+  <tr><td>res parameter</td><td>Output passed by result.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>w : [pre, post]</code></td><td>Specification statement.</td></tr>
+  <tr><td><code>&sqsube;</code></td><td>Refinement (&ldquo;is refined by&rdquo;).</td></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>if ... &#9633; ... fi</code></td><td>Guarded alternation.</td></tr>
+  <tr><td><code>val</code></td><td>Value parameter.</td></tr>
+  <tr><td><code>res</code></td><td>Result parameter.</td></tr>
+</table>
+
+<h3 id="s3-D">IV.1 Examples: Conditional Split &mdash; Ticket Kiosk, Coin Dispenser &amp; Deli Counter</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>w : [pre, post]</code></td><td>Spec statement.</td></tr>
+  <tr><td><code>if &#9633; fi</code></td><td>Guarded alternatives.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">ticket-issue kiosk</span> either <span class="key">issues</span> a ticket or reports <span class="key">full</span>; the spec must be split.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>IBufferIn &cong; Array&prime; : [true, (ArrayIn&#8320; &and; Success) &or; ArrayInError]</code>.</li>
+  <li><strong>Conditional:</strong> <code><span class="vocab" data-def="Guarded alternation.">if</span> size &lt; max_size &rarr; success &#9633; size = max_size &rarr; error <span class="vocab" data-def="Guarded alternation.">fi</span></code>.</li>
+  <li><strong>Assignment:</strong> pending in next step.</li>
+  <li><strong>Code:</strong> pending.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">coin dispenser</span> either <span class="key">pays out</span> a coin or signals <span class="key">empty</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>IBufferOut &cong; Array&prime; : [true, (ArrayOut&#8320; &and; Success) &or; ArrayOutError]</code>.</li>
+  <li><strong>Conditional:</strong> <code>if size &ne; 0 &rarr; success &#9633; size = 0 &rarr; error fi</code>.</li>
+  <li><strong>Assignment:</strong> pending.</li>
+  <li><strong>Code:</strong> pending.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">deli counter</span> issues numbers or reports <span class="key">queue full</span>; same pattern.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>Array&prime; : [true, total-op]</code>.</li>
+  <li><strong>Conditional:</strong> <span class="vocab" data-def="Split a specification into guarded alternatives.">conditional introduction</span> splits on <code>size</code>.</li>
+  <li><strong>Assignment:</strong> each branch refined separately.</li>
+  <li><strong>Code:</strong> procedures encapsulate both branches.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Assignment Introduction &mdash; Mailroom, Parking Gate &amp; Library Hatch</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&sqsube;</code></td><td>Refinement.</td></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">mailroom</span> appends a letter; each concrete field is <span class="key">updated in turn</span>.</p>
+<ul>
+  <li><strong>Spec:</strong> success-branch spec with <code>size &lt; max_size</code>.</li>
+  <li><strong>Conditional:</strong> already split.</li>
+  <li><strong>Assignment:</strong> <code>size <span class="vocab" data-def="Assignment.">:=</span> size + 1; top := (top mod max_size) + 1; ibuffer[top] := x; report! := ok</code>.</li>
+  <li><strong>Code:</strong> four assignment statements.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">parking gate</span> records an entry; success branch assigns <code>size, top, ibuffer[top], report!</code>.</p>
+<ul>
+  <li><strong>Spec:</strong> strengthened postcondition.</li>
+  <li><strong>Conditional:</strong> already split on <code>size &lt; max_size</code>.</li>
+  <li><strong>Assignment:</strong> <span class="vocab" data-def="Replace a fully-determined spec with assignment statements.">assignment introduction</span> produces four <code>:=</code> lines.</li>
+  <li><strong>Code:</strong> encapsulated in procedure.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">library return hatch</span> packages the insert as a callable procedure.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>BufferIn(val x : X; res report! : Report)</code>.</li>
+  <li><strong>Conditional:</strong> <code>if size &lt; max_size &rarr; ... &#9633; size = max_size &rarr; report! := full fi</code>.</li>
+  <li><strong>Assignment:</strong> success body: four lines.</li>
+  <li><strong>Code:</strong> procedure ready for use.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Extract Procedure &mdash; Coin Dispenser, Call Centre &amp; Pharmacy</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+  <tr><td><code>mod</code></td><td>Modular arithmetic.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">coin dispenser</span> procedure: if non-empty, decrement size, advance bot, report ok.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>IBufferOut</code>.</li>
+  <li><strong>Conditional:</strong> <code>if size &ne; 0 &rarr; ... &#9633; size = 0 &rarr; report! <span class="vocab" data-def="Assignment.">:=</span> empty fi</code>.</li>
+  <li><strong>Assignment:</strong> <code>size := size &minus; 1; bot := (bot <span class="vocab" data-def="Modular arithmetic.">mod</span> max_size) + 1; report! := ok</code>.</li>
+  <li><strong>Code:</strong> <code>procedure BufferOut(res report! : Report)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">call-centre dispatcher</span> pops the next agent from the queue.</p>
+<ul>
+  <li><strong>Spec:</strong> extract from agent-queue.</li>
+  <li><strong>Conditional:</strong> split on <code>size &ne; 0</code>.</li>
+  <li><strong>Assignment:</strong> <code>size := size &minus; 1; bot := (bot mod max_size) + 1; report! := ok</code>.</li>
+  <li><strong>Code:</strong> same structure as dispenser.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">pharmacy pickup counter</span> serves the next prescription or reports empty.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>IBufferOut</code>.</li>
+  <li><strong>Conditional:</strong> non-empty vs empty.</li>
+  <li><strong>Assignment:</strong> success: three assignments; error: one assignment.</li>
+  <li><strong>Code:</strong> procedure with <code>res report!</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: ResetBuffer &amp; Init &mdash; System Bring-Up, Factory Reset &amp; Module Load</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>:=</code></td><td>Assignment.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">one-time system bring-up</span> drops a first value and anchors all indices at 1.</p>
+<ul>
+  <li><strong>Spec:</strong> reset to single-element state.</li>
+  <li><strong>Conditional:</strong> none &mdash; total assignment.</li>
+  <li><strong>Assignment:</strong> <code>bot, top, size, ibuffer[1] <span class="vocab" data-def="Assignment.">:=</span> 1, 1, 1, x</code>.</li>
+  <li><strong>Code:</strong> <code>procedure ResetBuffer(val x : X)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">factory line</span> resets after a production run; buffer cleared to one seed item.</p>
+<ul>
+  <li><strong>Spec:</strong> <code>ResetBuffer</code>.</li>
+  <li><strong>Conditional:</strong> none.</li>
+  <li><strong>Assignment:</strong> <code>bot, top, size, ibuffer[1] := 1, 1, 1, x</code>.</li>
+  <li><strong>Code:</strong> single multi-variable assignment.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">module load</span> initialises the buffer to empty: <code>bot, top, size := 1, max_size, 0</code>.</p>
+<ul>
+  <li><strong>Spec:</strong> corresponds to abstract <code>BufferInit</code>.</li>
+  <li><strong>Conditional:</strong> none.</li>
+  <li><strong>Assignment:</strong> <code>bot := 1; top := max_size; size := 0</code>.</li>
+  <li><strong>Code:</strong> module init block.</li>
+</ul>
+</div>
+
+<h3 id="s3-E">V.1 Practice: Refinement Calculus Purpose</h3>
+<div class="practice" id="p4_1"><p>Refinement calculus transforms:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">Specification statements into executable code via monotone laws.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Sets into relations.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Types into values.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Nothing.</button></li></ul><div class="feedback" id="fb4_1"><p><strong>Correct.</strong> Spec &rarr; code via stepwise refinement.</p><ul><li><strong>Spec:</strong> <code>w : [pre, post]</code>.</li><li><strong>Conditional:</strong> split.</li><li><strong>Assignment:</strong> introduce.</li><li><strong>Code:</strong> encapsulate.</li></ul></div></div>
+
+<h3>V.2 Practice: Global Declaration</h3>
+<div class="practice" id="p4_2"><p>The global declaration of <code>ibuffer</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')"><code>ibuffer : array [1..max_size] of X</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_2')"><code>ibuffer : seq X</code> (abstract, not implementation)</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')"><code>ibuffer : &Popf; X</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_2')"><code>ibuffer : X</code></button></li></ul><div class="feedback" id="fb4_2"><p><strong>Correct.</strong> Fixed-length array indexed 1 to <code>max_size</code>.</p><ul><li><strong>Spec:</strong> implementation level.</li><li><strong>Conditional:</strong> n/a.</li><li><strong>Assignment:</strong> <code>ibuffer[top] := x</code>.</li><li><strong>Code:</strong> global variable.</li></ul></div></div>
+
+<h3>V.3 Practice: Conditional Introduction</h3>
+<div class="practice" id="p4_3"><p class="scenario">A <span class="key">turnstile kiosk</span> spec says &ldquo;when <code>size &lt; max_size</code>, admit; when <code>size = max_size</code>, refuse.&rdquo; Which refinement step splits this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')">Conditional introduction into <code>if ... &#9633; ... fi</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Assignment introduction.</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Skip.</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Sequential composition.</button></li></ul><div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Conditional introduction splits on disjoint guards.</p><ul><li><strong>Spec:</strong> disjunctive.</li><li><strong>Conditional:</strong> intro.</li><li><strong>Assignment:</strong> next step.</li><li><strong>Code:</strong> later.</li></ul></div></div>
+
+<h3>V.4 Practice: Assignment Introduction</h3>
+<div class="practice" id="p4_4"><p class="scenario">A food-order terminal&rsquo;s success branch needs exact updates. Which law converts to code?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')">Assignment introduction &mdash; postcondition is fully determined.</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Conditional introduction.</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Weaken precondition.</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Skip.</button></li></ul><div class="feedback" id="fb4_4"><p><strong>Correct.</strong> Deterministic postcondition &rarr; assignment statements.</p><ul><li><strong>Spec:</strong> strong post.</li><li><strong>Conditional:</strong> done.</li><li><strong>Assignment:</strong> intro.</li><li><strong>Code:</strong> <code>:=</code> statements.</li></ul></div></div>
+
+<h3>V.5 Practice: Insert Success Body</h3>
+<div class="practice" id="p4_5"><p>The insert success branch assigns:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')"><code>size := size+1; top := (top mod max_size)+1; ibuffer[top] := x; report! := ok</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_5')"><code>size := 0; report! := full</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_5')"><code>bot := bot+1; report! := empty</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_5')"><code>ibuffer := &langle;&rangle;</code></button></li></ul><div class="feedback" id="fb4_5"><p><strong>Correct.</strong> Four-line insert body derived from the calculated <code>ArrayIn&#8320;</code>.</p><ul><li><strong>Spec:</strong> <code>ArrayIn&#8320;</code>.</li><li><strong>Conditional:</strong> success branch.</li><li><strong>Assignment:</strong> four <code>:=</code>.</li><li><strong>Code:</strong> procedure body.</li></ul></div></div>
+
+<h3>V.6 Practice: Extract Success Body</h3>
+<div class="practice" id="p4_6"><p class="scenario">A call-centre dispatcher pops the queue. Which assignment fires?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>size := size &minus; 1; bot := (bot mod max_size)+1; report! := ok</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>size := size+1</code> (insert)</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>top := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_6')"><code>report! := full</code></button></li></ul><div class="feedback" id="fb4_6"><p><strong>Correct.</strong> Extract: decrement size, advance bot, report ok.</p><ul><li><strong>Spec:</strong> <code>ArrayOut&#8320;</code>.</li><li><strong>Conditional:</strong> success branch.</li><li><strong>Assignment:</strong> three <code>:=</code>.</li><li><strong>Code:</strong> procedure body.</li></ul></div></div>
+
+<h3>V.7 Practice: Procedure Header</h3>
+<div class="practice" id="p4_7"><p>A procedure with value and result parameters is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')"><code>procedure BufferIn(val x : X; res report! : Report)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>procedure BufferIn()</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>function Buffer(x)</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>BufferIn : X</code></button></li></ul><div class="feedback" id="fb4_7"><p><strong>Correct.</strong> <code>val</code> = input by value; <code>res</code> = output by result.</p><ul><li><strong>Spec:</strong> <code>IBufferIn</code>.</li><li><strong>Conditional:</strong> inside body.</li><li><strong>Assignment:</strong> inside body.</li><li><strong>Code:</strong> procedure header.</li></ul></div></div>
+
+<h3>V.8 Practice: Error Branch Assignment</h3>
+<div class="practice" id="p4_8"><p class="scenario">A <span class="key">store-front kiosk</span> refuses when full. Which assignment?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')"><code>report! := full</code> &mdash; single line, no state change.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>size := size + 1</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>ibuffer := &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>bot := top</code></button></li></ul><div class="feedback" id="fb4_8"><p><strong>Correct.</strong> Error branch: only the report is set; state unchanged.</p><ul><li><strong>Spec:</strong> <code>ArrayInError</code>.</li><li><strong>Conditional:</strong> else branch.</li><li><strong>Assignment:</strong> one line.</li><li><strong>Code:</strong> <code>report! := full</code>.</li></ul></div></div>
+
+<h3>V.9 Practice: Strengthen Postcondition</h3>
+<div class="practice" id="p4_9"><p>&ldquo;Strengthen postcondition&rdquo; means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">Replace the post with a stronger predicate the spec still satisfies.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Weaken it.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Delete it.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Negate it.</button></li></ul><div class="feedback" id="fb4_9"><p><strong>Correct.</strong> A stronger post is an acceptable refinement (monotone law).</p><ul><li><strong>Spec:</strong> weaker post.</li><li><strong>Conditional:</strong> n/a.</li><li><strong>Assignment:</strong> needs strong post.</li><li><strong>Code:</strong> deterministic.</li></ul></div></div>
+
+<h3>V.10 Practice: Refinement Order</h3>
+<div class="practice" id="p4_10"><p>The refinement steps follow the order:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">Spec &rarr; Conditional &rarr; Assignment &rarr; Code.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Code &rarr; Spec.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Random order.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Assignment only.</button></li></ul><div class="feedback" id="fb4_10"><p><strong>Correct.</strong> Each step refines the previous.</p><ul><li><strong>Spec:</strong> starting point.</li><li><strong>Conditional:</strong> split.</li><li><strong>Assignment:</strong> introduce.</li><li><strong>Code:</strong> encapsulate.</li></ul></div></div>
+
+<h3>V.11 Practice: ResetBuffer</h3>
+<div class="practice" id="p4_11"><p><code>ResetBuffer</code> uses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">A single multi-variable assignment &mdash; no conditional needed.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">A loop.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Recursion.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Nothing.</button></li></ul><div class="feedback" id="fb4_11"><p><strong>Correct.</strong> Total operation, fully determined &rarr; direct assignment.</p><ul><li><strong>Spec:</strong> reset.</li><li><strong>Conditional:</strong> none.</li><li><strong>Assignment:</strong> <code>bot, top, size, ibuffer[1] := 1, 1, 1, x</code>.</li><li><strong>Code:</strong> procedure.</li></ul></div></div>
+
+<h3>V.12 Practice: Direct Assignment</h3>
+<div class="practice" id="p4_12"><p class="scenario">A <span class="key">vending-machine return coin</span> is fully determined. Which law applies?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')">Assignment introduction &mdash; no guard needed if pre is <code>true</code> and post is deterministic.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Conditional introduction.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Weaken precondition.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Skip.</button></li></ul><div class="feedback" id="fb4_12"><p><strong>Correct.</strong> When the postcondition uniquely determines each variable, we go straight to assignment.</p><ul><li><strong>Spec:</strong> total, deterministic.</li><li><strong>Conditional:</strong> not needed.</li><li><strong>Assignment:</strong> intro directly.</li><li><strong>Code:</strong> body.</li></ul></div></div>
+
+<h3>V.13 Practice: Initialisation</h3>
+<div class="practice" id="p4_13"><p><code>initially bot, top, size := 1, max_size, 0</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')">Start empty: bot=1, top wraps just before bot, size=0.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Start full.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Arbitrary init.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Invalid state.</button></li></ul><div class="feedback" id="fb4_13"><p><strong>Correct.</strong> Empty buffer; invariant holds with <code>size = 0</code>.</p><ul><li><strong>Spec:</strong> corresponds to <code>BufferInit</code>.</li><li><strong>Conditional:</strong> none.</li><li><strong>Assignment:</strong> three variables.</li><li><strong>Code:</strong> module init block.</li></ul></div></div>
+
+<h3>V.14 Practice: Val and Res Parameters</h3>
+<div class="practice" id="p4_14"><p>Procedures name both <code>val</code> and <code>res</code> parameters because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')">Inputs are passed in by value; reports are passed out by result.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Only inputs matter.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Only outputs matter.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Neither is needed.</button></li></ul><div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Z input <code>?</code> = <code>val</code>; Z output <code>!</code> = <code>res</code>.</p><ul><li><strong>Spec:</strong> <code>x?</code> &rarr; <code>val x</code>.</li><li><strong>Conditional:</strong> inside body.</li><li><strong>Assignment:</strong> updates globals + <code>res</code>.</li><li><strong>Code:</strong> procedure signature.</li></ul></div></div>
+
+<h3>V.15 Practice: Guard Protection</h3>
+<div class="practice" id="p4_15"><p>The guard <code>size &ne; 0</code> in <code>BufferOut</code> protects:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">The read of <code>ibuffer[bot]</code> from an empty state.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Type safety only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Compilation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Nothing.</button></li></ul><div class="feedback" id="fb4_15"><p><strong>Correct.</strong> If <code>size = 0</code>, there is no valid data at <code>bot</code>.</p><ul><li><strong>Spec:</strong> precondition of <code>ArrayOut&#8320;</code>.</li><li><strong>Conditional:</strong> guard <code>size &ne; 0</code>.</li><li><strong>Assignment:</strong> safe to read <code>ibuffer[bot]</code>.</li><li><strong>Code:</strong> if branch.</li></ul></div></div>
+
+<h3>V.16 Practice: ibuffer[top] Assignment</h3>
+<div class="practice" id="p4_16"><p><code>ibuffer[top] := x</code> is introduced by which law?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')">Assignment introduction (fully determined component).</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Sequential composition.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Iteration.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Recursion.</button></li></ul><div class="feedback" id="fb4_16"><p><strong>Correct.</strong> The postcondition <code>array&prime; = array &oplus; {top&prime; &#8614; x?}</code> uniquely determines the array update.</p><ul><li><strong>Spec:</strong> post on <code>ibuffer</code>.</li><li><strong>Conditional:</strong> already split.</li><li><strong>Assignment:</strong> intro.</li><li><strong>Code:</strong> <code>ibuffer[top] := x</code>.</li></ul></div></div>
+
+<h3>V.17 Practice: Procedural Encapsulation</h3>
+<div class="practice" id="p4_17"><p>Encapsulation as a procedure:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">Names the block with parameters for reuse.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Inlines everything.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Removes the code.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Nothing.</button></li></ul><div class="feedback" id="fb4_17"><p><strong>Correct.</strong> Procedure = named, parameterised, reusable code block.</p><ul><li><strong>Spec:</strong> ready.</li><li><strong>Conditional:</strong> inside.</li><li><strong>Assignment:</strong> inside.</li><li><strong>Code:</strong> procedure.</li></ul></div></div>
+
+<h3>V.18 Practice: Success Report Line</h3>
+<div class="practice" id="p4_18"><p class="scenario">A pick-up locker&rsquo;s &ldquo;add parcel&rdquo; code ends with <code>report! := ok</code>. This arises from:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')">The <code>Success</code> schema&rsquo;s constraint <code>report! = ok</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">The invariant.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Conditional introduction.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Nothing.</button></li></ul><div class="feedback" id="fb4_18"><p><strong>Correct.</strong> The <code>Success</code> schema contributes <code>report! = ok</code> to the conjunction.</p><ul><li><strong>Spec:</strong> <code>Partial &and; Success</code>.</li><li><strong>Conditional:</strong> success branch.</li><li><strong>Assignment:</strong> <code>report! := ok</code>.</li><li><strong>Code:</strong> last line of success body.</li></ul></div></div>
+
+<h3>V.19 Practice: Refinement Symbol</h3>
+<div class="practice" id="p4_19"><p>The refinement symbol <code>&sqsube;</code> reads as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">&ldquo;is refined by&rdquo; &mdash; right-hand side is an acceptable implementation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">&ldquo;is a subset of&rdquo;</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">&ldquo;implies&rdquo;</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">&ldquo;equals&rdquo;</button></li></ul><div class="feedback" id="fb4_19"><p><strong>Correct.</strong> The refinement order: specification &sqsube; implementation.</p><ul><li><strong>Spec:</strong> left side.</li><li><strong>Conditional:</strong> step.</li><li><strong>Assignment:</strong> step.</li><li><strong>Code:</strong> right side.</li></ul></div></div>
+
+<h3>V.20 Practice: Full Refusal Code</h3>
+<div class="practice" id="p4_20"><p class="scenario">A <span class="key">burger-bar queue</span>&rsquo;s refusal when full is a single assignment. Which?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')"><code>report! := full</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>size := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>ibuffer := &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_20')"><code>top := bot</code></button></li></ul><div class="feedback" id="fb4_20"><p><strong>Correct.</strong> Error branch: state unchanged, only report set.</p><ul><li><strong>Spec:</strong> <code>ArrayInError</code>.</li><li><strong>Conditional:</strong> else.</li><li><strong>Assignment:</strong> <code>report! := full</code>.</li><li><strong>Code:</strong> one line.</li></ul></div></div>
+
+<h3>V.21 Practice: Top Advance Formula</h3>
+<div class="practice" id="p4_21"><p><code>top := (top mod max_size) + 1</code> implements:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')">Cyclic advance of the top pointer.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Reset to 0.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Capacity query.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Error handling.</button></li></ul><div class="feedback" id="fb4_21"><p><strong>Correct.</strong> Modular advance: wraps from <code>max_size</code> back to 1.</p><ul><li><strong>Spec:</strong> from <code>ArrayIn&#8320;</code>.</li><li><strong>Conditional:</strong> success branch.</li><li><strong>Assignment:</strong> <code>top := ...</code>.</li><li><strong>Code:</strong> single line.</li></ul></div></div>
+
+<h3>V.22 Practice: Module as Collection</h3>
+<div class="practice" id="p4_22"><p>The bounded buffer module is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">A collection of procedures sharing globals (<code>ibuffer, bot, top, size</code>).</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">A single function.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">A tree structure.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Nothing.</button></li></ul><div class="feedback" id="fb4_22"><p><strong>Correct.</strong> Encapsulated module with shared state.</p><ul><li><strong>Spec:</strong> per operation.</li><li><strong>Conditional:</strong> per procedure.</li><li><strong>Assignment:</strong> per procedure.</li><li><strong>Code:</strong> module.</li></ul></div></div>
+
+<h3>V.23 Practice: BufferOut Guard</h3>
+<div class="practice" id="p4_23"><p>The derived <code>BufferOut</code> procedure body begins with:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')"><code>if size &ne; 0 &rarr; ... &#9633; size = 0 &rarr; report! := empty fi</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>skip</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>size := 0</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>loop</code></button></li></ul><div class="feedback" id="fb4_23"><p><strong>Correct.</strong> Split on <code>size</code>: non-empty branch succeeds; empty branch errors.</p><ul><li><strong>Spec:</strong> <code>IBufferOut</code>.</li><li><strong>Conditional:</strong> intro.</li><li><strong>Assignment:</strong> per branch.</li><li><strong>Code:</strong> if-fi.</li></ul></div></div>
+
+<h3>V.24 Practice: Procedural Abstraction</h3>
+<div class="practice" id="p4_24"><p>A reservation counter packages &ldquo;issue or refuse&rdquo; in one procedure. The enclosing law is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')">Procedural abstraction / encapsulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Sequential composition only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Skip.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">None.</button></li></ul><div class="feedback" id="fb4_24"><p><strong>Correct.</strong> Procedure wraps code into a named, parameterised block.</p><ul><li><strong>Spec:</strong> ready.</li><li><strong>Conditional:</strong> inside.</li><li><strong>Assignment:</strong> inside.</li><li><strong>Code:</strong> procedure.</li></ul></div></div>
+
+<h3>V.25 Practice: Correctness Foundation</h3>
+<div class="practice" id="p4_25"><p>After refinement, code correctness rests on:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">Monotonicity of the refinement laws composed.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Testing only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Luck.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">The compiler.</button></li></ul><div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Each law is sound; composition preserves correctness.</p><ul><li><strong>Spec:</strong> starting point.</li><li><strong>Conditional:</strong> sound law.</li><li><strong>Assignment:</strong> sound law.</li><li><strong>Code:</strong> proven correct.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 22.5 ================= -->
+<section class="page" id="page-4">
+<h2 id="c5">22.5 Executable Code</h2>
+
+<h3 id="s4-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Target language:</strong> <span class="vocab" data-def="A Pascal-family modular language with explicit module boundaries and interfaces.">Modula-2</span> &mdash; a modular, typed imperative language.</li>
+  <li><strong><code>MODULE Buffer</code>:</strong> the compilation unit encapsulating the bounded buffer.</li>
+  <li><strong><span class="vocab" data-def="The list of names (types, constants, procedures) visible to clients of the module.">EXPORT</span>:</strong> <code>max_size, ReportType, ResetBuffer, BufferIn, BufferOut</code> &mdash; the public API.</li>
+  <li><strong><span class="vocab" data-def="A compile-time named constant; in this module, the buffer capacity.">CONST</span>:</strong> <code>max_size = N</code> &mdash; capacity fixed at compile time.</li>
+  <li><strong><span class="vocab" data-def="An enumeration type with three values matching the Z Report free type.">TYPE ReportType</span>:</strong> <code>= (OK, Full, Empty)</code> &mdash; maps to Z <code>Report</code>.</li>
+  <li><strong>Globals:</strong> <code>ibuffer : ARRAY [1..max_size] OF X; bot, top : 1..max_size; size : 0..max_size</code>.</li>
+  <li><strong><span class="vocab" data-def="The module body code that runs once at load, initialising the buffer.">Init block</span>:</strong> <code>BEGIN bot := 1; top := max_size; size := 0 END Buffer.</code></li>
+  <li><strong><span class="vocab" data-def="A pass-by-reference parameter in Modula-2, used for outputs.">VAR parameter</span>:</strong> <code>VAR report : ReportType</code> in procedure signatures for outputs.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Modula-2</td><td>Pascal-family modular language.</td></tr>
+  <tr><td>MODULE</td><td>Named compilation unit with exports.</td></tr>
+  <tr><td>EXPORT</td><td>List of names visible to clients.</td></tr>
+  <tr><td>CONST</td><td>Compile-time named constant.</td></tr>
+  <tr><td>ReportType</td><td>Enumeration: <code>(OK, Full, Empty)</code>.</td></tr>
+  <tr><td>VAR parameter</td><td>Pass-by-reference output parameter.</td></tr>
+  <tr><td>Init block</td><td>Module-body code that runs once at load.</td></tr>
+</table>
+
+<h3 id="s4-D">IV.1 Examples: MODULE Declarations &mdash; Printer Driver, Event Logger &amp; Ticket System</h3>
+<div class="example">
+<p class="scenario">An <span class="key">embedded printer driver</span> publishes its <span class="key">capacity</span> and <span class="key">report type</span> to clients.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>CONST max_size = 256; TYPE <span class="vocab" data-def="Enumeration: (OK, Full, Empty).">ReportType</span> = (OK, Full, Empty);</code>.</li>
+  <li><strong>Init:</strong> pending.</li>
+  <li><strong>Procedure:</strong> pending.</li>
+  <li><strong>Module:</strong> <code>MODULE Buffer; <span class="vocab" data-def="List of names visible to clients.">EXPORT</span> max_size, ReportType, ResetBuffer, BufferIn, BufferOut;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">event logger</span> with capacity 1000 exports the same interface.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code><span class="vocab" data-def="Compile-time named constant.">CONST</span> max_size = 1000;</code>.</li>
+  <li><strong>Init:</strong> <code>bot := 1; top := 1000; size := 0</code>.</li>
+  <li><strong>Procedure:</strong> <code>BufferIn</code>, <code>BufferOut</code>.</li>
+  <li><strong>Module:</strong> <code>MODULE EventLog;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">ticket system</span> with capacity 50 defines the same type and constant structure.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>CONST max_size = 50; TYPE ReportType = (OK, Full, Empty);</code>.</li>
+  <li><strong>Init:</strong> empty start.</li>
+  <li><strong>Procedure:</strong> exported ops.</li>
+  <li><strong>Module:</strong> <code>MODULE TicketBuffer;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Init Block &mdash; Terminal, Fleet Tracker &amp; Smart Lock</h3>
+<div class="example">
+<p class="scenario">A <span class="key">ticket-issuing terminal</span> powers on and <span class="key">configures the ring to empty</span>.</p>
+<ul>
+  <li><strong>Declarations:</strong> globals present.</li>
+  <li><strong>Init:</strong> <code>BEGIN bot := 1; top := max_size; size := 0 END Buffer.</code></li>
+  <li><strong>Procedure:</strong> callable after init.</li>
+  <li><strong>Module:</strong> body ends with <code>END Buffer.</code></li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">fleet tracker</span> boots and sets <code>bot := 1; top := max_size; size := 0</code>.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>ibuffer, bot, top, size</code>.</li>
+  <li><strong>Init:</strong> corresponds to abstract <code>BufferInit</code>.</li>
+  <li><strong>Procedure:</strong> <code>BufferIn</code>, <code>BufferOut</code> now callable.</li>
+  <li><strong>Module:</strong> <span class="vocab" data-def="Module-body code that runs once at load.">init block</span> runs at load time.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">smart lock</span> event buffer starts empty on installation.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>CONST max_size = 32</code>.</li>
+  <li><strong>Init:</strong> <code>bot := 1; top := 32; size := 0</code>.</li>
+  <li><strong>Procedure:</strong> exported.</li>
+  <li><strong>Module:</strong> encapsulated.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: PROCEDURE BufferIn &mdash; Mailbox, Door Access &amp; Shipping</h3>
+<div class="example">
+<p class="scenario">A <span class="key">mailbox accept</span> call from userland: either queued or refused.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>PROCEDURE BufferIn(x : X; <span class="vocab" data-def="Pass-by-reference output parameter.">VAR</span> report : ReportType);</code>.</li>
+  <li><strong>Init:</strong> n/a (callable).</li>
+  <li><strong>Procedure:</strong> <code>IF size &lt; max_size THEN size := size+1; top := (top MOD max_size)+1; ibuffer[top] := x; report := OK ELSE report := Full END</code>.</li>
+  <li><strong>Module:</strong> exported.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">door-access card reader</span> logs entries; same <code>BufferIn</code> structure.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>PROCEDURE BufferIn(cardID : CardID; VAR report : ReportType);</code>.</li>
+  <li><strong>Init:</strong> n/a.</li>
+  <li><strong>Procedure:</strong> <code>IF size &lt; max_size THEN ... ELSE report := Full END</code>.</li>
+  <li><strong>Module:</strong> exported.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">shipping manifest</span> adds packages; same pattern with <code>Package</code> type.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>PROCEDURE BufferIn(pkg : Package; VAR report : ReportType);</code>.</li>
+  <li><strong>Init:</strong> n/a.</li>
+  <li><strong>Procedure:</strong> four-line success body, one-line error.</li>
+  <li><strong>Module:</strong> <code>EXPORT</code> includes <code>BufferIn</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: PROCEDURE BufferOut &mdash; Download Manager, Coffee Machine &amp; Log Collector</h3>
+<div class="example">
+<p class="scenario">A <span class="key">download manager</span> fetches the next pending job or reports empty.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>PROCEDURE BufferOut(<span class="vocab" data-def="Pass-by-reference output parameter.">VAR</span> report : ReportType);</code>.</li>
+  <li><strong>Init:</strong> n/a.</li>
+  <li><strong>Procedure:</strong> <code>IF size &lt;&gt; 0 THEN size := size &minus; 1; bot := (bot MOD max_size)+1; report := OK ELSE report := Empty END</code>.</li>
+  <li><strong>Module:</strong> exported.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">coffee machine</span> dispenses a cup or reports &ldquo;Empty&rdquo; when no beans remain.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>PROCEDURE BufferOut(VAR report : ReportType);</code>.</li>
+  <li><strong>Init:</strong> n/a.</li>
+  <li><strong>Procedure:</strong> same guard pattern: <code>IF size &lt;&gt; 0 THEN ... ELSE report := Empty END</code>.</li>
+  <li><strong>Module:</strong> exported.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">log collector</span> drains events; same extract procedure.</p>
+<ul>
+  <li><strong>Declarations:</strong> <code>PROCEDURE BufferOut(VAR report : ReportType);</code>.</li>
+  <li><strong>Init:</strong> n/a.</li>
+  <li><strong>Procedure:</strong> success: 3 assignments; error: 1 assignment.</li>
+  <li><strong>Module:</strong> <code>EXPORT</code> includes <code>BufferOut</code>.</li>
+</ul>
+</div>
+
+<h3 id="s4-E">V.1 Practice: Target Language</h3>
+<div class="practice" id="p5_1"><p>The target language of chapter 22 code is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_1')">Modula-2.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Python.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Haskell.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">C++.</button></li></ul><div class="feedback" id="fb5_1"><p><strong>Correct.</strong> Modula-2 &mdash; a Pascal-family modular language.</p><ul><li><strong>Declarations:</strong> MODULE, CONST, TYPE, VAR.</li><li><strong>Init:</strong> BEGIN...END.</li><li><strong>Procedure:</strong> PROCEDURE...END.</li><li><strong>Module:</strong> EXPORT list.</li></ul></div></div>
+
+<h3>V.2 Practice: EXPORT List</h3>
+<div class="practice" id="p5_2"><p>The EXPORT list of MODULE Buffer includes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_2')"><code>max_size, ReportType, ResetBuffer, BufferIn, BufferOut</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_2')">Only <code>BufferIn</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')">None.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')">The global variables.</button></li></ul><div class="feedback" id="fb5_2"><p><strong>Correct.</strong> The public interface; globals are hidden.</p><ul><li><strong>Declarations:</strong> EXPORT.</li><li><strong>Init:</strong> internal.</li><li><strong>Procedure:</strong> exported.</li><li><strong>Module:</strong> information hiding.</li></ul></div></div>
+
+<h3>V.3 Practice: Init Block</h3>
+<div class="practice" id="p5_3"><p class="scenario">A 100-slot logging module is loaded. Which init block leaves the buffer empty?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_3')"><code>BEGIN bot := 1; top := max_size; size := 0 END Buffer.</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>BEGIN size := max_size END</code> (full)</button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>BEGIN top := 0 END</code> (invalid)</button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>BEGIN bot := max_size END</code></button></li></ul><div class="feedback" id="fb5_3"><p><strong>Correct.</strong> Empty start: size=0, bot=1, top=max_size (wraps).</p><ul><li><strong>Declarations:</strong> globals.</li><li><strong>Init:</strong> BEGIN...END.</li><li><strong>Procedure:</strong> now callable.</li><li><strong>Module:</strong> loaded.</li></ul></div></div>
+
+<h3>V.4 Practice: BufferIn Guard</h3>
+<div class="practice" id="p5_4"><p class="scenario">A door-access reader&rsquo;s <code>BufferIn</code> body uses which guard?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_4')"><code>IF size &lt; max_size THEN ... ELSE report := Full END</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_4')"><code>IF size = 0 THEN ...</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_4')"><code>WHILE TRUE DO ...</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_4')"><code>REPEAT ... UNTIL FALSE</code></button></li></ul><div class="feedback" id="fb5_4"><p><strong>Correct.</strong> Non-full guard; ELSE handles the full case.</p><ul><li><strong>Declarations:</strong> procedure.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> IF...ELSE...END.</li><li><strong>Module:</strong> exported.</li></ul></div></div>
+
+<h3>V.5 Practice: ibuffer Type</h3>
+<div class="practice" id="p5_5"><p>The type of <code>ibuffer</code> in code is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_5')"><code>ARRAY [1..max_size] OF X</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_5')"><code>SET OF X</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_5')"><code>POINTER TO X</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_5')"><code>RECORD ... END</code></button></li></ul><div class="feedback" id="fb5_5"><p><strong>Correct.</strong> Fixed-length, 1-based array.</p><ul><li><strong>Declarations:</strong> VAR ibuffer.</li><li><strong>Init:</strong> empty.</li><li><strong>Procedure:</strong> indexed by <code>bot</code>, <code>top</code>.</li><li><strong>Module:</strong> internal global.</li></ul></div></div>
+
+<h3>V.6 Practice: VAR Parameter</h3>
+<div class="practice" id="p5_6"><p>The <code>report</code> parameter mode in Modula-2 procedures is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_6')"><code>VAR</code> &mdash; pass-by-reference to return the status.</button></li><li><button onclick="selectAnswer(this,false,'fb5_6')">Pass-by-value (input only).</button></li><li><button onclick="selectAnswer(this,false,'fb5_6')">Constant.</button></li><li><button onclick="selectAnswer(this,false,'fb5_6')">No mode.</button></li></ul><div class="feedback" id="fb5_6"><p><strong>Correct.</strong> VAR corresponds to Z output (<code>!</code>); the caller sees the result.</p><ul><li><strong>Declarations:</strong> procedure header.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> sets report.</li><li><strong>Module:</strong> exported.</li></ul></div></div>
+
+<h3>V.7 Practice: ReportType</h3>
+<div class="practice" id="p5_7"><p><code>ReportType = (OK, Full, Empty)</code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_7')">An enumeration type mapping to Z&rsquo;s <code>Report ::= ok | full | empty</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">A record type.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">An array type.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">A pointer type.</button></li></ul><div class="feedback" id="fb5_7"><p><strong>Correct.</strong> Enumeration with three values, one per Z free-type constructor.</p><ul><li><strong>Declarations:</strong> TYPE.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> returned via VAR.</li><li><strong>Module:</strong> exported.</li></ul></div></div>
+
+<h3>V.8 Practice: Init Block Role</h3>
+<div class="practice" id="p5_8"><p>The &ldquo;init block&rdquo; role is played by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_8')">The module body that runs on first import.</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')">Each call of <code>BufferIn</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')">A main program only.</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')">Nothing.</button></li></ul><div class="feedback" id="fb5_8"><p><strong>Correct.</strong> Modula-2 module bodies execute once when the module is loaded.</p><ul><li><strong>Declarations:</strong> done.</li><li><strong>Init:</strong> BEGIN...END.</li><li><strong>Procedure:</strong> now callable.</li><li><strong>Module:</strong> loaded.</li></ul></div></div>
+
+<h3>V.9 Practice: Client Access</h3>
+<div class="practice" id="p5_9"><p>A client importing the module can use:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_9')">Only exported names (ops + types + constants).</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">All globals directly.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Private internals.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Nothing.</button></li></ul><div class="feedback" id="fb5_9"><p><strong>Correct.</strong> Information hiding: only the EXPORT list is visible.</p><ul><li><strong>Declarations:</strong> EXPORT.</li><li><strong>Init:</strong> internal.</li><li><strong>Procedure:</strong> exported.</li><li><strong>Module:</strong> encapsulated.</li></ul></div></div>
+
+<h3>V.10 Practice: Empty Dispatch</h3>
+<div class="practice" id="p5_10"><p class="scenario">A <span class="key">coffee machine</span> dispenses; &ldquo;Empty&rdquo; appears when no beans. Which branch?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_10')"><code>BufferOut</code> ELSE branch &mdash; <code>report := Empty</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')"><code>BufferIn</code> ELSE &mdash; Full.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')"><code>ResetBuffer</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')">None.</button></li></ul><div class="feedback" id="fb5_10"><p><strong>Correct.</strong> <code>size = 0</code> triggers the ELSE branch of <code>BufferOut</code>.</p><ul><li><strong>Declarations:</strong> procedure.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> ELSE.</li><li><strong>Module:</strong> exported.</li></ul></div></div>
+
+<h3>V.11 Practice: MOD Expression</h3>
+<div class="practice" id="p5_11"><p><code>(top MOD max_size) + 1</code> computes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_11')">The next 1-based index, wrapping at max_size.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">The previous index.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">Always 0.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">Always max_size.</button></li></ul><div class="feedback" id="fb5_11"><p><strong>Correct.</strong> Cyclic +1: when <code>top = max_size</code>, gives 1.</p><ul><li><strong>Declarations:</strong> n/a.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> inside BufferIn.</li><li><strong>Module:</strong> n/a.</li></ul></div></div>
+
+<h3>V.12 Practice: Insert Success</h3>
+<div class="practice" id="p5_12"><p class="scenario">A <span class="key">shipping manifest</span> inserts <code>"box17"</code>. On success:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_12')"><code>size</code> increments, <code>top</code> advances, <code>ibuffer[top] := "box17"</code>, <code>report := OK</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')">Only <code>report := OK</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')">Nothing changes.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')"><code>size := 0</code>.</button></li></ul><div class="feedback" id="fb5_12"><p><strong>Correct.</strong> Four updates in the success branch.</p><ul><li><strong>Declarations:</strong> procedure.</li><li><strong>Init:</strong> prior.</li><li><strong>Procedure:</strong> body runs.</li><li><strong>Module:</strong> state updated.</li></ul></div></div>
+
+<h3>V.13 Practice: Subrange Safety</h3>
+<div class="practice" id="p5_13"><p>Why declare <code>bot, top : 1..max_size</code> as sub-ranges?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_13')">Compile-time bounds checking mirrors the Z invariant.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">For speed only.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Historical.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">No reason.</button></li></ul><div class="feedback" id="fb5_13"><p><strong>Correct.</strong> The type system enforces the same bounds the Z invariant requires.</p><ul><li><strong>Declarations:</strong> VAR.</li><li><strong>Init:</strong> within range.</li><li><strong>Procedure:</strong> mod keeps in range.</li><li><strong>Module:</strong> static safety.</li></ul></div></div>
+
+<h3>V.14 Practice: ResetBuffer State</h3>
+<div class="practice" id="p5_14"><p class="scenario">A <span class="key">smart lock</span> calls <code>ResetBuffer("unlock")</code>. Resulting state:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_14')"><code>bot = top = size = 1, ibuffer[1] = "unlock"</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')"><code>size = 0</code> (empty).</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')"><code>size = max_size</code> (full).</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')">Invalid.</button></li></ul><div class="feedback" id="fb5_14"><p><strong>Correct.</strong> Single-element state: all indices at 1, count = 1.</p><ul><li><strong>Declarations:</strong> procedure.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> <code>bot, top, size, ibuffer[1] := 1, 1, 1, x</code>.</li><li><strong>Module:</strong> state set.</li></ul></div></div>
+
+<h3>V.15 Practice: Module Separation</h3>
+<div class="practice" id="p5_15"><p>Modula-2 modules separate:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_15')">Interface (DEFINITION) from body (IMPLEMENTATION).</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Classes from traits.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Types from terms.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Nothing.</button></li></ul><div class="feedback" id="fb5_15"><p><strong>Correct.</strong> Clean boundary between public interface and private implementation.</p><ul><li><strong>Declarations:</strong> split.</li><li><strong>Init:</strong> in implementation.</li><li><strong>Procedure:</strong> signatures in definition.</li><li><strong>Module:</strong> information hiding.</li></ul></div></div>
+
+<h3>V.16 Practice: Empty BufferOut</h3>
+<div class="practice" id="p5_16"><p class="scenario">A log-collector calls <code>BufferOut(r)</code>; buffer is empty. <code>r</code> becomes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_16')"><code>Empty</code> &mdash; ELSE branch assigns it.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')"><code>OK</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')"><code>Full</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')">Uninitialised.</button></li></ul><div class="feedback" id="fb5_16"><p><strong>Correct.</strong> <code>size = 0</code> &rarr; ELSE &rarr; <code>report := Empty</code>.</p><ul><li><strong>Declarations:</strong> procedure.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> ELSE.</li><li><strong>Module:</strong> status out.</li></ul></div></div>
+
+<h3>V.17 Practice: END Buffer</h3>
+<div class="practice" id="p5_17"><p>The <code>END Buffer.</code> line marks:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_17')">The close of the module, matching its name.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">A comment.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">A return statement.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Nothing.</button></li></ul><div class="feedback" id="fb5_17"><p><strong>Correct.</strong> Modula-2 requires named module terminators.</p><ul><li><strong>Declarations:</strong> done.</li><li><strong>Init:</strong> body inside.</li><li><strong>Procedure:</strong> inside.</li><li><strong>Module:</strong> closed.</li></ul></div></div>
+
+<h3>V.18 Practice: Init Corresponds To</h3>
+<div class="practice" id="p5_18"><p>The module body <code>bot := 1; top := max_size; size := 0</code> corresponds to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_18')">The abstract <code>BufferInit</code> operation.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">A successful insert.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">An error.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">A loop.</button></li></ul><div class="feedback" id="fb5_18"><p><strong>Correct.</strong> The init block implements the abstract initialisation.</p><ul><li><strong>Declarations:</strong> globals.</li><li><strong>Init:</strong> body.</li><li><strong>Procedure:</strong> implicit.</li><li><strong>Module:</strong> loaded.</li></ul></div></div>
+
+<h3>V.19 Practice: CONST</h3>
+<div class="practice" id="p5_19"><p><code>CONST max_size = N;</code> says:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_19')">Capacity is a compile-time constant chosen for this instance.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Capacity is 0.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">It&rsquo;s unbounded.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">It changes at runtime.</button></li></ul><div class="feedback" id="fb5_19"><p><strong>Correct.</strong> Fixed at compile time; corresponds to Z&rsquo;s free <code>max_size</code>.</p><ul><li><strong>Declarations:</strong> CONST.</li><li><strong>Init:</strong> uses max_size.</li><li><strong>Procedure:</strong> uses max_size.</li><li><strong>Module:</strong> exported.</li></ul></div></div>
+
+<h3>V.20 Practice: Typed Report</h3>
+<div class="practice" id="p5_20"><p><code>VAR report : ReportType</code> declares:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_20')">An output variable of enumeration type.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">An integer.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">A pointer.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">Nothing.</button></li></ul><div class="feedback" id="fb5_20"><p><strong>Correct.</strong> Typed output; corresponds to Z <code>report! : Report</code>.</p><ul><li><strong>Declarations:</strong> procedure header.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> sets report.</li><li><strong>Module:</strong> exported type.</li></ul></div></div>
+
+<h3>V.21 Practice: BufferIn ELSE</h3>
+<div class="practice" id="p5_21"><p>The Modula-2 ELSE branch of <code>BufferIn</code> runs when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_21')"><code>size = max_size</code> &mdash; buffer full.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')"><code>size = 0</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Never.</button></li></ul><div class="feedback" id="fb5_21"><p><strong>Correct.</strong> Full &rarr; <code>report := Full</code>.</p><ul><li><strong>Declarations:</strong> procedure.</li><li><strong>Init:</strong> n/a.</li><li><strong>Procedure:</strong> ELSE.</li><li><strong>Module:</strong> exported.</li></ul></div></div>
+
+<h3>V.22 Practice: Information Hiding</h3>
+<div class="practice" id="p5_22"><p>A ticket-batch printer ships a module exposing only the API. The design principle is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_22')">Information hiding via the EXPORT list.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">Early binding.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">Late binding.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">None.</button></li></ul><div class="feedback" id="fb5_22"><p><strong>Correct.</strong> Only exported names are visible; internals are hidden.</p><ul><li><strong>Declarations:</strong> EXPORT selects.</li><li><strong>Init:</strong> internal.</li><li><strong>Procedure:</strong> exported.</li><li><strong>Module:</strong> encapsulated.</li></ul></div></div>
+
+<h3>V.23 Practice: Code Correctness</h3>
+<div class="practice" id="p5_23"><p>The refined Modula-2 code is correct because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_23')">Each refinement step is monotonic and the retrieve is functional &mdash; end-to-end soundness.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">Tested on one case.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">It compiles.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">By luck.</button></li></ul><div class="feedback" id="fb5_23"><p><strong>Correct.</strong> Calculational soundness: spec &rarr; design &rarr; calculation &rarr; refinement &rarr; code.</p><ul><li><strong>Declarations:</strong> spec.</li><li><strong>Init:</strong> design.</li><li><strong>Procedure:</strong> calculation.</li><li><strong>Module:</strong> code.</li></ul></div></div>
+
+<h3>V.24 Practice: Instance Sizing</h3>
+<div class="practice" id="p5_24"><p class="scenario">A health-device trace captures events up to 32 entries. <code>N</code> becomes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_24')"><code>CONST max_size = 32;</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_24')"><code>max_size := 32</code> at runtime.</button></li><li><button onclick="selectAnswer(this,false,'fb5_24')"><code>N</code> is free forever.</button></li><li><button onclick="selectAnswer(this,false,'fb5_24')">Undefined.</button></li></ul><div class="feedback" id="fb5_24"><p><strong>Correct.</strong> Per-instance constant; fixed at compile time.</p><ul><li><strong>Declarations:</strong> CONST.</li><li><strong>Init:</strong> uses 32.</li><li><strong>Procedure:</strong> uses 32.</li><li><strong>Module:</strong> sized.</li></ul></div></div>
+
+<h3>V.25 Practice: End-to-End Pipeline</h3>
+<div class="practice" id="p5_25"><p>The bounded-buffer module is an end-to-end example of:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_25')">Z specification &rarr; design &rarr; calculation &rarr; refinement &rarr; executable code.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Pure testing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Ad-hoc coding.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Reverse engineering.</button></li></ul><div class="feedback" id="fb5_25"><p><strong>Correct.</strong> The full formal-development pipeline, demonstrated on one module.</p><ul><li><strong>Declarations:</strong> Z spec (22.1).</li><li><strong>Init:</strong> Design (22.2).</li><li><strong>Procedure:</strong> Retrieve + Calculation (22.3).</li><li><strong>Module:</strong> Implementation + Code (22.4, 22.5).</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 5</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 22.</footer>
+
+</body>
+</html>

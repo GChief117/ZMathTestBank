@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 16 — Data Refinement</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">16.1 Abstract / Concrete &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">16.2 Retrieve Relation &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">16.3 Forwards Sim &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">16.4 Backwards Sim &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(4, event)">16.5 Applicability &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s4-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s4-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s4-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s4-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s4-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(5, event)">16.6 Correctness &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s5-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s5-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s5-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s5-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s5-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 16 &mdash; Data Refinement</h1>
+
+<!-- ================= 16.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">16.1 Abstract and Concrete State</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Specification state using abstract math (sets, functions, sequences) prioritizing clarity over efficiency.">Abstract state</span> models <em>what</em> the system is: declared with high-level types like <code>&Popf; X</code>, <code>X &#x21F8; Y</code>, <code>seq X</code>.</li>
+  <li><span class="vocab" data-def="Specification state using implementation-oriented data structures closer to actual code.">Concrete state</span> models <em>how</em> it runs: arrays, pointers, linked cells, hash buckets, B-trees.</li>
+  <li>Two schemas: <code>AState == [ av : AType | Inv<sub>A</sub> ]</code> vs <code>CState == [ cv : CType | Inv<sub>C</sub> ]</code>. Same behavior, different structure.</li>
+  <li>Refinement preserves <em>observable behavior</em> &mdash; what inputs go in and what outputs come out &mdash; while freely changing internals.</li>
+  <li>The concrete state usually has a <strong>representation invariant</strong> (<code>Inv<sub>C</sub></code>) that encodes "this data structure is well-formed."</li>
+  <li>Multiple concrete states may correspond to the same abstract state (e.g., many trees &rarr; same set).</li>
+  <li>Refinement is <strong>unidirectional</strong>: concrete refines abstract, not the reverse.</li>
+  <li>Used in stepwise development: start abstract, refine repeatedly until implementation-ready.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Abstract state</td><td>High-level description, math-friendly.</td></tr>
+  <tr><td>Concrete state</td><td>Implementation-oriented.</td></tr>
+  <tr><td>Refinement</td><td>Transforming abstract to concrete.</td></tr>
+  <tr><td>Observable behavior</td><td>External properties preserved under refinement.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>AS</code></td><td>Abstract state schema.</td></tr>
+  <tr><td><code>CS</code></td><td>Concrete state schema.</td></tr>
+</table>
+
+<h3>IV.1 Example: Abstract Set of Users</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&le;</code></td><td>Less-than-or-equal.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A messaging platform's <span class="key">abstract state</span> tracks active users as a <span class="key">set</span>, with a cap on size.</p>
+<ul>
+  <li><strong>Type system:</strong> <code>au : &Popf; User; MAX : &Nopf;</code>.</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="High-level set representation, order and duplicates irrelevant.">abstract set state</span> with size invariant.</li>
+  <li><strong>Schema:</strong> <code>Abs == [ au : &Popf; User | #au &le; MAX ]</code>.</li>
+  <li><strong>Natural language:</strong> "a finite set of at most MAX users."</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Concrete List of Users</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>iseq</code></td><td>Injective sequence (no duplicates).</td></tr>
+  <tr><td><code>ran</code></td><td>Range of a sequence.</td></tr>
+  <tr><td><code>#</code></td><td>Length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">concrete state</span> uses an <span class="key">injective sequence</span> with an <span class="key">invariant</span> that duplicates are forbidden and the length respects the cap.</p>
+<ul>
+  <li><strong>Type system:</strong> <code>cu : iseq User; MAX : &Nopf;</code>.</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="Array-like with representation invariant preserving distinctness.">concrete state</span> enforcing no-duplicates.</li>
+  <li><strong>Schema:</strong> <code>Conc == [ cu : iseq User | #cu &le; MAX ]</code>.</li>
+  <li><strong>Natural language:</strong> "an ordered list without duplicates, up to MAX long" &mdash; same info as the set plus an arbitrary order.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p1_1"><p>Abstract state is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">A high-level mathematical description.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">A C data structure.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">A free type only.</button></li></ul><div class="feedback" id="fb1_1"><p><strong>Correct.</strong> High-level spec.</p><ul><li>Clarity-focused.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p1_2"><p>Concrete state is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">An implementation-oriented representation.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Math-only.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">A predicate.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Nothing.</button></li></ul><div class="feedback" id="fb1_2"><p><strong>Correct.</strong> Closer to code.</p><ul><li>Implementable.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p1_3"><p class="scenario">A stack is abstractly a sequence but concretely an array with top pointer. Which is the abstract?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')">The sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb1_3')">The array.</button></li><li><button onclick="selectAnswer(this,false,'fb1_3')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_3')">Neither.</button></li></ul><div class="feedback" id="fb1_3"><p><strong>Correct.</strong> Sequence = abstract.</p><ul><li><strong>Type system:</strong> seq X.</li><li><strong>Math:</strong> abstract state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> math-friendly.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p1_4"><p class="scenario">A set abstractly vs a hash-table concretely. Which is abstract?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')">The set.</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')">The hash table.</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')">Neither.</button></li></ul><div class="feedback" id="fb1_4"><p><strong>Correct.</strong> Set = abstract.</p><ul><li><strong>Type system:</strong> &Popf; X.</li><li><strong>Math:</strong> abstract state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> math representation.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p1_5"><p>Refinement preserves:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')">Observable behavior.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">Only types.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">Only names.</button></li></ul><div class="feedback" id="fb1_5"><p><strong>Correct.</strong> Same outward effect.</p><ul><li>Internal representation changes.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p1_6"><p class="scenario">A dictionary abstractly vs a BST concretely. Which pair is refinement?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')">Dict abstract &rarr; BST concrete.</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')">BST abstract &rarr; Dict concrete.</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')">Both.</button></li></ul><div class="feedback" id="fb1_6"><p><strong>Correct.</strong> Abstract is simpler.</p><ul><li><strong>Type system:</strong> K &#x21FB; V (abstract); BST node (concrete).</li><li><strong>Math:</strong> refinement.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> abstract to BST.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p1_7"><p>A good abstract state:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')">Captures intent in the simplest math form.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">Is the most complex form.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">Is code.</button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">Free types only.</button></li></ul><div class="feedback" id="fb1_7"><p><strong>Correct.</strong> Simplicity first.</p><ul><li>Clear semantics.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p1_8"><p class="scenario">A queue abstractly is a sequence; concretely, it's a linked list. Which is concrete?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')">The linked list.</button></li><li><button onclick="selectAnswer(this,false,'fb1_8')">The sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb1_8')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_8')">Neither.</button></li></ul><div class="feedback" id="fb1_8"><p><strong>Correct.</strong> Linked list = concrete.</p><ul><li><strong>Type system:</strong> node records.</li><li><strong>Math:</strong> concrete state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> implementation.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p1_9"><p>Refinement changes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')">Representation, not observable semantics.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Observable semantics.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Free types.</button></li></ul><div class="feedback" id="fb1_9"><p><strong>Correct.</strong> Internals only.</p><ul><li>Behavior preserved.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p1_10"><p class="scenario">An address book's abstract state is a set of contacts; concretely, an array indexed by ID. Which is abstract?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')">The set.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">The array.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">Neither.</button></li></ul><div class="feedback" id="fb1_10"><p><strong>Correct.</strong> Set is high-level.</p><ul><li><strong>Type system:</strong> &Popf; Contact.</li><li><strong>Math:</strong> abstract state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> set abstraction.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p1_11"><p>Abstract specs are preferred at the start because they:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')">Are clearer to reason about.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Are faster to execute.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Are implementable directly.</button></li><li><button onclick="selectAnswer(this,false,'fb1_11')">Nothing.</button></li></ul><div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Easier reasoning.</p><ul><li>Math-level clarity.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p1_12"><p class="scenario">A calendar's abstract state uses a set of dates; concretely, a sorted array. Which is concrete?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')">The sorted array.</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">The set.</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">Neither.</button></li></ul><div class="feedback" id="fb1_12"><p><strong>Correct.</strong> Array is implementation.</p><ul><li><strong>Type system:</strong> iseq Date.</li><li><strong>Math:</strong> concrete state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> sorted representation.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p1_13"><p>Concrete specs are preferred near the end because they:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')">Are closer to deployable code.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Are clearer.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Are simpler.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Nothing.</button></li></ul><div class="feedback" id="fb1_13"><p><strong>Correct.</strong> Implementable.</p><ul><li>Close to code.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p1_14"><p class="scenario">A password store's abstract state is a partial function; concretely, a hash map. Which is abstract?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')">The partial function.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')">The hash map.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_14')">Neither.</button></li></ul><div class="feedback" id="fb1_14"><p><strong>Correct.</strong> Partial function = abstract.</p><ul><li><strong>Type system:</strong> User &#x21FB; Hash.</li><li><strong>Math:</strong> abstract state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> map abstraction.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p1_15"><p>Data refinement is the process of:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">Transforming abstract spec into concrete while preserving behavior.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">Deleting state.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">Renaming.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">Nothing.</button></li></ul><div class="feedback" id="fb1_15"><p><strong>Correct.</strong> Refinement.</p><ul><li>Preserve behavior.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p1_16"><p class="scenario">A gaming scoreboard's abstract state is a function players&rarr;scores; concretely, sorted array. Which is abstract?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')">The function.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">The sorted array.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Neither.</button></li></ul><div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Function = abstract.</p><ul><li><strong>Type system:</strong> Player &#x21FB; &Nopf;.</li><li><strong>Math:</strong> abstract state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> math function.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p1_17"><p>The key distinction between abstract and concrete is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')">Abstraction level &mdash; abstract hides implementation details.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Speed.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_17')">Free types.</button></li></ul><div class="feedback" id="fb1_17"><p><strong>Correct.</strong> Level of detail.</p><ul><li>Implementation hidden.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p1_18"><p class="scenario">A shopping cart's abstract state is a bag of items; concretely, a linked list. Which is concrete?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">The linked list.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">The bag.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">Neither.</button></li></ul><div class="feedback" id="fb1_18"><p><strong>Correct.</strong> Linked list = concrete.</p><ul><li><strong>Type system:</strong> bag &rarr; linked list.</li><li><strong>Math:</strong> concrete state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> implementation.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p1_19"><p>Refinement should preserve:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')">All externally observable behavior.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Only names.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Only types.</button></li><li><button onclick="selectAnswer(this,false,'fb1_19')">Nothing.</button></li></ul><div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Behavior invariant.</p><ul><li>External unchanged.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p1_20"><p class="scenario">A messaging queue's abstract state uses a sequence; concretely, a circular buffer. Which is concrete?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')">The circular buffer.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">The sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">Neither.</button></li></ul><div class="feedback" id="fb1_20"><p><strong>Correct.</strong> Concrete is circular buffer.</p><ul><li><strong>Type system:</strong> seq &rarr; circular buffer.</li><li><strong>Math:</strong> concrete state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> implementation.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p1_21"><p>Abstract states commonly use:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')">Sets, functions, sequences, relations.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Arrays, pointers, bytes.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Free types only.</button></li></ul><div class="feedback" id="fb1_21"><p><strong>Correct.</strong> Math structures.</p><ul><li>Clarity-first.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p1_22"><p class="scenario">A DB index abstractly is a partial function, concretely a B-tree. Which is abstract?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">The partial function.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">The B-tree.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Neither.</button></li></ul><div class="feedback" id="fb1_22"><p><strong>Correct.</strong> Function = abstract.</p><ul><li><strong>Type system:</strong> Key &#x21FB; Row.</li><li><strong>Math:</strong> abstract state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> math map.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p1_23"><p>Concrete states use:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">Data structures closer to programming languages.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Abstract math only.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Free types only.</button></li></ul><div class="feedback" id="fb1_23"><p><strong>Correct.</strong> Implementation-oriented.</p><ul><li>Data-structure level.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p1_24"><p class="scenario">A social app's friend relation abstractly is a relation; concretely, an adjacency list. Which is concrete?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')">The adjacency list.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">The relation.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Neither.</button></li></ul><div class="feedback" id="fb1_24"><p><strong>Correct.</strong> Adjacency list = concrete.</p><ul><li><strong>Type system:</strong> relation &rarr; adjacency.</li><li><strong>Math:</strong> concrete state.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> graph repr.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p1_25"><p>Data refinement is motivated by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">Bridging the gap between clarity and implementability.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Only aesthetics.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Free types.</button></li></ul><div class="feedback" id="fb1_25"><p><strong>Correct.</strong> Clarity &harr; implementability.</p><ul><li>Development process.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 16.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">16.2 Retrieve Relation</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>The <span class="vocab" data-def="A schema Retrieve relating concrete and abstract state variables; tells you which abstract state each concrete state represents.">retrieve relation</span> <code>Retrieve</code> is a schema containing <em>both</em> the abstract and the concrete state, linked by a predicate.</li>
+  <li>Form: <code>Retrieve == [ Abs; Conc | rel(av, cv) ]</code>. The predicate <code>rel</code> encodes "this <code>cv</code> represents this <code>av</code>."</li>
+  <li>Often functional (deterministic): given a concrete state, the abstract it represents is uniquely determined. Call it a <span class="vocab" data-def="Retrieve where each concrete state maps to exactly one abstract state.">retrieve function</span>.</li>
+  <li>Retrieve is <em>typically many-to-one</em>: different concrete states may map to the same abstract (e.g., different list orderings map to the same set).</li>
+  <li>Must be <strong>surjective</strong> onto reachable abstract states: every abstract state we care about has at least one concrete representative.</li>
+  <li>The retrieve relation encodes the concrete's <em>representation invariant</em> implicitly &mdash; only well-formed concrete states participate.</li>
+  <li>In refinement proofs: prove pre-state <code>Retrieve</code> plus concrete op implies some abstract op's post-state <code>Retrieve'</code>.</li>
+  <li>Canonical examples: <code>ran cu = au</code> (list &rarr; set), <code>{i &#8614; cu(i) | i &isin; dom cu} = af</code> (array &rarr; map), <code>nodes(bst) = as</code> (tree &rarr; set).</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Retrieve relation</td><td>Maps concrete to abstract.</td></tr>
+  <tr><td>Retrieve function</td><td>Single-valued retrieve relation.</td></tr>
+  <tr><td>Bridge schema</td><td>Links both state spaces.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>R</code></td><td>Retrieve schema.</td></tr>
+  <tr><td><code>ran</code></td><td>Range (often used in retrieves).</td></tr>
+  <tr><td><code>=</code></td><td>Equality (connecting abstract to concrete derivation).</td></tr>
+</table>
+
+<h3>IV.1 Example: Retrieve Set from Sequence</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>ran</code></td><td>Range &mdash; set of values in a sequence.</td></tr>
+  <tr><td><code>=</code></td><td>Equality.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A messaging platform retrieves its <span class="key">abstract user-set</span> from <span class="key">the concrete ordered-list representation</span> by taking its range.</p>
+<ul>
+  <li><strong>Type system:</strong> <code>au : &Popf; User; cu : iseq User</code>.</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="Forget the order; keep the values.">range-as-retrieve</span>.</li>
+  <li><strong>Schema:</strong> <code>Retrieve == [ Abs; Conc | au = ran cu ]</code>.</li>
+  <li><strong>Natural language:</strong> "the set is whatever values appear in the list, in any order." Different lists like <code>&lang; a, b &rang;</code> and <code>&lang; b, a &rang;</code> retrieve to the same abstract set <code>{a, b}</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Retrieve Partial Function from Pair List</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21F8;</code></td><td>Partial function.</td></tr>
+  <tr><td><code>seq</code></td><td>Sequence.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A cache retrieves its <span class="key">abstract partial function</span> from <span class="key">a concrete sequence of key-value pairs</span>, with later entries overriding earlier ones.</p>
+<ul>
+  <li><strong>Type system:</strong> <code>af : K &#x21FB; V; cl : seq (K &times; V)</code>.</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="Fold the pair list into a functional mapping, giving later entries priority.">sequence-to-function retrieve</span>.</li>
+  <li><strong>Schema:</strong> <code>Retrieve == [ Abs; Conc | af = squash(ran cl as partial fn, last-wins) ]</code>.</li>
+  <li><strong>Natural language:</strong> "the abstract function holds exactly the mappings visible in the list, with overrides resolved." Multiple list histories can yield the same final function.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p2_1"><p>A retrieve relation links:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')">Concrete state to abstract state.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">Abstract to itself.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">Free types.</button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> Concrete &rarr; abstract.</p><ul><li>Bridge.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p2_2"><p>A retrieve function is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')">A deterministic retrieve relation.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Multi-valued.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Empty.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Free type.</button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> Single-valued retrieve.</p><ul><li>Functional form.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p2_3"><p class="scenario">An abstract set is retrieved from a concrete list. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>Retrieve == [ abs : &Popf; X; conc : seq X | abs = ran conc ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>Retrieve == abs &harr; conc</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>Retrieve == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>Retrieve == conc</code></button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Retrieve via ran.</p><ul><li><strong>Type system:</strong> &Popf; X + seq X.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> set from list.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p2_4"><p class="scenario">An abstract map is retrieved from a concrete list of pairs. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>R == [ abs : K &#x21FB; V; conc : seq (K &times; V) | abs = asFunction conc ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>R == abs &harr; conc</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_4')"><code>R == conc</code></button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Map from pair list.</p><ul><li><strong>Type system:</strong> K &#x21FB; V + seq (K&times;V).</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> function from pairs.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p2_5"><p>The retrieve is used to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">Prove operations respect the abstract state.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Delete state.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Nothing.</button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Verification tool.</p><ul><li>Refinement proofs.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p2_6"><p class="scenario">A BST retrieve relates to an abstract set. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>R == [ abs : &Popf; X; bst : BST | abs = nodes(bst) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>R == abs &harr; bst</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>R == bst</code></button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> BST&rarr;set.</p><ul><li><strong>Type system:</strong> &Popf; X + BST.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> nodes of BST.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p2_7"><p>A retrieve relation is usually:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">A functional relation from concrete to abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Always multi-valued.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Empty.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Free type.</button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> Concrete &rarr; abstract functional.</p><ul><li>Deterministic retrieve.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p2_8"><p class="scenario">A queue abstractly is a sequence; concretely (arr, head, tail). Which captures retrieve?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>R == [ abs : seq X; arr; head; tail | abs = slice(arr, head, tail) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>R == abs &harr; arr</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>R == arr</code></button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Abstract = slice.</p><ul><li><strong>Type system:</strong> seq X + array.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> queue retrieve.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p2_9"><p>For a retrieve to work, the concrete must:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')">Represent at least one abstract value.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">Represent none.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">Be empty.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">Free type.</button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Valid representation.</p><ul><li>At least one abstract.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p2_10"><p class="scenario">A stack (concrete array + top) retrieves to an abstract sequence. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>R == [ abs : seq X; arr; top | abs = prefix(arr, top) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>R == abs &harr; arr</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>R == arr</code></button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> Prefix retrieve.</p><ul><li><strong>Type system:</strong> seq X + array.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> stack retrieve.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p2_11"><p>The retrieve relation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')">Invariant: always relates valid concrete to valid abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Arbitrary.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Free type.</button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> Invariant property.</p><ul><li>Sound retrieve.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p2_12"><p class="scenario">A BST retrieves to a set via <code>nodes</code>. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>Retrieve == [ abs : &Popf; X; bst : BST | abs = nodes(bst) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>Retrieve == abs &harr; bst</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>Retrieve == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>Retrieve == bst</code></button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> BST retrieve.</p><ul><li><strong>Type system:</strong> &Popf; X + BST.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> bst nodes = set.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p2_13"><p>A typical retrieve function is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">Surjective onto reachable abstract states.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Empty.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Trivial.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">Nothing.</button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> All abstract states representable.</p><ul><li>Surjective retrieve.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p2_14"><p class="scenario">A hash map retrieves to an abstract partial function. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')"><code>R == [ abs : K &#x21FB; V; h : HashMap | abs = toFunction(h) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>R == abs &harr; h</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>R == h</code></button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Hash to function.</p><ul><li><strong>Type system:</strong> K &#x21FB; V + HashMap.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> hash to function.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p2_15"><p>A retrieve also often encodes:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">Concrete invariants (e.g., no duplicates in a list).</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Renaming.</button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Concrete invariants.</p><ul><li>Part of retrieve.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p2_16"><p class="scenario">A graph (adjacency list) retrieves to an abstract relation. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>R == [ abs : X &harr; X; adj : AdjList | abs = toRel(adj) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>R == abs &harr; adj</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>R == adj</code></button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Adjacency to relation.</p><ul><li><strong>Type system:</strong> X &harr; X + AdjList.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> graph retrieve.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p2_17"><p>The retrieve is used in:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">Proving refinement is sound.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Predicates.</button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> Soundness.</p><ul><li>Central to refinement.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p2_18"><p class="scenario">A doubly-linked list retrieves to an abstract sequence. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>R == [ abs : seq X; dll : DLL | abs = traverse(dll) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>R == abs &harr; dll</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>R == dll</code></button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Traverse to sequence.</p><ul><li><strong>Type system:</strong> seq X + DLL.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> dll to seq.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p2_19"><p>In refinement theory, the retrieve is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')">The glue between concrete + abstract specs.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Optional.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Free types.</button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Core concept.</p><ul><li>Bridge.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p2_20"><p class="scenario">A priority queue retrieves to an abstract bag. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>R == [ abs : bag X; heap : Heap | abs = fromHeap(heap) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>R == abs &harr; heap</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>R == heap</code></button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Heap to bag.</p><ul><li><strong>Type system:</strong> bag X + Heap.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> heap retrieve.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p2_21"><p>Typical retrieves encode:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">How to derive the abstract state from concrete components.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Only names.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Free types.</button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Derivation.</p><ul><li>From concrete to abstract.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p2_22"><p class="scenario">A trie retrieves to an abstract set of strings. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>R == [ abs : &Popf; String; t : Trie | abs = words(t) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>R == abs &harr; t</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>R == t</code></button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Trie to set.</p><ul><li><strong>Type system:</strong> &Popf; String + Trie.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> words in trie.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p2_23"><p>Retrieve is typically:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">A many-to-one function from concrete to abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">One-to-many.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Bijection always.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Empty.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Multiple concretes may map to same abstract.</p><ul><li>Many implementations.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p2_24"><p class="scenario">A bloom filter retrieves to an abstract set approximately. Which captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')"><code>R == [ abs : &Popf; X; bf : BloomFilter | abs &sube; membership(bf) ]</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>R == abs &harr; bf</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>R == abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>R == bf</code></button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Approximate retrieve.</p><ul><li><strong>Type system:</strong> &Popf; X + BloomFilter.</li><li><strong>Math:</strong> retrieve.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> bloom retrieve.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p2_25"><p>Why is the retrieve relation central?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">It enables formal reasoning about correctness of the refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Naming.</button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> Formal bridge.</p><ul><li>Verification tool.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 16.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">16.3 Forwards Simulation</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Standard refinement proof: start from pre-state Retrieve, let concrete op step, show post-state Retrieve' holds for some matching abstract move.">Forwards simulation</span> runs the concrete operation forward, then finds a matching abstract move.</li>
+  <li><strong>Given:</strong> <code>Retrieve</code> holds pre-op, concrete op <code>COp</code> executes.</li>
+  <li><strong>Show:</strong> there exists an abstract post-state <code>av'</code> such that <code>AOp</code> holds and <code>Retrieve'</code> holds.</li>
+  <li>Two proof obligations together: <strong>applicability</strong> (concrete applies wherever abstract does) + <strong>correctness</strong> (concrete result retrieves to valid abstract result).</li>
+  <li>Formal predicate: <code>&forall; av, cv, cv' &bull; Retrieve &and; pre AOp &and; COp &rArr; &exist; av' &bull; AOp &and; Retrieve'</code>.</li>
+  <li>Works cleanly when the concrete is at least as deterministic as the abstract &mdash; or when the concrete's choices can be matched by specific abstract choices.</li>
+  <li>The default and most common refinement-proof style: build outward from pre to post, matching concrete behavior with abstract behavior.</li>
+  <li>Fails when the concrete <em>resolves non-determinism</em> the abstract has &mdash; then backwards simulation is needed.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Forwards simulation</td><td>Refinement proof going from pre to post.</td></tr>
+  <tr><td>Applicability</td><td>Concrete op applicable whenever abstract was.</td></tr>
+  <tr><td>Correctness</td><td>Concrete post-state retrieves to valid abstract post.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>AOp</code></td><td>Abstract operation.</td></tr>
+  <tr><td><code>COp</code></td><td>Concrete operation.</td></tr>
+  <tr><td><code>R</code></td><td>Retrieve schema.</td></tr>
+</table>
+
+<h3>IV.1 Example: Forward Simulation of Add</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2040;</code></td><td>Sequence concatenation.</td></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A messaging platform's abstract <span class="key">AddUser</span> (<code>au' = au &cup; {u?}</code>) is refined by concrete <span class="key">AppendUser</span> (<code>cu' = cu &#x2040; &lang; u? &rang;</code>). Prove forwards simulation.</p>
+<ul>
+  <li><strong>Given:</strong> <code>Retrieve</code> (<code>au = ran cu</code>), <code>u? &notin; au</code>, and <code>cu' = cu &#x2040; &lang; u? &rang;</code>.</li>
+  <li><strong>Show:</strong> <code>au' = au &cup; {u?}</code> and <code>au' = ran cu'</code>.</li>
+  <li><strong>Proof step:</strong> <code>ran cu' = ran (cu &#x2040; &lang; u? &rang;) = ran cu &cup; {u?} = au &cup; {u?} = au'</code>. &check;</li>
+  <li><strong>Natural language:</strong> "appending to the list corresponds to adding to the set" &mdash; Retrieve preserved.</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Forward Proof Shape</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The standard <span class="key">forward obligation</span> is a single formula mentioning pre-state <span class="key">Retrieve</span>, concrete op, abstract pre, and an existential over post-abstract state.</p>
+<ul>
+  <li><strong>Shape:</strong> <code>Retrieve &and; pre AOp &and; COp &rArr; &exist; av' &bull; AOp &and; Retrieve'</code>.</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="Pre-state link + abstract pre + concrete op imply existence of matching abstract post.">forward simulation rule</span>.</li>
+  <li><strong>Strategy:</strong> pick <code>av'</code> via the retrieve (often <code>av' = retrieve(cv')</code>) and verify AOp.</li>
+  <li><strong>Natural language:</strong> "from pre-retrieve and concrete step, pick an abstract post that matches via retrieve."</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p3_1"><p>Forwards simulation proves refinement by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">Showing concrete transitions match abstract ones forward in time.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Backward.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Free types.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Forward reasoning.</p><ul><li>Pre &rarr; post.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p3_2"><p>The two proof obligations are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">Applicability and correctness.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Only applicability.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Only correctness.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Nothing.</button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> Two obligations.</p><ul><li>Standard pair.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p3_3"><p class="scenario">A concrete append-to-list refines abstract set-Add. Which direction proves refinement?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')">Forwards: concrete step &rArr; some matching abstract step.</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')">Backwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb3_3')">Nothing.</button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Forward direction.</p><ul><li><strong>Type system:</strong> set + list.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> forward reasoning.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p3_4"><p class="scenario">Given R (retrieve holds pre-op) and concrete op runs, what must hold post?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')">R' holds: post-concrete retrieves to post-abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">R fails.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">Free types.</button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Retrieve preserved.</p><ul><li><strong>Type system:</strong> both states.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> post-retrieve.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p3_5"><p>Applicability ensures:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')">Concrete op applies whenever the abstract one would.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Concrete is stronger.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Free type.</button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> Precondition preservation.</p><ul><li>Dom at least as big.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p3_6"><p class="scenario">A BST-Insert refines set-Add via forwards simulation. What's the key invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>nodes(bst') = nodes(bst) &cup; {x?}</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>nodes(bst') = nodes(bst)</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>bst' = bst</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_6')"><code>bst' = &empty;</code></button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> Invariant preserved.</p><ul><li><strong>Type system:</strong> &Popf; X + BST.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> insertion.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p3_7"><p>Correctness ensures:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')">Concrete post-state corresponds to a valid abstract post.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Only pre.</button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Post-retrieve.</p><ul><li>Matches abstract.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p3_8"><p class="scenario">A linked-list Push refines abstract sequence-Prepend via forwards simulation. What's required?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">Post-concrete-list retrieves to post-abstract-sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Backwards.</button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> Forward correspondence.</p><ul><li><strong>Type system:</strong> seq X + LinkedList.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> push to linked list.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p3_9"><p>Forwards simulation is sound because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')">Each concrete step traces to an abstract one.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">It's always trivial.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Free types.</button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> Concrete behavior matches.</p><ul><li>Simulation.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p3_10"><p class="scenario">A hash-map Insert refines function-override. Forwards simulation requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">New map retrieves to abstract-function-override.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Backwards.</button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> Retrieve preserved.</p><ul><li><strong>Type system:</strong> K &#x21FB; V + HashMap.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> insert preserves.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p3_11"><p>Forwards simulation is typically:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')">The first technique to try for refinement proofs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">The last.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">Never used.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">Nothing.</button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> Standard approach.</p><ul><li>Most common.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p3_12"><p class="scenario">A trie-Insert refines set-Add via forwards simulation. What's the invariant?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')"><code>words(t') = words(t) &cup; {s?}</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>words(t') = &empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>t' = t</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_12')"><code>t' = &empty;</code></button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> Invariant preserved.</p><ul><li><strong>Type system:</strong> &Popf; String + Trie.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> trie insert.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p3_13"><p>Forwards simulation fails when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">Concrete has more non-determinism than abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Always succeeds.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Free types.</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Over-specified concrete.</p><ul><li>May need backwards.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p3_14"><p class="scenario">A graph (adjacency) retrieves to abstract relation. Forwards sim for "add edge":</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')">Post adjacency retrieves to updated relation.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Backwards.</button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Retrieve preserved post-op.</p><ul><li><strong>Type system:</strong> X&harr;X + AdjList.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> edge addition.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p3_15"><p>Forwards simulation's key benefit:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">Natural, intuitive forward-time proof.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Backward only.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Free types.</button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Intuitive direction.</p><ul><li>Easy to follow.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p3_16"><p class="scenario">A queue (array+pointers) refines seq. Forwards sim for enqueue:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">Post array+pointers retrieves to post sequence = original &#x2040; &lang;x?&rang;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Backwards.</button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Matches abstract.</p><ul><li><strong>Type system:</strong> seq + array.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> enqueue.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p3_17"><p>Forwards simulation's two obligations together guarantee:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">The concrete op is a correct refinement of the abstract one.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Renaming.</button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Sound refinement.</p><ul><li>Applicability + correctness.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p3_18"><p class="scenario">A priority queue (heap) refines abstract bag. Forwards sim for insert:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">Post heap retrieves to bag &cup; &lbrace;x?&rbrace;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Backwards.</button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> Invariant.</p><ul><li><strong>Type system:</strong> bag + Heap.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> heap insert.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p3_19"><p>Forwards simulation relates:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">Pre-concrete to pre-abstract and post-concrete to post-abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Only pre-states.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Only post-states.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Nothing.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Both states related.</p><ul><li>Retrieve before + after.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p3_20"><p class="scenario">A DB cache (hash + LRU list) refines a partial function. Forwards sim for lookup:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')">Post cache retrieves to same partial function (state unchanged).</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Backwards.</button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> State preserved.</p><ul><li><strong>Type system:</strong> K &#x21FB; V + cache.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> lookup.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p3_21"><p>The forwards simulation proof obligation uses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">Retrieve schema for both pre and post states.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Only pre.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Only post.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Nothing.</button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> R and R'.</p><ul><li>Both retrieves.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p3_22"><p class="scenario">A doubly-linked list refines a sequence. Forwards sim for reverse:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')">Post DLL retrieves to post reversed sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">Backwards.</button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Retrieve post.</p><ul><li><strong>Type system:</strong> seq + DLL.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> reverse.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p3_23"><p>Forwards simulation is called so because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">It mimics forward execution of the concrete from pre to post.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Goes backward.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Free type.</button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> Forward in time.</p><ul><li>Concrete simulates abstract going forward.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p3_24"><p class="scenario">A fib-heap refines bag with forwards sim. What's the key invariant for insert?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">Post fib-heap's bag representation = pre-bag + {x?}.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Backwards.</button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Invariant.</p><ul><li><strong>Type system:</strong> bag + FibHeap.</li><li><strong>Math:</strong> forward sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> insert preserves bag.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p3_25"><p>Why use forwards simulation as the primary technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Direct, intuitive, and works for most refinements.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Only works backward.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Never works.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Free types.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Standard + effective.</p><ul><li>Broad applicability.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 16.4 ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">16.4 Backwards Simulation</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Dual proof technique: start from the post-state retrieve and concrete op, then justify a matching abstract pre-state exists.">Backwards simulation</span> proves refinement by starting from the post-state and working backward.</li>
+  <li><strong>Given:</strong> post-state <code>Retrieve'</code> (links <code>av'</code> and <code>cv'</code>) and concrete op <code>COp</code> fired.</li>
+  <li><strong>Show:</strong> there exists pre-abstract state <code>av</code> such that <code>AOp</code> holds and <code>Retrieve</code> holds at the start.</li>
+  <li>Formal predicate: <code>&forall; av', cv, cv' &bull; Retrieve' &and; COp &rArr; &exist; av &bull; AOp &and; Retrieve</code>.</li>
+  <li>Needed when the concrete makes <strong>determinate choices</strong> that the abstract left open (e.g., abstract "pick any element," concrete "pick head").</li>
+  <li>Forwards cannot handle such cases because choosing <code>av'</code> up-front commits you to a specific future which concrete's choice may contradict; backwards lets you pick <code>av</code> <em>after</em> seeing the concrete's move.</li>
+  <li>Together with forwards, they form a <strong>jointly complete</strong> proof system &mdash; every valid refinement is provable by one or both.</li>
+  <li>In practice: try forwards first; fall back to backwards when forwards stalls on non-determinism resolution.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Backwards simulation</td><td>Refinement proof from post to pre.</td></tr>
+  <tr><td>Non-determinism resolution</td><td>Concrete picks among abstract alternatives.</td></tr>
+  <tr><td>Complementary</td><td>Works where forwards sim fails.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>AOp</code></td><td>Abstract op.</td></tr>
+  <tr><td><code>COp</code></td><td>Concrete op.</td></tr>
+</table>
+
+<h3>IV.1 Example: Abstract "Pick Any" vs Concrete "Pick Head"</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>head</code></td><td>First element of a sequence.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>tail</code></td><td>All but the first.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A queue abstractly <span class="key">removes "any" item</span> (<code>x! &isin; ab; ab' = ab \ {x!}</code>); concretely, it <span class="key">removes the head</span> (<code>x! = head cq; cq' = tail cq</code>). Forwards can't match "any" with "head"; backwards succeeds.</p>
+<ul>
+  <li><strong>Given post:</strong> <code>ab' = ran cq'</code> (retrieve') and concrete pop occurred (<code>x! = head cq</code>).</li>
+  <li><strong>Find pre-abstract:</strong> <code>av = ran cq</code>; verify <code>av = av' &cup; {x!}</code> &rArr; AOp holds (picks x!).</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="Working backward, we choose the abstract pre-state to match the concrete choice.">backwards simulation</span>.</li>
+  <li><strong>Natural language:</strong> "knowing what the concrete did, commit to an abstract history consistent with it."</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Backward Proof Shape</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The standard <span class="key">backward obligation</span> existentially quantifies over the pre-abstract state and requires <span class="key">post-state Retrieve'</span> to determine a matching abstract history.</p>
+<ul>
+  <li><strong>Shape:</strong> <code>Retrieve' &and; COp &rArr; &exist; av &bull; AOp &and; Retrieve</code>.</li>
+  <li><strong>Math:</strong> <span class="vocab" data-def="From post-state link and concrete op, deduce matching pre-state abstract.">backward simulation rule</span>.</li>
+  <li><strong>Strategy:</strong> pick <code>av = retrieve(cv)</code>; verify both the abstract op and the pre-retrieve.</li>
+  <li><strong>Natural language:</strong> "the concrete step rewrites to a consistent abstract history."</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p4_1"><p>Backwards simulation reasons:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">From post-state back to pre-state.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Only forward.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_1')">Free type.</button></li></ul><div class="feedback" id="fb4_1"><p><strong>Correct.</strong> Backward reasoning.</p><ul><li>Reverse direction.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p4_2"><p>Backwards simulation is useful when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')">Forwards simulation fails due to non-determinism.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb4_2')">Nothing.</button></li></ul><div class="feedback" id="fb4_2"><p><strong>Correct.</strong> Alternative technique.</p><ul><li>Complements forwards.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p4_3"><p class="scenario">A non-deterministic abstract "pick any element" is concretely "pick first." Which simulation fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_3')">Nothing.</button></li></ul><div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Deterministic resolves non-det.</p><ul><li><strong>Type system:</strong> set + list.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> resolves non-det.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p4_4"><p class="scenario">A concrete op always picks the head of a list to implement an abstract "some element" choice. This calls for:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_4')">Nothing.</button></li></ul><div class="feedback" id="fb4_4"><p><strong>Correct.</strong> Backwards.</p><ul><li><strong>Type system:</strong> list.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> deterministic pick.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p4_5"><p>The two simulation techniques are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')">Forwards and backwards.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Only forwards.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Only backwards.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Nothing.</button></li></ul><div class="feedback" id="fb4_5"><p><strong>Correct.</strong> Two techniques.</p><ul><li>Complementary.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p4_6"><p class="scenario">A set abstractly picks any element, concretely always the minimum. Which proof technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">Nothing.</button></li></ul><div class="feedback" id="fb4_6"><p><strong>Correct.</strong> Backwards.</p><ul><li><strong>Type system:</strong> set.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> min-pick.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p4_7"><p>Together, forwards + backwards simulation are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')">Complete &mdash; cover all refinements.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Empty.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Incomplete.</button></li><li><button onclick="selectAnswer(this,false,'fb4_7')">Nothing.</button></li></ul><div class="feedback" id="fb4_7"><p><strong>Correct.</strong> Completeness.</p><ul><li>Cover all valid refinements.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p4_8"><p class="scenario">A concrete queue with FIFO policy refines an abstract non-det bag. Backwards sim:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')">Traces back from concrete pick to match abstract choice.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb4_8')">Forwards only.</button></li></ul><div class="feedback" id="fb4_8"><p><strong>Correct.</strong> Backward trace.</p><ul><li><strong>Type system:</strong> bag + Queue.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> FIFO refinement.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p4_9"><p>Backwards simulation often involves:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">Existentially quantifying over possible pre-abstract states.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Renaming.</button></li></ul><div class="feedback" id="fb4_9"><p><strong>Correct.</strong> Existential form.</p><ul><li>Find matching abstract.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p4_10"><p class="scenario">A bank's queue picks head order. Backwards sim matches:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">Abstract "pick any client" with concrete "pick head."</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Forwards only.</button></li></ul><div class="feedback" id="fb4_10"><p><strong>Correct.</strong> Backward matching.</p><ul><li><strong>Type system:</strong> bag + queue.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> FIFO client pick.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p4_11"><p>Why not always use forwards?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">Non-determinism resolution may require backwards.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Always works.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Free types.</button></li></ul><div class="feedback" id="fb4_11"><p><strong>Correct.</strong> Limitations.</p><ul><li>Backwards picks up the slack.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p4_12"><p class="scenario">A load-balancer picks server deterministically; abstractly any server. Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Nothing.</button></li></ul><div class="feedback" id="fb4_12"><p><strong>Correct.</strong> Determ resolves non-det.</p><ul><li><strong>Type system:</strong> Server.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> deterministic pick.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p4_13"><p>Backwards simulation's mathematical form:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')"><code>&forall; post; abstractOp &bull; &exist; pre-concrete &bull; retrieve holds</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')">Renaming.</button></li></ul><div class="feedback" id="fb4_13"><p><strong>Correct.</strong> Reverse proof.</p><ul><li>Back-tracking form.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p4_14"><p class="scenario">A non-deterministic scheduling abstract + deterministic RR concrete. Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">Nothing.</button></li></ul><div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Resolves non-det.</p><ul><li><strong>Type system:</strong> Scheduler.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> RR refinement.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p4_15"><p>The difference in direction is crucial because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">Concrete may be more deterministic than abstract, requiring backward matching.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Always forward.</button></li></ul><div class="feedback" id="fb4_15"><p><strong>Correct.</strong> Matching direction.</p><ul><li>Technical reason.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p4_16"><p class="scenario">A concrete cache-eviction policy (LRU) refines an abstract "remove any." Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">Nothing.</button></li></ul><div class="feedback" id="fb4_16"><p><strong>Correct.</strong> Deterministic LRU.</p><ul><li><strong>Type system:</strong> cache.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> LRU.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p4_17"><p>Backwards simulation + forwards simulation together are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">Jointly complete for proving data refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Partial.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Free types.</button></li></ul><div class="feedback" id="fb4_17"><p><strong>Correct.</strong> Complete.</p><ul><li>Cover all cases.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p4_18"><p class="scenario">A concrete vending machine always picks next-scheduled drink from a queue. Abstract "any drink." Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Nothing.</button></li></ul><div class="feedback" id="fb4_18"><p><strong>Correct.</strong> Deterministic pick.</p><ul><li><strong>Type system:</strong> VM.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> FIFO dispenser.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p4_19"><p>Backwards simulation starts from:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">The post-state and traces back.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Only pre-state.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Free types.</button></li></ul><div class="feedback" id="fb4_19"><p><strong>Correct.</strong> Reverse-trace.</p><ul><li>From end to start.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p4_20"><p class="scenario">A concrete allocation scheme uses first-fit on a free list; abstract "some free block." Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">Nothing.</button></li></ul><div class="feedback" id="fb4_20"><p><strong>Correct.</strong> Deterministic resolution.</p><ul><li><strong>Type system:</strong> Allocator.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> first-fit.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p4_21"><p>The choice between forwards/backwards depends on:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')">The relative determinism of abstract vs concrete.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_21')">Naming.</button></li></ul><div class="feedback" id="fb4_21"><p><strong>Correct.</strong> Context-dependent.</p><ul><li>Pick appropriate technique.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p4_22"><p class="scenario">A concrete random-number generator implements abstract "any value." Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_22')">Nothing.</button></li></ul><div class="feedback" id="fb4_22"><p><strong>Correct.</strong> Concrete resolves non-det.</p><ul><li><strong>Type system:</strong> RNG.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> rng implementation.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p4_23"><p>Backwards simulation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')">Complementary to forwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">A duplicate.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_23')">Free types.</button></li></ul><div class="feedback" id="fb4_23"><p><strong>Correct.</strong> Complementary.</p><ul><li>Pair of techniques.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p4_24"><p class="scenario">A concrete algorithm chooses deterministically; abstract freely chooses. Technique?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')">Backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Forwards only.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb4_24')">Nothing.</button></li></ul><div class="feedback" id="fb4_24"><p><strong>Correct.</strong> Deterministic concrete.</p><ul><li><strong>Type system:</strong> Algorithm.</li><li><strong>Math:</strong> backwards sim.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> det refinement.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p4_25"><p>The main value of backwards simulation is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">Proving refinements that can't be proved forwards.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Only shorter proofs.</button></li></ul><div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Unique coverage.</p><ul><li>Complements forwards.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 16.5 ================= -->
+<section class="page" id="page-4">
+<h2 id="c5">16.5 Applicability</h2>
+
+<h3 id="s4-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>The <span class="vocab" data-def="The first refinement obligation: concrete op must be applicable whenever abstract op would be, for linked states.">applicability condition</span> guarantees the refinement introduces no new rejections.</li>
+  <li><strong>Formal obligation:</strong> <code>&forall; av, cv &bull; pre AOp &and; Retrieve &rArr; pre COp</code>.</li>
+  <li>Intuition: "if the abstract spec says the op is defined here, the concrete implementation must also define it here."</li>
+  <li>If applicability fails, the concrete spec <strong>weakens the service</strong>: clients expect an op to succeed, but the concrete can refuse.</li>
+  <li>Applicability allows concrete <strong>precondition weakening</strong> &mdash; concrete may apply on more states than abstract requires (but never on fewer).</li>
+  <li>Proved by expanding <code>pre AOp</code> and <code>Retrieve</code>, simplifying, and showing <code>pre COp</code> holds.</li>
+  <li>When both operations are <strong>total</strong> (pre = true), applicability is trivial &mdash; always satisfied.</li>
+  <li>One of two obligations in forwards simulation; the other is correctness.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Applicability</td><td>Concrete op applies wherever abstract op would.</td></tr>
+  <tr><td>Precondition preservation</td><td>Concrete pre &supe; abstract pre (projected).</td></tr>
+  <tr><td>No loss of service</td><td>Concrete never refuses when abstract would accept.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>pre</code></td><td>Precondition.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+</table>
+
+<h3>IV.1 Example: Applicability of BST Insert</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>pre</code></td><td>Precondition.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>#</code></td><td>Cardinality.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An abstract dictionary's <span class="key">Add</span> requires <span class="key">#as &lt; MAX</span>. The concrete BST-Insert must apply whenever that holds.</p>
+<ul>
+  <li><strong>Given:</strong> <code>pre Add &equiv; #as &lt; MAX</code>; <code>Retrieve &equiv; as = nodes(bst)</code>.</li>
+  <li><strong>Show:</strong> <code>#as &lt; MAX &and; as = nodes(bst) &rArr; pre Insert</code>.</li>
+  <li><strong>Proof:</strong> <code>#nodes(bst) = #as &lt; MAX</code>, so BST not full; BST-Insert applies. &check;</li>
+  <li><strong>Natural language:</strong> "when the abstract allows an Add, the BST has room for Insert."</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Applicability Failure</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>pre</code></td><td>Precondition.</td></tr>
+  <tr><td><code>&notRightarrow;</code></td><td>Does not imply.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A concrete hash-Insert that <span class="key">requires a free slot in the backing array</span> fails applicability if the abstract Add has <span class="key">no capacity constraint</span>.</p>
+<ul>
+  <li><strong>Abstract pre:</strong> <code>true</code> (Add always defined).</li>
+  <li><strong>Concrete pre:</strong> <code>&exist; i : dom arr &bull; arr(i) = null</code> (need free slot).</li>
+  <li><strong>Obligation:</strong> <code>true &and; Retrieve &rArr; &exist; i &bull; arr(i) = null</code>. False when array is full; applicability fails.</li>
+  <li><strong>Natural language:</strong> "abstract allows adding always, but concrete refuses when full" &mdash; refinement invalid as given; must either re-do the spec or add resize to the op.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p5_1"><p>Applicability requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_1')">Concrete op applies whenever abstract one would.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Concrete is stricter.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_1')">Free types.</button></li></ul><div class="feedback" id="fb5_1"><p><strong>Correct.</strong> Preservation of pre.</p><ul><li>No loss of service.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p5_2"><p>The applicability formula:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_2')"><code>pre AOp &and; R &rArr; pre COp</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')"><code>pre AOp &hArr; pre COp</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')"><code>&not; pre AOp</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb5_2')"><code>true</code>.</button></li></ul><div class="feedback" id="fb5_2"><p><strong>Correct.</strong> Implication.</p><ul><li>Abstract pre implies concrete pre.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p5_3"><p class="scenario">If the abstract Withdraw pre is "balance &ge; amt," the concrete must be applicable at least on those states. Which captures applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_3')"><code>balance &ge; amt &and; R &rArr; pre ConcWithdraw</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>pre ConcWithdraw &rArr; balance &ge; amt</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>true</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_3')"><code>false</code></button></li></ul><div class="feedback" id="fb5_3"><p><strong>Correct.</strong> Concrete applicable there.</p><ul><li><strong>Type system:</strong> Bank.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> no refusal.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p5_4"><p class="scenario">A concrete Insert adds an extra check that the abstract doesn't require. Is applicability satisfied?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb5_4')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_4')">No &mdash; concrete is stricter.</button></li><li><button onclick="selectAnswer(this,false,'fb5_4')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb5_4')">Nothing.</button></li></ul><div class="feedback" id="fb5_4"><p><strong>Correct.</strong> Extra concrete check.</p><ul><li><strong>Type system:</strong> Insert.</li><li><strong>Math:</strong> applicability fails.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> refusal bug.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p5_5"><p>Applicability is about:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_5')">Preserving when the operation is defined.</button></li><li><button onclick="selectAnswer(this,false,'fb5_5')">Post-state values.</button></li><li><button onclick="selectAnswer(this,false,'fb5_5')">Types.</button></li><li><button onclick="selectAnswer(this,false,'fb5_5')">Nothing.</button></li></ul><div class="feedback" id="fb5_5"><p><strong>Correct.</strong> Precondition domain.</p><ul><li>When defined.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p5_6"><p class="scenario">A set-Delete's abstract pre is "member exists." Concrete BST-Delete must apply where member exists. Which captures applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_6')"><code>member &isin; abs &and; R &rArr; pre BSTDelete</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_6')"><code>pre BSTDelete &rArr; member &isin; abs</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_6')"><code>true</code></button></li><li><button onclick="selectAnswer(this,false,'fb5_6')"><code>false</code></button></li></ul><div class="feedback" id="fb5_6"><p><strong>Correct.</strong> Implication form.</p><ul><li><strong>Type system:</strong> Set + BST.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> delete applicable.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p5_7"><p>Violating applicability means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_7')">The refinement loses service for some abstract-valid input.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb5_7')">Renaming.</button></li></ul><div class="feedback" id="fb5_7"><p><strong>Correct.</strong> Loss of service.</p><ul><li>Refinement bug.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p5_8"><p class="scenario">A concrete hash-insert applies whenever a free slot exists. Abstract says "always applicable." Applicability?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb5_8')">Holds.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_8')">Fails &mdash; concrete needs free slot.</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb5_8')">Nothing.</button></li></ul><div class="feedback" id="fb5_8"><p><strong>Correct.</strong> Extra concrete constraint.</p><ul><li><strong>Type system:</strong> HashMap.</li><li><strong>Math:</strong> applicability fails.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> hash-full refusal.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p5_9"><p>In refinement, concrete preconditions are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_9')">Weaker or equal to abstract preconditions.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Always stronger.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_9')">Free types.</button></li></ul><div class="feedback" id="fb5_9"><p><strong>Correct.</strong> Weaker.</p><ul><li>More permissive.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p5_10"><p class="scenario">A dictionary's Lookup abstractly requires "key exists." Concrete hash-lookup must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_10')">Holds &mdash; concrete applies.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_10')">Nothing.</button></li></ul><div class="feedback" id="fb5_10"><p><strong>Correct.</strong> Proper refinement.</p><ul><li><strong>Type system:</strong> Dict + Hash.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> concrete applicable.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p5_11"><p>Applicability is sometimes called:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_11')">"No loss of service" condition.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">"Always fails."</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_11')">Free type.</button></li></ul><div class="feedback" id="fb5_11"><p><strong>Correct.</strong> Service guarantee.</p><ul><li>No refusal.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p5_12"><p class="scenario">A ride-sharing's Match abstractly requires "a driver is available." Concrete matcher must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_12')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_12')">Nothing.</button></li></ul><div class="feedback" id="fb5_12"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> RideApp.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> driver match.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p5_13"><p>Applicability involves proving:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_13')">An implication about preconditions + retrieve.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb5_13')">Renaming.</button></li></ul><div class="feedback" id="fb5_13"><p><strong>Correct.</strong> Implication proof.</p><ul><li>Standard form.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p5_14"><p class="scenario">A payment gateway's Charge abstractly requires "valid card." Concrete processor must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_14')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_14')">Nothing.</button></li></ul><div class="feedback" id="fb5_14"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> Payment.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> charge applies.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p5_15"><p>If concrete is more defined than abstract:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_15')">Applicability is easier to satisfy.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Always fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_15')">Free types.</button></li></ul><div class="feedback" id="fb5_15"><p><strong>Correct.</strong> Easier.</p><ul><li>More permissive concrete.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p5_16"><p class="scenario">A game's LevelUp abstractly requires "enough XP." Concrete implementation applies there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_16')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_16')">Nothing.</button></li></ul><div class="feedback" id="fb5_16"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> Game.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> level-up applies.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p5_17"><p>Applicability's direction is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_17')">Abstract pre &rArr; concrete pre (via retrieve).</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Concrete &rArr; abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_17')">Free types.</button></li></ul><div class="feedback" id="fb5_17"><p><strong>Correct.</strong> Abstract implies concrete.</p><ul><li>Coverage.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p5_18"><p class="scenario">A logistics Dispatch abstractly requires "valid address." Concrete must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_18')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_18')">Nothing.</button></li></ul><div class="feedback" id="fb5_18"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> Logistics.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> dispatch applies.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p5_19"><p>A common failure mode of applicability:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_19')">Concrete adds extra preconditions not derivable from the abstract via the retrieve.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb5_19')">Renaming.</button></li></ul><div class="feedback" id="fb5_19"><p><strong>Correct.</strong> Extra constraints.</p><ul><li>Over-specified concrete.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p5_20"><p class="scenario">A chat's Send abstractly requires "user is online." Concrete must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_20')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_20')">Nothing.</button></li></ul><div class="feedback" id="fb5_20"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> Chat.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> send applies.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p5_21"><p>Applicability is one of the two fundamental obligations because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_21')">It ensures refinement doesn't restrict service.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb5_21')">Renaming.</button></li></ul><div class="feedback" id="fb5_21"><p><strong>Correct.</strong> Service preservation.</p><ul><li>Core requirement.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p5_22"><p class="scenario">A DB Save abstractly requires "schema valid." Concrete must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_22')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_22')">Nothing.</button></li></ul><div class="feedback" id="fb5_22"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> DB.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> save applies.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p5_23"><p>When applicability is trivially satisfied:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_23')">Both abstract and concrete are total operations.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">Both partial.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">Only concrete partial.</button></li><li><button onclick="selectAnswer(this,false,'fb5_23')">Nothing.</button></li></ul><div class="feedback" id="fb5_23"><p><strong>Correct.</strong> Total ops &rarr; trivial.</p><ul><li>Always applicable.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p5_24"><p class="scenario">A scheduler's Assign abstractly requires "task valid." Concrete must apply there. Applicability?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_24')">Holds.</button></li><li><button onclick="selectAnswer(this,false,'fb5_24')">Fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_24')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb5_24')">Nothing.</button></li></ul><div class="feedback" id="fb5_24"><p><strong>Correct.</strong> Concrete applies.</p><ul><li><strong>Type system:</strong> Scheduler.</li><li><strong>Math:</strong> applicability.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> assign applies.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p5_25"><p>Applicability's intuitive statement:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb5_25')">"If the user expects the operation to work, it does."</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Always fails.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb5_25')">Free types.</button></li></ul><div class="feedback" id="fb5_25"><p><strong>Correct.</strong> User expectation.</p><ul><li>No unexpected refusal.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 16.6 ================= -->
+<section class="page" id="page-5">
+<h2 id="c6">16.6 Correctness</h2>
+
+<h3 id="s5-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>The <span class="vocab" data-def="The second refinement obligation: concrete op's result must correspond to a valid abstract result.">correctness condition</span> ensures the concrete operation's outcome is valid at the abstract level.</li>
+  <li><strong>Formal obligation:</strong> <code>&forall; av, cv, cv' &bull; pre AOp &and; Retrieve &and; COp &rArr; &exist; av' &bull; AOp &and; Retrieve'</code>.</li>
+  <li>Intuition: "after the concrete op runs, there's an abstract post-state it corresponds to, and the abstract op legally produces that state."</li>
+  <li>If correctness fails, the concrete produces an outcome the abstract wouldn't accept &mdash; a <strong>refinement bug</strong>.</li>
+  <li>Proved by: (1) pick <code>av' = retrieve(cv')</code>; (2) verify <code>Retrieve'</code> holds (often by calculation); (3) verify <code>AOp</code> relates <code>av</code> to <code>av'</code>.</li>
+  <li>Concrete may be <strong>more deterministic</strong> than abstract: the concrete's single outcome must correspond to <em>some</em> legal abstract outcome.</li>
+  <li>Allows <strong>post-condition strengthening</strong>: concrete may produce a more specific result than abstract allowed, but must still fall within the abstract's options.</li>
+  <li>Second of two forwards-simulation obligations; together with applicability, they are <strong>jointly sufficient</strong> for correct refinement.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Correctness</td><td>Concrete post-state matches valid abstract post.</td></tr>
+  <tr><td>Post-state retrieval</td><td>Post-concrete retrieves to valid post-abstract.</td></tr>
+  <tr><td>Soundness</td><td>Concrete never produces unexpected outcomes.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>R'</code></td><td>Post-state retrieve.</td></tr>
+  <tr><td><code>AOp</code></td><td>Abstract op.</td></tr>
+  <tr><td><code>COp</code></td><td>Concrete op.</td></tr>
+</table>
+
+<h3>IV.1 Example: Correctness of BST-Insert</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&cup;</code></td><td>Set union.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A BST-Insert refining a set-Add is <span class="key">correct</span> when <span class="key">nodes(bst') = nodes(bst) &cup; {x?}</span> &mdash; the post-tree's elements exactly match the post-set.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>Retrieve &and; pre Add &and; Insert &rArr; &exist; as' &bull; Add &and; Retrieve'</code>.</li>
+  <li><strong>Pick:</strong> <code>as' = nodes(bst')</code> (from Retrieve').</li>
+  <li><strong>Verify AOp:</strong> <code>as' = as &cup; {x?}</code> follows from <code>nodes(bst') = nodes(bst) &cup; {x?}</code> and <code>as = nodes(bst)</code>. &check;</li>
+  <li><strong>Natural language:</strong> "inserting into the BST adds exactly one element to the represented set."</li>
+</ul>
+</div>
+
+<h3>IV.2 Example: Correctness Failure &mdash; Buggy Delete</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>\</code></td><td>Set difference.</td></tr>
+  <tr><td><code>&notRightarrow;</code></td><td>Does not imply.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A concrete BST-Delete that <span class="key">removes the wrong node</span> (e.g., always removes the root) fails correctness against an abstract <span class="key">Remove(x?)</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>as' = as \ {x?}</code>.</li>
+  <li><strong>Buggy concrete:</strong> <code>bst' = removeRoot(bst)</code> (ignores x?).</li>
+  <li><strong>Failure:</strong> <code>nodes(bst') = nodes(bst) \ {root(bst)} &ne; as \ {x?}</code> when <code>root(bst) &ne; x?</code>.</li>
+  <li><strong>Natural language:</strong> "concrete removed wrong element; post-state doesn't retrieve to intended abstract post." Correctness obligation unprovable.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice</h3>
+<div class="practice" id="p6_1"><p>Correctness requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_1')">Concrete post-state retrieves to a valid abstract post-state.</button></li><li><button onclick="selectAnswer(this,false,'fb6_1')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_1')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb6_1')">Renaming.</button></li></ul><div class="feedback" id="fb6_1"><p><strong>Correct.</strong> Post-state retrieval.</p><ul><li>Soundness.</li></ul></div></div>
+
+<h3>V.2 Practice</h3>
+<div class="practice" id="p6_2"><p>Correctness + applicability together yield:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_2')">A sound data refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb6_2')">Incomplete.</button></li><li><button onclick="selectAnswer(this,false,'fb6_2')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_2')">Free types.</button></li></ul><div class="feedback" id="fb6_2"><p><strong>Correct.</strong> Sound refinement.</p><ul><li>Both obligations.</li></ul></div></div>
+
+<h3>V.3 Practice</h3>
+<div class="practice" id="p6_3"><p class="scenario">A concrete DB-Insert is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_3')">Post DB-state retrieves to "abstract + new entry."</button></li><li><button onclick="selectAnswer(this,false,'fb6_3')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_3')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_3')">Backwards.</button></li></ul><div class="feedback" id="fb6_3"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> DB.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> insert correct.</li></ul></div></div>
+
+<h3>V.4 Practice</h3>
+<div class="practice" id="p6_4"><p class="scenario">A concrete sort that produces a non-sorted result (bug) fails:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_4')">Correctness.</button></li><li><button onclick="selectAnswer(this,false,'fb6_4')">Applicability.</button></li><li><button onclick="selectAnswer(this,false,'fb6_4')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_4')">Free types.</button></li></ul><div class="feedback" id="fb6_4"><p><strong>Correct.</strong> Wrong output.</p><ul><li><strong>Type system:</strong> sort.</li><li><strong>Math:</strong> correctness fails.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> buggy sort.</li></ul></div></div>
+
+<h3>V.5 Practice</h3>
+<div class="practice" id="p6_5"><p>Correctness is the:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_5')">Second forwards-simulation obligation.</button></li><li><button onclick="selectAnswer(this,false,'fb6_5')">First.</button></li><li><button onclick="selectAnswer(this,false,'fb6_5')">Only.</button></li><li><button onclick="selectAnswer(this,false,'fb6_5')">Nothing.</button></li></ul><div class="feedback" id="fb6_5"><p><strong>Correct.</strong> Second obligation.</p><ul><li>After applicability.</li></ul></div></div>
+
+<h3>V.6 Practice</h3>
+<div class="practice" id="p6_6"><p class="scenario">A hash-table Delete is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_6')">Post-hash retrieves to abstract function with that key removed.</button></li><li><button onclick="selectAnswer(this,false,'fb6_6')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_6')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_6')">Backwards.</button></li></ul><div class="feedback" id="fb6_6"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> HashMap.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> delete correct.</li></ul></div></div>
+
+<h3>V.7 Practice</h3>
+<div class="practice" id="p6_7"><p>Correctness is sometimes called:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_7')">"Soundness."</button></li><li><button onclick="selectAnswer(this,false,'fb6_7')">"Laziness."</button></li><li><button onclick="selectAnswer(this,false,'fb6_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_7')">Free type.</button></li></ul><div class="feedback" id="fb6_7"><p><strong>Correct.</strong> Soundness.</p><ul><li>Same idea.</li></ul></div></div>
+
+<h3>V.8 Practice</h3>
+<div class="practice" id="p6_8"><p class="scenario">A concrete filesystem's Write updates both the file map and metadata. Correctness requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_8')">Post concrete retrieves to post abstract file-data map.</button></li><li><button onclick="selectAnswer(this,false,'fb6_8')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_8')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_8')">Backwards.</button></li></ul><div class="feedback" id="fb6_8"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> FS.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> write correct.</li></ul></div></div>
+
+<h3>V.9 Practice</h3>
+<div class="practice" id="p6_9"><p>The correctness proof obligation uses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_9')">Pre-state retrieve R and post-state retrieve R'.</button></li><li><button onclick="selectAnswer(this,false,'fb6_9')">Only pre.</button></li><li><button onclick="selectAnswer(this,false,'fb6_9')">Only post.</button></li><li><button onclick="selectAnswer(this,false,'fb6_9')">Nothing.</button></li></ul><div class="feedback" id="fb6_9"><p><strong>Correct.</strong> Both retrieves.</p><ul><li>Full proof.</li></ul></div></div>
+
+<h3>V.10 Practice</h3>
+<div class="practice" id="p6_10"><p class="scenario">A priority queue Pop is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_10')">The popped element matches the abstract's choice (e.g., the min).</button></li><li><button onclick="selectAnswer(this,false,'fb6_10')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_10')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_10')">Backwards.</button></li></ul><div class="feedback" id="fb6_10"><p><strong>Correct.</strong> Match abstract.</p><ul><li><strong>Type system:</strong> PriorityQueue.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> pop correctness.</li></ul></div></div>
+
+<h3>V.11 Practice</h3>
+<div class="practice" id="p6_11"><p>Violating correctness means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_11')">The concrete computes an answer the abstract wouldn't produce.</button></li><li><button onclick="selectAnswer(this,false,'fb6_11')">Always succeeds.</button></li><li><button onclick="selectAnswer(this,false,'fb6_11')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_11')">Free types.</button></li></ul><div class="feedback" id="fb6_11"><p><strong>Correct.</strong> Unexpected result.</p><ul><li>Bug.</li></ul></div></div>
+
+<h3>V.12 Practice</h3>
+<div class="practice" id="p6_12"><p class="scenario">A trie-Insert is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_12')">Post trie's words set = pre words set + {new string}.</button></li><li><button onclick="selectAnswer(this,false,'fb6_12')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_12')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_12')">Backwards.</button></li></ul><div class="feedback" id="fb6_12"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> Trie.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> trie insert correct.</li></ul></div></div>
+
+<h3>V.13 Practice</h3>
+<div class="practice" id="p6_13"><p>Correctness obligations must hold:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_13')">For all pre-states where abstract op is applicable.</button></li><li><button onclick="selectAnswer(this,false,'fb6_13')">Only for one.</button></li><li><button onclick="selectAnswer(this,false,'fb6_13')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_13')">Free types.</button></li></ul><div class="feedback" id="fb6_13"><p><strong>Correct.</strong> Universal quantification.</p><ul><li>All applicable cases.</li></ul></div></div>
+
+<h3>V.14 Practice</h3>
+<div class="practice" id="p6_14"><p class="scenario">A graph's add-edge is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_14')">Post adjacency retrieves to post abstract relation with the edge added.</button></li><li><button onclick="selectAnswer(this,false,'fb6_14')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_14')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_14')">Backwards.</button></li></ul><div class="feedback" id="fb6_14"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> graph.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> edge correct.</li></ul></div></div>
+
+<h3>V.15 Practice</h3>
+<div class="practice" id="p6_15"><p>Proving correctness typically involves:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_15')">Showing the retrieve is preserved after the op.</button></li><li><button onclick="selectAnswer(this,false,'fb6_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_15')">Renaming.</button></li><li><button onclick="selectAnswer(this,false,'fb6_15')">Free types.</button></li></ul><div class="feedback" id="fb6_15"><p><strong>Correct.</strong> Post-op retrieve.</p><ul><li>Standard form.</li></ul></div></div>
+
+<h3>V.16 Practice</h3>
+<div class="practice" id="p6_16"><p class="scenario">A cache's Evict is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_16')">Post cache retrieves to abstract with the evicted entry removed.</button></li><li><button onclick="selectAnswer(this,false,'fb6_16')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_16')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_16')">Backwards.</button></li></ul><div class="feedback" id="fb6_16"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> cache.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> evict correct.</li></ul></div></div>
+
+<h3>V.17 Practice</h3>
+<div class="practice" id="p6_17"><p>Correctness is the "output contract" between:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_17')">Concrete and abstract post-states.</button></li><li><button onclick="selectAnswer(this,false,'fb6_17')">Pre-states.</button></li><li><button onclick="selectAnswer(this,false,'fb6_17')">Types.</button></li><li><button onclick="selectAnswer(this,false,'fb6_17')">Nothing.</button></li></ul><div class="feedback" id="fb6_17"><p><strong>Correct.</strong> Post-state contract.</p><ul><li>Outcome matching.</li></ul></div></div>
+
+<h3>V.18 Practice</h3>
+<div class="practice" id="p6_18"><p class="scenario">A fib-heap's ExtractMin is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_18')">Post heap retrieves to abstract bag with the minimum removed.</button></li><li><button onclick="selectAnswer(this,false,'fb6_18')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_18')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_18')">Backwards.</button></li></ul><div class="feedback" id="fb6_18"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> FibHeap.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> extractMin correct.</li></ul></div></div>
+
+<h3>V.19 Practice</h3>
+<div class="practice" id="p6_19"><p>A refinement proof has:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_19')">Two obligations: applicability and correctness.</button></li><li><button onclick="selectAnswer(this,false,'fb6_19')">One.</button></li><li><button onclick="selectAnswer(this,false,'fb6_19')">Three.</button></li><li><button onclick="selectAnswer(this,false,'fb6_19')">None.</button></li></ul><div class="feedback" id="fb6_19"><p><strong>Correct.</strong> Two main obligations.</p><ul><li>Standard.</li></ul></div></div>
+
+<h3>V.20 Practice</h3>
+<div class="practice" id="p6_20"><p class="scenario">A DB transaction is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_20')">Post DB retrieves to abstract post-state after transaction.</button></li><li><button onclick="selectAnswer(this,false,'fb6_20')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_20')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_20')">Backwards.</button></li></ul><div class="feedback" id="fb6_20"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> DB transaction.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> txn correct.</li></ul></div></div>
+
+<h3>V.21 Practice</h3>
+<div class="practice" id="p6_21"><p>Applicability + correctness guarantee:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_21')">The concrete operation is a sound refinement of the abstract.</button></li><li><button onclick="selectAnswer(this,false,'fb6_21')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_21')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb6_21')">Renaming.</button></li></ul><div class="feedback" id="fb6_21"><p><strong>Correct.</strong> Sound refinement.</p><ul><li>Together sufficient.</li></ul></div></div>
+
+<h3>V.22 Practice</h3>
+<div class="practice" id="p6_22"><p class="scenario">A media app's Upload is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_22')">Post media-store retrieves to abstract collection with the new item.</button></li><li><button onclick="selectAnswer(this,false,'fb6_22')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_22')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_22')">Backwards.</button></li></ul><div class="feedback" id="fb6_22"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> Media.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> upload correct.</li></ul></div></div>
+
+<h3>V.23 Practice</h3>
+<div class="practice" id="p6_23"><p>Data refinement is complete when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_23')">Every refinement can be proved by forwards + backwards simulation.</button></li><li><button onclick="selectAnswer(this,false,'fb6_23')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb6_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_23')">Free types.</button></li></ul><div class="feedback" id="fb6_23"><p><strong>Correct.</strong> Completeness.</p><ul><li>Joint coverage.</li></ul></div></div>
+
+<h3>V.24 Practice</h3>
+<div class="practice" id="p6_24"><p class="scenario">A chat app's DeleteThread is correct when:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_24')">Post state retrieves to abstract threads minus the deleted thread.</button></li><li><button onclick="selectAnswer(this,false,'fb6_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_24')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb6_24')">Backwards.</button></li></ul><div class="feedback" id="fb6_24"><p><strong>Correct.</strong> Post retrieve.</p><ul><li><strong>Type system:</strong> Chat.</li><li><strong>Math:</strong> correctness.</li><li><strong>Schema:</strong> as above.</li><li><strong>Natural language:</strong> delete correct.</li></ul></div></div>
+
+<h3>V.25 Practice</h3>
+<div class="practice" id="p6_25"><p>The goal of data refinement is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb6_25')">To move from clear abstract specs to implementable concrete ones while preserving behavior.</button></li><li><button onclick="selectAnswer(this,false,'fb6_25')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb6_25')">Free types.</button></li><li><button onclick="selectAnswer(this,false,'fb6_25')">Renaming.</button></li></ul><div class="feedback" id="fb6_25"><p><strong>Correct.</strong> Abstract &rarr; concrete soundly.</p><ul><li>Development methodology.</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 6</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 16.</footer>
+
+</body>
+</html>

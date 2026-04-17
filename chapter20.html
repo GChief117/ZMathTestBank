@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 20 — A Telecommunications Protocol</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch20-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">20.1 External View &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">20.2 Sectional View &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">20.3 External &harr; Sectional &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 20 &mdash; A Telecommunications Protocol</h1>
+
+<!-- ================= 20.1 ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">20.1 Specification: The External View</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Case study:</strong> <span class="vocab" data-def="Signalling System No. 7 &mdash; international standard for signalling between telephone exchanges.">SS7</span> telecom protocol specified via <span class="vocab" data-def="Hiding internal detail to produce a small, understandable specification.">abstraction</span> + refinement.</li>
+  <li><strong><span class="vocab" data-def="The user-visible specification of the protocol &mdash; hides routing, shows only messages in and out.">External view</span>:</strong> state = two sequences <code>in, out : seq M</code> &mdash; messages entered and messages delivered.</li>
+  <li><strong><span class="vocab" data-def="out is always a suffix of in &mdash; guarantees no corruption and no re-ordering.">Suffix invariant</span>:</strong> <code>&exist; s : seq M &bull; in = s &#x2040; out</code> &mdash; <em>out</em> is a trailing portion of <em>in</em>.</li>
+  <li><strong>Orientation:</strong> newest messages added to the <em>left</em>; oldest toward the right. The gap between <em>in</em> and <em>out</em> represents <span class="vocab" data-def="Messages that have been submitted but not yet delivered &mdash; the gap between in and out.">in-flight</span> messages.</li>
+  <li><strong>ExtInit:</strong> <code>ExtInit &#x2259; [ Ext&prime; | in&prime; = &langle;&rangle; ]</code> &mdash; forces both sequences empty.</li>
+  <li><strong>Transmit:</strong> <code>&Delta;Ext; m? : M; in&prime; = &langle;m?&rangle; &#x2040; in; out&prime; = out</code> &mdash; prepend new message; <em>out</em> unchanged.</li>
+  <li><strong>Receive:</strong> <code>&Delta;Ext; in&prime; = in; #out&prime; = #out + 1 &or; out&prime; = out</code> &mdash; delivery grows by one or stays (nondeterministic).</li>
+  <li><strong>Contract:</strong> all later design decisions must preserve this external behaviour &mdash; no re-ordering, no corruption.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>SS7</td><td>Signalling System No. 7 &mdash; international telecom signalling standard.</td></tr>
+  <tr><td>External view</td><td>User-visible abstraction: only <em>in</em> and <em>out</em> sequences.</td></tr>
+  <tr><td>Suffix invariant</td><td><em>out</em> is always a suffix of <em>in</em> &mdash; no re-ordering.</td></tr>
+  <tr><td>In-flight</td><td>Messages submitted but not yet delivered (gap between in and out).</td></tr>
+  <tr><td>Abstraction</td><td>Hiding internal detail for a small, clear specification.</td></tr>
+  <tr><td>FIFO delivery</td><td>First-in, first-out ordering of delivered messages.</td></tr>
+  <tr><td>Nondeterministic delivery</td><td>Receive may or may not deliver the next message on each step.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq M</code></td><td>Sequence of messages.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Sequence concatenation.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State-change (before + after).</td></tr>
+  <tr><td><code>&Xi;</code></td><td>No observable state change.</td></tr>
+  <tr><td><code>&langle; &rangle;</code></td><td>Empty sequence / sequence literal.</td></tr>
+  <tr><td><code>#</code></td><td>Sequence length.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+  <tr><td><code>&#x2259;</code></td><td>Schema definition.</td></tr>
+</table>
+
+<h3>IV.1 Examples: Phone Call Channel, Data Link &amp; SMS Gateway</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq M</code></td><td>Sequence of messages.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">phone-call signalling channel</span> models <span class="key">submitted frames</span> and <span class="key">delivered frames</span> as two sequences.</p>
+<ul>
+  <li><strong>External:</strong> <code>Ext</code> schema &mdash; <code>in, out : <span class="vocab" data-def="Sequence of messages.">seq M</span></code>.</li>
+  <li><strong>Invariant:</strong> <code><span class="vocab" data-def="Existential quantifier.">&exist;</span> s : seq M &bull; in = s <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> out</code> &mdash; <em>out</em> is a <span class="vocab" data-def="out is always a suffix of in.">suffix</span> of <em>in</em>.</li>
+  <li><strong>Transmit:</strong> prepend <code>m?</code> to <em>in</em>; <em>out</em> unchanged.</li>
+  <li><strong>Receive:</strong> <em>out</em> grows by one (FIFO); <em>in</em> unchanged.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">data link</span> between two routers uses the same <span class="key">two-sequence model</span> to track <span class="key">packets in transit</span>.</p>
+<ul>
+  <li><strong>External:</strong> <code>in, out : seq Packet</code> with suffix invariant.</li>
+  <li><strong>Invariant:</strong> delivered packets are always a trailing portion of submitted packets.</li>
+  <li><strong>Transmit:</strong> router A prepends a packet to <em>in</em>.</li>
+  <li><strong>Receive:</strong> router B consumes from <em>out</em>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">SMS gateway</span> queues <span class="key">outbound text messages</span> and tracks which have been <span class="key">delivered to handsets</span>.</p>
+<ul>
+  <li><strong>External:</strong> <code>in, out : seq SMS</code>.</li>
+  <li><strong>Invariant:</strong> <code>&exist; s : seq SMS &bull; in = s &#x2040; out</code> &mdash; gateway never re-orders texts.</li>
+  <li><strong>Transmit:</strong> app server submits a text &rarr; prepended to <em>in</em>.</li>
+  <li><strong>Receive:</strong> handset acknowledges delivery &rarr; <em>out</em> grows.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Valid State Pair, Invalid State Pair &amp; Boundary State</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&langle; &rangle;</code></td><td>Empty sequence.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A channel has <code>in = <span class="key">&langle;m5, m4, m3, m2, m1&rangle;</span></code> and <code>out = <span class="key">&langle;m3, m2, m1&rangle;</span></code>. Is the <span class="key">suffix invariant</span> satisfied?</p>
+<ul>
+  <li><strong>External:</strong> <code>in = &langle;m5,m4&rangle; &#x2040; &langle;m3,m2,m1&rangle;</code>, so <code>s = &langle;m5,m4&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> <span class="vocab" data-def="out is always a suffix of in.">suffix</span> holds &mdash; 5 submitted, 3 delivered, 2 <span class="vocab" data-def="Messages submitted but not yet delivered.">in-flight</span>.</li>
+  <li><strong>Transmit:</strong> textbook example showing a valid mid-stream state.</li>
+  <li><strong>Receive:</strong> next Receive would grow <em>out</em> to <code>&langle;m4,m3,m2,m1&rangle;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A channel has <code>in = <span class="key">&langle;x, y&rangle;</span></code> and <code>out = <span class="key">&langle;x&rangle;</span></code>. Does the <span class="key">invariant hold</span>?</p>
+<ul>
+  <li><strong>External:</strong> <code>&langle;x&rangle;</code> is a <em>prefix</em> of <code>&langle;x,y&rangle;</code>, not a suffix.</li>
+  <li><strong>Invariant:</strong> <strong>fails</strong> &mdash; no <code>s</code> satisfies <code>&langle;x,y&rangle; = s &#x2040; &langle;x&rangle;</code>.</li>
+  <li><strong>Transmit:</strong> this state could never arise from valid operations.</li>
+  <li><strong>Receive:</strong> not applicable &mdash; state is unreachable.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A channel has <code>in = out = <span class="key">&langle;a, b, c&rangle;</span></code>. Is the invariant satisfied and how many messages are <span class="key">in-flight</span>?</p>
+<ul>
+  <li><strong>External:</strong> <code>s = &langle;&rangle;</code>, so <code>in = &langle;&rangle; &#x2040; out</code>. Valid.</li>
+  <li><strong>Invariant:</strong> holds &mdash; 0 in-flight; everything delivered.</li>
+  <li><strong>Transmit:</strong> next Transmit would create one in-flight message.</li>
+  <li><strong>Receive:</strong> Receive with <code>out&prime; = out</code> (no new delivery since nothing pending).</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Call Setup Transmit, Packet Burst &amp; Alert Submission</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&langle; &rangle;</code></td><td>Sequence literal.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">call-setup</span> sequence: caller Transmits <span class="key">IAM</span> (Initial Address Message), then <span class="key">ACM</span> (Address Complete).</p>
+<ul>
+  <li><strong>External:</strong> start <code>in = out = &langle;&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> after two Transmits: <code>in = &langle;ACM, IAM&rangle;</code>, <code>out = &langle;&rangle;</code> &mdash; suffix holds.</li>
+  <li><strong>Transmit:</strong> each <code>in&prime; = &langle;m?&rangle; <span class="vocab" data-def="Sequence concatenation.">&#x2040;</span> in</code>; newest at left.</li>
+  <li><strong>Receive:</strong> not yet fired; both messages <span class="vocab" data-def="Messages submitted but not yet delivered.">in-flight</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">router burst</span>: three packets <span class="key">P1, P2, P3</span> submitted in rapid succession.</p>
+<ul>
+  <li><strong>External:</strong> after three Transmits: <code>in = &langle;P3, P2, P1&rangle;</code>, <code>out = &langle;&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> suffix holds (<code>s = in</code>, <code>out = &langle;&rangle;</code>).</li>
+  <li><strong>Transmit:</strong> each prepends; order preserved left-to-right = newest-to-oldest.</li>
+  <li><strong>Receive:</strong> first Receive would deliver P1 (oldest), giving <code>out = &langle;P1&rangle;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">emergency alert</span> system submits a single <span class="key">ALERT</span> frame.</p>
+<ul>
+  <li><strong>External:</strong> <code>in&prime; = &langle;ALERT&rangle; &#x2040; &langle;&rangle; = &langle;ALERT&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> <code>&langle;&rangle;</code> is a suffix of <code>&langle;ALERT&rangle;</code> &mdash; holds.</li>
+  <li><strong>Transmit:</strong> single frame in-flight.</li>
+  <li><strong>Receive:</strong> next Receive delivers ALERT, giving <code>out = &langle;ALERT&rangle; = in</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Single Delivery, Partial Delivery &amp; Full Catch-Up</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>#</code></td><td>Sequence length.</td></tr>
+  <tr><td><code>&or;</code></td><td>Disjunction.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A channel has <code>in = &langle;a, b, c&rangle;</code>, <code>out = &langle;c&rangle;</code>. Receive <span class="key">delivers one more</span>.</p>
+<ul>
+  <li><strong>External:</strong> <code>in&prime; = in</code>; <code><span class="vocab" data-def="Sequence length.">#</span>out&prime; = #out + 1 = 2</code>, so <code>out&prime; = &langle;b,c&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> <code>&langle;b,c&rangle;</code> is a suffix of <code>&langle;a,b,c&rangle;</code> &mdash; holds.</li>
+  <li><strong>Transmit:</strong> not fired.</li>
+  <li><strong>Receive:</strong> <span class="vocab" data-def="First-in, first-out ordering.">FIFO</span> &mdash; <em>b</em> is the next oldest undelivered.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A channel has <code>in = &langle;x, y, z&rangle;</code>, <code>out = &langle;z&rangle;</code>. Receive <span class="key">nondeterministically stays</span>.</p>
+<ul>
+  <li><strong>External:</strong> <code>out&prime; = out = &langle;z&rangle;</code> (the <code><span class="vocab" data-def="Disjunction.">&or;</span> out&prime; = out</code> branch).</li>
+  <li><strong>Invariant:</strong> still holds &mdash; no change.</li>
+  <li><strong>Transmit:</strong> not fired.</li>
+  <li><strong>Receive:</strong> <span class="vocab" data-def="Receive may or may not deliver the next message on each step.">nondeterministic</span> &mdash; delivery not guaranteed on every step.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">After many Receives, <code>out</code> catches up to <code>in = &langle;a, b&rangle;</code>. <span class="key">Zero in-flight</span>.</p>
+<ul>
+  <li><strong>External:</strong> <code>in = out = &langle;a, b&rangle;</code>; <code>s = &langle;&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> suffix holds trivially.</li>
+  <li><strong>Transmit:</strong> next Transmit would re-open the gap.</li>
+  <li><strong>Receive:</strong> <code>out&prime; = out</code> branch only (nothing more to deliver).</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Fresh Start, Reset After Error &amp; Warm Standby</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&langle; &rangle;</code></td><td>Empty sequence.</td></tr>
+  <tr><td><code>&#x2259;</code></td><td>Schema definition.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">On <span class="key">channel start-up</span>, both buffers are <span class="key">empty</span> &mdash; a trivially valid state.</p>
+<ul>
+  <li><strong>External:</strong> <code>ExtInit <span class="vocab" data-def="Schema definition.">&#x2259;</span> [ Ext&prime; | in&prime; = &langle;&rangle; ]</code>.</li>
+  <li><strong>Invariant:</strong> <code>&langle;&rangle;</code> is a suffix of <code>&langle;&rangle;</code> &mdash; holds.</li>
+  <li><strong>Transmit:</strong> first Transmit creates the first in-flight message.</li>
+  <li><strong>Receive:</strong> nothing to deliver until Transmit fires.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">After a <span class="key">link failure</span>, the protocol <span class="key">resets</span> by re-initialising to ExtInit.</p>
+<ul>
+  <li><strong>External:</strong> <code>in&prime; = out&prime; = &langle;&rangle;</code>.</li>
+  <li><strong>Invariant:</strong> trivially holds after reset.</li>
+  <li><strong>Transmit:</strong> fresh start &mdash; all previous traffic discarded.</li>
+  <li><strong>Receive:</strong> nothing pending.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">warm standby</span> link starts with <span class="key">pre-loaded messages</span> <code>in = out = &langle;SYNC&rangle;</code> (already delivered).</p>
+<ul>
+  <li><strong>External:</strong> <code>s = &langle;&rangle;</code>; suffix holds.</li>
+  <li><strong>Invariant:</strong> valid state &mdash; zero in-flight.</li>
+  <li><strong>Transmit:</strong> next real message appended to <em>in</em>.</li>
+  <li><strong>Receive:</strong> SYNC already delivered; next Receive awaits new traffic.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice: External State</h3>
+<div class="practice" id="p1_1"><p>The Ext schema holds:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')"><code>in, out : seq M</code> with <code>&exist; s : seq M &bull; in = s &#x2040; out</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Only <code>in</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">Only <code>out</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">A single message.</button></li></ul><div class="feedback" id="fb1_1"><p><strong>Correct.</strong> Two sequences plus the suffix invariant.</p><ul><li><strong>External:</strong> in, out : seq M.</li><li><strong>Invariant:</strong> out suffix in.</li><li><strong>Transmit:</strong> grows in.</li><li><strong>Receive:</strong> grows out.</li></ul></div></div>
+
+<h3>V.2 Practice: Suffix Invariant</h3>
+<div class="practice" id="p1_2"><p>The suffix invariant guarantees:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">No re-ordering and no corruption of messages.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Random ordering.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Exactly one message at a time.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Nothing.</button></li></ul><div class="feedback" id="fb1_2"><p><strong>Correct.</strong> out is a suffix of in &mdash; order preserved.</p><ul><li><strong>External:</strong> core contract.</li><li><strong>Invariant:</strong> suffix relation.</li><li><strong>Transmit:</strong> preserves suffix.</li><li><strong>Receive:</strong> extends suffix.</li></ul></div></div>
+
+<h3>V.3 Practice: External Specification</h3>
+<div class="practice" id="p1_3"><p class="scenario">Given <code>in = &langle;a, b, c&rangle;</code> and <code>out = &langle;b, c&rangle;</code>. Does the <span class="key">suffix invariant</span> hold?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')">Yes &mdash; <code>&langle;b,c&rangle;</code> is a suffix of <code>&langle;a,b,c&rangle;</code> with <code>s = &langle;a&rangle;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_3')">No &mdash; suffix fails.</button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>in suffix out</code> holds instead.</button></li><li><button onclick="selectAnswer(this,false,'fb1_3')">Undefined.</button></li></ul><div class="feedback" id="fb1_3"><p><strong>Correct.</strong> <code>&langle;a,b,c&rangle; = &langle;a&rangle; &#x2040; &langle;b,c&rangle;</code>.</p><ul><li><strong>External:</strong> valid state.</li><li><strong>Invariant:</strong> s = &langle;a&rangle;.</li><li><strong>Transmit:</strong> could extend in.</li><li><strong>Receive:</strong> could deliver a.</li></ul></div></div>
+
+<h3>V.4 Practice: External Specification</h3>
+<div class="practice" id="p1_4"><p class="scenario">A channel has <code>in = &langle;x, y&rangle;</code> and <code>out = &langle;x&rangle;</code>. Is the invariant satisfied?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_4')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')">No &mdash; <code>&langle;x&rangle;</code> is a prefix, not a suffix, of <code>&langle;x,y&rangle;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')">Only if x = y.</button></li><li><button onclick="selectAnswer(this,false,'fb1_4')">Undefined.</button></li></ul><div class="feedback" id="fb1_4"><p><strong>Correct.</strong> No s satisfies <code>&langle;x,y&rangle; = s &#x2040; &langle;x&rangle;</code>.</p><ul><li><strong>External:</strong> invalid state.</li><li><strong>Invariant:</strong> wrong end.</li><li><strong>Transmit:</strong> unreachable.</li><li><strong>Receive:</strong> n/a.</li></ul></div></div>
+
+<h3>V.5 Practice: External Specification</h3>
+<div class="practice" id="p1_5"><p class="scenario">A link has <code>in = &langle;a, b, c, d&rangle;</code>, <code>out = &langle;c, d&rangle;</code>. How many messages are <span class="key">in-flight</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')">2 &mdash; <code>#in - #out = 4 - 2</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">4.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">0.</button></li><li><button onclick="selectAnswer(this,false,'fb1_5')">1.</button></li></ul><div class="feedback" id="fb1_5"><p><strong>Correct.</strong> In-flight = #in &minus; #out.</p><ul><li><strong>External:</strong> gap = a, b.</li><li><strong>Invariant:</strong> suffix holds.</li><li><strong>Transmit:</strong> would make 3 in-flight.</li><li><strong>Receive:</strong> would make 1 in-flight.</li></ul></div></div>
+
+<h3>V.6 Practice: External Specification</h3>
+<div class="practice" id="p1_6"><p class="scenario">Given <code>in = out = &langle;p, q&rangle;</code>. How many in-flight?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')">0 &mdash; all delivered.</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')">2.</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')">1.</button></li><li><button onclick="selectAnswer(this,false,'fb1_6')">Undefined.</button></li></ul><div class="feedback" id="fb1_6"><p><strong>Correct.</strong> in = out means s = &langle;&rangle;.</p><ul><li><strong>External:</strong> caught up.</li><li><strong>Invariant:</strong> trivially holds.</li><li><strong>Transmit:</strong> would create 1 in-flight.</li><li><strong>Receive:</strong> nothing more to deliver.</li></ul></div></div>
+
+<h3>V.7 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_7"><p class="scenario">Empty channel. Caller Transmits <span class="key">IAM</span>. New state?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>in = &langle;IAM&rangle;, out = &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>in = out = &langle;IAM&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>in = &langle;&rangle;, out = &langle;IAM&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')">No change.</button></li></ul><div class="feedback" id="fb1_7"><p><strong>Correct.</strong> Transmit prepends to in; out unchanged.</p><ul><li><strong>External:</strong> in grows.</li><li><strong>Invariant:</strong> &langle;&rangle; suffix &langle;IAM&rangle;.</li><li><strong>Transmit:</strong> in&prime; = &langle;IAM&rangle; &#x2040; &langle;&rangle;.</li><li><strong>Receive:</strong> not fired.</li></ul></div></div>
+
+<h3>V.8 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_8"><p class="scenario">State: <code>in = &langle;a, b, c&rangle;</code>, <code>out = &langle;b, c&rangle;</code>. Receive fires and <span class="key">delivers</span>. New out?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>out&prime; = &langle;a, b, c&rangle;</code> (grows by 1).</button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>out&prime; = &langle;c&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>out&prime; = &langle;a&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')">No change.</button></li></ul><div class="feedback" id="fb1_8"><p><strong>Correct.</strong> #out&prime; = #out + 1 = 3 = #in, so out catches up.</p><ul><li><strong>External:</strong> full delivery.</li><li><strong>Invariant:</strong> in = out.</li><li><strong>Transmit:</strong> not fired.</li><li><strong>Receive:</strong> FIFO.</li></ul></div></div>
+
+<h3>V.9 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_9"><p>Transmit changes only:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>in</code> &mdash; out unchanged.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')"><code>out</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_9')">Neither.</button></li></ul><div class="feedback" id="fb1_9"><p><strong>Correct.</strong> out&prime; = out in Transmit.</p><ul><li><strong>External:</strong> in grows.</li><li><strong>Invariant:</strong> preserved.</li><li><strong>Transmit:</strong> in&prime; = &langle;m?&rangle; &#x2040; in.</li><li><strong>Receive:</strong> not involved.</li></ul></div></div>
+
+<h3>V.10 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_10"><p>Receive changes only:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>out</code> &mdash; in unchanged.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>in</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb1_10')">Neither.</button></li></ul><div class="feedback" id="fb1_10"><p><strong>Correct.</strong> in&prime; = in in Receive.</p><ul><li><strong>External:</strong> out grows.</li><li><strong>Invariant:</strong> preserved.</li><li><strong>Transmit:</strong> not involved.</li><li><strong>Receive:</strong> #out&prime; = #out + 1 &or; out&prime; = out.</li></ul></div></div>
+
+<h3>V.11 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_11"><p class="scenario">Two Transmits (<span class="key">IAM</span> then <span class="key">ACM</span>) from empty. State?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>in = &langle;ACM, IAM&rangle;, out = &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_11')"><code>in = &langle;IAM, ACM&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_11')"><code>in = &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_11')"><code>out = &langle;ACM, IAM&rangle;</code></button></li></ul><div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Newest at left: ACM prepended second.</p><ul><li><strong>External:</strong> two in-flight.</li><li><strong>Invariant:</strong> &langle;&rangle; suffix &langle;ACM,IAM&rangle;.</li><li><strong>Transmit:</strong> each prepends.</li><li><strong>Receive:</strong> not fired.</li></ul></div></div>
+
+<h3>V.12 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_12"><p class="scenario">State: <code>in = &langle;ACM, IAM&rangle;, out = &langle;&rangle;</code>. Receive delivers. New out?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>out&prime; = &langle;IAM&rangle;</code> (oldest delivered first).</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>out&prime; = &langle;ACM&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')"><code>out&prime; = &langle;ACM, IAM&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">No change.</button></li></ul><div class="feedback" id="fb1_12"><p><strong>Correct.</strong> FIFO: IAM submitted first, delivered first.</p><ul><li><strong>External:</strong> one delivered.</li><li><strong>Invariant:</strong> &langle;IAM&rangle; suffix &langle;ACM,IAM&rangle;.</li><li><strong>Transmit:</strong> not fired.</li><li><strong>Receive:</strong> #out grows to 1.</li></ul></div></div>
+
+<h3>V.13 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_13"><p class="scenario">Receive has <code>#out&prime; = #out + 1 <span class="key">&or;</span> out&prime; = out</code>. The <code>&or;</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')">Delivery is nondeterministic &mdash; may or may not deliver on each step.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Both branches fire.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Exactly one always fires.</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">Neither fires.</button></li></ul><div class="feedback" id="fb1_13"><p><strong>Correct.</strong> Nondeterministic choice models asynchronous delivery.</p><ul><li><strong>External:</strong> disjunctive Receive.</li><li><strong>Invariant:</strong> both branches preserve suffix.</li><li><strong>Transmit:</strong> not involved.</li><li><strong>Receive:</strong> models real-world timing.</li></ul></div></div>
+
+<h3>V.14 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_14"><p class="scenario"><code>in = &langle;a, b, c&rangle;</code>, <code>out = &langle;c&rangle;</code>. The <span class="key">in-flight prefix</span> (s in the invariant) is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>&langle;a, b&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>&langle;c&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>&langle;a&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>&langle;&rangle;</code></button></li></ul><div class="feedback" id="fb1_14"><p><strong>Correct.</strong> in = &langle;a,b&rangle; &#x2040; &langle;c&rangle;.</p><ul><li><strong>External:</strong> s = &langle;a,b&rangle;.</li><li><strong>Invariant:</strong> split.</li><li><strong>Transmit:</strong> would extend s.</li><li><strong>Receive:</strong> would shrink s.</li></ul></div></div>
+
+<h3>V.15 Practice: External Specification</h3>
+<div class="practice" id="p1_15"><p class="scenario">Receive requires what precondition when <code>out = &langle;&rangle;</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">The <code>out&prime; = out</code> branch fires &mdash; no delivery (nothing to deliver beyond what's in-flight).</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">It delivers a phantom message.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">It crashes.</button></li><li><button onclick="selectAnswer(this,false,'fb1_15')">It resets in.</button></li></ul><div class="feedback" id="fb1_15"><p><strong>Correct.</strong> When no more messages can be delivered, out stays.</p><ul><li><strong>External:</strong> no-op branch.</li><li><strong>Invariant:</strong> preserved.</li><li><strong>Transmit:</strong> not involved.</li><li><strong>Receive:</strong> nondeterministic choice.</li></ul></div></div>
+
+<h3>V.16 Practice: External Specification</h3>
+<div class="practice" id="p1_16"><p class="scenario"><code>in = &langle;a, b, c&rangle;</code>, <code>out = &langle;a, c&rangle;</code>. Is the suffix invariant satisfied?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_16')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')">No &mdash; <code>&langle;a,c&rangle;</code> is not a contiguous suffix of <code>&langle;a,b,c&rangle;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Only if b = c.</button></li><li><button onclick="selectAnswer(this,false,'fb1_16')">Undefined.</button></li></ul><div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Suffix must be contiguous trailing portion. <code>&langle;a,c&rangle;</code> skips b.</p><ul><li><strong>External:</strong> invalid state.</li><li><strong>Invariant:</strong> violated.</li><li><strong>Transmit:</strong> unreachable.</li><li><strong>Receive:</strong> n/a.</li></ul></div></div>
+
+<h3>V.17 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_17"><p class="scenario">Transmit then Transmit then Receive (delivers) from empty. Trace: submit <span class="key">X</span>, submit <span class="key">Y</span>, deliver. Final state?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')"><code>in = &langle;Y, X&rangle;, out = &langle;X&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_17')"><code>in = &langle;X, Y&rangle;, out = &langle;Y&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_17')"><code>in = out = &langle;Y, X&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_17')"><code>in = out = &langle;&rangle;</code></button></li></ul><div class="feedback" id="fb1_17"><p><strong>Correct.</strong> X submitted first (rightmost), delivered first.</p><ul><li><strong>External:</strong> FIFO trace.</li><li><strong>Invariant:</strong> &langle;X&rangle; suffix &langle;Y,X&rangle;.</li><li><strong>Transmit:</strong> two prepends.</li><li><strong>Receive:</strong> one FIFO delivery.</li></ul></div></div>
+
+<h3>V.18 Practice: Protocol Operations</h3>
+<div class="practice" id="p1_18"><p class="scenario"><code>in = &langle;a, b&rangle;</code>, <code>out = &langle;b&rangle;</code>. After Transmit of <span class="key">c</span>, new in?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')"><code>in&prime; = &langle;c, a, b&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>in&prime; = &langle;a, b, c&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')"><code>in&prime; = &langle;c&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">No change.</button></li></ul><div class="feedback" id="fb1_18"><p><strong>Correct.</strong> Prepend: in&prime; = &langle;c&rangle; &#x2040; &langle;a,b&rangle;.</p><ul><li><strong>External:</strong> newest at left.</li><li><strong>Invariant:</strong> &langle;b&rangle; suffix &langle;c,a,b&rangle;.</li><li><strong>Transmit:</strong> prepend.</li><li><strong>Receive:</strong> not fired.</li></ul></div></div>
+
+<h3>V.19 Practice: In-Flight Messages</h3>
+<div class="practice" id="p1_19"><p>In-flight count equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>#in &minus; #out</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>#in</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>#out</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>#in + #out</code></button></li></ul><div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Gap size.</p><ul><li><strong>External:</strong> s = in-flight prefix.</li><li><strong>Invariant:</strong> #s = #in &minus; #out.</li><li><strong>Transmit:</strong> increases gap.</li><li><strong>Receive:</strong> decreases gap.</li></ul></div></div>
+
+<h3>V.20 Practice: In-Flight Messages</h3>
+<div class="practice" id="p1_20"><p class="scenario"><code>in = &langle;m1, m2, m3&rangle;</code>, <code>out = &langle;m3&rangle;</code>. Which messages are in-flight?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')"><code>m1, m2</code> (the prefix before out).</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>m3</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_20')"><code>m1</code> only.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">None.</button></li></ul><div class="feedback" id="fb1_20"><p><strong>Correct.</strong> s = &langle;m1, m2&rangle;.</p><ul><li><strong>External:</strong> gap = m1, m2.</li><li><strong>Invariant:</strong> in = s &#x2040; out.</li><li><strong>Transmit:</strong> would add m4.</li><li><strong>Receive:</strong> would deliver m2.</li></ul></div></div>
+
+<h3>V.21 Practice: Initialisation</h3>
+<div class="practice" id="p1_21"><p>ExtInit sets:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')"><code>in&prime; = &langle;&rangle;</code> (which forces <code>out&prime; = &langle;&rangle;</code> by the invariant).</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')"><code>in&prime; = out&prime; = &langle;SYNC&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Only <code>out</code> to empty.</button></li><li><button onclick="selectAnswer(this,false,'fb1_21')">Nothing.</button></li></ul><div class="feedback" id="fb1_21"><p><strong>Correct.</strong> ExtInit &#x2259; [Ext&prime; | in&prime; = &langle;&rangle;].</p><ul><li><strong>External:</strong> fresh start.</li><li><strong>Invariant:</strong> trivially holds.</li><li><strong>Transmit:</strong> first op creates traffic.</li><li><strong>Receive:</strong> nothing to deliver.</li></ul></div></div>
+
+<h3>V.22 Practice: Invariant Preservation</h3>
+<div class="practice" id="p1_22"><p>After Transmit, does the suffix invariant still hold?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">Yes &mdash; prepending to in keeps out as a suffix.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">No &mdash; Transmit breaks it.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Only sometimes.</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">Undefined.</button></li></ul><div class="feedback" id="fb1_22"><p><strong>Correct.</strong> If in = s &#x2040; out, then &langle;m?&rangle; &#x2040; in = (&langle;m?&rangle; &#x2040; s) &#x2040; out.</p><ul><li><strong>External:</strong> invariant check.</li><li><strong>Invariant:</strong> new s&prime; = &langle;m?&rangle; &#x2040; s.</li><li><strong>Transmit:</strong> in grows; out fixed.</li><li><strong>Receive:</strong> not involved.</li></ul></div></div>
+
+<h3>V.23 Practice: FIFO Ordering</h3>
+<div class="practice" id="p1_23"><p>FIFO delivery means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">First submitted, first delivered &mdash; order preserved.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Last submitted, first delivered.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">Random order.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">No ordering guarantee.</button></li></ul><div class="feedback" id="fb1_23"><p><strong>Correct.</strong> The suffix invariant enforces FIFO.</p><ul><li><strong>External:</strong> core property.</li><li><strong>Invariant:</strong> suffix = ordered delivery.</li><li><strong>Transmit:</strong> appends in order.</li><li><strong>Receive:</strong> delivers in order.</li></ul></div></div>
+
+<h3>V.24 Practice: Nondeterministic Delivery</h3>
+<div class="practice" id="p1_24"><p>The <code>&or; out&prime; = out</code> branch in Receive models:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')">Messages that haven't arrived yet &mdash; nondeterministic delay.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Message loss.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Corruption.</button></li><li><button onclick="selectAnswer(this,false,'fb1_24')">Nothing.</button></li></ul><div class="feedback" id="fb1_24"><p><strong>Correct.</strong> Real-world asynchronous arrival modelled by nondeterminism.</p><ul><li><strong>External:</strong> disjunctive Receive.</li><li><strong>Invariant:</strong> both branches valid.</li><li><strong>Transmit:</strong> not involved.</li><li><strong>Receive:</strong> delivery timing unspecified.</li></ul></div></div>
+
+<h3>V.25 Practice: Abstraction Purpose</h3>
+<div class="practice" id="p1_25"><p>The external view serves as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">The specification all design decisions must preserve.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">The implementation.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">A performance benchmark.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">Nothing.</button></li></ul><div class="feedback" id="fb1_25"><p><strong>Correct.</strong> Top of the refinement chain &mdash; abstract contract.</p><ul><li><strong>External:</strong> correctness criterion.</li><li><strong>Invariant:</strong> must always hold.</li><li><strong>Transmit:</strong> contract for submission.</li><li><strong>Receive:</strong> contract for delivery.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 20.2 ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">20.2 Design: The Sectional View</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="Hiding internal detail to produce a small, understandable specification.">Abstraction</span> power:</strong> the full SS7 document is large; this Z spec is small because it abstracts away routing.</li>
+  <li><strong><span class="vocab" data-def="A refined view decomposing the channel into hops along a route of signalling point codes.">Sectional view</span>:</strong> decomposes the channel into hops along a <span class="vocab" data-def="An injective (no-repeat) sequence of signalling point codes defining the message path.">route</span> of <span class="vocab" data-def="Address identifying a node in the signalling network.">SPC</span>s.</li>
+  <li><strong>Section schema:</strong> <code>route : iseq SPC; rec, ins, sent : seq(seq M)</code> with invariants <code>route &ne; &langle;&rangle;</code>, <code>#route = #rec = #ins = #sent</code>, <code>rec = ins &#x2248; sent</code>, <code>front sent = tail rec</code>.</li>
+  <li><strong><span class="vocab" data-def="Element-wise concatenation of two equal-length sequences of sequences: (s &#x2248; t) i = (s i) &#x2040; (t i).">Pairwise concatenation</span> (<code>&#x2248;</code>):</strong> <code>(s &#x2248; t) i = (s i) &#x2040; (t i)</code> &mdash; combines per-section <em>ins</em> and <em>sent</em> into <em>rec</em>.</li>
+  <li><strong>STransmit:</strong> new message enters at <code>head rec</code> (first section); <em>sent</em> unchanged.</li>
+  <li><strong>SReceive:</strong> message delivered from <code>last sent</code> (last section); transfers from <code>last ins</code>.</li>
+  <li><strong><span class="vocab" data-def="A background operation that nondeterministically advances a message from section i to section i+1.">Daemon</span>:</strong> nondeterministically picks a section <em>i</em> with non-empty <em>ins</em> and moves oldest message to section <em>i+1</em>. <span class="vocab" data-def="The daemon's effect is not observable at the external level.">Invisible</span> externally.</li>
+  <li><strong><span class="vocab" data-def="An integer measure that decreases with each daemon step, guaranteeing eventual delivery.">Variant</span> for liveness:</strong> an integer-valued variant could ensure messages eventually arrive (the spec as given does not insist on delivery).</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Sectional view</td><td>Refined view decomposing the channel into hops.</td></tr>
+  <tr><td>Route</td><td>Injective (no-repeat) sequence of SPCs.</td></tr>
+  <tr><td>SPC</td><td>Signalling point code &mdash; node address.</td></tr>
+  <tr><td>Pairwise concatenation</td><td>Element-wise concat of sequences of sequences.</td></tr>
+  <tr><td>Daemon</td><td>Background op advancing a message one hop.</td></tr>
+  <tr><td>Invisible</td><td>Daemon&rsquo;s effect unobservable externally.</td></tr>
+  <tr><td>Variant</td><td>Integer measure decreasing each step, ensuring progress.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>iseq SPC</code></td><td>Injective sequence of point codes.</td></tr>
+  <tr><td><code>seq(seq M)</code></td><td>Sequence of sequences of messages.</td></tr>
+  <tr><td><code>&#x2248;</code></td><td>Pairwise concatenation.</td></tr>
+  <tr><td><code>head</code></td><td>First element of a sequence.</td></tr>
+  <tr><td><code>last</code></td><td>Last element of a sequence.</td></tr>
+  <tr><td><code>tail</code></td><td>All elements except the first.</td></tr>
+  <tr><td><code>front</code></td><td>All elements except the last.</td></tr>
+  <tr><td><code>#</code></td><td>Sequence length.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+</table>
+
+<h3>IV.1 Examples: 3-Hop Backbone, 4-Hop Long-Haul &amp; 2-Hop Local</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>iseq SPC</code></td><td>Injective sequence.</td></tr>
+  <tr><td><code>seq(seq M)</code></td><td>Seq of seqs.</td></tr>
+  <tr><td><code>#</code></td><td>Length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">3-hop backbone</span> has route <code>&langle;A, B, C&rangle;</code>; each section tracks <span class="key">rec, ins, sent</span>.</p>
+<ul>
+  <li><strong>Route:</strong> <code>route : <span class="vocab" data-def="Injective sequence of point codes.">iseq</span> SPC = &langle;A, B, C&rangle;</code> &mdash; 3 distinct SPCs.</li>
+  <li><strong>Section:</strong> <code>rec, ins, sent : <span class="vocab" data-def="Sequence of sequences of messages.">seq(seq M)</span></code>, each length 3.</li>
+  <li><strong>Operation:</strong> invariants tie all four sequences to the same length as route.</li>
+  <li><strong>Daemon:</strong> moves a message from section 1&rarr;2 or 2&rarr;3.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">4-hop long-haul link</span> has route <code>&langle;W, X, Y, Z&rangle;</code>.</p>
+<ul>
+  <li><strong>Route:</strong> 4 SPCs, 3 inter-section boundaries.</li>
+  <li><strong>Section:</strong> <code>#route = #rec = #ins = #sent = 4</code>.</li>
+  <li><strong>Operation:</strong> STransmit at W (head); SReceive at Z (last).</li>
+  <li><strong>Daemon:</strong> can fire at boundaries W&rarr;X, X&rarr;Y, or Y&rarr;Z.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">2-hop local link</span> has route <code>&langle;P, Q&rangle;</code>.</p>
+<ul>
+  <li><strong>Route:</strong> 2 SPCs, 1 boundary.</li>
+  <li><strong>Section:</strong> <code>#route = 2</code>; one pairwise-concat constraint.</li>
+  <li><strong>Operation:</strong> STransmit at P; SReceive at Q.</li>
+  <li><strong>Daemon:</strong> single boundary P&rarr;Q.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Pairing Ins+Sent, Pairing Buffers &amp; Pairing Empty</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2248;</code></td><td>Pairwise concatenation.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Two equal-length sequences of message sequences: <code>ins = &langle;&langle;a&rangle;, &langle;b&rangle;&rangle;</code>, <code>sent = &langle;&langle;c&rangle;, &langle;d&rangle;&rangle;</code>. <span class="key">Pairwise concat</span>.</p>
+<ul>
+  <li><strong>Route:</strong> 2-hop route (length 2).</li>
+  <li><strong>Section:</strong> <code>rec = ins <span class="vocab" data-def="Element-wise concatenation.">&#x2248;</span> sent</code>.</li>
+  <li><strong>Operation:</strong> <code>rec 1 = (ins 1) &#x2040; (sent 1) = &langle;a&rangle; &#x2040; &langle;c&rangle; = &langle;a,c&rangle;</code>; <code>rec 2 = &langle;b,d&rangle;</code>.</li>
+  <li><strong>Daemon:</strong> invariant: <code>rec = &langle;&langle;a,c&rangle;, &langle;b,d&rangle;&rangle;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Section 1 has <span class="key">ins = &langle;m&rangle;</span>, <span class="key">sent = &langle;n&rangle;</span>. What is <span class="key">rec</span>?</p>
+<ul>
+  <li><strong>Route:</strong> single section.</li>
+  <li><strong>Section:</strong> <code>rec = ins &#x2248; sent = &langle;&langle;m&rangle; &#x2040; &langle;n&rangle;&rangle; = &langle;&langle;m,n&rangle;&rangle;</code>.</li>
+  <li><strong>Operation:</strong> received = in-transit + already-sent.</li>
+  <li><strong>Daemon:</strong> n/a for single section.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">All sections empty: <code>ins = sent = &langle;&langle;&rangle;, &langle;&rangle;, &langle;&rangle;&rangle;</code>.</p>
+<ul>
+  <li><strong>Route:</strong> 3-hop.</li>
+  <li><strong>Section:</strong> <code>rec = ins &#x2248; sent = &langle;&langle;&rangle;, &langle;&rangle;, &langle;&rangle;&rangle;</code>.</li>
+  <li><strong>Operation:</strong> SectionInit state.</li>
+  <li><strong>Daemon:</strong> nothing to move.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: VoIP First Hop, SMS First Hop &amp; Emergency Alert First Hop</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">VoIP call</span> submits frame <span class="key">INVITE</span> at the <span class="key">head section</span>.</p>
+<ul>
+  <li><strong>Route:</strong> message enters at <code><span class="vocab" data-def="First element.">head</span></code> of route.</li>
+  <li><strong>Section:</strong> <code>head rec&prime; = &langle;INVITE&rangle; &#x2040; (head rec)</code>.</li>
+  <li><strong>Operation:</strong> STransmit &mdash; only head section changes; tail rec, sent unchanged.</li>
+  <li><strong>Daemon:</strong> not involved in STransmit.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">SMS</span> enters at SPC <span class="key">A</span> on route <code>&langle;A, B, C&rangle;</code>.</p>
+<ul>
+  <li><strong>Route:</strong> head = A.</li>
+  <li><strong>Section:</strong> <code>head rec&prime; = &langle;SMS&rangle; &#x2040; (head rec)</code>; <code>head ins&prime; = &langle;SMS&rangle; &#x2040; (head ins)</code>.</li>
+  <li><strong>Operation:</strong> STransmit corresponds to external Transmit.</li>
+  <li><strong>Daemon:</strong> later moves SMS from section 1 toward section 3.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">emergency alert</span> enters at the first SPC of a <span class="key">5-hop national backbone</span>.</p>
+<ul>
+  <li><strong>Route:</strong> 5 SPCs; alert enters at head.</li>
+  <li><strong>Section:</strong> head rec and head ins grow; all other sections unchanged.</li>
+  <li><strong>Operation:</strong> STransmit at section 1.</li>
+  <li><strong>Daemon:</strong> will advance the alert hop-by-hop until last section.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: VoIP Delivery, SMS Delivery &amp; Alert Delivery</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>last</code></td><td>Last element.</td></tr>
+  <tr><td><code>front</code></td><td>All but last.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">VoIP frame</span> arrives at the <span class="key">last section</span> and is <span class="key">delivered</span>.</p>
+<ul>
+  <li><strong>Route:</strong> frame at <code><span class="vocab" data-def="Last element.">last</span></code> of route.</li>
+  <li><strong>Section:</strong> <code>last sent&prime; = &langle;last(last ins)&rangle; &#x2040; (last sent)</code>.</li>
+  <li><strong>Operation:</strong> SReceive corresponds to external Receive.</li>
+  <li><strong>Daemon:</strong> not involved in SReceive.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">SMS</span> is delivered at SPC <span class="key">C</span> (last) on route <code>&langle;A, B, C&rangle;</code>.</p>
+<ul>
+  <li><strong>Route:</strong> last = C.</li>
+  <li><strong>Section:</strong> last ins shrinks; last sent grows by the transferred message.</li>
+  <li><strong>Operation:</strong> SReceive &mdash; front ins, front sent, rec unchanged.</li>
+  <li><strong>Daemon:</strong> prior daemon steps brought the message to section 3.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">emergency alert</span> reaches the <span class="key">terminal SPC</span> and is <span class="key">consumed by the receiver</span>.</p>
+<ul>
+  <li><strong>Route:</strong> terminal = last SPC.</li>
+  <li><strong>Section:</strong> message moves from last ins to last sent.</li>
+  <li><strong>Operation:</strong> SReceive &mdash; user gets the alert.</li>
+  <li><strong>Daemon:</strong> all daemon hops have already been completed.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Mid-Route Hop, First-to-Second Hop &amp; Penultimate-to-Last Hop</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier.</td></tr>
+  <tr><td><code>front</code></td><td>All but last.</td></tr>
+  <tr><td><code>last</code></td><td>Last element.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">daemon</span> fires at section 2 of a 4-hop route, moving the oldest message to <span class="key">section 3</span>.</p>
+<ul>
+  <li><strong>Route:</strong> <code>&langle;A, B, C, D&rangle;</code>; daemon picks i = 2.</li>
+  <li><strong>Section:</strong> <code>ins&prime; 2 = front(ins 2)</code>; <code>ins&prime; 3 = &langle;last(ins 2)&rangle; &#x2040; ins 3</code>.</li>
+  <li><strong>Operation:</strong> <span class="vocab" data-def="Background op advancing a message one hop.">Daemon</span> &mdash; all other sections unchanged.</li>
+  <li><strong>Daemon:</strong> <span class="vocab" data-def="The daemon's effect is not observable at the external level.">invisible</span> at external level (corresponds to &Xi;Ext).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A daemon moves a frame from <span class="key">section 1 to section 2</span> on a 3-hop route.</p>
+<ul>
+  <li><strong>Route:</strong> i = 1; <code>ins 1</code> shrinks, <code>ins 2</code> grows.</li>
+  <li><strong>Section:</strong> <code>ins&prime; 1 = front(ins 1)</code>; <code>ins&prime; 2 = &langle;last(ins 1)&rangle; &#x2040; ins 2</code>.</li>
+  <li><strong>Operation:</strong> first hop-forward.</li>
+  <li><strong>Daemon:</strong> external in and out unchanged.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A daemon moves a frame from the <span class="key">penultimate to the last section</span> on a 3-hop route.</p>
+<ul>
+  <li><strong>Route:</strong> i = 2 (penultimate); message enters section 3 (last).</li>
+  <li><strong>Section:</strong> <code>ins&prime; 2 = front(ins 2)</code>; <code>ins&prime; 3 = &langle;last(ins 2)&rangle; &#x2040; ins 3</code>.</li>
+  <li><strong>Operation:</strong> now the message is available for SReceive at the last section.</li>
+  <li><strong>Daemon:</strong> sets up the final delivery step.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice: Sectional State</h3>
+<div class="practice" id="p2_1"><p>The Section schema tracks:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>route : iseq SPC; rec, ins, sent : seq(seq M)</code> with matching lengths.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">Only a route.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">Only messages.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">A single buffer.</button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> Route + three per-section buffer sequences.</p><ul><li><strong>Route:</strong> iseq SPC.</li><li><strong>Section:</strong> rec, ins, sent.</li><li><strong>Operation:</strong> all tied to same length.</li><li><strong>Daemon:</strong> operates on ins.</li></ul></div></div>
+
+<h3>V.2 Practice: Route Basics</h3>
+<div class="practice" id="p2_2"><p>A route is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')">An injective sequence of SPCs &mdash; no duplicates, non-empty.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">A set of SPCs.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">A single SPC.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">Any sequence (duplicates OK).</button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> <code>iseq SPC</code> with <code>route &ne; &langle;&rangle;</code>.</p><ul><li><strong>Route:</strong> injective, non-empty.</li><li><strong>Section:</strong> one per SPC.</li><li><strong>Operation:</strong> head/last determine ingress/egress.</li><li><strong>Daemon:</strong> hops between adjacent SPCs.</li></ul></div></div>
+
+<h3>V.3 Practice: Section Structure</h3>
+<div class="practice" id="p2_3"><p class="scenario">A 3-hop route <code>&langle;A, B, C&rangle;</code>. How many pairwise-concat boundary constraints?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')">2 (one per adjacent pair: A-B and B-C).</button></li><li><button onclick="selectAnswer(this,false,'fb2_3')">3.</button></li><li><button onclick="selectAnswer(this,false,'fb2_3')">1.</button></li><li><button onclick="selectAnswer(this,false,'fb2_3')">0.</button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> n &minus; 1 boundaries for n sections.</p><ul><li><strong>Route:</strong> 3 SPCs.</li><li><strong>Section:</strong> 2 boundaries.</li><li><strong>Operation:</strong> front sent = tail rec links them.</li><li><strong>Daemon:</strong> fires at each boundary.</li></ul></div></div>
+
+<h3>V.4 Practice: Section Structure</h3>
+<div class="practice" id="p2_4"><p class="scenario">The invariant <code>#route = #rec = #ins = #sent</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')">All four sequences have the same length &mdash; one entry per section.</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">Only route matters.</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">They can differ.</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">Nothing.</button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Parallel arrays indexed by section number.</p><ul><li><strong>Route:</strong> defines length.</li><li><strong>Section:</strong> rec, ins, sent each have one entry per hop.</li><li><strong>Operation:</strong> length preserved by all ops.</li><li><strong>Daemon:</strong> doesn&rsquo;t change lengths.</li></ul></div></div>
+
+<h3>V.5 Practice: Section Structure</h3>
+<div class="practice" id="p2_5"><p>Pairwise concatenation <code>rec = ins &#x2248; sent</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">For each section <em>i</em>: <code>rec i = (ins i) &#x2040; (sent i)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>rec = ins &#x2040; sent</code> (flat concat).</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>rec = ins</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_5')">Nothing.</button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Element-wise concat of sequences of sequences.</p><ul><li><strong>Route:</strong> indexes the sections.</li><li><strong>Section:</strong> rec i = ins i &#x2040; sent i.</li><li><strong>Operation:</strong> invariant maintained by ops.</li><li><strong>Daemon:</strong> preserves pairwise.</li></ul></div></div>
+
+<h3>V.6 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_6"><p class="scenario">A frame enters at SPC <span class="key">A</span> on route <code>&langle;A, B, C&rangle;</code>. Which op fires?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')">STransmit at section 1 (head).</button></li><li><button onclick="selectAnswer(this,false,'fb2_6')">SReceive.</button></li><li><button onclick="selectAnswer(this,false,'fb2_6')">Daemon.</button></li><li><button onclick="selectAnswer(this,false,'fb2_6')">Nothing.</button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> STransmit fires at the head section.</p><ul><li><strong>Route:</strong> head = A.</li><li><strong>Section:</strong> head rec grows.</li><li><strong>Operation:</strong> STransmit.</li><li><strong>Daemon:</strong> not involved.</li></ul></div></div>
+
+<h3>V.7 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_7"><p>SReceive fires at:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')">The last section of the route.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">The first section.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Any section.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">No section.</button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> Last section = egress point.</p><ul><li><strong>Route:</strong> last SPC.</li><li><strong>Section:</strong> last ins &rarr; last sent.</li><li><strong>Operation:</strong> SReceive.</li><li><strong>Daemon:</strong> not involved.</li></ul></div></div>
+
+<h3>V.8 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_8"><p class="scenario">A <span class="key">daemon</span> at section 2 of route <code>&langle;A, B, C&rangle;</code> fires. Which changes?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>ins 2</code> shrinks; <code>ins 3</code> grows by the same message.</button></li><li><button onclick="selectAnswer(this,false,'fb2_8')">All buffers reset.</button></li><li><button onclick="selectAnswer(this,false,'fb2_8')">Only sent changes.</button></li><li><button onclick="selectAnswer(this,false,'fb2_8')">Nothing.</button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Daemon transfers oldest from ins i to ins(i+1).</p><ul><li><strong>Route:</strong> boundary B&rarr;C.</li><li><strong>Section:</strong> ins 2 shrinks, ins 3 grows.</li><li><strong>Operation:</strong> Daemon.</li><li><strong>Daemon:</strong> all other sections unchanged.</li></ul></div></div>
+
+<h3>V.9 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_9"><p>The daemon is invisible because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')">It doesn&rsquo;t change head rec (= in) or last sent (= out) &mdash; only internal buffers.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">It changes in.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">It changes out.</button></li><li><button onclick="selectAnswer(this,false,'fb2_9')">It changes both.</button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Corresponds to &Xi;Ext externally.</p><ul><li><strong>Route:</strong> unchanged.</li><li><strong>Section:</strong> internal shuffle.</li><li><strong>Operation:</strong> invisible.</li><li><strong>Daemon:</strong> mid-route only.</li></ul></div></div>
+
+<h3>V.10 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_10"><p class="scenario">SectionInit sets all per-section buffers to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>&langle;&rangle;</code> &mdash; every rec, ins, sent entry is empty.</button></li><li><button onclick="selectAnswer(this,false,'fb2_10')">Full.</button></li><li><button onclick="selectAnswer(this,false,'fb2_10')">Random.</button></li><li><button onclick="selectAnswer(this,false,'fb2_10')">Undefined.</button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> &forall; i : dom route&prime; &bull; rec&prime; i = ins&prime; i = sent&prime; i = &langle;&rangle;.</p><ul><li><strong>Route:</strong> chosen first.</li><li><strong>Section:</strong> all empty.</li><li><strong>Operation:</strong> SectionInit.</li><li><strong>Daemon:</strong> nothing to move.</li></ul></div></div>
+
+<h3>V.11 Practice: Section Structure</h3>
+<div class="practice" id="p2_11"><p><code>iseq SPC</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')">Injective sequence &mdash; all elements distinct.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Sequence with duplicates allowed.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Empty sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">A set.</button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> No node appears twice &mdash; no routing loops.</p><ul><li><strong>Route:</strong> injective.</li><li><strong>Section:</strong> each SPC unique.</li><li><strong>Operation:</strong> well-defined head/last.</li><li><strong>Daemon:</strong> each boundary distinct.</li></ul></div></div>
+
+<h3>V.12 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_12"><p class="scenario">A frame at section 3 (last) of a 3-hop route. Which op delivers it?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')">SReceive &mdash; transfers from last ins to last sent.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">STransmit.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">Daemon.</button></li><li><button onclick="selectAnswer(this,false,'fb2_12')">Nothing.</button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> Last section = egress via SReceive.</p><ul><li><strong>Route:</strong> section 3 = last.</li><li><strong>Section:</strong> last ins &rarr; last sent.</li><li><strong>Operation:</strong> SReceive.</li><li><strong>Daemon:</strong> not needed at last.</li></ul></div></div>
+
+<h3>V.13 Practice: Section Structure</h3>
+<div class="practice" id="p2_13"><p class="scenario">A 10-hop route has how many daemon boundaries?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">9 (one per adjacent pair).</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">10.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">1.</button></li><li><button onclick="selectAnswer(this,false,'fb2_13')">0.</button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> n &minus; 1 boundaries.</p><ul><li><strong>Route:</strong> 10 SPCs.</li><li><strong>Section:</strong> 9 inter-section gaps.</li><li><strong>Operation:</strong> daemon can fire at any of 9.</li><li><strong>Daemon:</strong> nondeterministic choice.</li></ul></div></div>
+
+<h3>V.14 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_14"><p class="scenario">A 1-hop route (single SPC). STransmit and SReceive fire at:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')">The same (only) section &mdash; no daemon needed.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">Different sections.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">Impossible.</button></li><li><button onclick="selectAnswer(this,false,'fb2_14')">Nothing.</button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Degenerate route &mdash; head = last = section 1.</p><ul><li><strong>Route:</strong> length 1.</li><li><strong>Section:</strong> single section.</li><li><strong>Operation:</strong> both ops at same section.</li><li><strong>Daemon:</strong> zero boundaries, no daemon.</li></ul></div></div>
+
+<h3>V.15 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_15"><p>The <code>front sent = tail rec</code> invariant ensures:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">Adjacent sections&rsquo; boundaries are consistent &mdash; hand-off between hops.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Only the first section matters.</button></li><li><button onclick="selectAnswer(this,false,'fb2_15')">Only the last section matters.</button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Section i&rsquo;s sent = section (i+1)&rsquo;s rec.</p><ul><li><strong>Route:</strong> adjacent pairing.</li><li><strong>Section:</strong> hand-off consistency.</li><li><strong>Operation:</strong> maintained by all ops.</li><li><strong>Daemon:</strong> respects boundaries.</li></ul></div></div>
+
+<h3>V.16 Practice: Section Structure</h3>
+<div class="practice" id="p2_16"><p>Per-section <em>ins</em> represents:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')">Messages currently inside the section (received but not yet sent).</button></li><li><button onclick="selectAnswer(this,false,'fb2_16')">Messages delivered to the user.</button></li><li><button onclick="selectAnswer(this,false,'fb2_16')">The route itself.</button></li><li><button onclick="selectAnswer(this,false,'fb2_16')">Nothing.</button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> In-transit buffer per section.</p><ul><li><strong>Route:</strong> n/a.</li><li><strong>Section:</strong> ins = in-section messages.</li><li><strong>Operation:</strong> STransmit grows head ins; daemon shrinks ins i.</li><li><strong>Daemon:</strong> moves last(ins i) forward.</li></ul></div></div>
+
+<h3>V.17 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_17"><p>The daemon models:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">Nondeterministic internal progress &mdash; real-world asynchrony.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">User-visible submission.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">User-visible delivery.</button></li><li><button onclick="selectAnswer(this,false,'fb2_17')">Nothing.</button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> Background, invisible at the external view.</p><ul><li><strong>Route:</strong> picks a boundary.</li><li><strong>Section:</strong> transfers one message.</li><li><strong>Operation:</strong> Daemon.</li><li><strong>Daemon:</strong> nondeterministic timing.</li></ul></div></div>
+
+<h3>V.18 Practice: Sectional Operations</h3>
+<div class="practice" id="p2_18"><p class="scenario">A 4-hop route: daemon fires at i = 3. Which <span class="key">ins</span> entries change?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>ins 3</code> (shrinks) and <code>ins 4</code> (grows).</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">All ins entries.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">Only ins 1.</button></li><li><button onclick="selectAnswer(this,false,'fb2_18')">None.</button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Only adjacent pair changes.</p><ul><li><strong>Route:</strong> boundary 3&rarr;4.</li><li><strong>Section:</strong> ins 3 shrinks, ins 4 grows.</li><li><strong>Operation:</strong> Daemon at i = 3.</li><li><strong>Daemon:</strong> all others unchanged.</li></ul></div></div>
+
+<h3>V.19 Practice: Daemon Operation</h3>
+<div class="practice" id="p2_19"><p>The daemon can only fire if:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>ins i &ne; &langle;&rangle;</code> &mdash; the section has a message to move.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Always.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Never.</button></li><li><button onclick="selectAnswer(this,false,'fb2_19')">Only at the last section.</button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Precondition: non-empty ins at chosen section.</p><ul><li><strong>Route:</strong> i &isin; 1..#route &minus; 1.</li><li><strong>Section:</strong> ins i must be non-empty.</li><li><strong>Operation:</strong> daemon guard.</li><li><strong>Daemon:</strong> no-op if empty.</li></ul></div></div>
+
+<h3>V.20 Practice: Daemon Operation</h3>
+<div class="practice" id="p2_20"><p class="scenario">A 3-hop route has <code>ins 1 = &langle;&rangle;</code>, <code>ins 2 = &langle;m&rangle;</code>. Which daemon can fire?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')">Only at i = 2 (section 2 has a message; section 1 is empty).</button></li><li><button onclick="selectAnswer(this,false,'fb2_20')">Only at i = 1.</button></li><li><button onclick="selectAnswer(this,false,'fb2_20')">Both.</button></li><li><button onclick="selectAnswer(this,false,'fb2_20')">Neither.</button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Daemon requires non-empty ins.</p><ul><li><strong>Route:</strong> 3 hops, 2 boundaries.</li><li><strong>Section:</strong> ins 1 empty, ins 2 has m.</li><li><strong>Operation:</strong> only i = 2 eligible.</li><li><strong>Daemon:</strong> moves m to section 3.</li></ul></div></div>
+
+<h3>V.21 Practice: Pairwise Concatenation</h3>
+<div class="practice" id="p2_21"><p>Pairwise concatenation <code>s &#x2248; t</code> requires:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')"><code>#s = #t</code> &mdash; equal-length sequences of sequences.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Any lengths.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>#s &gt; #t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb2_21')">Nothing.</button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Must pair element-by-element.</p><ul><li><strong>Route:</strong> same length.</li><li><strong>Section:</strong> per-index concat.</li><li><strong>Operation:</strong> invariant.</li><li><strong>Daemon:</strong> preserves lengths.</li></ul></div></div>
+
+<h3>V.22 Practice: Route Properties</h3>
+<div class="practice" id="p2_22"><p>Why must route be injective (no duplicates)?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')">No routing loops &mdash; each SPC appears at most once.</button></li><li><button onclick="selectAnswer(this,false,'fb2_22')">Performance.</button></li><li><button onclick="selectAnswer(this,false,'fb2_22')">Aesthetic choice.</button></li><li><button onclick="selectAnswer(this,false,'fb2_22')">Nothing.</button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Loop-free route ensures finite hops.</p><ul><li><strong>Route:</strong> iseq = injective.</li><li><strong>Section:</strong> each SPC distinct.</li><li><strong>Operation:</strong> well-defined endpoints.</li><li><strong>Daemon:</strong> finite progress.</li></ul></div></div>
+
+<h3>V.23 Practice: Boundary Constraints</h3>
+<div class="practice" id="p2_23"><p><code>front sent = tail rec</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Section i&rsquo;s sent buffer feeds into section (i+1)&rsquo;s received buffer.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Only last matters.</button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Only first matters.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> Inter-section hand-off consistency.</p><ul><li><strong>Route:</strong> adjacent pairing.</li><li><strong>Section:</strong> output of one = input of next.</li><li><strong>Operation:</strong> maintained by all ops.</li><li><strong>Daemon:</strong> respects hand-off.</li></ul></div></div>
+
+<h3>V.24 Practice: Variant Discussion</h3>
+<div class="practice" id="p2_24"><p>The spec does not guarantee delivery. A <em>variant</em> could fix this by:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">Adding an integer that decreases with each daemon step, forcing eventual progress.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')">Removing nondeterminism.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb2_24')">Adding a free type.</button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Variant = decreasing measure ensures liveness.</p><ul><li><strong>Route:</strong> n/a.</li><li><strong>Section:</strong> variant tracks progress.</li><li><strong>Operation:</strong> each step decreases it.</li><li><strong>Daemon:</strong> forced to make progress.</li></ul></div></div>
+
+<h3>V.25 Practice: Refinement Obligation</h3>
+<div class="practice" id="p2_25"><p>The sectional view must:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">Refine the external view &mdash; preserve its contract via data refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Replace the external view.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Ignore the external view.</button></li><li><button onclick="selectAnswer(this,false,'fb2_25')">Nothing.</button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> Refinement obligation: sectional must implement external.</p><ul><li><strong>Route:</strong> design choice.</li><li><strong>Section:</strong> implementation detail.</li><li><strong>Operation:</strong> each must refine its external counterpart.</li><li><strong>Daemon:</strong> refines &Xi;Ext (skip).</li></ul></div></div>
+
+</section>
+
+<!-- ================= 20.3 ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">20.3 Relationship Between External and Sectional Views</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong>Goal:</strong> prove two views consistent &mdash; the <span class="vocab" data-def="A refined design that decomposes the channel into hops.">sectional view</span> correctly implements the <span class="vocab" data-def="The abstract user-visible specification.">external view</span>.</li>
+  <li><strong><span class="vocab" data-def="A predicate linking concrete (sectional) state to abstract (external) state.">Retrieve relation</span>:</strong> <code>head rec</code> &rarr; <code>in</code>; <code>last sent</code> &rarr; <code>out</code>; distributed concat of <em>ins</em> &rarr; in-flight.</li>
+  <li><strong>STransmit refines Transmit:</strong> appending at <code>head rec</code> matches appending to external <code>in</code>.</li>
+  <li><strong>SReceive refines Receive:</strong> delivering from <code>last sent</code> matches consuming from external <code>out</code>.</li>
+  <li><strong>Daemon refines &Xi;Ext:</strong> internal hop is invisible externally &mdash; <code>head rec</code> and <code>last sent</code> unchanged.</li>
+  <li><strong>SectionInit refines ExtInit:</strong> all-empty sections correspond to empty external state.</li>
+  <li><strong><span class="vocab" data-def="Proof technique: show property holds for route length 1, then assume for n and prove for n+1.">Inductive proof</span>:</strong> base case (1-hop route trivial) + step (n &rarr; n+1 using <code>front</code>/<code>last</code> decomposition).</li>
+  <li><strong><span class="vocab" data-def="Algebraic facts about head/tail/front/last distributing over concatenation.">Sequence lemmas</span>:</strong> <code>head</code>, <code>last</code>, <code>front</code>, <code>tail</code> distribute over pairwise concatenation.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Retrieve relation</td><td>Maps sectional state to external state.</td></tr>
+  <tr><td>Refinement obligation</td><td>Per-op proof that sectional preserves external.</td></tr>
+  <tr><td>Inductive proof</td><td>Proof by induction on route length.</td></tr>
+  <tr><td>Sequence lemma</td><td>Algebraic fact about sequence decomposition ops.</td></tr>
+  <tr><td>Data refinement</td><td>Proving a concrete design implements an abstract spec.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>head</code></td><td>First element of a sequence.</td></tr>
+  <tr><td><code>last</code></td><td>Last element of a sequence.</td></tr>
+  <tr><td><code>tail</code></td><td>All except first.</td></tr>
+  <tr><td><code>front</code></td><td>All except last.</td></tr>
+  <tr><td><code>&Xi;</code></td><td>No observable state change.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>&#x2248;</code></td><td>Pairwise concatenation.</td></tr>
+</table>
+
+<h3>IV.1 Examples: Phone Network Retrieve, Data Centre Retrieve &amp; SMS Retrieve</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>last</code></td><td>Last element.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">phone network</span>: the <span class="key">retrieve relation</span> maps <code>head rec</code> to external <code>in</code> and <code>last sent</code> to external <code>out</code>.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>in = <span class="vocab" data-def="First element.">head</span> rec; out = <span class="vocab" data-def="Last element.">last</span> sent</code>.</li>
+  <li><strong>Prove:</strong> every sectional state maps to a valid external state.</li>
+  <li><strong>Compose:</strong> distributed concat of ins = in-flight portion.</li>
+  <li><strong>Check:</strong> suffix invariant holds on retrieved state.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">data centre</span> backbone with 5 hops. Retrieve: <code>in = head rec</code>, <code>out = last sent</code> (sections 2&ndash;4 are internal).</p>
+<ul>
+  <li><strong>Retrieve:</strong> endpoints only &mdash; internal hops hidden.</li>
+  <li><strong>Prove:</strong> internal state irrelevant to external view.</li>
+  <li><strong>Compose:</strong> any combination of daemon steps preserves retrieve.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="A predicate linking concrete (sectional) state to abstract (external) state.">retrieve</span> is functional (each concrete state gives one abstract state).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">SMS gateway</span> with 2 hops. <code>head rec = &langle;a, b&rangle;</code>, <code>last sent = &langle;b&rangle;</code>.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>in = &langle;a,b&rangle;; out = &langle;b&rangle;</code>.</li>
+  <li><strong>Prove:</strong> <code>&langle;b&rangle;</code> is suffix of <code>&langle;a,b&rangle;</code> &mdash; invariant holds.</li>
+  <li><strong>Compose:</strong> one message (a) in-flight.</li>
+  <li><strong>Check:</strong> valid external state derived from sectional.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Call-Setup Transmit Proof, Packet Transmit Proof &amp; Alert Transmit Proof</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Show <span class="key">STransmit refines Transmit</span>: appending <span class="key">IAM</span> at head matches external append.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>in = head rec</code>.</li>
+  <li><strong>Prove:</strong> <code>head rec&prime; = &langle;IAM&rangle; &#x2040; head rec = &langle;IAM&rangle; &#x2040; in = in&prime;</code>. &check;</li>
+  <li><strong>Compose:</strong> <code>last sent&prime; = last sent = out = out&prime;</code>. &check;</li>
+  <li><strong>Check:</strong> both postconditions match &mdash; STransmit refines Transmit.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Show <span class="key">STransmit refines Transmit</span> for a <span class="key">packet P</span> on a 4-hop link.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>in = head rec</code>.</li>
+  <li><strong>Prove:</strong> <code>in&prime; = head rec&prime; = &langle;P&rangle; &#x2040; head rec = &langle;P&rangle; &#x2040; in</code>. &check;</li>
+  <li><strong>Compose:</strong> out unchanged (last sent untouched by STransmit).</li>
+  <li><strong>Check:</strong> refinement holds regardless of route length.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Show <span class="key">STransmit refines Transmit</span> for an <span class="key">ALERT</span> on a 2-hop link.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>in = head rec</code>.</li>
+  <li><strong>Prove:</strong> <code>in&prime; = &langle;ALERT&rangle; &#x2040; in</code>. &check;</li>
+  <li><strong>Compose:</strong> out unchanged.</li>
+  <li><strong>Check:</strong> same pattern &mdash; route length irrelevant to this proof.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Phone Receive Proof, Packet Receive Proof &amp; SMS Receive Proof</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>last</code></td><td>Last element.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Show <span class="key">SReceive refines Receive</span>: delivering from <span class="key">last sent</span> matches external delivery from <span class="key">out</span>.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>out = last sent</code>.</li>
+  <li><strong>Prove:</strong> <code>last sent&prime; = &langle;last(last ins)&rangle; &#x2040; last sent</code>; this grows out by 1. &check;</li>
+  <li><strong>Compose:</strong> <code>head rec&prime; = head rec = in = in&prime;</code> (in unchanged). &check;</li>
+  <li><strong>Check:</strong> SReceive matches Receive&rsquo;s <code>#out&prime; = #out + 1</code> branch.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Show <span class="key">SReceive refines Receive</span> for a <span class="key">packet delivery</span> on a 3-hop route.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>out = last sent</code>.</li>
+  <li><strong>Prove:</strong> last sent grows; in (= head rec) unchanged.</li>
+  <li><strong>Compose:</strong> out&prime; is one longer than out.</li>
+  <li><strong>Check:</strong> suffix invariant preserved on the retrieved state.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Show <span class="key">SReceive refines Receive</span> for an <span class="key">SMS</span> on a 2-hop route.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>out = last sent</code>.</li>
+  <li><strong>Prove:</strong> last sent grows; head rec unchanged.</li>
+  <li><strong>Compose:</strong> same pattern as above.</li>
+  <li><strong>Check:</strong> independent of route length &mdash; only endpoints matter.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Backbone Daemon-Skip, LAN Daemon-Skip &amp; WAN Daemon-Skip</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Xi;</code></td><td>No change.</td></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>last</code></td><td>Last element.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">backbone daemon</span> fires at section 2 of a 4-hop route. Show it refines <span class="key">&Xi;Ext</span>.</p>
+<ul>
+  <li><strong>Retrieve:</strong> <code>in = head rec; out = last sent</code>.</li>
+  <li><strong>Prove:</strong> daemon at i = 2 changes ins 2 and ins 3 only. <code>head rec&prime; = head rec</code>; <code>last sent&prime; = last sent</code>. &check;</li>
+  <li><strong>Compose:</strong> <code>in&prime; = in; out&prime; = out</code> &mdash; <span class="vocab" data-def="No observable state change.">&Xi;Ext</span>.</li>
+  <li><strong>Check:</strong> internal motion <span class="vocab" data-def="The daemon's effect is not observable at the external level.">invisible</span> externally.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">LAN daemon</span> on a 2-hop route fires at i = 1. Refines &Xi;Ext?</p>
+<ul>
+  <li><strong>Retrieve:</strong> daemon changes ins 1 and ins 2 only.</li>
+  <li><strong>Prove:</strong> head rec (= head rec) unchanged; last sent unchanged.</li>
+  <li><strong>Compose:</strong> both endpoints fixed.</li>
+  <li><strong>Check:</strong> &Xi;Ext &mdash; no external change. &check;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">WAN daemon</span> on a 6-hop route fires at i = 4. Same pattern.</p>
+<ul>
+  <li><strong>Retrieve:</strong> only ins 4 and ins 5 change.</li>
+  <li><strong>Prove:</strong> head rec (section 1) and last sent (section 6) untouched.</li>
+  <li><strong>Compose:</strong> in = in&prime;, out = out&prime;.</li>
+  <li><strong>Check:</strong> daemon at any middle section refines &Xi;Ext. &check;</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Base Case, 2&rarr;3 Hop Step &amp; General Inductive Step</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>front</code></td><td>All but last.</td></tr>
+  <tr><td><code>last</code></td><td>Last element.</td></tr>
+  <tr><td><code>&#x2248;</code></td><td>Pairwise concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario"><span class="key">Base case</span>: 1-hop route. Sectional = external &mdash; refinement is <span class="key">trivial</span>.</p>
+<ul>
+  <li><strong>Retrieve:</strong> head rec = rec 1 = in; last sent = sent 1 = out.</li>
+  <li><strong>Prove:</strong> STransmit = Transmit; SReceive = Receive; no daemon.</li>
+  <li><strong>Compose:</strong> identity refinement.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="Proof technique: show for route length 1, then n &rarr; n+1.">induction</span> base established.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="key">Step 2 &rarr; 3</span>: assume 2-hop refines; show 3-hop does by splitting into <code>front(route)</code> + <code>last(route)</code>.</p>
+<ul>
+  <li><strong>Retrieve:</strong> front(route) gives a 2-hop sub-problem (by hypothesis).</li>
+  <li><strong>Prove:</strong> the extra last section adds one daemon boundary but doesn&rsquo;t break the retrieve.</li>
+  <li><strong>Compose:</strong> <code>head</code>/<code>last</code>/<code>front</code>/<code>tail</code> distribute over &#x2248;.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="Algebraic facts about head/tail/front/last.">sequence lemmas</span> discharge the step.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="key">General inductive step</span>: assume n-hop refines; show (n+1)-hop does.</p>
+<ul>
+  <li><strong>Retrieve:</strong> decompose route into front (n hops) + last (one extra).</li>
+  <li><strong>Prove:</strong> by hypothesis, the first n hops are correct; the last hop is one more daemon boundary.</li>
+  <li><strong>Compose:</strong> front/last lemmas extend the proof.</li>
+  <li><strong>Check:</strong> invariant scales to any route length.</li>
+</ul>
+</div>
+
+<h3>V.1 Practice: Retrieve Relation</h3>
+<div class="practice" id="p3_1"><p>The retrieve maps:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')"><code>head rec &rarr; in</code> and <code>last sent &rarr; out</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')"><code>last rec &rarr; in</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')"><code>head sent &rarr; out</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Nothing.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Endpoints map to external state.</p><ul><li><strong>Retrieve:</strong> head rec = in, last sent = out.</li><li><strong>Prove:</strong> basis for all proofs.</li><li><strong>Compose:</strong> distributed ins = in-flight.</li><li><strong>Check:</strong> suffix holds on retrieved state.</li></ul></div></div>
+
+<h3>V.2 Practice: Refinement Basics</h3>
+<div class="practice" id="p3_2"><p>STransmit refines:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">Transmit &mdash; both prepend to their respective in sequence.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Receive.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Daemon.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Nothing.</button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> Head-append equivalence via retrieve.</p><ul><li><strong>Retrieve:</strong> in = head rec.</li><li><strong>Prove:</strong> head rec&prime; = &langle;m?&rangle; &#x2040; head rec = in&prime;.</li><li><strong>Compose:</strong> out unchanged.</li><li><strong>Check:</strong> Transmit postcondition satisfied.</li></ul></div></div>
+
+<h3>V.3 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_3"><p class="scenario">A 2-hop channel: <code>head rec = &langle;a, b&rangle;</code>, <code>last sent = &langle;a&rangle;</code>. External state?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>in = &langle;a, b&rangle;, out = &langle;a&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>in = &langle;a&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>out = &langle;a, b&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')">Undefined.</button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Apply retrieve: in = head rec, out = last sent.</p><ul><li><strong>Retrieve:</strong> direct application.</li><li><strong>Prove:</strong> &langle;a&rangle; suffix &langle;a,b&rangle; &mdash; invariant holds.</li><li><strong>Compose:</strong> 1 in-flight (b).</li><li><strong>Check:</strong> valid external state.</li></ul></div></div>
+
+<h3>V.4 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_4"><p class="scenario">A 3-hop channel: <code>head rec = &langle;x, y, z&rangle;</code>, <code>last sent = &langle;z&rangle;</code>. How many in-flight externally?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')">2 (x and y).</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">3.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">0.</button></li><li><button onclick="selectAnswer(this,false,'fb3_4')">1.</button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> in = &langle;x,y,z&rangle;, out = &langle;z&rangle;; #in &minus; #out = 2.</p><ul><li><strong>Retrieve:</strong> endpoints give external.</li><li><strong>Prove:</strong> suffix holds.</li><li><strong>Compose:</strong> gap = 2.</li><li><strong>Check:</strong> valid.</li></ul></div></div>
+
+<h3>V.5 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_5"><p>Daemon refines:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')">&Xi;Ext (skip) &mdash; external in and out unchanged.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Transmit.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Receive.</button></li><li><button onclick="selectAnswer(this,false,'fb3_5')">Nothing.</button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> Internal-only operation invisible externally.</p><ul><li><strong>Retrieve:</strong> endpoints unchanged.</li><li><strong>Prove:</strong> head rec, last sent fixed.</li><li><strong>Compose:</strong> in&prime; = in, out&prime; = out.</li><li><strong>Check:</strong> &Xi;Ext.</li></ul></div></div>
+
+<h3>V.6 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_6"><p class="scenario">A 3-hop path: <code>head rec = &langle;a, b, c&rangle;</code>, <code>last sent = &langle;c&rangle;</code>. Does <code>out suffix in</code> hold?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')">Yes &mdash; <code>&langle;c&rangle;</code> is a suffix of <code>&langle;a,b,c&rangle;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">Only for 2-hop.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">Undefined.</button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> Suffix preserved through retrieve.</p><ul><li><strong>Retrieve:</strong> in = &langle;a,b,c&rangle;, out = &langle;c&rangle;.</li><li><strong>Prove:</strong> s = &langle;a,b&rangle;.</li><li><strong>Compose:</strong> consistent.</li><li><strong>Check:</strong> invariant holds.</li></ul></div></div>
+
+<h3>V.7 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_7"><p>The refinement obligation for each op requires showing:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')">The sectional op preserves the external op&rsquo;s effect via retrieve.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Only init matters.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Free type.</button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Per-op proof: applicability + correctness.</p><ul><li><strong>Retrieve:</strong> links states.</li><li><strong>Prove:</strong> each op individually.</li><li><strong>Compose:</strong> traces consistent.</li><li><strong>Check:</strong> full refinement.</li></ul></div></div>
+
+<h3>V.8 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_8"><p class="scenario">Daemon fires at section 2 of a 3-hop route. External state?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">Unchanged &mdash; daemon doesn&rsquo;t touch head rec or last sent.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">in changes.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">out changes.</button></li><li><button onclick="selectAnswer(this,false,'fb3_8')">Both change.</button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> Middle activity hidden &mdash; &Xi;Ext.</p><ul><li><strong>Retrieve:</strong> endpoints fixed.</li><li><strong>Prove:</strong> only ins 2, ins 3 change.</li><li><strong>Compose:</strong> in&prime; = in, out&prime; = out.</li><li><strong>Check:</strong> invisible.</li></ul></div></div>
+
+<h3>V.9 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_9"><p class="scenario">SReceive delivers frame <code>m</code>. By retrieve, external Receive yields:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')">Same frame <code>m</code> &mdash; observable consistency.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">A different frame.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Free type.</button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> Output must match through retrieve.</p><ul><li><strong>Retrieve:</strong> out = last sent.</li><li><strong>Prove:</strong> same m delivered.</li><li><strong>Compose:</strong> identical observable output.</li><li><strong>Check:</strong> correctness condition.</li></ul></div></div>
+
+<h3>V.10 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_10"><p class="scenario">1-hop route (single section). Refinement is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">Trivial &mdash; sectional = external.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Impossible.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Requires complex proof.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Nothing.</button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> Base case of induction.</p><ul><li><strong>Retrieve:</strong> identity.</li><li><strong>Prove:</strong> STransmit = Transmit, SReceive = Receive.</li><li><strong>Compose:</strong> no daemon needed.</li><li><strong>Check:</strong> trivially holds.</li></ul></div></div>
+
+<h3>V.11 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_11"><p class="scenario"><code>head rec = &langle;a, b&rangle;</code>, <code>last sent = &langle;&rangle;</code>. External state?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>in = &langle;a, b&rangle;, out = &langle;&rangle;</code> &mdash; 2 in-flight.</button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>in = &langle;&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>out = &langle;a, b&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')">Undefined.</button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> All messages still in transit.</p><ul><li><strong>Retrieve:</strong> in = head rec, out = last sent.</li><li><strong>Prove:</strong> &langle;&rangle; suffix &langle;a,b&rangle;.</li><li><strong>Compose:</strong> 2 in-flight.</li><li><strong>Check:</strong> valid external state.</li></ul></div></div>
+
+<h3>V.12 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_12"><p class="scenario">STransmit then Daemon. External effect?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">in grows by 1; out unchanged (STransmit + skip).</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">in and out both grow.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">No change.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">out grows.</button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> STransmit refines Transmit; Daemon refines skip.</p><ul><li><strong>Retrieve:</strong> composed trace.</li><li><strong>Prove:</strong> STransmit adds 1 to in; Daemon is &Xi;Ext.</li><li><strong>Compose:</strong> net effect: one Transmit.</li><li><strong>Check:</strong> consistent.</li></ul></div></div>
+
+<h3>V.13 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_13"><p class="scenario">After multiple ops: <code>head rec = &langle;a, b, c&rangle;</code>, <code>last sent = &langle;c&rangle;</code>. External state?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')"><code>in = &langle;a,b,c&rangle;, out = &langle;c&rangle;</code> &mdash; suffix holds.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>in = &langle;c&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_13')"><code>out = &langle;a,b&rangle;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Undefined.</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Retrieve applied; 2 in-flight.</p><ul><li><strong>Retrieve:</strong> endpoints.</li><li><strong>Prove:</strong> suffix holds.</li><li><strong>Compose:</strong> consistent.</li><li><strong>Check:</strong> valid.</li></ul></div></div>
+
+<h3>V.14 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_14"><p>SectionInit refines ExtInit because:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')">All-empty sections produce head rec = &langle;&rangle; = in and last sent = &langle;&rangle; = out.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">They are unrelated.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Only for 1-hop routes.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Nothing.</button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Empty sections map to empty external state.</p><ul><li><strong>Retrieve:</strong> head &langle;&rangle; and last &langle;&rangle;.</li><li><strong>Prove:</strong> both empty.</li><li><strong>Compose:</strong> trivially consistent.</li><li><strong>Check:</strong> init refinement holds.</li></ul></div></div>
+
+<h3>V.15 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_15"><p>A refinement proof typically shows:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">Applicability + correctness for each op + init consistency.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Only init.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Only one op.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Nothing.</button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Three obligations per op.</p><ul><li><strong>Retrieve:</strong> basis.</li><li><strong>Prove:</strong> per-op.</li><li><strong>Compose:</strong> init + ops.</li><li><strong>Check:</strong> full refinement.</li></ul></div></div>
+
+<h3>V.16 Practice: Operation Refinement</h3>
+<div class="practice" id="p3_16"><p>Why prove refinement for a telecom protocol?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">Guarantees the sectional design implements the promised external behaviour.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Performance.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Aesthetic.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Nothing.</button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Formal guarantee of correctness.</p><ul><li><strong>Retrieve:</strong> links views.</li><li><strong>Prove:</strong> contract preserved.</li><li><strong>Compose:</strong> all ops covered.</li><li><strong>Check:</strong> industrial-strength proof.</li></ul></div></div>
+
+<h3>V.17 Practice: Composed Traces</h3>
+<div class="practice" id="p3_17"><p class="scenario">STransmit, Daemon, Daemon, SReceive on a 3-hop route. Net external effect?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">in grows by 1 and out grows by 1 (one Transmit + two skips + one Receive).</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Only in grows.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Only out grows.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">No change.</button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Daemons are skip; net = Transmit + Receive.</p><ul><li><strong>Retrieve:</strong> composed trace.</li><li><strong>Prove:</strong> each step individually.</li><li><strong>Compose:</strong> Transmit + skip + skip + Receive.</li><li><strong>Check:</strong> one message end-to-end.</li></ul></div></div>
+
+<h3>V.18 Practice: Composed Traces</h3>
+<div class="practice" id="p3_18"><p class="scenario">Three STransmits, two Daemons, one SReceive. External net?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">in grows by 3; out grows by 1.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">in grows by 3; out grows by 3.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">No change.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">in grows by 1.</button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> 3 Transmits + 2 skips + 1 Receive.</p><ul><li><strong>Retrieve:</strong> net effect.</li><li><strong>Prove:</strong> each step.</li><li><strong>Compose:</strong> 3 in, 1 out.</li><li><strong>Check:</strong> 2 in-flight at end.</li></ul></div></div>
+
+<h3>V.19 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_19"><p>The retrieve is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">Functional &mdash; each sectional state maps to exactly one external state.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Many-to-many.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Undefined.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Nothing.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Deterministic abstraction function.</p><ul><li><strong>Retrieve:</strong> functional.</li><li><strong>Prove:</strong> well-defined.</li><li><strong>Compose:</strong> one external per concrete.</li><li><strong>Check:</strong> standard data refinement pattern.</li></ul></div></div>
+
+<h3>V.20 Practice: Retrieve Application</h3>
+<div class="practice" id="p3_20"><p class="scenario"><code>head rec = &langle;a&rangle;</code>, <code>last sent = &langle;a&rangle;</code>. External state and in-flight count?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')"><code>in = out = &langle;a&rangle;</code>; 0 in-flight.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">1 in-flight.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')"><code>in = &langle;&rangle;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Undefined.</button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> Fully delivered &mdash; in = out.</p><ul><li><strong>Retrieve:</strong> endpoints equal.</li><li><strong>Prove:</strong> s = &langle;&rangle;.</li><li><strong>Compose:</strong> 0 in-flight.</li><li><strong>Check:</strong> valid.</li></ul></div></div>
+
+<h3>V.21 Practice: Daemon Refines Skip</h3>
+<div class="practice" id="p3_21"><p>The daemon&rsquo;s invisibility means externally it is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">&Xi;Ext &mdash; no change to in or out.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">A Transmit.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">A Receive.</button></li><li><button onclick="selectAnswer(this,false,'fb3_21')">Nothing.</button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> Internal hop = external skip.</p><ul><li><strong>Retrieve:</strong> endpoints fixed.</li><li><strong>Prove:</strong> &Xi;Ext.</li><li><strong>Compose:</strong> no external effect.</li><li><strong>Check:</strong> invisible.</li></ul></div></div>
+
+<h3>V.22 Practice: Inductive Proof</h3>
+<div class="practice" id="p3_22"><p>Inductive proof on route length uses:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')">Base case (1-hop trivial) + step (n &rarr; n+1 via front/last decomposition).</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">Only the base case.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">No induction needed.</button></li><li><button onclick="selectAnswer(this,false,'fb3_22')">Nothing.</button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Standard induction structure.</p><ul><li><strong>Retrieve:</strong> both cases use it.</li><li><strong>Prove:</strong> base + step.</li><li><strong>Compose:</strong> front + last decomposition in step.</li><li><strong>Check:</strong> scales to any route length.</li></ul></div></div>
+
+<h3>V.23 Practice: Sequence Lemmas</h3>
+<div class="practice" id="p3_23"><p>Sequence lemmas like <code>head(s &#x2040; t) = head(s)</code> (when s non-empty) are used in:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">Discharging refinement obligations in the inductive step.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Only notation.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Free type.</button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> Algebraic helpers for calculation.</p><ul><li><strong>Retrieve:</strong> applied via lemmas.</li><li><strong>Prove:</strong> head/tail/front/last distribute.</li><li><strong>Compose:</strong> proof steps.</li><li><strong>Check:</strong> mechanical discharge.</li></ul></div></div>
+
+<h3>V.24 Practice: Init Consistency</h3>
+<div class="practice" id="p3_24"><p>A proven refinement lets the implementer:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">Use sectional ops freely &mdash; external behaviour is guaranteed correct.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Ignore external.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Nothing.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Free type.</button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Correct by construction.</p><ul><li><strong>Retrieve:</strong> formal guarantee.</li><li><strong>Prove:</strong> all ops covered.</li><li><strong>Compose:</strong> any trace consistent.</li><li><strong>Check:</strong> industrial confidence.</li></ul></div></div>
+
+<h3>V.25 Practice: Data Refinement</h3>
+<div class="practice" id="p3_25"><p>The External &harr; Sectional relationship is a case of:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Data refinement &mdash; proving a concrete design implements an abstract spec.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Functional refinement.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Free type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Nothing.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Industrial-scale data refinement case study.</p><ul><li><strong>Retrieve:</strong> relates concrete to abstract.</li><li><strong>Prove:</strong> per-op.</li><li><strong>Compose:</strong> init + all ops.</li><li><strong>Check:</strong> SS7 protocol correctness.</li></ul></div></div>
+
+</section>
+
+<!-- Pagination -->
+<div class="pagination">
+  <button id="prevBtn" onclick="changePage(-1)">&larr; Prev</button>
+  <span id="pageIndicator">Section 1 of 3</span>
+  <button id="nextBtn" onclick="changePage(1)">Next &rarr;</button>
+</div>
+
+<footer>
+  <p>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 20.</p>
+</footer>
+
+</body>
+</html>

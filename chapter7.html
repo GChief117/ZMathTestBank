@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 7 — Relations</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch7-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">7.1 Binary Relations &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">7.2 Domain and Range &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">7.3 Relational Inverse &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">7.4 Relational Composition &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 7 &mdash; Relations</h1>
+
+<!-- ================= 7.1 Binary Relations ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">7.1 Binary Relations</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Set of ordered pairs linking elements of two sets.">Binary relation</span> from X to Y &rarr; set of ordered pairs, subset of <code>X &times; Y</code>.</li>
+  <li><strong>Type:</strong> <code>X &harr; Y == &Popf;(X &times; Y)</code> &mdash; all such subsets.</li>
+  <li><span class="vocab" data-def="Z notation x &#8614; y for the ordered pair (x, y).">Maplet</span> notation: <code>x &#8614; y</code> replaces <code>(x, y)</code> in Z.</li>
+  <li><span class="vocab" data-def="Relation written between its arguments using underscores: x R y.">Infix</span> form: <code>_R_</code> lets you write <code>x R y</code> between arguments.</li>
+  <li>Relations are <strong>many-to-many:</strong> one x may map to many y, and vice versa.</li>
+  <li><span class="vocab" data-def="Arrow diagram showing which pairs are in the relation.">Graphs</span> (arrow diagrams) visualize which pairs exist in a relation.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Binary relation</td><td>Set of ordered pairs linking elements of two sets.</td></tr>
+  <tr><td>Maplet</td><td>Z notation x &#8614; y for the ordered pair (x, y).</td></tr>
+  <tr><td>Infix relation</td><td>Relation written between its arguments using underscores: x R y.</td></tr>
+  <tr><td>Graph</td><td>Arrow diagram showing which pairs are in the relation.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&harr;</code></td><td>Relation type &mdash; set of all relations from X to Y.</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet &mdash; links source to target.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product &mdash; all possible pairs.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set &mdash; set of all subsets.</td></tr>
+  <tr><td><code>==</code></td><td>Abbreviation definition.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="D">IV.1 Examples: Car Ownership, Blog Authorship &amp; Concert Attendance</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&harr;</code></td><td>Relation type.</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A car app tracks which <span class="key">person</span> owns which <span class="key">car</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>owns : Person <span class="vocab" data-def="Relation type &mdash; set of all relations from X to Y.">&harr;</span> Car</code>.</li>
+  <li><strong>Maplet:</strong> <code>owns = { Alice <span class="vocab" data-def="Z notation x &#8614; y for the ordered pair (x, y).">&#8614;</span> sedan, Bob &#8614; truck, Bob &#8614; coupe }</code>.</li>
+  <li><strong>Structure:</strong> Bob owns two cars &mdash; many-to-many allowed.</li>
+  <li><strong>Check:</strong> three <span class="vocab" data-def="Z notation x &#8614; y for the ordered pair (x, y).">maplets</span>, two distinct sources, three targets.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A blog tracks which <span class="key">author</span> wrote which <span class="key">post</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>wrote : Author &harr; Post</code>.</li>
+  <li><strong>Maplet:</strong> <code>wrote = { Ana &#8614; p1, Ana &#8614; p2, Ben &#8614; p3 }</code>.</li>
+  <li><strong>Structure:</strong> Ana wrote two posts &mdash; one author, many posts.</li>
+  <li><strong>Check:</strong> three maplets capture the authorship relation.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A venue records which <span class="key">fan</span> attended which <span class="key">concert</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>attended : Fan &harr; Concert</code>.</li>
+  <li><strong>Maplet:</strong> <code>attended = { Jo &#8614; gig1, Jo &#8614; gig2, Mo &#8614; gig1 }</code>.</li>
+  <li><strong>Structure:</strong> Jo went to two concerts; two fans at gig1 &mdash; many-to-many.</li>
+  <li><strong>Check:</strong> each maplet records one attendance event.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Driver&ndash;Car Maplets, Student&ndash;Course Maplets &amp; Employee&ndash;Skill Maplets</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet.</td></tr>
+  <tr><td><code>&harr;</code></td><td>Relation type.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A motor registry records which <span class="key">drivers</span> drive which <span class="key">cars</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>drives : Drivers &harr; Cars</code>.</li>
+  <li><strong>Maplet:</strong> <code>drives = { helen &#8614; beetle, indra &#8614; alfa, jim &#8614; beetle, kate &#8614; cortina }</code>.</li>
+  <li><strong>Structure:</strong> two drivers share beetle &mdash; beetle appears as target twice.</li>
+  <li><strong>Check:</strong> <code>kate <span class="vocab" data-def="Z notation x &#8614; y for the ordered pair (x, y).">&#8614;</span> cortina &isin; drives</code> &mdash; confirmed.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A university tracks which <span class="key">student</span> takes which <span class="key">course</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>enrolled : Student &harr; Course</code>.</li>
+  <li><strong>Maplet:</strong> <code>enrolled = { s1 &#8614; CS101, s1 &#8614; MATH200, s2 &#8614; CS101 }</code>.</li>
+  <li><strong>Structure:</strong> s1 takes two courses; CS101 has two students.</li>
+  <li><strong>Check:</strong> three maplets, two sources, two targets.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An HR system lists which <span class="key">employee</span> has which <span class="key">skill</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>hasSkill : Employee &harr; Skill</code>.</li>
+  <li><strong>Maplet:</strong> <code>hasSkill = { d1 &#8614; Java, d1 &#8614; SQL, d2 &#8614; Java }</code>.</li>
+  <li><strong>Structure:</strong> d1 has two skills; Java shared by both.</li>
+  <li><strong>Check:</strong> multi-skilled employees modelled naturally.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Colour-Pair Enumeration, Coin-Flip Enumeration &amp; Dice-Pair Enumeration</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+  <tr><td><code>&harr;</code></td><td>Relation type.</td></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A paint shop pairs <span class="key">primary</span> and <span class="key">secondary</span> colours: <code>{red, blue} &times; {white, black}</code>.</p>
+<ul>
+  <li><strong>Type:</strong> any subset of <code>{red, blue} <span class="vocab" data-def="Cartesian product &mdash; all possible pairs.">&times;</span> {white, black}</code> is a relation.</li>
+  <li><strong>Maplet:</strong> full product = <code>{ red &#8614; white, red &#8614; black, blue &#8614; white, blue &#8614; black }</code>.</li>
+  <li><strong>Structure:</strong> 2 &times; 2 = 4 pairs total; <code><span class="vocab" data-def="Power set &mdash; set of all subsets.">&Popf;</span></code> gives 2<sup>4</sup> = 16 possible relations.</li>
+  <li><strong>Check:</strong> picking any subset of these 4 pairs defines a valid relation.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An experiment records <span class="key">coin face</span> paired with <span class="key">die outcome</span>: <code>{H, T} &times; {1, 2, 3}</code>.</p>
+<ul>
+  <li><strong>Type:</strong> any subset of <code>{H, T} &times; {1, 2, 3}</code> is a relation.</li>
+  <li><strong>Maplet:</strong> full product has 6 pairs: <code>{ H &#8614; 1, H &#8614; 2, H &#8614; 3, T &#8614; 1, T &#8614; 2, T &#8614; 3 }</code>.</li>
+  <li><strong>Structure:</strong> 2 &times; 3 = 6 pairs; &Popf; gives 2<sup>6</sup> = 64 possible relations.</li>
+  <li><strong>Check:</strong> e.g., <code>{ H &#8614; 1, T &#8614; 3 }</code> is one of the 64.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A board game pairs <span class="key">red die</span> with <span class="key">blue die</span>: <code>{1, 2} &times; {1, 2}</code>.</p>
+<ul>
+  <li><strong>Type:</strong> any subset of <code>{1, 2} &times; {1, 2}</code> is a relation.</li>
+  <li><strong>Maplet:</strong> full product = <code>{ 1 &#8614; 1, 1 &#8614; 2, 2 &#8614; 1, 2 &#8614; 2 }</code>.</li>
+  <li><strong>Structure:</strong> 2 &times; 2 = 4 pairs; &Popf; gives 2<sup>4</sup> = 16 possible relations.</li>
+  <li><strong>Check:</strong> one such relation is <code>{ 1 &#8614; 2, 2 &#8614; 1 }</code> (swap).</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Infix &ldquo;Drives&rdquo;, Infix &ldquo;Teaches&rdquo; &amp; Infix &ldquo;Supervises&rdquo;</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&harr;</code></td><td>Relation type.</td></tr>
+  <tr><td><code>&#8614;</code></td><td>Maplet.</td></tr>
+  <tr><td><code>==</code></td><td>Abbreviation definition.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The motor registry defines <span class="key">drives</span> as an <span class="key">infix</span> relation with underscore placeholders.</p>
+<ul>
+  <li><strong>Type:</strong> <code>_drives_ : Drivers <span class="vocab" data-def="Relation type &mdash; set of all relations from X to Y.">&harr;</span> Cars</code> &mdash; underscores mark argument positions.</li>
+  <li><strong>Maplet:</strong> <code>drives <span class="vocab" data-def="Abbreviation definition.">==</span> { helen &#8614; beetle, indra &#8614; alfa, jim &#8614; beetle, kate &#8614; cortina }</code>.</li>
+  <li><strong>Structure:</strong> now write <code>kate drives cortina</code> instead of <code>kate &#8614; cortina &isin; drives</code>.</li>
+  <li><strong>Check:</strong> <span class="vocab" data-def="Relation written between its arguments using underscores: x R y.">infix</span> form is syntactic sugar for the same set of pairs.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A school defines a <span class="key">teaches</span> relation between <span class="key">staff</span> and <span class="key">classes</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>_teaches_ : Staff &harr; Class</code>.</li>
+  <li><strong>Maplet:</strong> <code>teaches == { mrA &#8614; math, msB &#8614; physics, msB &#8614; chem }</code>.</li>
+  <li><strong>Structure:</strong> write <code>msB teaches physics</code> in infix style.</li>
+  <li><strong>Check:</strong> same set of pairs, different notation.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A lab defines a <span class="key">supervises</span> relation between <span class="key">PIs</span> and <span class="key">students</span>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>_supervises_ : PI &harr; Student</code>.</li>
+  <li><strong>Maplet:</strong> <code>supervises == { drX &#8614; alice, drX &#8614; bob, drY &#8614; carol }</code>.</li>
+  <li><strong>Structure:</strong> write <code>drX supervises alice</code> in infix style.</li>
+  <li><strong>Check:</strong> underscores indicate where arguments go.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Power Set of Pairs (Traffic), Power Set of Pairs (Switches) &amp; Power Set of Pairs (Flags)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&Popf;</code></td><td>Power set.</td></tr>
+  <tr><td><code>&times;</code></td><td>Cartesian product.</td></tr>
+  <tr><td><code>==</code></td><td>Abbreviation definition.</td></tr>
+  <tr><td><code>&harr;</code></td><td>Relation type.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A traffic grid has <span class="key">two lights</span> and <span class="key">two colours</span>: <code>{north, south} &times; {red, green}</code>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>Lights &harr; Colours <span class="vocab" data-def="Abbreviation definition.">==</span> <span class="vocab" data-def="Power set &mdash; set of all subsets.">&Popf;</span>(Lights <span class="vocab" data-def="Cartesian product &mdash; all possible pairs.">&times;</span> Colours)</code>.</li>
+  <li><strong>Maplet:</strong> one valid state: <code>{ north &#8614; green, south &#8614; red }</code>.</li>
+  <li><strong>Structure:</strong> 4 possible pairs &rarr; 16 possible relations (states).</li>
+  <li><strong>Check:</strong> the definition <code>&harr; == &Popf;(&times;)</code> is generic over any two sets.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A control panel has <span class="key">two switches</span> and <span class="key">two modes</span>: <code>{sw1, sw2} &times; {on, off}</code>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>Switches &harr; Modes == &Popf;(Switches &times; Modes)</code>.</li>
+  <li><strong>Maplet:</strong> all-on state: <code>{ sw1 &#8614; on, sw2 &#8614; on }</code>.</li>
+  <li><strong>Structure:</strong> 4 pairs &rarr; 16 subsets = 16 possible configurations.</li>
+  <li><strong>Check:</strong> each configuration is one element of <code>&Popf;(Switches &times; Modes)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A signal system pairs <span class="key">flags</span> with <span class="key">positions</span>: <code>{A, B} &times; {up, down}</code>.</p>
+<ul>
+  <li><strong>Type:</strong> <code>Flags &harr; Positions == &Popf;(Flags &times; Positions)</code>.</li>
+  <li><strong>Maplet:</strong> one signal: <code>{ A &#8614; up, B &#8614; down }</code>.</li>
+  <li><strong>Structure:</strong> 4 pairs &rarr; 16 possible signals.</li>
+  <li><strong>Check:</strong> the relation type is precisely the power set of the product.</li>
+</ul>
+</div>
+
+<!-- Practice 7.1 -->
+<h3 class="jump-target" data-part="E">V.1 Practice: Binary Relation Definition</h3>
+<div class="practice" id="p1_1"><p>A binary relation from X to Y is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">A subset of <code>X &times; Y</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">A function from X to Y.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">A single ordered pair.</button></li><li><button onclick="selectAnswer(this,false,'fb1_1')">The union <code>X &cup; Y</code>.</button></li></ul><div class="feedback" id="fb1_1"><p><strong>Correct.</strong> A relation is any set of pairs drawn from the Cartesian product.</p><ul><li><strong>Type:</strong> <code>R : X &harr; Y</code>.</li><li><strong>Maplet:</strong> each element is <code>x &#8614; y</code>.</li><li><strong>Structure:</strong> may contain zero or more pairs.</li><li><strong>Check:</strong> <code>X &harr; Y == &Popf;(X &times; Y)</code>.</li></ul></div></div>
+
+<h3>V.2 Practice: Maplet Symbol</h3>
+<div class="practice" id="p1_2"><p>The symbol <code>&#8614;</code> is read as:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_2')">Implies.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')">Maplet &mdash; an ordered pair <code>(x, y)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Equals.</button></li><li><button onclick="selectAnswer(this,false,'fb1_2')">Subset.</button></li></ul><div class="feedback" id="fb1_2"><p><strong>Correct.</strong> Maplet notation replaces tuple notation in Z.</p><ul><li><strong>Type:</strong> <code>x &#8614; y</code> lives in <code>X &times; Y</code>.</li><li><strong>Maplet:</strong> equivalent to <code>(x, y)</code>.</li><li><strong>Structure:</strong> source on left, target on right.</li><li><strong>Check:</strong> standard Z notation for ordered pairs.</li></ul></div></div>
+
+<h3>V.3 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_3"><p class="scenario">A <span class="key">social app</span> tracks which user <span class="key">follows</span> which other user. One user can follow many; many can follow one. Which declaration fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>follows : User &harr; User</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>follows : User &rarr; User</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>follows == User</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_3')"><code>follows : &Popf; User</code></button></li></ul><div class="feedback" id="fb1_3"><p><strong>Correct.</strong> Many-to-many requires the relation type.</p><ul><li><strong>Type:</strong> <code>&harr;</code> allows multiple targets per source.</li><li><strong>Maplet:</strong> e.g., <code>alice &#8614; bob</code>.</li><li><strong>Structure:</strong> <code>&rarr;</code> would force single-valued (a function).</li><li><strong>Check:</strong> follower graph is naturally a relation.</li></ul></div></div>
+
+<h3>V.4 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_4"><p class="scenario">An <span class="key">orchestra</span> tracks which <span class="key">players</span> play which <span class="key">instruments</span> (multi-instrumentalists allowed). Which type fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>plays : Player &harr; Instrument</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>plays : Player &rarr; Instrument</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>plays == Instrument</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_4')"><code>plays : &Popf; Player</code></button></li></ul><div class="feedback" id="fb1_4"><p><strong>Correct.</strong> Multi-instrumentalists need many-to-many.</p><ul><li><strong>Type:</strong> <code>&harr;</code> for relation.</li><li><strong>Maplet:</strong> e.g., <code>jo &#8614; violin, jo &#8614; cello</code>.</li><li><strong>Structure:</strong> one player, multiple instruments.</li><li><strong>Check:</strong> <code>&rarr;</code> would restrict to one instrument per player.</li></ul></div></div>
+
+<h3>V.5 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_5"><p class="scenario">A <span class="key">library</span> records which <span class="key">patron</span> borrowed which <span class="key">book</span>. A patron may borrow many; a book may be borrowed by many (over time). Which declaration fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>borrowed : Patron &harr; Book</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>borrowed : Patron &rarr; Book</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>borrowed == Book</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_5')"><code>borrowed : &Popf; Patron</code></button></li></ul><div class="feedback" id="fb1_5"><p><strong>Correct.</strong> Many-to-many relation.</p><ul><li><strong>Type:</strong> <code>&harr;</code> captures the flexibility.</li><li><strong>Maplet:</strong> each loan is one maplet.</li><li><strong>Structure:</strong> no single-value restriction.</li><li><strong>Check:</strong> relation is the right abstraction.</li></ul></div></div>
+
+<h3>V.6 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_6"><p class="scenario">Given students s1, s2 and classes c1, c2. Student s1 is in both c1 and c2. Which <span class="key">maplet set</span> is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>{ s1 &#8614; c1, s1 &#8614; c2 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>{ s1, c1, c2 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>{ (s1, s1), (c1, c2) }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_6')"><code>{ s1 &rarr; c1 }</code></button></li></ul><div class="feedback" id="fb1_6"><p><strong>Correct.</strong> Two maplets from the same source.</p><ul><li><strong>Type:</strong> <code>Student &harr; Class</code>.</li><li><strong>Maplet:</strong> <code>s1 &#8614; c1</code> and <code>s1 &#8614; c2</code>.</li><li><strong>Structure:</strong> one source, two targets &mdash; valid in a relation.</li><li><strong>Check:</strong> flat set is not a relation; <code>&rarr;</code> is function notation.</li></ul></div></div>
+
+<h3>V.7 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_7"><p class="scenario">A <span class="key">recipe app</span> records: cake uses flour, cake uses sugar, bread uses flour. Which maplet set captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>{ cake &#8614; flour, cake &#8614; sugar, bread &#8614; flour }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>{ cake, bread, flour, sugar }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>{ flour &#8614; cake, sugar &#8614; cake }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_7')"><code>{ cake == flour }</code></button></li></ul><div class="feedback" id="fb1_7"><p><strong>Correct.</strong> Recipe-to-ingredient maplets.</p><ul><li><strong>Type:</strong> <code>uses : Recipe &harr; Ingredient</code>.</li><li><strong>Maplet:</strong> source is recipe, target is ingredient.</li><li><strong>Structure:</strong> direction matters &mdash; reversed option is wrong.</li><li><strong>Check:</strong> three maplets, correct source/target order.</li></ul></div></div>
+
+<h3>V.8 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_8"><p class="scenario">A <span class="key">dating app</span> has <code>matched : User &harr; User</code>. Alice matched with Bob. Which is a valid member?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>alice &#8614; bob</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>alice = bob</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>{alice, bob}</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_8')"><code>alice &rarr; bob</code></button></li></ul><div class="feedback" id="fb1_8"><p><strong>Correct.</strong> A maplet is the membership form for a relation.</p><ul><li><strong>Type:</strong> <code>User &harr; User</code>.</li><li><strong>Maplet:</strong> <code>alice &#8614; bob</code> = <code>(alice, bob)</code>.</li><li><strong>Structure:</strong> unordered set <code>{alice, bob}</code> loses direction.</li><li><strong>Check:</strong> <code>&rarr;</code> is function arrow, not maplet.</li></ul></div></div>
+
+<h3>V.9 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_9"><p class="scenario">A <span class="key">product catalogue</span> tracks which <span class="key">tags</span> apply to which <span class="key">items</span> (many tags per item, many items per tag). Which type fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>tagged : Item &harr; Tag</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_9')"><code>tagged : Item &rarr; Tag</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_9')"><code>tagged == Tag</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_9')"><code>tagged : &Popf; Item</code></button></li></ul><div class="feedback" id="fb1_9"><p><strong>Correct.</strong> Tagging is many-to-many.</p><ul><li><strong>Type:</strong> <code>&harr;</code> allows multiple tags and items.</li><li><strong>Maplet:</strong> <code>shirt &#8614; cotton, shirt &#8614; blue</code>.</li><li><strong>Structure:</strong> not a function.</li><li><strong>Check:</strong> relation is the right choice.</li></ul></div></div>
+
+<h3>V.10 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_10"><p class="scenario">A <span class="key">phone book</span> maps each person to possibly many numbers. Alice has two numbers: n1, n2. Bob has n3. Which maplet set fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>{ Alice &#8614; n1, Alice &#8614; n2, Bob &#8614; n3 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>{ Alice &#8614; {n1, n2}, Bob &#8614; n3 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>{ n1 &#8614; Alice, n2 &#8614; Alice }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_10')"><code>{ Alice == n1 }</code></button></li></ul><div class="feedback" id="fb1_10"><p><strong>Correct.</strong> One maplet per number, not a set-valued target.</p><ul><li><strong>Type:</strong> <code>Person &harr; Number</code>.</li><li><strong>Maplet:</strong> each phone is a separate pair.</li><li><strong>Structure:</strong> nested set <code>{n1, n2}</code> as target is wrong &mdash; use separate maplets.</li><li><strong>Check:</strong> three maplets, flat structure.</li></ul></div></div>
+
+<h3>V.11 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_11"><p class="scenario">A <span class="key">project tracker</span> assigns multiple <span class="key">engineers</span> to multiple <span class="key">tasks</span>. Which type captures this?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>assigned : Engineer &harr; Task</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_11')"><code>assigned : Engineer &rarr; Task</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_11')"><code>assigned == Task</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_11')"><code>assigned : &Popf; Engineer</code></button></li></ul><div class="feedback" id="fb1_11"><p><strong>Correct.</strong> Multi-assignment requires a relation.</p><ul><li><strong>Type:</strong> <code>&harr;</code> for many-to-many.</li><li><strong>Maplet:</strong> <code>eng1 &#8614; task1, eng1 &#8614; task2</code>.</li><li><strong>Structure:</strong> one engineer on multiple tasks.</li><li><strong>Check:</strong> function would restrict to one task per engineer.</li></ul></div></div>
+
+<h3>V.12 Practice: Cartesian Product</h3>
+<div class="practice" id="p1_12"><p>How many pairs in <code>{a, b, c} &times; {1, 2}</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_12')">5</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')">6</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">3</button></li><li><button onclick="selectAnswer(this,false,'fb1_12')">8</button></li></ul><div class="feedback" id="fb1_12"><p><strong>Correct.</strong> 3 &times; 2 = 6.</p><ul><li><strong>Type:</strong> <code>{a,b,c} &harr; {1,2}</code> has at most 6 pairs.</li><li><strong>Maplet:</strong> <code>a &#8614; 1, a &#8614; 2, b &#8614; 1, b &#8614; 2, c &#8614; 1, c &#8614; 2</code>.</li><li><strong>Structure:</strong> every source paired with every target.</li><li><strong>Check:</strong> |X| &times; |Y| = product size.</li></ul></div></div>
+
+<h3>V.13 Practice: Cartesian Product</h3>
+<div class="practice" id="p1_13"><p>How many relations exist in <code>{a, b} &harr; {0, 1}</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_13')">4</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">8</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')">16</button></li><li><button onclick="selectAnswer(this,false,'fb1_13')">2</button></li></ul><div class="feedback" id="fb1_13"><p><strong>Correct.</strong> 2<sup>4</sup> = 16 subsets of a 4-element product.</p><ul><li><strong>Type:</strong> <code>{a,b} &times; {0,1}</code> has 4 pairs.</li><li><strong>Maplet:</strong> each of the 4 pairs is either in or out.</li><li><strong>Structure:</strong> <code>&Popf;(X &times; Y)</code> has <code>2<sup>|X &times; Y|</sup></code> elements.</li><li><strong>Check:</strong> 2<sup>4</sup> = 16.</li></ul></div></div>
+
+<h3>V.14 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_14"><p class="scenario">A <span class="key">hospital</span> tracks which <span class="key">doctors</span> treat which <span class="key">patients</span>. A doctor sees many patients; a patient may see many doctors. Which type?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>treats : Doctor &harr; Patient</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>treats : Doctor &rarr; Patient</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>treats == Patient</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_14')"><code>treats : &Popf; Doctor</code></button></li></ul><div class="feedback" id="fb1_14"><p><strong>Correct.</strong> Healthcare relationships are many-to-many.</p><ul><li><strong>Type:</strong> <code>&harr;</code> for relation.</li><li><strong>Maplet:</strong> <code>drA &#8614; pat1, drA &#8614; pat2</code>.</li><li><strong>Structure:</strong> multiple patients per doctor.</li><li><strong>Check:</strong> function would limit to one patient per doctor.</li></ul></div></div>
+
+<h3>V.15 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_15"><p class="scenario">A <span class="key">delivery service</span> has <code>delivers : Courier &harr; Package</code>. Courier c1 delivers p1 and p2; c2 delivers p3. Which maplet set is correct?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')"><code>{ c1 &#8614; p1, c1 &#8614; p2, c2 &#8614; p3 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_15')"><code>{ c1, p1, p2, c2, p3 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_15')"><code>{ c1 &#8614; {p1, p2} }</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_15')"><code>{ p1 &#8614; c1, p2 &#8614; c1 }</code></button></li></ul><div class="feedback" id="fb1_15"><p><strong>Correct.</strong> Separate maplets per delivery.</p><ul><li><strong>Type:</strong> <code>Courier &harr; Package</code>.</li><li><strong>Maplet:</strong> one per package delivered.</li><li><strong>Structure:</strong> set-valued targets and reversed pairs are wrong.</li><li><strong>Check:</strong> three maplets, direction preserved.</li></ul></div></div>
+
+<h3>V.16 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_16"><p class="scenario">A <span class="key">calendar</span> maps <span class="key">events</span> to <span class="key">attendees</span> (many-to-many). Which declaration fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')"><code>attends : Event &harr; Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>attends : Event &rarr; Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>attends == Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_16')"><code>attends : &Popf; Event</code></button></li></ul><div class="feedback" id="fb1_16"><p><strong>Correct.</strong> Event attendance is many-to-many.</p><ul><li><strong>Type:</strong> <code>&harr;</code> for relation.</li><li><strong>Maplet:</strong> <code>e1 &#8614; alice, e1 &#8614; bob</code>.</li><li><strong>Structure:</strong> multiple attendees per event.</li><li><strong>Check:</strong> function would restrict to one attendee per event.</li></ul></div></div>
+
+<h3>V.17 Practice: Cartesian Product</h3>
+<div class="practice" id="p1_17"><p>If <code>R : X &harr; Y</code>, then <code>R &sube;</code> what?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')"><code>X &times; Y</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_17')"><code>X &cup; Y</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_17')"><code>X &cap; Y</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_17')"><code>&Popf; X</code></button></li></ul><div class="feedback" id="fb1_17"><p><strong>Correct.</strong> A relation is a subset of the Cartesian product.</p><ul><li><strong>Type:</strong> <code>X &harr; Y == &Popf;(X &times; Y)</code>.</li><li><strong>Maplet:</strong> each pair drawn from <code>X &times; Y</code>.</li><li><strong>Structure:</strong> union/intersection of types is not the same thing.</li><li><strong>Check:</strong> definition of relation type.</li></ul></div></div>
+
+<h3>V.18 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_18"><p class="scenario">Given <code>R = { 1 &#8614; a, 1 &#8614; b }</code>, is R a function?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_18')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">No &mdash; 1 maps to two different values.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">Only if <code>a = b</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb1_18')">Only for finite sets.</button></li></ul><div class="feedback" id="fb1_18"><p><strong>Correct.</strong> A function must be single-valued; R is multi-valued.</p><ul><li><strong>Type:</strong> R is a relation, not a function.</li><li><strong>Maplet:</strong> <code>1 &#8614; a</code> and <code>1 &#8614; b</code> &mdash; two targets for source 1.</li><li><strong>Structure:</strong> function = at most one target per source.</li><li><strong>Check:</strong> R is a proper relation.</li></ul></div></div>
+
+<h3>V.19 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_19"><p class="scenario">A <span class="key">university</span> tracks which <span class="key">departments</span> employ which <span class="key">professors</span>. Joint appointments allowed. Which type?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>employs : Dept &harr; Professor</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>employs : Dept &rarr; Professor</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>employs == Professor</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_19')"><code>employs : &Popf; Dept</code></button></li></ul><div class="feedback" id="fb1_19"><p><strong>Correct.</strong> Joint appointments make this many-to-many.</p><ul><li><strong>Type:</strong> <code>&harr;</code> for relation.</li><li><strong>Maplet:</strong> <code>CS &#8614; drA, Math &#8614; drA</code> (joint).</li><li><strong>Structure:</strong> one professor in two departments.</li><li><strong>Check:</strong> relation captures joint membership.</li></ul></div></div>
+
+<h3>V.20 Practice: Writing Maplet Sets</h3>
+<div class="practice" id="p1_20"><p>The empty relation <code>&empty;</code> has how many pairs?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')">Zero &mdash; <code>&empty;</code> contains no maplets.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">One.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">Undefined.</button></li><li><button onclick="selectAnswer(this,false,'fb1_20')">Infinite.</button></li></ul><div class="feedback" id="fb1_20"><p><strong>Correct.</strong> The empty set is a valid relation with no pairs.</p><ul><li><strong>Type:</strong> <code>&empty; : X &harr; Y</code> for any X, Y.</li><li><strong>Maplet:</strong> none.</li><li><strong>Structure:</strong> still an element of <code>&Popf;(X &times; Y)</code>.</li><li><strong>Check:</strong> subset of any set includes the empty set.</li></ul></div></div>
+
+<h3>V.21 Practice: Infix Relation</h3>
+<div class="practice" id="p1_21"><p class="scenario">A school defines <code>_teaches_ : Staff &harr; Class</code>. Which is valid infix usage?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')"><code>mrA teaches math</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_21')"><code>teaches(mrA, math)</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_21')"><code>mrA == teaches</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_21')"><code>teaches &sube; mrA</code></button></li></ul><div class="feedback" id="fb1_21"><p><strong>Correct.</strong> Underscores mark argument positions: <code>x R y</code>.</p><ul><li><strong>Type:</strong> <code>Staff &harr; Class</code>.</li><li><strong>Maplet:</strong> <code>mrA &#8614; math</code> in set form.</li><li><strong>Structure:</strong> infix places source left, target right.</li><li><strong>Check:</strong> function-call syntax is not Z style.</li></ul></div></div>
+
+<h3>V.22 Practice: Cartesian Product</h3>
+<div class="practice" id="p1_22"><p>How many elements in <code>&Popf;({x} &times; {a, b, c})</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb1_22')">3</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">6</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">8</button></li><li><button onclick="selectAnswer(this,false,'fb1_22')">4</button></li></ul><div class="feedback" id="fb1_22"><p><strong>Correct.</strong> 1 &times; 3 = 3 pairs; <code>&Popf;</code> has 2<sup>3</sup> = 8 subsets.</p><ul><li><strong>Type:</strong> <code>{x} &harr; {a,b,c}</code> has 8 possible relations.</li><li><strong>Maplet:</strong> 3 possible pairs: <code>x &#8614; a, x &#8614; b, x &#8614; c</code>.</li><li><strong>Structure:</strong> each pair in or out &rarr; 2<sup>3</sup> subsets.</li><li><strong>Check:</strong> 8 relations including &empty; and the full set.</li></ul></div></div>
+
+<h3>V.23 Practice: Power Set Definition</h3>
+<div class="practice" id="p1_23"><p>The definition <code>X &harr; Y == &Popf;(X &times; Y)</code> means:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">The set of all possible relations from X to Y.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">A single relation from X to Y.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">The union of X and Y.</button></li><li><button onclick="selectAnswer(this,false,'fb1_23')">A function from X to Y.</button></li></ul><div class="feedback" id="fb1_23"><p><strong>Correct.</strong> The power set of the Cartesian product contains every possible subset of pairs.</p><ul><li><strong>Type:</strong> <code>&harr;</code> denotes a type, not a single relation.</li><li><strong>Maplet:</strong> each relation is one element of <code>&Popf;(X &times; Y)</code>.</li><li><strong>Structure:</strong> includes &empty; and <code>X &times; Y</code> itself.</li><li><strong>Check:</strong> generic abbreviation definition.</li></ul></div></div>
+
+<h3>V.24 Practice: Declaring a Relation Type</h3>
+<div class="practice" id="p1_24"><p class="scenario">A <span class="key">friendship graph</span> relates people to people. Source and target are the <span class="key">same type</span>. Which declaration fits?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')"><code>friend : Person &harr; Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_24')"><code>friend : Person &rarr; Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_24')"><code>friend : Person &times; Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb1_24')"><code>friend == Person</code></button></li></ul><div class="feedback" id="fb1_24"><p><strong>Correct.</strong> Same type on both sides of <code>&harr;</code>.</p><ul><li><strong>Type:</strong> <code>Person &harr; Person</code> &mdash; homogeneous relation.</li><li><strong>Maplet:</strong> <code>alice &#8614; bob</code>.</li><li><strong>Structure:</strong> source type = target type.</li><li><strong>Check:</strong> <code>&times;</code> is the product set, not a relation type.</li></ul></div></div>
+
+<h3>V.25 Practice: Graph Representation</h3>
+<div class="practice" id="p1_25"><p class="scenario">The <span class="key">graph</span> of a relation <code>R</code> draws an <span class="key">arrow</span> from x to y for each pair. If <code>R = { a &#8614; 1, b &#8614; 1 }</code>, how many arrows?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">2 &mdash; one from a to 1, one from b to 1.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">1 &mdash; both point to 1.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">3.</button></li><li><button onclick="selectAnswer(this,false,'fb1_25')">0.</button></li></ul><div class="feedback" id="fb1_25"><p><strong>Correct.</strong> One arrow per maplet in the set.</p><ul><li><strong>Type:</strong> two pairs &rarr; two arrows.</li><li><strong>Maplet:</strong> <code>a &#8614; 1</code> and <code>b &#8614; 1</code>.</li><li><strong>Structure:</strong> sharing a target doesn't merge arrows.</li><li><strong>Check:</strong> graph has exactly <code>#R</code> arrows.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 7.2 Domain and Range ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">7.2 Domain and Range</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="Set of all source elements appearing in R.">Domain</span>:</strong> <code>dom R</code> &rarr; set of all source elements appearing in R.</li>
+  <li><strong><span class="vocab" data-def="Set of all target elements appearing in R.">Range</span>:</strong> <code>ran R</code> &rarr; set of all target elements appearing in R.</li>
+  <li><strong><span class="vocab" data-def="A &#9665; R &mdash; keep pairs whose source is in A.">Domain restriction</span>:</strong> <code>A &#9665; R</code> &rarr; keep pairs with source in A.</li>
+  <li><strong><span class="vocab" data-def="R &#9655; B &mdash; keep pairs whose target is in B.">Range restriction</span>:</strong> <code>R &#9655; B</code> &rarr; keep pairs with target in B.</li>
+  <li><strong><span class="vocab" data-def="A &#10852; R &mdash; remove pairs whose source is in A.">Domain subtraction</span>:</strong> <code>A &#10852; R</code> &rarr; drop pairs with source in A.</li>
+  <li><strong><span class="vocab" data-def="R &#10853; B &mdash; remove pairs whose target is in B.">Range subtraction</span>:</strong> <code>R &#10853; B</code> &rarr; drop pairs with target in B.</li>
+  <li><strong><span class="vocab" data-def="R(| A |) = ran(A &#9665; R) &mdash; targets reachable from sources in A.">Relational image</span>:</strong> <code>R(| A |) = ran(A &#9665; R)</code> &rarr; targets from A.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Domain</td><td>Set of all source elements appearing in R.</td></tr>
+  <tr><td>Range</td><td>Set of all target elements appearing in R.</td></tr>
+  <tr><td>Domain restriction</td><td>A &#9665; R &mdash; keep pairs whose source is in A.</td></tr>
+  <tr><td>Range restriction</td><td>R &#9655; B &mdash; keep pairs whose target is in B.</td></tr>
+  <tr><td>Domain subtraction</td><td>A &#10852; R &mdash; remove pairs whose source is in A.</td></tr>
+  <tr><td>Range subtraction</td><td>R &#10853; B &mdash; remove pairs whose target is in B.</td></tr>
+  <tr><td>Relational image</td><td>R(| A |) = ran(A &#9665; R) &mdash; targets reachable from A.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>dom</code></td><td>Domain &mdash; source elements of R.</td></tr>
+  <tr><td><code>ran</code></td><td>Range &mdash; target elements of R.</td></tr>
+  <tr><td><code>&#9665;</code></td><td>Domain restriction &mdash; keep by source.</td></tr>
+  <tr><td><code>&#9655;</code></td><td>Range restriction &mdash; keep by target.</td></tr>
+  <tr><td><code>&#10852;</code></td><td>Domain subtraction &mdash; drop by source.</td></tr>
+  <tr><td><code>&#10853;</code></td><td>Range subtraction &mdash; drop by target.</td></tr>
+  <tr><td><code>(| &hellip; |)</code></td><td>Relational image brackets.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="D">IV.1 Examples: Domain of Drives, Domain of Enrolled &amp; Domain of Borrowed</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>dom</code></td><td>Domain.</td></tr>
+  <tr><td><code>ran</code></td><td>Range.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The motor registry&#39;s <span class="key">drives</span> relation. Who are the <span class="key">drivers</span>? What <span class="key">cars</span> are driven?</p>
+<ul>
+  <li><strong>Identify:</strong> <code>drives = { helen &#8614; beetle, indra &#8614; alfa, jim &#8614; beetle, kate &#8614; cortina }</code>.</li>
+  <li><strong>Operator:</strong> <code><span class="vocab" data-def="Set of all source elements appearing in R.">dom</span></code> extracts sources; <code><span class="vocab" data-def="Set of all target elements appearing in R.">ran</span></code> extracts targets.</li>
+  <li><strong>Compute:</strong> <code>dom drives = {helen, indra, jim, kate}</code>; <code>ran drives = {alfa, beetle, cortina}</code>.</li>
+  <li><strong>Result:</strong> four drivers; three cars &mdash; delorean is not driven by anyone.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A university&#39;s <span class="key">enrolled</span> relation. Which <span class="key">students</span> enrolled? Which <span class="key">courses</span> have students?</p>
+<ul>
+  <li><strong>Identify:</strong> <code>enrolled = { s1 &#8614; CS101, s1 &#8614; MATH200, s2 &#8614; CS101 }</code>.</li>
+  <li><strong>Operator:</strong> <code>dom</code> for students; <code>ran</code> for courses.</li>
+  <li><strong>Compute:</strong> <code>dom enrolled = {s1, s2}</code>; <code>ran enrolled = {CS101, MATH200}</code>.</li>
+  <li><strong>Result:</strong> two students; two courses with enrolments.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A library&#39;s <span class="key">borrowed</span> relation. Which <span class="key">patrons</span> borrowed? Which <span class="key">books</span> were taken?</p>
+<ul>
+  <li><strong>Identify:</strong> <code>borrowed = { Alice &#8614; b1, Alice &#8614; b2, Bob &#8614; b3 }</code>.</li>
+  <li><strong>Operator:</strong> <code>dom</code> for patrons; <code>ran</code> for books.</li>
+  <li><strong>Compute:</strong> <code>dom borrowed = {Alice, Bob}</code>; <code>ran borrowed = {b1, b2, b3}</code>.</li>
+  <li><strong>Result:</strong> two active borrowers; three books out.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Domain Restriction (Members Only), VIP Access &amp; Team Filter</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#9665;</code></td><td>Domain restriction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A gym filters its <span class="key">check-in log</span> to <span class="key">current members</span> only.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>checkedIn : Person &harr; Day</code>; <code>members : &Popf; Person</code>.</li>
+  <li><strong>Operator:</strong> <span class="vocab" data-def="A &#9665; R &mdash; keep pairs whose source is in A.">domain restriction</span> <code>&#9665;</code>.</li>
+  <li><strong>Compute:</strong> <code>members &#9665; checkedIn</code> &mdash; only current members kept.</li>
+  <li><strong>Result:</strong> expired members&#39; entries are excluded.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A concert filters <span class="key">ticket scans</span> to <span class="key">VIP</span> holders.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>scanned : Person &harr; Gate</code>; <code>vips : &Popf; Person</code>.</li>
+  <li><strong>Operator:</strong> domain restriction <code>&#9665;</code>.</li>
+  <li><strong>Compute:</strong> <code>vips &#9665; scanned</code> &mdash; only VIP scans remain.</li>
+  <li><strong>Result:</strong> general-admission scans dropped.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A project filters <span class="key">commits</span> to those by <span class="key">team Alpha</span> developers.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>committed : Dev &harr; Repo</code>; <code>alpha : &Popf; Dev</code>.</li>
+  <li><strong>Operator:</strong> domain restriction <code>&#9665;</code>.</li>
+  <li><strong>Compute:</strong> <code>alpha &#9665; committed</code> &mdash; only Alpha&#39;s commits.</li>
+  <li><strong>Result:</strong> other teams&#39; commits excluded.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Range Restriction (Sports Cars), Fiction Books &amp; Priority Tickets</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#9655;</code></td><td>Range restriction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The registry filters <span class="key">drives</span> to only <span class="key">sports cars</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>drives : Drivers &harr; Cars</code>; <code>sports = {alfa, delorean}</code>.</li>
+  <li><strong>Operator:</strong> <span class="vocab" data-def="R &#9655; B &mdash; keep pairs whose target is in B.">range restriction</span> <code>&#9655;</code>.</li>
+  <li><strong>Compute:</strong> <code>drives &#9655; sports = { indra &#8614; alfa }</code>.</li>
+  <li><strong>Result:</strong> only Indra drives a sports car (the Alfa).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A library filters <span class="key">borrowed</span> to only <span class="key">fiction</span> books.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>borrowed : Patron &harr; Book</code>; <code>fiction : &Popf; Book</code>.</li>
+  <li><strong>Operator:</strong> range restriction <code>&#9655;</code>.</li>
+  <li><strong>Compute:</strong> <code>borrowed &#9655; fiction</code> &mdash; only fiction loans.</li>
+  <li><strong>Result:</strong> non-fiction loans excluded.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A helpdesk filters <span class="key">tickets</span> to only <span class="key">critical</span> severity.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>assigned : Agent &harr; Ticket</code>; <code>critical : &Popf; Ticket</code>.</li>
+  <li><strong>Operator:</strong> range restriction <code>&#9655;</code>.</li>
+  <li><strong>Compute:</strong> <code>assigned &#9655; critical</code> &mdash; only critical tickets.</li>
+  <li><strong>Result:</strong> low-priority tickets excluded.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Domain Subtraction (Banned Users), Range Subtraction (Discontinued) &amp; Domain Subtraction (Fired Reps)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#10852;</code></td><td>Domain subtraction.</td></tr>
+  <tr><td><code>&#10853;</code></td><td>Range subtraction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A chat app <span class="key">removes messages</span> from <span class="key">banned users</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>sent : User &harr; Message</code>; <code>banned : &Popf; User</code>.</li>
+  <li><strong>Operator:</strong> <span class="vocab" data-def="A &#10852; R &mdash; remove pairs whose source is in A.">domain subtraction</span> <code>&#10852;</code>.</li>
+  <li><strong>Compute:</strong> <code>banned &#10852; sent</code> &mdash; banned users&#39; messages removed.</li>
+  <li><strong>Result:</strong> only non-banned users&#39; messages remain.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An e-commerce site <span class="key">drops ratings</span> for <span class="key">discontinued</span> products.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>rated : User &harr; Product</code>; <code>discontinued : &Popf; Product</code>.</li>
+  <li><strong>Operator:</strong> <span class="vocab" data-def="R &#10853; B &mdash; remove pairs whose target is in B.">range subtraction</span> <code>&#10853;</code>.</li>
+  <li><strong>Compute:</strong> <code>rated &#10853; discontinued</code> &mdash; discontinued products&#39; ratings removed.</li>
+  <li><strong>Result:</strong> only active products&#39; ratings remain.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A sales tracker <span class="key">removes records</span> for <span class="key">fired</span> reps.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>rep : Salesperson &harr; Region</code>; <code>fired : &Popf; Salesperson</code>.</li>
+  <li><strong>Operator:</strong> domain subtraction <code>&#10852;</code>.</li>
+  <li><strong>Compute:</strong> <code>fired &#10852; rep</code> &mdash; fired reps&#39; records removed.</li>
+  <li><strong>Result:</strong> only active reps&#39; territories remain.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Relational Image (Cars by Drivers), Image (Classes by Students) &amp; Image (Packages by Couriers)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>(| &hellip; |)</code></td><td>Relational image brackets.</td></tr>
+  <tr><td><code>&#9665;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>ran</code></td><td>Range.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Find which <span class="key">cars</span> are driven by <span class="key">Indra or Jim</span>.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>drives(| {indra, jim} |)</code>.</li>
+  <li><strong>Operator:</strong> <span class="vocab" data-def="R(| A |) = ran(A &#9665; R) &mdash; targets reachable from sources in A.">relational image</span> <code>(| &hellip; |)</code> = <code><span class="vocab" data-def="Set of all target elements appearing in R.">ran</span>({indra, jim} <span class="vocab" data-def="A &#9665; R &mdash; keep pairs whose source is in A.">&#9665;</span> drives)</code>.</li>
+  <li><strong>Compute:</strong> <code>drives(| {indra, jim} |) = {alfa, beetle}</code>.</li>
+  <li><strong>Result:</strong> Indra drives the Alfa; Jim drives the Beetle.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Find which <span class="key">courses</span> student <span class="key">s1</span> takes.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>enrolled(| {s1} |)</code>.</li>
+  <li><strong>Operator:</strong> relational image = range after domain restriction.</li>
+  <li><strong>Compute:</strong> <code>enrolled(| {s1} |) = {CS101, MATH200}</code>.</li>
+  <li><strong>Result:</strong> s1 is in two courses.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Find which <span class="key">packages</span> courier <span class="key">c1</span> delivers.</p>
+<ul>
+  <li><strong>Identify:</strong> <code>delivers(| {c1} |)</code>.</li>
+  <li><strong>Operator:</strong> relational image.</li>
+  <li><strong>Compute:</strong> <code>delivers(| {c1} |) = {p1, p2}</code>.</li>
+  <li><strong>Result:</strong> c1 handles two packages.</li>
+</ul>
+</div>
+
+<!-- Practice 7.2 -->
+<h3 class="jump-target" data-part="E">V.1 Practice: Computing Domain</h3>
+<div class="practice" id="p2_1"><p>The domain of a relation R is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')">The set of all source elements in R.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">The set of all target elements in R.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">The full source type X.</button></li><li><button onclick="selectAnswer(this,false,'fb2_1')">The set of all pairs.</button></li></ul><div class="feedback" id="fb2_1"><p><strong>Correct.</strong> <code>dom R</code> collects every first coordinate.</p><ul><li><strong>Identify:</strong> extract sources from each maplet.</li><li><strong>Operator:</strong> <code>dom</code>.</li><li><strong>Compute:</strong> collect unique first elements.</li><li><strong>Result:</strong> <code>dom R &sube; X</code>.</li></ul></div></div>
+
+<h3>V.2 Practice: Computing Range</h3>
+<div class="practice" id="p2_2"><p>The range of a relation R is:</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_2')">The set of all source elements.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')">The set of all target elements in R.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">The full target type Y.</button></li><li><button onclick="selectAnswer(this,false,'fb2_2')">A subset of pairs.</button></li></ul><div class="feedback" id="fb2_2"><p><strong>Correct.</strong> <code>ran R</code> collects every second coordinate.</p><ul><li><strong>Identify:</strong> extract targets from each maplet.</li><li><strong>Operator:</strong> <code>ran</code>.</li><li><strong>Compute:</strong> collect unique second elements.</li><li><strong>Result:</strong> <code>ran R &sube; Y</code>.</li></ul></div></div>
+
+<h3>V.3 Practice: Computing Domain</h3>
+<div class="practice" id="p2_3"><p class="scenario">Given <code>writes = { A &#8614; p1, B &#8614; p2, B &#8614; p3 }</code>, what is <code><span class="key">dom</span> writes</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>{A, B}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>{p1, p2, p3}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>{A, B, p1, p2, p3}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_3')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb2_3"><p><strong>Correct.</strong> Unique sources: A and B.</p><ul><li><strong>Identify:</strong> three maplets, first coords: A, B, B.</li><li><strong>Operator:</strong> <code>dom</code>.</li><li><strong>Compute:</strong> deduplicate &rarr; <code>{A, B}</code>.</li><li><strong>Result:</strong> two authors.</li></ul></div></div>
+
+<h3>V.4 Practice: Computing Domain</h3>
+<div class="practice" id="p2_4"><p class="scenario">Given <code>R = { a &#8614; 1, b &#8614; 2, a &#8614; 3 }</code>, what is <code><span class="key">#(dom R)</span></code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_4')">3</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')">2</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">1</button></li><li><button onclick="selectAnswer(this,false,'fb2_4')">0</button></li></ul><div class="feedback" id="fb2_4"><p><strong>Correct.</strong> Sources a, b, a &rarr; unique: a, b &rarr; count 2.</p><ul><li><strong>Identify:</strong> first coords: a, b, a.</li><li><strong>Operator:</strong> <code>dom</code> then count.</li><li><strong>Compute:</strong> <code>dom R = {a, b}</code>, <code>#(dom R) = 2</code>.</li><li><strong>Result:</strong> duplicates removed.</li></ul></div></div>
+
+<h3>V.5 Practice: Computing Range</h3>
+<div class="practice" id="p2_5"><p class="scenario">Same relation <code>writes = { A &#8614; p1, B &#8614; p2, B &#8614; p3 }</code>. What is <code><span class="key">ran</span> writes</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>{A, B}</code></button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')"><code>{p1, p2, p3}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>{A, B, p1}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_5')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb2_5"><p><strong>Correct.</strong> Three distinct targets.</p><ul><li><strong>Identify:</strong> second coords: p1, p2, p3.</li><li><strong>Operator:</strong> <code>ran</code>.</li><li><strong>Compute:</strong> all distinct &rarr; <code>{p1, p2, p3}</code>.</li><li><strong>Result:</strong> three posts written.</li></ul></div></div>
+
+<h3>V.6 Practice: Computing Range</h3>
+<div class="practice" id="p2_6"><p class="scenario">A store&#39;s <code>purchased = { Alice &#8614; bread, Alice &#8614; milk, Bob &#8614; bread }</code>. What <span class="key">items</span> were purchased?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>ran purchased = {bread, milk}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>dom purchased = {bread, milk}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>ran purchased = {Alice, Bob}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_6')"><code>ran purchased = {bread, milk, bread}</code></button></li></ul><div class="feedback" id="fb2_6"><p><strong>Correct.</strong> Items are targets; sets remove duplicates.</p><ul><li><strong>Identify:</strong> targets: bread, milk, bread.</li><li><strong>Operator:</strong> <code>ran</code>.</li><li><strong>Compute:</strong> deduplicate &rarr; <code>{bread, milk}</code>.</li><li><strong>Result:</strong> two distinct items.</li></ul></div></div>
+
+<h3>V.7 Practice: Computing Domain</h3>
+<div class="practice" id="p2_7"><p>If <code>R = &empty;</code>, then <code>dom R</code> =</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_7')"><code>X</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_7')">Undefined.</button></li><li><button onclick="selectAnswer(this,false,'fb2_7')"><code>ran R</code></button></li></ul><div class="feedback" id="fb2_7"><p><strong>Correct.</strong> No pairs &rarr; no sources.</p><ul><li><strong>Identify:</strong> empty set has no maplets.</li><li><strong>Operator:</strong> <code>dom</code>.</li><li><strong>Compute:</strong> empty collection &rarr; <code>&empty;</code>.</li><li><strong>Result:</strong> domain and range both empty.</li></ul></div></div>
+
+<h3>V.8 Practice: Computing Range</h3>
+<div class="practice" id="p2_8"><p class="scenario">An airline has <code>boarded = { Alice &#8614; F100, Bob &#8614; F200, Alice &#8614; F300 }</code>. Which <span class="key">flights</span> had passengers?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>ran boarded = {F100, F200, F300}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>dom boarded = {F100, F200, F300}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>ran boarded = {Alice, Bob}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_8')"><code>dom boarded = {F100}</code></button></li></ul><div class="feedback" id="fb2_8"><p><strong>Correct.</strong> Flights are targets.</p><ul><li><strong>Identify:</strong> targets: F100, F200, F300.</li><li><strong>Operator:</strong> <code>ran</code>.</li><li><strong>Compute:</strong> three distinct flights.</li><li><strong>Result:</strong> all three flights had at least one passenger.</li></ul></div></div>
+
+<h3>V.9 Practice: Domain Restriction</h3>
+<div class="practice" id="p2_9"><p class="scenario">A gym has <code>checkedIn : Member &harr; Day</code>. Which restricts to just <span class="key">Alice&#39;s</span> check-ins?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')"><code>{Alice} &#9665; checkedIn</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>checkedIn &#9655; {Alice}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>{Alice} &#10852; checkedIn</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_9')"><code>checkedIn &#10853; {Alice}</code></button></li></ul><div class="feedback" id="fb2_9"><p><strong>Correct.</strong> Keep pairs where source is Alice.</p><ul><li><strong>Identify:</strong> Alice is a source (member).</li><li><strong>Operator:</strong> <code>&#9665;</code> restricts by source.</li><li><strong>Compute:</strong> only Alice&#39;s entries remain.</li><li><strong>Result:</strong> <code>&#9655;</code> would filter by target (day), not source.</li></ul></div></div>
+
+<h3>V.10 Practice: Domain Restriction</h3>
+<div class="practice" id="p2_10"><p class="scenario">Given <code>R = { 1 &#8614; a, 2 &#8614; b, 3 &#8614; c }</code>, what is <code>{1, 3} <span class="key">&#9665;</span> R</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>{ 1 &#8614; a, 3 &#8614; c }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>{ 2 &#8614; b }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>{ 1 &#8614; a, 2 &#8614; b, 3 &#8614; c }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_10')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb2_10"><p><strong>Correct.</strong> Keep pairs with source in {1, 3}.</p><ul><li><strong>Identify:</strong> sources 1 and 3 are in the restriction set.</li><li><strong>Operator:</strong> <code>&#9665;</code>.</li><li><strong>Compute:</strong> drop pair with source 2.</li><li><strong>Result:</strong> two pairs remain.</li></ul></div></div>
+
+<h3>V.11 Practice: Domain Restriction</h3>
+<div class="practice" id="p2_11"><p><code>&empty; &#9665; R</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_11')"><code>R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_11')"><code>dom R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_11')">Undefined.</button></li></ul><div class="feedback" id="fb2_11"><p><strong>Correct.</strong> No sources to keep &rarr; empty result.</p><ul><li><strong>Identify:</strong> restricting set is empty.</li><li><strong>Operator:</strong> <code>&#9665;</code>.</li><li><strong>Compute:</strong> no source matches &rarr; all dropped.</li><li><strong>Result:</strong> <code>&empty;</code>.</li></ul></div></div>
+
+<h3>V.12 Practice: Range Restriction</h3>
+<div class="practice" id="p2_12"><p class="scenario">Given <code>R = { 1 &#8614; a, 2 &#8614; b, 3 &#8614; c }</code>, what is <code>R <span class="key">&#9655;</span> {a, c}</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>{ 1 &#8614; a, 3 &#8614; c }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>{ 2 &#8614; b }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>{ 1 &#8614; a, 2 &#8614; b }</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_12')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb2_12"><p><strong>Correct.</strong> Keep pairs with target in {a, c}.</p><ul><li><strong>Identify:</strong> targets a and c are in the restriction set.</li><li><strong>Operator:</strong> <code>&#9655;</code>.</li><li><strong>Compute:</strong> drop pair with target b.</li><li><strong>Result:</strong> two pairs remain.</li></ul></div></div>
+
+<h3>V.13 Practice: Range Restriction</h3>
+<div class="practice" id="p2_13"><p class="scenario">A hospital has <code>treats : Doctor &harr; Patient</code>. Which restricts to treatments for <span class="key">adult</span> patients?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')"><code>treats &#9655; adults</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_13')"><code>adults &#9665; treats</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_13')"><code>adults &#10852; treats</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_13')"><code>treats &#10853; adults</code></button></li></ul><div class="feedback" id="fb2_13"><p><strong>Correct.</strong> Patients are targets &rarr; range restriction.</p><ul><li><strong>Identify:</strong> adults is a set of patients (targets).</li><li><strong>Operator:</strong> <code>&#9655;</code> filters by target.</li><li><strong>Compute:</strong> keep only pairs where patient is adult.</li><li><strong>Result:</strong> <code>&#9665;</code> would filter by doctor (source).</li></ul></div></div>
+
+<h3>V.14 Practice: Range Restriction</h3>
+<div class="practice" id="p2_14"><p class="scenario">An e-commerce site has <code>sales : Product &harr; Date</code>. Which keeps only sales in <span class="key">January</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')"><code>sales &#9655; january</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>january &#9665; sales</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>sales &#10853; january</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_14')"><code>january &#10852; sales</code></button></li></ul><div class="feedback" id="fb2_14"><p><strong>Correct.</strong> Dates are targets &rarr; range restriction.</p><ul><li><strong>Identify:</strong> january is a set of dates (targets).</li><li><strong>Operator:</strong> <code>&#9655;</code>.</li><li><strong>Compute:</strong> keep pairs with target date in January.</li><li><strong>Result:</strong> <code>&#10853;</code> would remove January, not keep it.</li></ul></div></div>
+
+<h3>V.15 Practice: Domain Subtraction</h3>
+<div class="practice" id="p2_15"><p class="scenario">A music app has <code>plays : User &harr; Track</code>. Which <span class="key">removes</span> all plays by <span class="key">banned</span> users?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')"><code>banned &#10852; plays</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>plays &#10853; banned</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>banned &#9665; plays</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_15')"><code>plays &#9655; banned</code></button></li></ul><div class="feedback" id="fb2_15"><p><strong>Correct.</strong> Remove by source (user) &rarr; domain subtraction.</p><ul><li><strong>Identify:</strong> banned is a set of users (sources).</li><li><strong>Operator:</strong> <code>&#10852;</code> drops by source.</li><li><strong>Compute:</strong> banned users&#39; plays removed.</li><li><strong>Result:</strong> <code>&#9665;</code> would keep banned users, not remove them.</li></ul></div></div>
+
+<h3>V.16 Practice: Domain Subtraction</h3>
+<div class="practice" id="p2_16"><p><code>S &#10852; R</code> is equivalent to:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')"><code>(dom R \ S) &#9665; R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>S &#9665; R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>R &#10853; S</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_16')"><code>R</code></button></li></ul><div class="feedback" id="fb2_16"><p><strong>Correct.</strong> Restrict to complement of S within domain.</p><ul><li><strong>Identify:</strong> subtraction = restriction to complement.</li><li><strong>Operator:</strong> <code>&#10852;</code> = <code>(dom R \ S) &#9665; R</code>.</li><li><strong>Compute:</strong> remove S from sources, then restrict.</li><li><strong>Result:</strong> equivalent formulation.</li></ul></div></div>
+
+<h3>V.17 Practice: Range Subtraction</h3>
+<div class="practice" id="p2_17"><p class="scenario">An app has <code>rated : User &harr; Product</code>. Which <span class="key">drops ratings</span> for <span class="key">discontinued</span> products?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')"><code>rated &#10853; discontinued</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_17')"><code>discontinued &#10852; rated</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_17')"><code>rated &#9655; discontinued</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_17')"><code>discontinued &#9665; rated</code></button></li></ul><div class="feedback" id="fb2_17"><p><strong>Correct.</strong> Remove by target (product) &rarr; range subtraction.</p><ul><li><strong>Identify:</strong> discontinued is a set of products (targets).</li><li><strong>Operator:</strong> <code>&#10853;</code> drops by target.</li><li><strong>Compute:</strong> discontinued products&#39; ratings removed.</li><li><strong>Result:</strong> <code>&#9655;</code> would keep discontinued, not remove.</li></ul></div></div>
+
+<h3>V.18 Practice: Range Subtraction</h3>
+<div class="practice" id="p2_18"><p class="scenario">A sports app has <code>scored : Player &harr; Game</code>. Which drops scoring records in <span class="key">pre-season</span> games?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>scored &#10853; preseason</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>preseason &#10852; scored</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>scored &#9655; preseason</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_18')"><code>preseason &#9665; scored</code></button></li></ul><div class="feedback" id="fb2_18"><p><strong>Correct.</strong> Games are targets &rarr; range subtraction.</p><ul><li><strong>Identify:</strong> preseason is a set of games (targets).</li><li><strong>Operator:</strong> <code>&#10853;</code>.</li><li><strong>Compute:</strong> pre-season game records removed.</li><li><strong>Result:</strong> only regular-season records remain.</li></ul></div></div>
+
+<h3>V.19 Practice: Domain Subtraction</h3>
+<div class="practice" id="p2_19"><p class="scenario">A filesystem has <code>permission : User &harr; File</code>. Which <span class="key">removes</span> all permissions for user <span class="key">Alice</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>{Alice} &#10852; permission</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>permission &#10853; {Alice}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>{Alice} &#9665; permission</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_19')"><code>permission &#9655; {Alice}</code></button></li></ul><div class="feedback" id="fb2_19"><p><strong>Correct.</strong> Users are sources &rarr; domain subtraction.</p><ul><li><strong>Identify:</strong> Alice is a source (user).</li><li><strong>Operator:</strong> <code>&#10852;</code>.</li><li><strong>Compute:</strong> Alice&#39;s permission entries removed.</li><li><strong>Result:</strong> <code>&#9665;</code> would keep Alice&#39;s, not remove.</li></ul></div></div>
+
+<h3>V.20 Practice: Domain Restriction</h3>
+<div class="practice" id="p2_20"><p class="scenario">A transit system has <code>routes : Station &harr; Station</code>. Which filters to routes <span class="key">starting at Downtown</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>{Downtown} &#9665; routes</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>routes &#9655; {Downtown}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>{Downtown} &#10852; routes</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_20')"><code>routes &#10853; {Downtown}</code></button></li></ul><div class="feedback" id="fb2_20"><p><strong>Correct.</strong> Starting station is source &rarr; domain restriction.</p><ul><li><strong>Identify:</strong> Downtown is a source (departure).</li><li><strong>Operator:</strong> <code>&#9665;</code> keeps by source.</li><li><strong>Compute:</strong> only Downtown-departing routes remain.</li><li><strong>Result:</strong> <code>&#9655;</code> would filter by destination.</li></ul></div></div>
+
+<h3>V.21 Practice: Relational Image</h3>
+<div class="practice" id="p2_21"><p class="scenario">A library has <code>borrowed = { Alice &#8614; b1, Alice &#8614; b2, Bob &#8614; b3 }</code>. What is <code>borrowed<span class="key">(| {Alice} |)</span></code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')"><code>{b1, b2}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>{b1, b2, b3}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>{Alice}</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_21')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb2_21"><p><strong>Correct.</strong> Targets reachable from Alice.</p><ul><li><strong>Identify:</strong> <code>{Alice} &#9665; borrowed = { Alice &#8614; b1, Alice &#8614; b2 }</code>.</li><li><strong>Operator:</strong> <code>(| &hellip; |)</code> = <code>ran</code> after <code>&#9665;</code>.</li><li><strong>Compute:</strong> <code>ran = {b1, b2}</code>.</li><li><strong>Result:</strong> Alice&#39;s two books.</li></ul></div></div>
+
+<h3>V.22 Practice: Relational Image</h3>
+<div class="practice" id="p2_22"><p><code>R(| dom R |)</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>ran R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>dom R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_22')"><code>R</code></button></li></ul><div class="feedback" id="fb2_22"><p><strong>Correct.</strong> Image of full domain = full range.</p><ul><li><strong>Identify:</strong> restrict to all of <code>dom R</code> &rarr; all pairs kept.</li><li><strong>Operator:</strong> <code>ran(dom R &#9665; R) = ran R</code>.</li><li><strong>Compute:</strong> all targets.</li><li><strong>Result:</strong> full range recovered.</li></ul></div></div>
+
+<h3>V.23 Practice: Relational Image</h3>
+<div class="practice" id="p2_23"><p><code>R(| &empty; |)</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_23')"><code>ran R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_23')"><code>dom R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_23')">Undefined.</button></li></ul><div class="feedback" id="fb2_23"><p><strong>Correct.</strong> No sources &rarr; no targets reachable.</p><ul><li><strong>Identify:</strong> empty restriction set.</li><li><strong>Operator:</strong> <code>&empty; &#9665; R = &empty;</code>.</li><li><strong>Compute:</strong> <code>ran &empty; = &empty;</code>.</li><li><strong>Result:</strong> empty image.</li></ul></div></div>
+
+<h3>V.24 Practice: Relational Image</h3>
+<div class="practice" id="p2_24"><p class="scenario">A social app has <code>follows : User &harr; User</code>. Which gives &ldquo;who does <span class="key">Alice</span> follow&rdquo;?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')"><code>follows(| {Alice} |)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>follows<sup>&sim;</sup>(| {Alice} |)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>dom follows</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_24')"><code>ran follows</code></button></li></ul><div class="feedback" id="fb2_24"><p><strong>Correct.</strong> Image from Alice gives her targets (followees).</p><ul><li><strong>Identify:</strong> Alice is a source.</li><li><strong>Operator:</strong> <code>(| &hellip; |)</code>.</li><li><strong>Compute:</strong> targets reachable from Alice via follows.</li><li><strong>Result:</strong> inverse image would give followers of Alice.</li></ul></div></div>
+
+<h3>V.25 Practice: Relational Image</h3>
+<div class="practice" id="p2_25"><p><code>R(| S |)</code> can also be written as:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')"><code>ran(S &#9665; R)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_25')"><code>dom(S &#9665; R)</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_25')"><code>S &#9665; ran R</code></button></li><li><button onclick="selectAnswer(this,false,'fb2_25')"><code>R<sup>&sim;</sup>(| S |)</code></button></li></ul><div class="feedback" id="fb2_25"><p><strong>Correct.</strong> Image = range after domain restriction.</p><ul><li><strong>Identify:</strong> restrict R to sources in S, then take range.</li><li><strong>Operator:</strong> <code>ran(S &#9665; R)</code>.</li><li><strong>Compute:</strong> equivalent by definition.</li><li><strong>Result:</strong> the defining formula for relational image.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 7.3 Relational Inverse ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">7.3 Relational Inverse</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="The X in X &#8596; Y.">Source</span> / <span class="vocab" data-def="The Y in X &#8596; Y.">target</span>:</strong> for <code>R : X &harr; Y</code>, X is source, Y is target.</li>
+  <li><strong><span class="vocab" data-def="R with each pair reversed: y &#8614; x for every x &#8614; y in R.">Inverse</span>:</strong> <code>R<sup>&sim;</sup></code> swaps each pair &rarr; <code>y &#8614; x</code> for every <code>x &#8614; y &isin; R</code>.</li>
+  <li><strong><span class="vocab" data-def="Source and target types are the same: X &#8596; X.">Homogeneous</span>:</strong> source = target type (<code>X &harr; X</code>); otherwise <span class="vocab" data-def="Source and target types differ.">heterogeneous</span>.</li>
+  <li><strong><span class="vocab" data-def="id X = {x : X &bull; x &#8614; x} &mdash; each element paired with itself.">Identity</span>:</strong> <code>id X == { x : X &bull; x &#8614; x }</code> &mdash; each element to itself.</li>
+  <li><strong><span class="vocab" data-def="id X &sube; R &mdash; every element related to itself.">Reflexive</span>:</strong> <code>id X &sube; R</code> &mdash; every element related to itself.</li>
+  <li><strong><span class="vocab" data-def="x &#8614; y &isin; R &rArr; y &#8614; x &isin; R.">Symmetric</span>:</strong> <code>x &#8614; y &isin; R &rArr; y &#8614; x &isin; R</code>; implies <code>S = S<sup>&sim;</sup></code>.</li>
+  <li><strong><span class="vocab" data-def="x &#8614; y and y &#8614; x both in R implies x = y.">Antisymmetric</span>:</strong> <code>x &#8614; y</code> and <code>y &#8614; x</code> both in R &rArr; <code>x = y</code>.</li>
+  <li><strong><span class="vocab" data-def="x &#8614; y &isin; R &rArr; &not;(y &#8614; x &isin; R).">Asymmetric</span>:</strong> <code>x &#8614; y &isin; R &rArr; &not;(y &#8614; x &isin; R)</code>.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Source</td><td>The X in X &#8596; Y.</td></tr>
+  <tr><td>Target</td><td>The Y in X &#8596; Y.</td></tr>
+  <tr><td>Relational inverse</td><td>R with each pair reversed.</td></tr>
+  <tr><td>Homogeneous</td><td>Source and target types are the same.</td></tr>
+  <tr><td>Heterogeneous</td><td>Source and target types differ.</td></tr>
+  <tr><td>Identity relation</td><td>Each element paired with itself.</td></tr>
+  <tr><td>Reflexive</td><td>Every element related to itself.</td></tr>
+  <tr><td>Symmetric</td><td>If x relates to y, then y relates to x.</td></tr>
+  <tr><td>Antisymmetric</td><td>Both directions imply equality.</td></tr>
+  <tr><td>Asymmetric</td><td>If x relates to y, then y does not relate to x.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code><sup>&sim;</sup></code></td><td>Relational inverse &mdash; swap each pair.</td></tr>
+  <tr><td><code>id</code></td><td>Identity relation &mdash; self-pairs.</td></tr>
+  <tr><td><code>Reflexive[X]</code></td><td>Set of reflexive relations on X.</td></tr>
+  <tr><td><code>Symmetric[X]</code></td><td>Set of symmetric relations on X.</td></tr>
+  <tr><td><code>Antisymmetric[X]</code></td><td>Set of antisymmetric relations on X.</td></tr>
+  <tr><td><code>Asymmetric[X]</code></td><td>Set of asymmetric relations on X.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="D">IV.1 Examples: Inverse of Drives, Inverse of Teaches &amp; Inverse of Borrowed</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code><sup>&sim;</sup></code></td><td>Relational inverse.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">inverse</span> of <span class="key">drives</span> tells us which car is driven by whom.</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="R with each pair reversed: y &#8614; x for every x &#8614; y in R.">inverse</span> swaps source and target of every pair.</li>
+  <li><strong>Definition:</strong> <code>drives<sup>&sim;</sup> = { alfa &#8614; indra, beetle &#8614; helen, beetle &#8614; jim, cortina &#8614; kate }</code>.</li>
+  <li><strong>Test:</strong> <code>kate &#8614; cortina &isin; drives &rArr; cortina &#8614; kate &isin; drives<sup>&sim;</sup></code>.</li>
+  <li><strong>Classify:</strong> type flips from <code>Drivers &harr; Cars</code> to <code>Cars &harr; Drivers</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">inverse</span> of <span class="key">teaches</span> maps classes back to their teachers.</p>
+<ul>
+  <li><strong>Property:</strong> inverse reverses every maplet.</li>
+  <li><strong>Definition:</strong> <code>teaches<sup>&sim;</sup> = { math &#8614; mrA, physics &#8614; msB, chem &#8614; msB }</code>.</li>
+  <li><strong>Test:</strong> <code>msB &#8614; physics &isin; teaches &rArr; physics &#8614; msB &isin; teaches<sup>&sim;</sup></code>.</li>
+  <li><strong>Classify:</strong> type flips from <code>Staff &harr; Class</code> to <code>Class &harr; Staff</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">inverse</span> of <span class="key">borrowed</span> maps books back to their borrowers.</p>
+<ul>
+  <li><strong>Property:</strong> inverse reverses every maplet.</li>
+  <li><strong>Definition:</strong> <code>borrowed<sup>&sim;</sup> = { b1 &#8614; Alice, b2 &#8614; Alice, b3 &#8614; Bob }</code>.</li>
+  <li><strong>Test:</strong> <code>Alice &#8614; b1 &isin; borrowed &rArr; b1 &#8614; Alice &isin; borrowed<sup>&sim;</sup></code>.</li>
+  <li><strong>Classify:</strong> type flips from <code>Patron &harr; Book</code> to <code>Book &harr; Patron</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Homogeneous (&lt; on &Nopf;), Heterogeneous (Drives) &amp; Homogeneous (Friend)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code><sup>&sim;</sup></code></td><td>Relational inverse.</td></tr>
+  <tr><td><code>id</code></td><td>Identity relation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The relation <code>&lt;</code> on <span class="key">natural numbers</span> relates numbers to numbers.</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="Source and target types are the same: X &#8596; X.">homogeneous</span> &mdash; source and target are both &Nopf;.</li>
+  <li><strong>Definition:</strong> <code>&lt; : &Nopf; &harr; &Nopf;</code>.</li>
+  <li><strong>Test:</strong> same type on both sides &rarr; homogeneous.</li>
+  <li><strong>Classify:</strong> <span class="vocab" data-def="id X = {x : X &bull; x &#8614; x} &mdash; each element paired with itself.">identity</span>, reflexivity, symmetry are meaningful for homogeneous relations.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">drives</span> relation links <span class="key">Drivers</span> to <span class="key">Cars</span> &mdash; different types.</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="Source and target types differ.">heterogeneous</span> &mdash; source &ne; target type.</li>
+  <li><strong>Definition:</strong> <code>drives : Drivers &harr; Cars</code>.</li>
+  <li><strong>Test:</strong> Drivers &ne; Cars &rarr; heterogeneous.</li>
+  <li><strong>Classify:</strong> reflexivity/symmetry don&#39;t apply to heterogeneous relations.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">friendship</span> graph relates <span class="key">Person</span> to <span class="key">Person</span>.</p>
+<ul>
+  <li><strong>Property:</strong> homogeneous &mdash; same type on both sides.</li>
+  <li><strong>Definition:</strong> <code>friend : Person &harr; Person</code>.</li>
+  <li><strong>Test:</strong> Person = Person &rarr; homogeneous.</li>
+  <li><strong>Classify:</strong> we can ask: is it reflexive? symmetric? transitive?</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Reflexive (&le;), Non-Reflexive (&lt;) &amp; Reflexive (Same-Floor)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>id</code></td><td>Identity relation.</td></tr>
+  <tr><td><code>Reflexive[X]</code></td><td>Set of reflexive relations on X.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">&le;</span> relation on natural numbers: is it <span class="key">reflexive</span>?</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="id X &sube; R &mdash; every element related to itself.">reflexive</span> means <code><span class="vocab" data-def="id X = {x : X &bull; x &#8614; x} &mdash; each element paired with itself.">id</span> &Nopf; &sube; R</code>.</li>
+  <li><strong>Definition:</strong> &forall; n : &Nopf; &bull; n &le; n is true.</li>
+  <li><strong>Test:</strong> every number is &le; itself &rarr; yes.</li>
+  <li><strong>Classify:</strong> <code>&le; &isin; <span class="vocab" data-def="id X &sube; R &mdash; every element related to itself.">Reflexive</span>[&Nopf;]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">&lt;</span> relation on natural numbers: is it reflexive?</p>
+<ul>
+  <li><strong>Property:</strong> reflexive requires every element related to itself.</li>
+  <li><strong>Definition:</strong> n &lt; n is false for all n.</li>
+  <li><strong>Test:</strong> no number is strictly less than itself &rarr; no.</li>
+  <li><strong>Classify:</strong> <code>&lt; &notin; Reflexive[&Nopf;]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A building&#39;s <span class="key">same-floor</span> relation: residents on the <span class="key">same floor</span>.</p>
+<ul>
+  <li><strong>Property:</strong> reflexive means everyone is on the same floor as themselves.</li>
+  <li><strong>Definition:</strong> every resident r has <code>r &#8614; r &isin; sameFloor</code>.</li>
+  <li><strong>Test:</strong> trivially true &rarr; yes.</li>
+  <li><strong>Classify:</strong> <code>sameFloor &isin; Reflexive[Resident]</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Symmetric (Handshake), Antisymmetric (&sube;) &amp; Asymmetric (&sub;)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Symmetric[X]</code></td><td>Set of symmetric relations.</td></tr>
+  <tr><td><code>Antisymmetric[X]</code></td><td>Set of antisymmetric relations.</td></tr>
+  <tr><td><code>Asymmetric[X]</code></td><td>Set of asymmetric relations.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">At a meeting, a <span class="key">handshake</span> relation records who shook hands with whom.</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="x &#8614; y &isin; R &rArr; y &#8614; x &isin; R.">symmetric</span> &mdash; if a shook hands with b, then b shook hands with a.</li>
+  <li><strong>Definition:</strong> <code>x &#8614; y &isin; shook &rArr; y &#8614; x &isin; shook</code>.</li>
+  <li><strong>Test:</strong> handshakes are mutual &rarr; yes, symmetric.</li>
+  <li><strong>Classify:</strong> <code>shook &isin; <span class="vocab" data-def="x &#8614; y &isin; R &rArr; y &#8614; x &isin; R.">Symmetric</span>[Person]</code>; also <code>shook = shook<sup>&sim;</sup></code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">subset</span> relation <code>&sube;</code> on sets: is it antisymmetric?</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="x &#8614; y and y &#8614; x both in R implies x = y.">antisymmetric</span> &mdash; if <code>s &sube; t</code> and <code>t &sube; s</code>, then <code>s = t</code>.</li>
+  <li><strong>Definition:</strong> both directions &rArr; equality.</li>
+  <li><strong>Test:</strong> standard set-equality proof technique &rarr; yes.</li>
+  <li><strong>Classify:</strong> <code>&sube; &isin; <span class="vocab" data-def="x &#8614; y and y &#8614; x both in R implies x = y.">Antisymmetric</span>[&Popf; X]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">strict subset</span> relation <code>&sub;</code>: is it asymmetric?</p>
+<ul>
+  <li><strong>Property:</strong> <span class="vocab" data-def="x &#8614; y &isin; R &rArr; &not;(y &#8614; x &isin; R).">asymmetric</span> &mdash; <code>s &sub; t</code> and <code>t &sub; s</code> cannot both hold.</li>
+  <li><strong>Definition:</strong> <code>x &#8614; y &isin; R &rArr; &not;(y &#8614; x &isin; R)</code>.</li>
+  <li><strong>Test:</strong> strict subset in both directions is impossible &rarr; yes.</li>
+  <li><strong>Classify:</strong> <code>&sub; &isin; <span class="vocab" data-def="x &#8614; y &isin; R &rArr; &not;(y &#8614; x &isin; R).">Asymmetric</span>[&Popf; X]</code>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Classifying &ldquo;Likes&rdquo;, Classifying &ldquo;Roommate&rdquo; &amp; Classifying &ldquo;Sibling&rdquo;</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>id</code></td><td>Identity relation.</td></tr>
+  <tr><td><code>Reflexive[X]</code></td><td>Reflexive set.</td></tr>
+  <tr><td><code>Symmetric[X]</code></td><td>Symmetric set.</td></tr>
+  <tr><td><code>Antisymmetric[X]</code></td><td>Antisymmetric set.</td></tr>
+  <tr><td><code>Asymmetric[X]</code></td><td>Asymmetric set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Three housemates: <span class="key">Louise</span>, <span class="key">Martin</span>, <span class="key">Natalie</span>. A <span class="key">likes</span> relation records feelings.</p>
+<ul>
+  <li><strong>Property:</strong> <code>likes = { Louise &#8614; Martin, Louise &#8614; Louise, Martin &#8614; Louise, Martin &#8614; Martin, Martin &#8614; Natalie, Natalie &#8614; Natalie }</code>.</li>
+  <li><strong>Definition:</strong> each person likes themselves &rarr; <code>id &sube; likes</code> &rarr; reflexive.</li>
+  <li><strong>Test:</strong> Martin likes Natalie but Natalie does not like Martin &rarr; not symmetric. Martin&harr;Louise is mutual but not all pairs are &rarr; not antisymmetric either.</li>
+  <li><strong>Classify:</strong> reflexive: yes. Symmetric: no. Antisymmetric: no. Asymmetric: no (reflexive &rArr; not asymmetric).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A dorm&#39;s <span class="key">roommate</span> relation: <span class="key">shares a room</span> with.</p>
+<ul>
+  <li><strong>Property:</strong> if Alice is roommate of Bob, Bob is roommate of Alice; everyone is their own roommate.</li>
+  <li><strong>Definition:</strong> reflexive (self-room) and symmetric (mutual sharing).</li>
+  <li><strong>Test:</strong> reflexive: yes. Symmetric: yes. Antisymmetric: no (different people can share). Asymmetric: no.</li>
+  <li><strong>Classify:</strong> reflexive + symmetric. Not antisymmetric, not asymmetric.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A family&#39;s <span class="key">sibling</span> relation (including <span class="key">half-siblings</span>).</p>
+<ul>
+  <li><strong>Property:</strong> if A is sibling of B, then B is sibling of A &rarr; symmetric.</li>
+  <li><strong>Definition:</strong> not reflexive (you are not your own sibling). Symmetric: yes.</li>
+  <li><strong>Test:</strong> reflexive: no. Symmetric: yes. Antisymmetric: no. Asymmetric: no (symmetric &rArr; not asymmetric unless empty).</li>
+  <li><strong>Classify:</strong> symmetric only.</li>
+</ul>
+</div>
+
+<!-- Practice 7.3 -->
+<h3 class="jump-target" data-part="E">V.1 Practice: Computing Inverse</h3>
+<div class="practice" id="p3_1"><p>The inverse <code>R<sup>&sim;</sup></code> of a relation R contains:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">All pairs <code>(y, x)</code> where <code>(x, y) &isin; R</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">All pairs <code>(x, x)</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">Only the identity pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_1')">The empty set.</button></li></ul><div class="feedback" id="fb3_1"><p><strong>Correct.</strong> Inverse swaps every maplet.</p><ul><li><strong>Property:</strong> reverse each pair.</li><li><strong>Definition:</strong> <code>x &#8614; y &isin; R &rArr; y &#8614; x &isin; R<sup>&sim;</sup></code>.</li><li><strong>Test:</strong> apply to every pair in R.</li><li><strong>Classify:</strong> type flips from <code>X &harr; Y</code> to <code>Y &harr; X</code>.</li></ul></div></div>
+
+<h3>V.2 Practice: Identity Relation</h3>
+<div class="practice" id="p3_2"><p>The identity relation <code>id X</code> contains:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">All pairs <code>x &#8614; x</code> for <code>x : X</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">All pairs in <code>X &times; X</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">No pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_2')">Only <code>(0, 0)</code>.</button></li></ul><div class="feedback" id="fb3_2"><p><strong>Correct.</strong> Each element paired with itself, nothing else.</p><ul><li><strong>Property:</strong> self-pairing only.</li><li><strong>Definition:</strong> <code>id X == { x : X &bull; x &#8614; x }</code>.</li><li><strong>Test:</strong> <code>x &#8614; y &isin; id X &rArr; x = y</code>.</li><li><strong>Classify:</strong> reflexive, symmetric, antisymmetric, transitive.</li></ul></div></div>
+
+<h3>V.3 Practice: Computing Inverse</h3>
+<div class="practice" id="p3_3"><p class="scenario">Given <code>teaches = { Prof1 &#8614; CS, Prof2 &#8614; Math }</code>, what is <code>teaches<sup><span class="key">&sim;</span></sup></code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>{ CS &#8614; Prof1, Math &#8614; Prof2 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>{ Prof1 &#8614; Math, Prof2 &#8614; CS }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>{ Prof1 &#8614; Prof1, Prof2 &#8614; Prof2 }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb3_3"><p><strong>Correct.</strong> Each maplet reversed.</p><ul><li><strong>Property:</strong> swap source and target.</li><li><strong>Definition:</strong> <code>Prof1 &#8614; CS</code> becomes <code>CS &#8614; Prof1</code>.</li><li><strong>Test:</strong> apply to each pair.</li><li><strong>Classify:</strong> type becomes <code>Class &harr; Prof</code>.</li></ul></div></div>
+
+<h3>V.4 Practice: Computing Inverse</h3>
+<div class="practice" id="p3_4"><p>What is <code>(R<sup>&sim;</sup>)<sup>&sim;</sup></code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>R</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>id X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_4')"><code>R ; R</code></button></li></ul><div class="feedback" id="fb3_4"><p><strong>Correct.</strong> Inverse is an involution &mdash; applying twice returns the original.</p><ul><li><strong>Property:</strong> double reversal = original.</li><li><strong>Definition:</strong> swap twice &rarr; back to start.</li><li><strong>Test:</strong> <code>(y &#8614; x)<sup>&sim;</sup> = x &#8614; y</code>.</li><li><strong>Classify:</strong> involution property.</li></ul></div></div>
+
+<h3>V.5 Practice: Computing Inverse</h3>
+<div class="practice" id="p3_5"><p>For <code>R : X &harr; Y</code>, the type of <code>R<sup>&sim;</sup></code> is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>Y &harr; X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>X &harr; Y</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>X &harr; X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_5')"><code>Y &harr; Y</code></button></li></ul><div class="feedback" id="fb3_5"><p><strong>Correct.</strong> Source and target types swap.</p><ul><li><strong>Property:</strong> type reversal.</li><li><strong>Definition:</strong> <code>R<sup>&sim;</sup> : Y &harr; X</code>.</li><li><strong>Test:</strong> sources become targets and vice versa.</li><li><strong>Classify:</strong> heterogeneous relations swap types; homogeneous stay <code>X &harr; X</code>.</li></ul></div></div>
+
+<h3>V.6 Practice: Homogeneous vs Heterogeneous</h3>
+<div class="practice" id="p3_6"><p class="scenario">The relation <code><span class="key">drives</span> : Drivers &harr; Cars</code>. Is it homogeneous or heterogeneous?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_6')">Homogeneous.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')">Heterogeneous &mdash; source &ne; target type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb3_6')">Both.</button></li></ul><div class="feedback" id="fb3_6"><p><strong>Correct.</strong> Drivers &ne; Cars &rarr; different types.</p><ul><li><strong>Property:</strong> heterogeneous.</li><li><strong>Definition:</strong> source type &ne; target type.</li><li><strong>Test:</strong> Drivers &ne; Cars.</li><li><strong>Classify:</strong> reflexivity/symmetry don&#39;t apply.</li></ul></div></div>
+
+<h3>V.7 Practice: Homogeneous vs Heterogeneous</h3>
+<div class="practice" id="p3_7"><p class="scenario">The relation <code><span class="key">friend</span> : Person &harr; Person</code>. Homogeneous or heterogeneous?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')">Homogeneous &mdash; source = target type.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Heterogeneous.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Neither.</button></li><li><button onclick="selectAnswer(this,false,'fb3_7')">Cannot tell.</button></li></ul><div class="feedback" id="fb3_7"><p><strong>Correct.</strong> Person = Person &rarr; same type on both sides.</p><ul><li><strong>Property:</strong> homogeneous.</li><li><strong>Definition:</strong> source type = target type.</li><li><strong>Test:</strong> Person = Person.</li><li><strong>Classify:</strong> can ask reflexive, symmetric, transitive.</li></ul></div></div>
+
+<h3>V.8 Practice: Identity Relation</h3>
+<div class="practice" id="p3_8"><p>If <code>X = {a, b, c}</code>, then <code>id X</code> =</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')"><code>{ a &#8614; a, b &#8614; b, c &#8614; c }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>{ a &#8614; b, b &#8614; c, c &#8614; a }</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>X &times; X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_8')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb3_8"><p><strong>Correct.</strong> Each element paired with itself only.</p><ul><li><strong>Property:</strong> self-pairs.</li><li><strong>Definition:</strong> <code>id X == { x : X &bull; x &#8614; x }</code>.</li><li><strong>Test:</strong> three elements &rarr; three pairs.</li><li><strong>Classify:</strong> <code>X &times; X</code> is the full product (9 pairs), not the identity (3 pairs).</li></ul></div></div>
+
+<h3>V.9 Practice: Reflexive Test</h3>
+<div class="practice" id="p3_9"><p class="scenario">Is the relation <code>&le;</code> on &Nopf; <span class="key">reflexive</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')">Yes &mdash; every number is &le; itself.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Only for n = 0.</button></li><li><button onclick="selectAnswer(this,false,'fb3_9')">Only for finite sets.</button></li></ul><div class="feedback" id="fb3_9"><p><strong>Correct.</strong> <code>n &le; n</code> is true for all n.</p><ul><li><strong>Property:</strong> reflexive.</li><li><strong>Definition:</strong> <code>id &Nopf; &sube; &le;</code>.</li><li><strong>Test:</strong> every n &#8614; n is in &le;.</li><li><strong>Classify:</strong> <code>&le; &isin; Reflexive[&Nopf;]</code>.</li></ul></div></div>
+
+<h3>V.10 Practice: Reflexive Test</h3>
+<div class="practice" id="p3_10"><p class="scenario">Is the relation <code>&lt;</code> on &Nopf; <span class="key">reflexive</span>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_10')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">No &mdash; no number is strictly less than itself.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Only for n &gt; 0.</button></li><li><button onclick="selectAnswer(this,false,'fb3_10')">Only for even numbers.</button></li></ul><div class="feedback" id="fb3_10"><p><strong>Correct.</strong> <code>n &lt; n</code> is false for all n.</p><ul><li><strong>Property:</strong> not reflexive.</li><li><strong>Definition:</strong> <code>id &Nopf; &nsub; &lt;</code>.</li><li><strong>Test:</strong> no self-pair exists in &lt;.</li><li><strong>Classify:</strong> <code>&lt; &notin; Reflexive[&Nopf;]</code>.</li></ul></div></div>
+
+<h3>V.11 Practice: Reflexive Test</h3>
+<div class="practice" id="p3_11"><p>A relation R on X is reflexive iff:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>id X &sube; R</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>R &sube; id X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>R = id X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_11')"><code>R = &empty;</code></button></li></ul><div class="feedback" id="fb3_11"><p><strong>Correct.</strong> Every self-pair must be in R, plus possibly others.</p><ul><li><strong>Property:</strong> identity is a subset of R.</li><li><strong>Definition:</strong> <code>&forall; x : X &bull; x &#8614; x &isin; R</code>.</li><li><strong>Test:</strong> check every element of X.</li><li><strong>Classify:</strong> <code>R &sube; id X</code> would mean R contains only self-pairs (too restrictive).</li></ul></div></div>
+
+<h3>V.12 Practice: Symmetric Test</h3>
+<div class="practice" id="p3_12"><p class="scenario">A meeting&#39;s <span class="key">handshake</span> relation: if a shook hands with b, then b shook hands with a. Is it <span class="key">symmetric</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">Yes &mdash; handshakes are mutual.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Only if everyone shook hands.</button></li><li><button onclick="selectAnswer(this,false,'fb3_12')">Only for pairs of equal rank.</button></li></ul><div class="feedback" id="fb3_12"><p><strong>Correct.</strong> Mutual action &rarr; symmetric.</p><ul><li><strong>Property:</strong> symmetric.</li><li><strong>Definition:</strong> <code>a &#8614; b &isin; R &rArr; b &#8614; a &isin; R</code>.</li><li><strong>Test:</strong> always true for handshakes.</li><li><strong>Classify:</strong> <code>shook &isin; Symmetric[Person]</code>; also <code>shook = shook<sup>&sim;</sup></code>.</li></ul></div></div>
+
+<h3>V.13 Practice: Symmetric Test</h3>
+<div class="practice" id="p3_13"><p>If R is symmetric, then <code>R = R<sup>&sim;</sup></code>. True or false?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">True &mdash; symmetric means R equals its own inverse.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">False.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Only for finite relations.</button></li><li><button onclick="selectAnswer(this,false,'fb3_13')">Only for the identity.</button></li></ul><div class="feedback" id="fb3_13"><p><strong>Correct.</strong> Every pair and its reverse are both present &rarr; identical sets.</p><ul><li><strong>Property:</strong> symmetric &hArr; self-inverse.</li><li><strong>Definition:</strong> proven in the textbook.</li><li><strong>Test:</strong> <code>S = S<sup>&sim;</sup></code>.</li><li><strong>Classify:</strong> fundamental property of symmetric relations.</li></ul></div></div>
+
+<h3>V.14 Practice: Symmetric Test</h3>
+<div class="practice" id="p3_14"><p class="scenario">Is the relation <code>&le;</code> on &Nopf; <span class="key">symmetric</span>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_14')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')">No &mdash; <code>1 &le; 2</code> but <code>2 &le; 1</code> is false.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Only for equal values.</button></li><li><button onclick="selectAnswer(this,false,'fb3_14')">Only for n = 0.</button></li></ul><div class="feedback" id="fb3_14"><p><strong>Correct.</strong> Counterexample: <code>1 &le; 2</code> but <code>2 &nleq; 1</code>.</p><ul><li><strong>Property:</strong> not symmetric.</li><li><strong>Definition:</strong> <code>x &#8614; y &isin; R</code> does not always imply <code>y &#8614; x &isin; R</code>.</li><li><strong>Test:</strong> one counterexample suffices.</li><li><strong>Classify:</strong> <code>&le; &notin; Symmetric[&Nopf;]</code>.</li></ul></div></div>
+
+<h3>V.15 Practice: Antisymmetric Test</h3>
+<div class="practice" id="p3_15"><p class="scenario">Is the relation <code>&sube;</code> on sets <span class="key">antisymmetric</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">Yes &mdash; <code>s &sube; t</code> and <code>t &sube; s</code> implies <code>s = t</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Only for finite sets.</button></li><li><button onclick="selectAnswer(this,false,'fb3_15')">Only for singletons.</button></li></ul><div class="feedback" id="fb3_15"><p><strong>Correct.</strong> Both directions force equality.</p><ul><li><strong>Property:</strong> antisymmetric.</li><li><strong>Definition:</strong> <code>x &#8614; y &and; y &#8614; x &rArr; x = y</code>.</li><li><strong>Test:</strong> standard set-equality proof.</li><li><strong>Classify:</strong> <code>&sube; &isin; Antisymmetric[&Popf; X]</code>.</li></ul></div></div>
+
+<h3>V.16 Practice: Antisymmetric Test</h3>
+<div class="practice" id="p3_16"><p class="scenario">Is the relation <code>&le;</code> on &Nopf; <span class="key">antisymmetric</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">Yes &mdash; <code>a &le; b</code> and <code>b &le; a</code> implies <code>a = b</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Only for n = 0.</button></li><li><button onclick="selectAnswer(this,false,'fb3_16')">Only for prime numbers.</button></li></ul><div class="feedback" id="fb3_16"><p><strong>Correct.</strong> Both &le; in both directions forces equality.</p><ul><li><strong>Property:</strong> antisymmetric.</li><li><strong>Definition:</strong> <code>a &le; b &and; b &le; a &rArr; a = b</code>.</li><li><strong>Test:</strong> standard arithmetic fact.</li><li><strong>Classify:</strong> <code>&le; &isin; Antisymmetric[&Nopf;]</code>.</li></ul></div></div>
+
+<h3>V.17 Practice: Asymmetric Test</h3>
+<div class="practice" id="p3_17"><p class="scenario">Is <code>&lt;</code> on &Nopf; <span class="key">asymmetric</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">Yes &mdash; <code>a &lt; b</code> implies <code>b &nless; a</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Only for even numbers.</button></li><li><button onclick="selectAnswer(this,false,'fb3_17')">Only for primes.</button></li></ul><div class="feedback" id="fb3_17"><p><strong>Correct.</strong> Strict ordering is asymmetric.</p><ul><li><strong>Property:</strong> asymmetric.</li><li><strong>Definition:</strong> <code>x &#8614; y &isin; R &rArr; &not;(y &#8614; x &isin; R)</code>.</li><li><strong>Test:</strong> <code>a &lt; b</code> excludes <code>b &lt; a</code>.</li><li><strong>Classify:</strong> <code>&lt; &isin; Asymmetric[&Nopf;]</code>.</li></ul></div></div>
+
+<h3>V.18 Practice: Asymmetric Test</h3>
+<div class="practice" id="p3_18"><p>Can a reflexive relation be asymmetric?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_18')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">No &mdash; reflexive has <code>x &#8614; x</code>, but asymmetric forbids <code>x &#8614; x</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Only for &Nopf;.</button></li><li><button onclick="selectAnswer(this,false,'fb3_18')">Only if empty.</button></li></ul><div class="feedback" id="fb3_18"><p><strong>Correct.</strong> Reflexive requires self-pairs; asymmetric forbids them.</p><ul><li><strong>Property:</strong> contradiction.</li><li><strong>Definition:</strong> <code>x &#8614; x &isin; R</code> (reflexive) but <code>x &#8614; x &isin; R &rArr; &not;(x &#8614; x &isin; R)</code> (asymmetric).</li><li><strong>Test:</strong> direct contradiction.</li><li><strong>Classify:</strong> reflexive and asymmetric are mutually exclusive (on non-empty sets).</li></ul></div></div>
+
+<h3>V.19 Practice: Classifying a Relation</h3>
+<div class="practice" id="p3_19"><p class="scenario">Given <code>R = { a &#8614; a, b &#8614; b, a &#8614; b, b &#8614; a }</code> on <code>{a, b}</code>. Which properties hold?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">Reflexive and symmetric.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Reflexive and asymmetric.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">Symmetric and antisymmetric.</button></li><li><button onclick="selectAnswer(this,false,'fb3_19')">None of the above.</button></li></ul><div class="feedback" id="fb3_19"><p><strong>Correct.</strong> Self-pairs present &rarr; reflexive. Both directions present &rarr; symmetric.</p><ul><li><strong>Property:</strong> reflexive + symmetric.</li><li><strong>Definition:</strong> <code>id {a,b} &sube; R</code> and <code>R = R<sup>&sim;</sup></code>.</li><li><strong>Test:</strong> <code>a &#8614; b</code> and <code>b &#8614; a</code> both present, but <code>a &ne; b</code> &rarr; not antisymmetric.</li><li><strong>Classify:</strong> reflexive, symmetric. Not antisymmetric.</li></ul></div></div>
+
+<h3>V.20 Practice: Classifying a Relation</h3>
+<div class="practice" id="p3_20"><p class="scenario">The three categories &mdash; symmetric, antisymmetric, asymmetric &mdash; are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')">Not exhaustive &mdash; a relation can be none of the three.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Exhaustive &mdash; every relation is one.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">Mutually exclusive.</button></li><li><button onclick="selectAnswer(this,false,'fb3_20')">The same thing.</button></li></ul><div class="feedback" id="fb3_20"><p><strong>Correct.</strong> A relation can fail to be any of the three.</p><ul><li><strong>Property:</strong> not exhaustive.</li><li><strong>Definition:</strong> the textbook&#39;s <em>likes</em> relation is none of the three.</li><li><strong>Test:</strong> some pairs mutual, some not &rarr; fails all three tests.</li><li><strong>Classify:</strong> these are independent properties, not a partition.</li></ul></div></div>
+
+<h3>V.21 Practice: Computing Inverse</h3>
+<div class="practice" id="p3_21"><p><code>dom(R<sup>&sim;</sup>)</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')"><code>ran R</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_21')"><code>dom R</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_21')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_21')"><code>id X</code></button></li></ul><div class="feedback" id="fb3_21"><p><strong>Correct.</strong> Inverse swaps domain and range.</p><ul><li><strong>Property:</strong> sources of <code>R<sup>&sim;</sup></code> were targets of R.</li><li><strong>Definition:</strong> <code>dom(R<sup>&sim;</sup>) = ran R</code>.</li><li><strong>Test:</strong> by definition of inverse.</li><li><strong>Classify:</strong> similarly <code>ran(R<sup>&sim;</sup>) = dom R</code>.</li></ul></div></div>
+
+<h3>V.22 Practice: Identity Relation</h3>
+<div class="practice" id="p3_22"><p>What is <code>id X<sup>&sim;</sup></code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>id X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>X &times; X</code></button></li><li><button onclick="selectAnswer(this,false,'fb3_22')"><code>X</code></button></li></ul><div class="feedback" id="fb3_22"><p><strong>Correct.</strong> Reversing <code>x &#8614; x</code> gives <code>x &#8614; x</code> &mdash; unchanged.</p><ul><li><strong>Property:</strong> identity is self-inverse.</li><li><strong>Definition:</strong> <code>(x &#8614; x)<sup>&sim;</sup> = x &#8614; x</code>.</li><li><strong>Test:</strong> every pair is symmetric.</li><li><strong>Classify:</strong> <code>id X &isin; Symmetric[X]</code>.</li></ul></div></div>
+
+<h3>V.23 Practice: Classifying a Relation</h3>
+<div class="practice" id="p3_23"><p class="scenario">The <span class="key">likes</span> relation from the textbook: Louise likes Martin, Martin likes Louise, Martin likes Natalie, each person likes themselves. Is it symmetric?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_23')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">No &mdash; Martin likes Natalie but Natalie does not like Martin.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Only partially.</button></li><li><button onclick="selectAnswer(this,false,'fb3_23')">Cannot determine.</button></li></ul><div class="feedback" id="fb3_23"><p><strong>Correct.</strong> One missing reverse pair breaks symmetry.</p><ul><li><strong>Property:</strong> not symmetric.</li><li><strong>Definition:</strong> <code>Martin &#8614; Natalie &isin; likes</code> but <code>Natalie &#8614; Martin &notin; likes</code>.</li><li><strong>Test:</strong> one counterexample suffices.</li><li><strong>Classify:</strong> <code>likes &notin; Symmetric[House]</code>.</li></ul></div></div>
+
+<h3>V.24 Practice: Classifying a Relation</h3>
+<div class="practice" id="p3_24"><p class="scenario">Same <span class="key">likes</span> relation. Is it <span class="key">antisymmetric</span>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_24')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">No &mdash; Louise and Martin like each other but are not equal.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Only for self-pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_24')">Cannot determine.</button></li></ul><div class="feedback" id="fb3_24"><p><strong>Correct.</strong> Both directions but <code>Louise &ne; Martin</code> &rarr; violates antisymmetry.</p><ul><li><strong>Property:</strong> not antisymmetric.</li><li><strong>Definition:</strong> <code>Louise &#8614; Martin</code> and <code>Martin &#8614; Louise</code> both present, but <code>Louise &ne; Martin</code>.</li><li><strong>Test:</strong> one counterexample suffices.</li><li><strong>Classify:</strong> <code>likes &notin; Antisymmetric[House]</code>.</li></ul></div></div>
+
+<h3>V.25 Practice: Classifying a Relation</h3>
+<div class="practice" id="p3_25"><p class="scenario">Same <span class="key">likes</span> relation. Is it <span class="key">asymmetric</span>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb3_25')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">No &mdash; it is reflexive, which contradicts asymmetry.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Only for non-self pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb3_25')">Cannot determine.</button></li></ul><div class="feedback" id="fb3_25"><p><strong>Correct.</strong> Reflexive &rArr; self-pairs exist &rArr; not asymmetric.</p><ul><li><strong>Property:</strong> not asymmetric.</li><li><strong>Definition:</strong> <code>Louise &#8614; Louise &isin; likes</code> but asymmetric forbids self-pairs.</li><li><strong>Test:</strong> reflexivity and asymmetry are mutually exclusive.</li><li><strong>Classify:</strong> likes is: reflexive, not symmetric, not antisymmetric, not asymmetric.</li></ul></div></div>
+
+</section>
+
+<!-- ================= 7.4 Relational Composition ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">7.4 Relational Composition</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="R ; S chains two relations through an intermediate element y.">Composition</span>:</strong> <code>R ; S</code> chains R then S through intermediate y.</li>
+  <li><strong>Formula:</strong> <code>x &#8614; z &isin; R ; S &hArr; &exist; y &bull; x &#8614; y &isin; R &and; y &#8614; z &isin; S</code>.</li>
+  <li><strong><span class="vocab" data-def="x &#8614; y and y &#8614; z in R implies x &#8614; z in R.">Transitive</span>:</strong> <code>x &#8614; y</code> and <code>y &#8614; z</code> in R &rArr; <code>x &#8614; z &isin; R</code>.</li>
+  <li><strong><span class="vocab" data-def="Reflexive &cap; Symmetric &cap; Transitive.">Equivalence</span>:</strong> reflexive &cap; symmetric &cap; transitive.</li>
+  <li><strong><span class="vocab" data-def="Set of all elements related to a given element a under E.">Equivalence class</span> of a:</strong> <code>{ x : X | x &#8614; a &isin; E }</code> &mdash; all elements related to a.</li>
+  <li><strong><span class="vocab" data-def="Division of a set into disjoint subsets that together cover the whole set.">Partition</span>:</strong> equivalence divides X into disjoint classes.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Relational composition</td><td>R ; S chains two relations through intermediate y.</td></tr>
+  <tr><td>Transitive</td><td>x&#8614;y and y&#8614;z in R implies x&#8614;z in R.</td></tr>
+  <tr><td>Equivalence relation</td><td>Reflexive + symmetric + transitive.</td></tr>
+  <tr><td>Equivalence class</td><td>Set of all elements related to a given element.</td></tr>
+  <tr><td>Partition</td><td>Division of a set into disjoint covering subsets.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>;</code></td><td>Forward relational composition.</td></tr>
+  <tr><td><code>Transitive[X]</code></td><td>Set of transitive relations on X.</td></tr>
+  <tr><td><code>Equivalence[X]</code></td><td>Set of equivalence relations on X.</td></tr>
+  <tr><td><code>&cap;</code></td><td>Set intersection (used in defining Equivalence).</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="D">IV.1 Examples: Fuel Purchasing, Author&ndash;Publisher &amp; Student&ndash;Department</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>;</code></td><td>Forward composition.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Which <span class="key">fuel</span> does each <span class="key">driver</span> buy? Compose <span class="key">drives</span> with <span class="key">uses</span>.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>drives : Drivers &harr; Cars</code>; <code>uses : Cars &harr; Fuels</code>.</li>
+  <li><strong>Bridge:</strong> the intermediate type is Cars &mdash; drivers link to cars, cars link to fuels.</li>
+  <li><strong>Compose:</strong> <code>buys = drives <span class="vocab" data-def="R ; S chains two relations through an intermediate element y.">;</span> uses = { helen &#8614; leaded, jim &#8614; leaded, kate &#8614; leaded, indra &#8614; unleaded, indra &#8614; leaded }</code>.</li>
+  <li><strong>Result:</strong> delorean uses electricity but nobody drives it, so it contributes nothing.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Which <span class="key">publisher</span> does each <span class="key">author</span> reach? Compose <span class="key">wrote</span> with <span class="key">publishedBy</span>.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>wrote : Author &harr; Book</code>; <code>publishedBy : Book &harr; Publisher</code>.</li>
+  <li><strong>Bridge:</strong> intermediate type is Book.</li>
+  <li><strong>Compose:</strong> <code>reaches = wrote ; publishedBy</code> &mdash; author-to-publisher chain.</li>
+  <li><strong>Result:</strong> multi-book authors may reach multiple publishers.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Which <span class="key">department</span> does each <span class="key">student</span> belong to? Compose <span class="key">enrolled</span> with <span class="key">offeredBy</span>.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>enrolled : Student &harr; Course</code>; <code>offeredBy : Course &harr; Dept</code>.</li>
+  <li><strong>Bridge:</strong> intermediate type is Course.</li>
+  <li><strong>Compose:</strong> <code>inDept = enrolled ; offeredBy</code> &mdash; student-to-department chain.</li>
+  <li><strong>Result:</strong> cross-enrolled students appear in multiple departments.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Transitive (&gt; on &Nopf;), Transitive (&sube; on sets) &amp; Transitive (Ancestor)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Transitive[X]</code></td><td>Set of transitive relations.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">greater-than</span> relation on &Nopf;: is it <span class="key">transitive</span>?</p>
+<ul>
+  <li><strong>Relations:</strong> <code>&gt; : &Nopf; &harr; &Nopf;</code>.</li>
+  <li><strong>Bridge:</strong> if <code>a &gt; b</code> and <code>b &gt; c</code>, the bridge is b.</li>
+  <li><strong>Compose:</strong> <code>a &gt; b &and; b &gt; c &rArr; a &gt; c</code> &mdash; always holds.</li>
+  <li><strong>Result:</strong> <code>&gt; &isin; <span class="vocab" data-def="x &#8614; y and y &#8614; z in R implies x &#8614; z in R.">Transitive</span>[&Nopf;]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">subset</span> relation on sets: is it transitive?</p>
+<ul>
+  <li><strong>Relations:</strong> <code>&sube; : &Popf; X &harr; &Popf; X</code>.</li>
+  <li><strong>Bridge:</strong> if <code>s &sube; t</code> and <code>t &sube; u</code>, bridge is t.</li>
+  <li><strong>Compose:</strong> <code>s &sube; t &and; t &sube; u &rArr; s &sube; u</code> &mdash; always holds.</li>
+  <li><strong>Result:</strong> <code>&sube; &isin; Transitive[&Popf; X]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A family&#39;s <span class="key">ancestor</span> relation: is it transitive?</p>
+<ul>
+  <li><strong>Relations:</strong> <code>ancestor : Person &harr; Person</code>.</li>
+  <li><strong>Bridge:</strong> if a is ancestor of b and b is ancestor of c, bridge is b.</li>
+  <li><strong>Compose:</strong> a is ancestor of c &mdash; always holds.</li>
+  <li><strong>Result:</strong> <code>ancestor &isin; Transitive[Person]</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Non-Transitive (Likes), Non-Transitive (Parent) &amp; Non-Transitive (Neighbour)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Transitive[X]</code></td><td>Set of transitive relations.</td></tr>
+  <tr><td><code>;</code></td><td>Composition.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">likes</span> relation: Louise&#8614;Martin, Martin&#8614;Natalie. Is it <span class="key">transitive</span>?</p>
+<ul>
+  <li><strong>Relations:</strong> <code>likes</code> includes <code>Louise &#8614; Martin</code> and <code>Martin &#8614; Natalie</code>.</li>
+  <li><strong>Bridge:</strong> Martin bridges Louise to Natalie.</li>
+  <li><strong>Compose:</strong> transitivity would require <code>Louise &#8614; Natalie &isin; likes</code> &mdash; but it is absent.</li>
+  <li><strong>Result:</strong> <code>likes &notin; <span class="vocab" data-def="x &#8614; y and y &#8614; z in R implies x &#8614; z in R.">Transitive</span>[House]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">parent</span> relation: Alice is parent of Bob, Bob is parent of Carol. Is parent transitive?</p>
+<ul>
+  <li><strong>Relations:</strong> <code>parent</code>: <code>Alice &#8614; Bob, Bob &#8614; Carol</code>.</li>
+  <li><strong>Bridge:</strong> Bob bridges Alice to Carol.</li>
+  <li><strong>Compose:</strong> transitivity would require <code>Alice &#8614; Carol &isin; parent</code> &mdash; but Alice is grandparent, not parent.</li>
+  <li><strong>Result:</strong> <code>parent &notin; Transitive[Person]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A street&#39;s <span class="key">neighbour</span> relation: house 1 neighbours 2, house 2 neighbours 3.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>neighbour</code>: <code>1 &#8614; 2, 2 &#8614; 3</code>.</li>
+  <li><strong>Bridge:</strong> 2 bridges 1 to 3.</li>
+  <li><strong>Compose:</strong> 1 and 3 are not neighbours &rarr; not transitive.</li>
+  <li><strong>Result:</strong> <code>neighbour &notin; Transitive[House]</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Equivalence (Same Sign), Equivalence (Same Colour) &amp; Equivalence (Same Floor)</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Equivalence[X]</code></td><td>Set of equivalence relations.</td></tr>
+  <tr><td><code>&cap;</code></td><td>Intersection.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">same birth sign</span> relation on people.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>same_sign : Person &harr; Person</code>.</li>
+  <li><strong>Bridge:</strong> reflexive (same sign as yourself), symmetric (mutual), transitive (chain of same-sign).</li>
+  <li><strong>Compose:</strong> <code><span class="vocab" data-def="Reflexive &cap; Symmetric &cap; Transitive.">Equivalence</span>[X] == Reflexive[X] <span class="vocab" data-def="Division of a set into disjoint subsets that together cover the whole set.">&cap;</span> Symmetric[X] &cap; Transitive[X]</code> &mdash; all three hold.</li>
+  <li><strong>Result:</strong> <code>same_sign &isin; Equivalence[Person]</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A factory sorts products by <span class="key">same colour</span>.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>sameColour : Product &harr; Product</code>.</li>
+  <li><strong>Bridge:</strong> reflexive, symmetric, transitive &mdash; all three hold for colour matching.</li>
+  <li><strong>Compose:</strong> <code>sameColour &isin; Equivalence[Product]</code>.</li>
+  <li><strong>Result:</strong> products partition into colour groups.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A building groups residents by <span class="key">same floor</span>.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>sameFloor : Resident &harr; Resident</code>.</li>
+  <li><strong>Bridge:</strong> reflexive (same floor as yourself), symmetric, transitive.</li>
+  <li><strong>Compose:</strong> <code>sameFloor &isin; Equivalence[Resident]</code>.</li>
+  <li><strong>Result:</strong> residents partition into floor groups.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Zodiac Classes, Colour Classes &amp; Floor Classes</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>Equivalence[X]</code></td><td>Equivalence set.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">same_sign</span> equivalence divides Person into <span class="key">12 zodiac classes</span>.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>same_sign &isin; Equivalence[Person]</code>.</li>
+  <li><strong>Bridge:</strong> <span class="vocab" data-def="Set of all elements related to a given element a under E.">equivalence class</span> of a = <code>{ x : Person | x &#8614; a &isin; same_sign }</code>.</li>
+  <li><strong>Compose:</strong> Marina born Jan 28 &rarr; class = all Aquarians (Jan 20 &ndash; Feb 18).</li>
+  <li><strong>Result:</strong> 12 disjoint classes forming a <span class="vocab" data-def="Division of a set into disjoint subsets that together cover the whole set.">partition</span> of Person.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">sameColour</span> equivalence on products.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>sameColour &isin; Equivalence[Product]</code>.</li>
+  <li><strong>Bridge:</strong> equivalence class of a red widget = all red products.</li>
+  <li><strong>Compose:</strong> each class is one colour group.</li>
+  <li><strong>Result:</strong> classes partition Product by colour.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">sameFloor</span> equivalence on building residents.</p>
+<ul>
+  <li><strong>Relations:</strong> <code>sameFloor &isin; Equivalence[Resident]</code>.</li>
+  <li><strong>Bridge:</strong> equivalence class of a floor-3 resident = all floor-3 residents.</li>
+  <li><strong>Compose:</strong> each class is one floor&#39;s residents.</li>
+  <li><strong>Result:</strong> classes partition Resident by floor.</li>
+</ul>
+</div>
+
+<!-- Practice 7.4 -->
+<h3 class="jump-target" data-part="E">V.1 Practice: Computing Composition</h3>
+<div class="practice" id="p4_1"><p><code>R ; S</code> contains pair <code>(x, z)</code> iff:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')"><code>&exist; y &bull; x &#8614; y &isin; R &and; y &#8614; z &isin; S</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>(x, z) &isin; R &or; (x, z) &isin; S</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>(x, z) &isin; R &and; (x, z) &isin; S</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_1')"><code>(z, x) &isin; R</code></button></li></ul><div class="feedback" id="fb4_1"><p><strong>Correct.</strong> An intermediate y must bridge the two relations.</p><ul><li><strong>Relations:</strong> R connects x to y; S connects y to z.</li><li><strong>Bridge:</strong> some y must exist in both.</li><li><strong>Compose:</strong> existential quantifier over y.</li><li><strong>Result:</strong> composition links x to z through y.</li></ul></div></div>
+
+<h3>V.2 Practice: Transitive Test</h3>
+<div class="practice" id="p4_2"><p>A relation R is transitive iff:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')"><code>&forall; x, y, z &bull; x &#8614; y &isin; R &and; y &#8614; z &isin; R &rArr; x &#8614; z &isin; R</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_2')"><code>R = R<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_2')"><code>id X &sube; R</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_2')"><code>R = &empty;</code></button></li></ul><div class="feedback" id="fb4_2"><p><strong>Correct.</strong> Every two-step chain must have a matching direct link.</p><ul><li><strong>Relations:</strong> R alone.</li><li><strong>Bridge:</strong> y connects x to z within R.</li><li><strong>Compose:</strong> the direct pair <code>x &#8614; z</code> must also be in R.</li><li><strong>Result:</strong> definition of transitivity.</li></ul></div></div>
+
+<h3>V.3 Practice: Computing Composition</h3>
+<div class="practice" id="p4_3"><p class="scenario">A social app has <code>friend : Person &harr; Person</code>. Which gives &ldquo;<span class="key">friend of a friend</span>&rdquo;?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>friend ; friend</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>friend<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>id Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_3')"><code>friend &cup; friend</code></button></li></ul><div class="feedback" id="fb4_3"><p><strong>Correct.</strong> Compose friend with itself for 2-hop.</p><ul><li><strong>Relations:</strong> <code>friend ; friend</code>.</li><li><strong>Bridge:</strong> intermediate friend y.</li><li><strong>Compose:</strong> x &rarr; y &rarr; z gives friend-of-friend.</li><li><strong>Result:</strong> 2-hop path through the social graph.</li></ul></div></div>
+
+<h3>V.4 Practice: Computing Composition</h3>
+<div class="practice" id="p4_4"><p class="scenario">Given <code>manages : Manager &harr; Employee</code> and <code>assignedTo : Employee &harr; Project</code>. Which gives &ldquo;<span class="key">managers linked to projects</span>&rdquo;?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')"><code>manages ; assignedTo</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>assignedTo ; manages</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>manages<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_4')"><code>id Manager</code></button></li></ul><div class="feedback" id="fb4_4"><p><strong>Correct.</strong> Manager &rarr; employee &rarr; project chain.</p><ul><li><strong>Relations:</strong> manages then assignedTo.</li><li><strong>Bridge:</strong> employee is intermediate.</li><li><strong>Compose:</strong> result type: <code>Manager &harr; Project</code>.</li><li><strong>Result:</strong> order matters &mdash; reversed composition gives wrong types.</li></ul></div></div>
+
+<h3>V.5 Practice: Computing Composition</h3>
+<div class="practice" id="p4_5"><p>Is composition commutative: <code>R ; S = S ; R</code>?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_5')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')">No &mdash; order matters.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Only when R = S.</button></li><li><button onclick="selectAnswer(this,false,'fb4_5')">Only for homogeneous relations.</button></li></ul><div class="feedback" id="fb4_5"><p><strong>Correct.</strong> Composition is not commutative in general.</p><ul><li><strong>Relations:</strong> R and S may have different types.</li><li><strong>Bridge:</strong> intermediate changes direction.</li><li><strong>Compose:</strong> <code>R ; S &ne; S ; R</code> in general.</li><li><strong>Result:</strong> types often don&#39;t even align for the reverse order.</li></ul></div></div>
+
+<h3>V.6 Practice: Computing Composition</h3>
+<div class="practice" id="p4_6"><p>Is composition associative: <code>(R ; S) ; T = R ; (S ; T)</code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')">Yes.</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">Only for finite relations.</button></li><li><button onclick="selectAnswer(this,false,'fb4_6')">Only for homogeneous relations.</button></li></ul><div class="feedback" id="fb4_6"><p><strong>Correct.</strong> Composition is associative.</p><ul><li><strong>Relations:</strong> three relations R, S, T.</li><li><strong>Bridge:</strong> intermediate chain works either way.</li><li><strong>Compose:</strong> parentheses don&#39;t change the result.</li><li><strong>Result:</strong> standard algebraic property.</li></ul></div></div>
+
+<h3>V.7 Practice: Computing Composition</h3>
+<div class="practice" id="p4_7"><p class="scenario">A build system has <code>dependsOn : Module &harr; Module</code>. Which gives &ldquo;<span class="key">2-hop dependency</span>&rdquo;?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')"><code>dependsOn ; dependsOn</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>dependsOn<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>id Module</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_7')"><code>dependsOn &cup; dependsOn</code></button></li></ul><div class="feedback" id="fb4_7"><p><strong>Correct.</strong> Self-composition gives 2-step chains.</p><ul><li><strong>Relations:</strong> <code>dependsOn ; dependsOn</code>.</li><li><strong>Bridge:</strong> intermediate module.</li><li><strong>Compose:</strong> x depends on y depends on z.</li><li><strong>Result:</strong> indirect 2-hop dependency.</li></ul></div></div>
+
+<h3>V.8 Practice: Computing Composition</h3>
+<div class="practice" id="p4_8"><p>What is <code>(R ; S)<sup>&sim;</sup></code>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')"><code>S<sup>&sim;</sup> ; R<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>R<sup>&sim;</sup> ; S<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>R ; S</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_8')"><code>&empty;</code></button></li></ul><div class="feedback" id="fb4_8"><p><strong>Correct.</strong> Reverse order, invert each.</p><ul><li><strong>Relations:</strong> inverse of a composition.</li><li><strong>Bridge:</strong> reversal flips both order and direction.</li><li><strong>Compose:</strong> like matrix transpose of a product.</li><li><strong>Result:</strong> <code>(R ; S)<sup>&sim;</sup> = S<sup>&sim;</sup> ; R<sup>&sim;</sup></code>.</li></ul></div></div>
+
+<h3>V.9 Practice: Transitive Test</h3>
+<div class="practice" id="p4_9"><p class="scenario">Is <code>&gt;</code> on &Nopf; <span class="key">transitive</span>?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">Yes &mdash; <code>a &gt; b</code> and <code>b &gt; c</code> implies <code>a &gt; c</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">No.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Only for even numbers.</button></li><li><button onclick="selectAnswer(this,false,'fb4_9')">Only for primes.</button></li></ul><div class="feedback" id="fb4_9"><p><strong>Correct.</strong> Standard arithmetic fact.</p><ul><li><strong>Relations:</strong> <code>&gt; : &Nopf; &harr; &Nopf;</code>.</li><li><strong>Bridge:</strong> b between a and c.</li><li><strong>Compose:</strong> <code>a &gt; b &and; b &gt; c &rArr; a &gt; c</code>.</li><li><strong>Result:</strong> <code>&gt; &isin; Transitive[&Nopf;]</code>.</li></ul></div></div>
+
+<h3>V.10 Practice: Transitive Test</h3>
+<div class="practice" id="p4_10"><p class="scenario">Is the <span class="key">parent</span> relation transitive?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_10')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">No &mdash; parent of parent is grandparent, not parent.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Only for direct parents.</button></li><li><button onclick="selectAnswer(this,false,'fb4_10')">Only for mothers.</button></li></ul><div class="feedback" id="fb4_10"><p><strong>Correct.</strong> Grandparent is not the same as parent.</p><ul><li><strong>Relations:</strong> <code>parent</code>.</li><li><strong>Bridge:</strong> if A parent of B and B parent of C, A is grandparent of C.</li><li><strong>Compose:</strong> <code>A &#8614; C &notin; parent</code>.</li><li><strong>Result:</strong> <code>parent &notin; Transitive[Person]</code>.</li></ul></div></div>
+
+<h3>V.11 Practice: Transitive Test</h3>
+<div class="practice" id="p4_11"><p class="scenario">The <span class="key">likes</span> relation has <code>Louise &#8614; Martin</code> and <code>Martin &#8614; Natalie</code> but <span class="key">not</span> <code>Louise &#8614; Natalie</code>. Transitive?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_11')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">No &mdash; the required pair is missing.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Only for self-pairs.</button></li><li><button onclick="selectAnswer(this,false,'fb4_11')">Cannot determine.</button></li></ul><div class="feedback" id="fb4_11"><p><strong>Correct.</strong> One missing link breaks transitivity.</p><ul><li><strong>Relations:</strong> <code>likes</code>.</li><li><strong>Bridge:</strong> Martin bridges Louise to Natalie.</li><li><strong>Compose:</strong> <code>Louise &#8614; Natalie</code> required but absent.</li><li><strong>Result:</strong> <code>likes &notin; Transitive[House]</code>.</li></ul></div></div>
+
+<h3>V.12 Practice: Transitive Test</h3>
+<div class="practice" id="p4_12"><p class="scenario">A street&#39;s <span class="key">neighbour</span> relation: 1&#8596;2 and 2&#8596;3 but 1 and 3 are not neighbours. Transitive?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_12')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')">No &mdash; 1 &#8614; 2 and 2 &#8614; 3 but not 1 &#8614; 3.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Only on small streets.</button></li><li><button onclick="selectAnswer(this,false,'fb4_12')">Cannot determine.</button></li></ul><div class="feedback" id="fb4_12"><p><strong>Correct.</strong> Immediate adjacency is not transitive.</p><ul><li><strong>Relations:</strong> neighbour.</li><li><strong>Bridge:</strong> 2 bridges 1 to 3.</li><li><strong>Compose:</strong> <code>1 &#8614; 3 &notin; neighbour</code>.</li><li><strong>Result:</strong> not transitive.</li></ul></div></div>
+
+<h3>V.13 Practice: Equivalence Relation Test</h3>
+<div class="practice" id="p4_13"><p><code>Equivalence[X]</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')"><code>Reflexive[X] &cap; Symmetric[X] &cap; Transitive[X]</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_13')"><code>Reflexive[X] &cup; Symmetric[X]</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_13')"><code>Transitive[X]</code> only</button></li><li><button onclick="selectAnswer(this,false,'fb4_13')"><code>Symmetric[X]</code> only</button></li></ul><div class="feedback" id="fb4_13"><p><strong>Correct.</strong> All three properties must hold simultaneously.</p><ul><li><strong>Relations:</strong> intersection of three sets of relations.</li><li><strong>Bridge:</strong> reflexive + symmetric + transitive.</li><li><strong>Compose:</strong> <code>&cap;</code> means all three.</li><li><strong>Result:</strong> definition of equivalence relation.</li></ul></div></div>
+
+<h3>V.14 Practice: Equivalence Relation Test</h3>
+<div class="practice" id="p4_14"><p class="scenario">Is <span class="key">same_sign</span> (same birth sign) an equivalence relation on Person?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')">Yes &mdash; reflexive, symmetric, transitive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">No &mdash; not reflexive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">No &mdash; not symmetric.</button></li><li><button onclick="selectAnswer(this,false,'fb4_14')">No &mdash; not transitive.</button></li></ul><div class="feedback" id="fb4_14"><p><strong>Correct.</strong> Each person has the same sign as themselves (reflexive), the relation is mutual (symmetric), and chains hold (transitive).</p><ul><li><strong>Relations:</strong> <code>same_sign</code>.</li><li><strong>Bridge:</strong> all three properties verified.</li><li><strong>Compose:</strong> <code>same_sign &isin; Equivalence[Person]</code>.</li><li><strong>Result:</strong> divides Person into 12 zodiac classes.</li></ul></div></div>
+
+<h3>V.15 Practice: Equivalence Relation Test</h3>
+<div class="practice" id="p4_15"><p class="scenario">Is the <span class="key">likes</span> relation (from 7.3) an equivalence?</p><ul class="choices"><li><button onclick="selectAnswer(this,false,'fb4_15')">Yes.</button></li><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">No &mdash; it is not symmetric and not transitive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Only among Louise and Martin.</button></li><li><button onclick="selectAnswer(this,false,'fb4_15')">Cannot determine.</button></li></ul><div class="feedback" id="fb4_15"><p><strong>Correct.</strong> Fails both symmetry and transitivity.</p><ul><li><strong>Relations:</strong> <code>likes</code>.</li><li><strong>Bridge:</strong> Martin &rarr; Natalie not reciprocated; Louise &rarr; Natalie missing.</li><li><strong>Compose:</strong> two of three conditions fail.</li><li><strong>Result:</strong> <code>likes &notin; Equivalence[House]</code>.</li></ul></div></div>
+
+<h3>V.16 Practice: Equivalence Relation Test</h3>
+<div class="practice" id="p4_16"><p class="scenario">Is <code>=</code> (equality) on &Nopf; an <span class="key">equivalence</span> relation?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')">Yes &mdash; reflexive, symmetric, transitive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">No &mdash; not transitive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">No &mdash; not reflexive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_16')">No &mdash; too trivial.</button></li></ul><div class="feedback" id="fb4_16"><p><strong>Correct.</strong> Equality satisfies all three properties.</p><ul><li><strong>Relations:</strong> <code>= : &Nopf; &harr; &Nopf;</code>.</li><li><strong>Bridge:</strong> <code>n = n</code> (refl), <code>a = b &rArr; b = a</code> (symm), <code>a = b &and; b = c &rArr; a = c</code> (trans).</li><li><strong>Compose:</strong> all three hold.</li><li><strong>Result:</strong> each equivalence class is a singleton <code>{n}</code>.</li></ul></div></div>
+
+<h3>V.17 Practice: Equivalence Class Computation</h3>
+<div class="practice" id="p4_17"><p class="scenario"><span class="key">same_sign</span> divides Person into equivalence classes. Marina is born Jan 28 (Aquarius). Her class contains:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">All Aquarians (born Jan 20 &ndash; Feb 18).</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Only Marina.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">Everyone born in January.</button></li><li><button onclick="selectAnswer(this,false,'fb4_17')">All 12 signs.</button></li></ul><div class="feedback" id="fb4_17"><p><strong>Correct.</strong> The equivalence class is all people sharing the same sign.</p><ul><li><strong>Relations:</strong> <code>same_sign</code>.</li><li><strong>Bridge:</strong> class of Marina = <code>{ x | x &#8614; Marina &isin; same_sign }</code>.</li><li><strong>Compose:</strong> all Aquarians.</li><li><strong>Result:</strong> one of 12 disjoint classes.</li></ul></div></div>
+
+<h3>V.18 Practice: Equivalence Class Computation</h3>
+<div class="practice" id="p4_18"><p>How many equivalence classes does <code>same_sign</code> create?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')">12 &mdash; one per zodiac sign.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">1.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">365.</button></li><li><button onclick="selectAnswer(this,false,'fb4_18')">Infinite.</button></li></ul><div class="feedback" id="fb4_18"><p><strong>Correct.</strong> Twelve signs &rarr; twelve classes.</p><ul><li><strong>Relations:</strong> <code>same_sign &isin; Equivalence[Person]</code>.</li><li><strong>Bridge:</strong> each sign defines one class.</li><li><strong>Compose:</strong> 12 disjoint subsets.</li><li><strong>Result:</strong> partition into zodiac groups.</li></ul></div></div>
+
+<h3>V.19 Practice: Equivalence Class Computation</h3>
+<div class="practice" id="p4_19"><p>Equivalence classes of an equivalence relation E are:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')">Disjoint subsets that together cover all of X.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Overlapping subsets.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Always singletons.</button></li><li><button onclick="selectAnswer(this,false,'fb4_19')">Always the whole set X.</button></li></ul><div class="feedback" id="fb4_19"><p><strong>Correct.</strong> Equivalence classes form a partition.</p><ul><li><strong>Relations:</strong> E partitions X.</li><li><strong>Bridge:</strong> no element belongs to two different classes.</li><li><strong>Compose:</strong> union of all classes = X.</li><li><strong>Result:</strong> disjoint + covering = partition.</li></ul></div></div>
+
+<h3>V.20 Practice: Equivalence Relation Test</h3>
+<div class="practice" id="p4_20"><p class="scenario">A factory&#39;s <span class="key">same colour</span> relation on products. Is it an equivalence?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')">Yes &mdash; reflexive, symmetric, transitive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">No &mdash; not transitive.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">No &mdash; not symmetric.</button></li><li><button onclick="selectAnswer(this,false,'fb4_20')">No &mdash; not reflexive.</button></li></ul><div class="feedback" id="fb4_20"><p><strong>Correct.</strong> Same-colour is an equivalence.</p><ul><li><strong>Relations:</strong> <code>sameColour</code>.</li><li><strong>Bridge:</strong> reflexive (same colour as yourself), symmetric, transitive.</li><li><strong>Compose:</strong> all three properties hold.</li><li><strong>Result:</strong> products partition into colour groups.</li></ul></div></div>
+
+<h3>V.21 Practice: Equivalence Class Computation</h3>
+<div class="practice" id="p4_21"><p>The equivalence class of element a under E is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')"><code>{ x : X | x &#8614; a &isin; E }</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_21')"><code>{ x : X | x &isin; E }</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_21')"><code>dom E</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_21')"><code>ran E</code></button></li></ul><div class="feedback" id="fb4_21"><p><strong>Correct.</strong> All elements related to a.</p><ul><li><strong>Relations:</strong> E is the equivalence relation.</li><li><strong>Bridge:</strong> collect all x linked to a by E.</li><li><strong>Compose:</strong> set comprehension.</li><li><strong>Result:</strong> one class in the partition.</li></ul></div></div>
+
+<h3>V.22 Practice: Computing Composition</h3>
+<div class="practice" id="p4_22"><p class="scenario">A shipping system has <code>ships : Warehouse &harr; City</code> and <code>delivers : City &harr; Customer</code>. Which gives <span class="key">warehouse-to-customer</span> route?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')"><code>ships ; delivers</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_22')"><code>delivers ; ships</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_22')"><code>ships<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_22')"><code>id Warehouse</code></button></li></ul><div class="feedback" id="fb4_22"><p><strong>Correct.</strong> Warehouse &rarr; city &rarr; customer chain.</p><ul><li><strong>Relations:</strong> ships then delivers.</li><li><strong>Bridge:</strong> city is intermediate.</li><li><strong>Compose:</strong> result type: <code>Warehouse &harr; Customer</code>.</li><li><strong>Result:</strong> end-to-end delivery route.</li></ul></div></div>
+
+<h3>V.23 Practice: Computing Composition</h3>
+<div class="practice" id="p4_23"><p><code>id X ; R</code> equals:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')"><code>R</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>id X</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>&empty;</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_23')"><code>R<sup>&sim;</sup></code></button></li></ul><div class="feedback" id="fb4_23"><p><strong>Correct.</strong> Identity is the neutral element for composition.</p><ul><li><strong>Relations:</strong> <code>id X</code> and R.</li><li><strong>Bridge:</strong> <code>id X</code> maps each x to itself.</li><li><strong>Compose:</strong> <code>x &#8614; x &#8614; y = x &#8614; y</code>.</li><li><strong>Result:</strong> <code>id X ; R = R = R ; id Y</code>.</li></ul></div></div>
+
+<h3>V.24 Practice: Computing Composition</h3>
+<div class="practice" id="p4_24"><p class="scenario">Given <code>childOf : Person &harr; Person</code>. Which gives &ldquo;<span class="key">grandchild of</span>&rdquo;?</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')"><code>childOf ; childOf</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_24')"><code>childOf<sup>&sim;</sup></code></button></li><li><button onclick="selectAnswer(this,false,'fb4_24')"><code>id Person</code></button></li><li><button onclick="selectAnswer(this,false,'fb4_24')"><code>childOf &cup; childOf</code></button></li></ul><div class="feedback" id="fb4_24"><p><strong>Correct.</strong> Two-hop child = grandchild.</p><ul><li><strong>Relations:</strong> <code>childOf ; childOf</code>.</li><li><strong>Bridge:</strong> intermediate is the parent.</li><li><strong>Compose:</strong> x is child of y who is child of z &rarr; x is grandchild of z.</li><li><strong>Result:</strong> self-composition for 2-step ancestry.</li></ul></div></div>
+
+<h3>V.25 Practice: Equivalence Class Computation</h3>
+<div class="practice" id="p4_25"><p>If every element of X forms its own equivalence class, then E is:</p><ul class="choices"><li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">The identity relation <code>id X</code> &mdash; equality.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')"><code>X &times; X</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')"><code>&empty;</code>.</button></li><li><button onclick="selectAnswer(this,false,'fb4_25')">Not an equivalence.</button></li></ul><div class="feedback" id="fb4_25"><p><strong>Correct.</strong> Singleton classes mean elements are only related to themselves &mdash; pure equality.</p><ul><li><strong>Relations:</strong> <code>E = id X</code>.</li><li><strong>Bridge:</strong> no cross-links.</li><li><strong>Compose:</strong> each class has exactly one element.</li><li><strong>Result:</strong> the finest possible partition.</li></ul></div></div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 4</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 7.</footer>
+
+</body>
+</html>

@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 9 — Sequences</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch9-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">9.1 Sequence Notation &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">9.2 Model for Sequences &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">9.3 Functions on Sequences &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">9.4 Structural Induction &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 9 &mdash; Sequences</h1>
+
+<!-- ================= 9.1 Sequence notation ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">9.1 Sequence notation</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>A <span class="vocab" data-def="An ordered collection of objects; written between angle brackets.">sequence</span> is an ordered collection &mdash; written <code>&lang; a, b, c &rang;</code>.</li>
+  <li><strong><span class="vocab" data-def="The sequence with no objects, written &lang;&rang;.">Empty sequence</span>:</strong> <code>&lang;&rang;</code> &mdash; no objects.</li>
+  <li><strong><span class="vocab" data-def="Combining two sequences end-to-end, preserving order.">Concatenation</span>:</strong> <code>s &#x2040; t</code> &mdash; elements of <code>s</code> followed by elements of <code>t</code>.</li>
+  <li><strong><span class="vocab" data-def="Subsequence containing only elements that belong to a given set.">Filter</span>:</strong> <code>s &#x21BE; A</code> &mdash; keep only elements in set <code>A</code>, preserve order.</li>
+  <li><strong><span class="vocab" data-def="The first element of a non-empty sequence.">Head</span> / <span class="vocab" data-def="All elements after the first in a non-empty sequence.">tail</span>:</strong> <code>head s</code> = first element; <code>tail s</code> = remainder.</li>
+  <li><strong>Length:</strong> <code>#s</code> &mdash; number of elements; <code>#(s &#x2040; t) = #s + #t</code>.</li>
+  <li><strong><span class="vocab" data-def="Concatenating every sequence in a sequence of sequences into one flat sequence.">Distributed concatenation</span>:</strong> <code>&#x2040;/</code> flattens a sequence of sequences.</li>
+  <li><strong>Reconstruction:</strong> <code>s = &lang; head s &rang; &#x2040; tail s</code> for any non-empty <code>s</code>.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s0-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Sequence</td><td>An ordered collection of objects; written between angle brackets.</td></tr>
+  <tr><td>Empty sequence</td><td>The sequence with no objects, written &lang;&rang;.</td></tr>
+  <tr><td>Concatenation</td><td>Combining two sequences end-to-end, preserving order.</td></tr>
+  <tr><td>Filter</td><td>Subsequence containing only elements that belong to a given set.</td></tr>
+  <tr><td>Head</td><td>The first element of a non-empty sequence.</td></tr>
+  <tr><td>Tail</td><td>All elements after the first in a non-empty sequence.</td></tr>
+  <tr><td>Distributed concatenation</td><td>Concatenating every sequence in a sequence of sequences into one flat sequence.</td></tr>
+  <tr><td>Flattening</td><td>Collapsing a nested sequence of sequences into a single sequence.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s0-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&lang;&rang;</code></td><td>Empty sequence.</td></tr>
+  <tr><td><code>&lang; a, b, c &rang;</code></td><td>Sequence containing a, b, c in that order.</td></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation operator.</td></tr>
+  <tr><td><code>&#x21BE;</code></td><td>Sequence filter (restriction to a set).</td></tr>
+  <tr><td><code>head</code></td><td>First element of a non-empty sequence.</td></tr>
+  <tr><td><code>tail</code></td><td>All but the first element.</td></tr>
+  <tr><td><code>#</code></td><td>Length (number of elements).</td></tr>
+  <tr><td><code>&#x2040;/</code></td><td>Distributed concatenation (flatten).</td></tr>
+</table>
+
+<h3 id="s0-D">IV.1 Examples: Shopping List, Print Queue &amp; Bowling Scorecard</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&lang; a, b, c &rang;</code></td><td>Sequence literal.</td></tr>
+  <tr><td><code>&lang;&rang;</code></td><td>Empty sequence.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A shopper writes a <span class="key">shopping list</span> recording items in <span class="key">the order to buy them</span>.</p>
+<ul>
+  <li><strong>Model:</strong> order matters &rarr; <span class="vocab" data-def="An ordered collection of objects; written between angle brackets.">sequence</span>, not a set.</li>
+  <li><strong>Notation:</strong> <code>list = &lang; bread, milk, eggs &rang;</code>.</li>
+  <li><strong>Operation:</strong> bread is at position 1, milk at 2, eggs at 3.</li>
+  <li><strong>Result:</strong> <code>#list = 3</code> &mdash; three items to buy.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A printer holds <span class="key">pending jobs</span> in a <span class="key">first-come, first-served queue</span>.</p>
+<ul>
+  <li><strong>Model:</strong> arrival order matters &rarr; <span class="vocab" data-def="An ordered collection of objects; written between angle brackets.">sequence</span>.</li>
+  <li><strong>Notation:</strong> <code>queue = &lang; j1, j2, j3 &rang;</code>.</li>
+  <li><strong>Operation:</strong> j1 prints first; after it finishes, only <code>&lang; j2, j3 &rang;</code> remain.</li>
+  <li><strong>Result:</strong> an idle printer has <code>queue = &lang;&rang;</code> (the <span class="vocab" data-def="The sequence with no objects, written &lang;&rang;.">empty sequence</span>).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A bowling scorecard records <span class="key">pins knocked down</span> in each <span class="key">frame, in order</span>.</p>
+<ul>
+  <li><strong>Model:</strong> frame order matters &rarr; sequence.</li>
+  <li><strong>Notation:</strong> <code>scores = &lang; 7, 10, 8, 6 &rang;</code>.</li>
+  <li><strong>Operation:</strong> 10 appears at position 2 (a strike in frame 2).</li>
+  <li><strong>Result:</strong> duplicates allowed: <code>&lang; 7, 7, 7 &rang;</code> is a valid sequence.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Railway Queues, Chat Logs &amp; Playlist Merge</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2040;</code></td><td>Concatenation.</td></tr>
+  <tr><td><code>#</code></td><td>Length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A railway ticket office has <span class="key">two queues</span>; when counter <em>b</em> breaks, its people join the <span class="key">end of queue <em>a</em></span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>queue_a = &lang; sally, tim, ulla &rang;</code>; <code>queue_b = &lang; vicky, wilson, xavier &rang;</code>.</li>
+  <li><strong>Notation:</strong> <span class="vocab" data-def="Combining two sequences end-to-end, preserving order.">concatenation</span> <code>queue_a &#x2040; queue_b</code>.</li>
+  <li><strong>Operation:</strong> elements of <code>queue_a</code> first, then <code>queue_b</code>.</li>
+  <li><strong>Result:</strong> <code>&lang; sally, tim, ulla, vicky, wilson, xavier &rang;</code> &mdash; 6 people total.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A messaging app <span class="key">combines</span> the <span class="key">morning log</span> and <span class="key">afternoon log</span> into one transcript.</p>
+<ul>
+  <li><strong>Model:</strong> <code>morning = &lang; m1, m2, m3 &rang;</code>; <code>afternoon = &lang; m4, m5 &rang;</code>.</li>
+  <li><strong>Notation:</strong> <code>transcript = morning &#x2040; afternoon</code>.</li>
+  <li><strong>Operation:</strong> morning messages come first, then afternoon.</li>
+  <li><strong>Result:</strong> <code>&lang; m1, m2, m3, m4, m5 &rang;</code>; <code>#transcript = 5</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A DJ <span class="key">merges</span> a <span class="key">warm-up playlist</span> with a <span class="key">main set playlist</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>warmup = &lang; s1, s2 &rang;</code>; <code>main = &lang; s3, s4, s5 &rang;</code>.</li>
+  <li><strong>Notation:</strong> <code>show = warmup &#x2040; main</code>.</li>
+  <li><strong>Operation:</strong> <code>#show = #warmup + #main = 2 + 3 = 5</code>.</li>
+  <li><strong>Result:</strong> <code>&lang; s1, s2, s3, s4, s5 &rang;</code> &mdash; order preserved.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Train Destinations, Error Log &amp; Email Inbox</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x21BE;</code></td><td>Sequence filter.</td></tr>
+  <tr><td><code>#</code></td><td>Length.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A destination board shows <span class="key">trains in departure order</span>; Sally wants only <span class="key">trains to London</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>trains</code> is a sequence of (time, destination) pairs.</li>
+  <li><strong>Notation:</strong> <span class="vocab" data-def="Subsequence containing only elements that belong to a given set.">filter</span> <code>trains &#x21BE; { t : Time &bull; (t, london) }</code>.</li>
+  <li><strong>Operation:</strong> keep only pairs whose destination is <em>london</em>; order preserved.</li>
+  <li><strong>Result:</strong> <code>&lang; (10.15, london), (10.40, london), (11.40, london) &rang;</code> &mdash; three London trains.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A server log records <span class="key">events in order</span>; an engineer wants only <span class="key">error-level entries</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>log = &lang; info, error, warn, error, info &rang;</code>.</li>
+  <li><strong>Notation:</strong> <code>log &#x21BE; {error}</code>.</li>
+  <li><strong>Operation:</strong> keep only entries that are <em>error</em>; duplicates preserved.</li>
+  <li><strong>Result:</strong> <code>&lang; error, error &rang;</code>; <code>#(log &#x21BE; {error}) = 2</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An inbox shows <span class="key">emails in arrival order</span>; the user filters to <span class="key">unread messages only</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>inbox = &lang; e1, e2, e3, e4, e5 &rang;</code>; <code>Unread = {e2, e4}</code>.</li>
+  <li><strong>Notation:</strong> <code>inbox &#x21BE; Unread</code>.</li>
+  <li><strong>Operation:</strong> retain only e2 and e4 in their original positions.</li>
+  <li><strong>Result:</strong> <code>&lang; e2, e4 &rang;</code> &mdash; order and multiplicity preserved.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Next Train, Music Player &amp; Task Queue</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>head</code></td><td>First element.</td></tr>
+  <tr><td><code>tail</code></td><td>All but first.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Sally wants <span class="key">the first train to London</span>; Tim wants <span class="key">the remaining trains</span> after the first departs.</p>
+<ul>
+  <li><strong>Model:</strong> filtered London trains &rarr; a non-empty sequence.</li>
+  <li><strong>Notation:</strong> <code><span class="vocab" data-def="The first element of a non-empty sequence.">head</span>(trains &#x21BE; {t : Time &bull; (t, london)}) = (10.15, london)</code>.</li>
+  <li><strong>Operation:</strong> <code><span class="vocab" data-def="All elements after the first in a non-empty sequence.">tail</span> trains</code> drops the 10:15 departure.</li>
+  <li><strong>Result:</strong> Tim sees <code>&lang; (10.38, edinburgh), (10.40, london), &hellip; &rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A music player shows <span class="key">the current song</span> and <span class="key">the up-next list</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>playlist = &lang; rock1, jazz2, pop3 &rang;</code>.</li>
+  <li><strong>Notation:</strong> <code>head playlist = rock1</code>; <code>tail playlist = &lang; jazz2, pop3 &rang;</code>.</li>
+  <li><strong>Operation:</strong> head extracts the now-playing track; tail is the remainder.</li>
+  <li><strong>Result:</strong> <code>playlist = &lang; head playlist &rang; &#x2040; tail playlist</code> &mdash; reconstruction.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A task queue processes <span class="key">the current task</span> and holds <span class="key">the rest for later</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>tasks = &lang; deploy, test, review &rang;</code>.</li>
+  <li><strong>Notation:</strong> <code>head tasks = deploy</code>; <code>tail tasks = &lang; test, review &rang;</code>.</li>
+  <li><strong>Operation:</strong> neither is defined on <code>&lang;&rang;</code> &mdash; queue must be non-empty.</li>
+  <li><strong>Result:</strong> after processing deploy, the queue becomes <code>tail tasks</code>.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Train Count, Address Files &amp; Test Suites</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>#</code></td><td>Length.</td></tr>
+  <tr><td><code>&#x2040;/</code></td><td>Distributed concatenation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A station displays <span class="key">6 trains</span>; an announcer reports <span class="key">how many go to London</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>#trains = 6</code> total departures.</li>
+  <li><strong>Notation:</strong> <code>#(trains &#x21BE; {t : Time &bull; (t, london)}) = 3</code>.</li>
+  <li><strong>Operation:</strong> length counts maplets in the function.</li>
+  <li><strong>Result:</strong> three of six trains head to London.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Sally stores friends' addresses in <span class="key">26 files</span> (a&ndash;z by surname); she wants <span class="key">one combined file</span>.</p>
+<ul>
+  <li><strong>Model:</strong> each file is a sequence of records; 26 files form a sequence of sequences.</li>
+  <li><strong>Notation:</strong> <code>address.all = <span class="vocab" data-def="Concatenating every sequence in a sequence of sequences into one flat sequence.">&#x2040;/</span> &lang; address.a, address.b, &hellip;, address.z &rang;</code>.</li>
+  <li><strong>Operation:</strong> <span class="vocab" data-def="Collapsing a nested sequence of sequences into a single sequence.">flattening</span> preserves within-file order.</li>
+  <li><strong>Result:</strong> one flat file, alphabetically grouped.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A CI system runs <span class="key">per-module test lists</span> and needs <span class="key">one flat test plan</span>.</p>
+<ul>
+  <li><strong>Model:</strong> <code>perModule = &lang; &lang; t1, t2 &rang;, &lang; t3 &rang;, &lang; t4, t5, t6 &rang; &rang;</code>.</li>
+  <li><strong>Notation:</strong> <code>allTests = &#x2040;/ perModule</code>.</li>
+  <li><strong>Operation:</strong> concatenate each module's tests in order.</li>
+  <li><strong>Result:</strong> <code>&lang; t1, t2, t3, t4, t5, t6 &rang;</code>; <code>#allTests = 6</code>.</li>
+</ul>
+</div>
+
+<h3 id="s0-E">V.1 Practice: Sequence Definition</h3>
+<div class="practice" id="p1_1">
+  <p>A sequence in Z is best described as:</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">An unordered set of elements.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">An ordered collection of objects written between angle brackets.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A relation between two sets.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">A predicate over natural numbers.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_1">
+    <p><strong>Correct.</strong> Order and multiplicity both matter.</p>
+    <ul>
+      <li><strong>Model:</strong> ordered collection, not a set.</li>
+      <li><strong>Notation:</strong> <code>&lang; a, b, c &rang;</code>.</li>
+      <li><strong>Operation:</strong> position determines identity.</li>
+      <li><strong>Result:</strong> <code>&lang; a, b &rang; &ne; &lang; b, a &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Empty Sequence</h3>
+<div class="practice" id="p1_2">
+  <p>The empty sequence is written:</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>&empty;</code></button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>{}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>nil</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_2">
+    <p><strong>Correct.</strong> Angle brackets with nothing inside.</p>
+    <ul>
+      <li><strong>Model:</strong> zero objects in the collection.</li>
+      <li><strong>Notation:</strong> <code>&lang;&rang;</code>, not <code>{}</code> (that's the empty set).</li>
+      <li><strong>Operation:</strong> <code>#&lang;&rang; = 0</code>.</li>
+      <li><strong>Result:</strong> <code>head</code> and <code>tail</code> are undefined on <code>&lang;&rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Writing Sequence Notation</h3>
+<div class="practice" id="p1_3">
+  <p class="scenario">A playlist holds songs in a <span class="key">fixed play order</span>. Which notation captures three songs?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>&lang; rock, jazz, pop &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>{ rock, jazz, pop }</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>rock &#8614; jazz &#8614; pop</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>(rock, jazz, pop)</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_3">
+    <p><strong>Correct.</strong> Angle brackets denote a sequence.</p>
+    <ul>
+      <li><strong>Model:</strong> order matters &rarr; sequence, not set.</li>
+      <li><strong>Notation:</strong> <code>&lang; &hellip; &rang;</code> is the Z sequence literal.</li>
+      <li><strong>Operation:</strong> <code>{&hellip;}</code> would lose ordering.</li>
+      <li><strong>Result:</strong> rock plays first, jazz second, pop third.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Writing Sequence Notation</h3>
+<div class="practice" id="p1_4">
+  <p class="scenario">A chat transcript records <span class="key">messages in arrival order</span>. Which represents the first three?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>&lang; msg1, msg2, msg3 &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>{msg1, msg2, msg3}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>msg1 &#x2040; msg2 &#x2040; msg3</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>#msg = 3</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_4">
+    <p><strong>Correct.</strong> Sequence literal for three ordered items.</p>
+    <ul>
+      <li><strong>Model:</strong> arrival order &rarr; sequence.</li>
+      <li><strong>Notation:</strong> angle brackets with commas.</li>
+      <li><strong>Operation:</strong> msg1 is at position 1.</li>
+      <li><strong>Result:</strong> <code>#&lang; msg1, msg2, msg3 &rang; = 3</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Concatenation</h3>
+<div class="practice" id="p1_5">
+  <p class="scenario">A file merger <span class="key">appends</span> file B's lines after file A's lines. Which expression captures this?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')"><code>fileA &#x2040; fileB</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>fileA &cup; fileB</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>fileA &cap; fileB</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')"><code>fileA &oplus; fileB</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_5">
+    <p><strong>Correct.</strong> Concatenation preserves order.</p>
+    <ul>
+      <li><strong>Model:</strong> two ordered files &rarr; one combined file.</li>
+      <li><strong>Notation:</strong> <code>&#x2040;</code> is sequence concatenation.</li>
+      <li><strong>Operation:</strong> <code>&cup;</code> is set union (unordered).</li>
+      <li><strong>Result:</strong> <code>#(fileA &#x2040; fileB) = #fileA + #fileB</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Concatenation</h3>
+<div class="practice" id="p1_6">
+  <p class="scenario">Two ticket queues <span class="key">merge</span> when one counter breaks. <code>qa = &lang; a, b &rang;</code>, <code>qb = &lang; c, d, e &rang;</code>. What is <code>qa &#x2040; qb</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')"><code>&lang; a, b, c, d, e &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>&lang; c, d, e, a, b &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>{a, b, c, d, e}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')"><code>&lang; a, c, b, d, e &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_6">
+    <p><strong>Correct.</strong> qa's elements first, then qb's.</p>
+    <ul>
+      <li><strong>Model:</strong> order within each queue preserved.</li>
+      <li><strong>Notation:</strong> <code>&#x2040;</code> appends end-to-end.</li>
+      <li><strong>Operation:</strong> not commutative: <code>qa &#x2040; qb &ne; qb &#x2040; qa</code>.</li>
+      <li><strong>Result:</strong> <code>#(qa &#x2040; qb) = 2 + 3 = 5</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Concatenation</h3>
+<div class="practice" id="p1_7">
+  <p><code>s &#x2040; &lang;&rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')"><code>s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">Undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')"><code>&lang; s &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_7">
+    <p><strong>Correct.</strong> Empty sequence is the concatenation identity.</p>
+    <ul>
+      <li><strong>Model:</strong> appending nothing changes nothing.</li>
+      <li><strong>Notation:</strong> <code>&lang;&rang; &#x2040; s = s = s &#x2040; &lang;&rang;</code>.</li>
+      <li><strong>Operation:</strong> left and right identity.</li>
+      <li><strong>Result:</strong> <code>#(s &#x2040; &lang;&rang;) = #s + 0 = #s</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Concatenation</h3>
+<div class="practice" id="p1_8">
+  <p class="scenario">A build pipeline has a <span class="key">compile phase</span> (4 steps) and a <span class="key">test phase</span> (10 steps). What is <code>#(compile &#x2040; test)</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>14</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>10</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>4</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>40</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_8">
+    <p><strong>Correct.</strong> Length of concatenation is the sum.</p>
+    <ul>
+      <li><strong>Model:</strong> two phases joined sequentially.</li>
+      <li><strong>Notation:</strong> <code>#(s &#x2040; t) = #s + #t</code>.</li>
+      <li><strong>Operation:</strong> 4 + 10 = 14.</li>
+      <li><strong>Result:</strong> 14 total steps.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Sequence Filter</h3>
+<div class="practice" id="p1_9">
+  <p class="scenario">A log <code>s = &lang; info, error, warn, error &rang;</code>. What is <code>s &#x21BE; {error}</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>&lang; error, error &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>&lang; info, warn &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>&lang; error &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>{error}</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_9">
+    <p><strong>Correct.</strong> Filter keeps matching elements with multiplicity.</p>
+    <ul>
+      <li><strong>Model:</strong> keep only values in {error}.</li>
+      <li><strong>Notation:</strong> <code>&#x21BE;</code> is the filter operator.</li>
+      <li><strong>Operation:</strong> duplicates preserved; order preserved.</li>
+      <li><strong>Result:</strong> both error occurrences kept.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Sequence Filter</h3>
+<div class="practice" id="p1_10">
+  <p class="scenario">A call log filters to <span class="key">favorite contacts</span>. Which expression captures this?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>calls &#x21BE; Favorites</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>calls &cap; Favorites</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>calls &cup; Favorites</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>head calls</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_10">
+    <p><strong>Correct.</strong> Filter restricts sequence to a value set.</p>
+    <ul>
+      <li><strong>Model:</strong> ordered calls &rarr; keep only favorites.</li>
+      <li><strong>Notation:</strong> <code>&#x21BE;</code> vs <code>&cap;</code>: filter preserves order; intersection is on sets.</li>
+      <li><strong>Operation:</strong> result is still a sequence.</li>
+      <li><strong>Result:</strong> favorite calls in chronological order.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Sequence Filter</h3>
+<div class="practice" id="p1_11">
+  <p>What is <code>&lang; a, b, c &rang; &#x21BE; {a, c}</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>&lang; a, c &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>&lang; b &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>{a, c}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>&lang; c, a &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_11">
+    <p><strong>Correct.</strong> Keep a and c in original order.</p>
+    <ul>
+      <li><strong>Model:</strong> b is not in {a, c}, so it's dropped.</li>
+      <li><strong>Notation:</strong> <code>&#x21BE;</code> preserves relative order.</li>
+      <li><strong>Operation:</strong> a at position 1, c at position 3 &rarr; now positions 1 and 2.</li>
+      <li><strong>Result:</strong> <code>&lang; a, c &rang;</code>, not <code>&lang; c, a &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Sequence Filter</h3>
+<div class="practice" id="p1_12">
+  <p>What is <code>s &#x21BE; &empty;</code> for any sequence <code>s</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">Undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')"><code>&empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_12">
+    <p><strong>Correct.</strong> No elements belong to the empty set.</p>
+    <ul>
+      <li><strong>Model:</strong> nothing passes the filter.</li>
+      <li><strong>Notation:</strong> <code>&#x21BE; &empty;</code> = keep nothing.</li>
+      <li><strong>Operation:</strong> every element excluded.</li>
+      <li><strong>Result:</strong> <code>&lang;&rang;</code> &mdash; empty sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Head and Tail</h3>
+<div class="practice" id="p1_13">
+  <p><code>head &lang; a, b, c &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')"><code>a</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>c</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>&lang; b, c &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')"><code>&lang; a &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_13">
+    <p><strong>Correct.</strong> Head returns an element, not a sequence.</p>
+    <ul>
+      <li><strong>Model:</strong> first element of a non-empty sequence.</li>
+      <li><strong>Notation:</strong> <code>head</code> extracts position 1.</li>
+      <li><strong>Operation:</strong> result is an element of X, not seq X.</li>
+      <li><strong>Result:</strong> <code>a</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Head and Tail</h3>
+<div class="practice" id="p1_14">
+  <p><code>tail &lang; a, b, c &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>&lang; b, c &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>a</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>&lang; a, b &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>c</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_14">
+    <p><strong>Correct.</strong> Tail returns a sequence.</p>
+    <ul>
+      <li><strong>Model:</strong> everything after the first element.</li>
+      <li><strong>Notation:</strong> <code>tail</code> drops position 1.</li>
+      <li><strong>Operation:</strong> result is seq X, not an element.</li>
+      <li><strong>Result:</strong> <code>&lang; b, c &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Head and Tail</h3>
+<div class="practice" id="p1_15">
+  <p class="scenario">A print queue has <code>jobs = &lang; j1, j2, j3 &rang;</code>. Which expression gives the <span class="key">job being printed now</span>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')"><code>head jobs</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>tail jobs</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>#jobs</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')"><code>jobs &#x21BE; {j1}</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_15">
+    <p><strong>Correct.</strong> Head is the front of the queue.</p>
+    <ul>
+      <li><strong>Model:</strong> FIFO: first in, first served.</li>
+      <li><strong>Notation:</strong> <code>head jobs = j1</code>.</li>
+      <li><strong>Operation:</strong> tail gives jobs waiting.</li>
+      <li><strong>Result:</strong> after j1 finishes, queue becomes <code>tail jobs</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Head and Tail</h3>
+<div class="practice" id="p1_16">
+  <p>Is <code>head &lang;&rang;</code> defined?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">Yes, it returns <code>&lang;&rang;</code>.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')">No &mdash; head and tail are undefined on the empty sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">Yes, it returns <code>&empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">Yes, it returns 0.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_16">
+    <p><strong>Correct.</strong> Both are strictly partial.</p>
+    <ul>
+      <li><strong>Model:</strong> no first element in an empty collection.</li>
+      <li><strong>Notation:</strong> <code>head</code> and <code>tail</code> require non-empty input.</li>
+      <li><strong>Operation:</strong> precondition: <code>s &ne; &lang;&rang;</code>.</li>
+      <li><strong>Result:</strong> applying to <code>&lang;&rang;</code> is a type error.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Length</h3>
+<div class="practice" id="p1_17">
+  <p><code>#&lang; a, b, c, d, e, f &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')"><code>6</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>5</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>7</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_17">
+    <p><strong>Correct.</strong> Six elements, six maplets.</p>
+    <ul>
+      <li><strong>Model:</strong> count the objects between the brackets.</li>
+      <li><strong>Notation:</strong> <code>#</code> gives the length.</li>
+      <li><strong>Operation:</strong> same <code>#</code> used for set cardinality.</li>
+      <li><strong>Result:</strong> 6.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Distributed Concatenation</h3>
+<div class="practice" id="p1_18">
+  <p><code>&#x2040;/ &lang; &lang; a, b &rang;, &lang; c &rang;, &lang; d, e &rang; &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')"><code>&lang; a, b, c, d, e &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')"><code>&lang; &lang; a, b &rang;, &lang; c &rang;, &lang; d, e &rang; &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')"><code>{a, b, c, d, e}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')"><code>&lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_18">
+    <p><strong>Correct.</strong> Distributed concatenation flattens one level.</p>
+    <ul>
+      <li><strong>Model:</strong> sequence of sequences &rarr; single sequence.</li>
+      <li><strong>Notation:</strong> <code>&#x2040;/</code> concatenates each inner sequence in order.</li>
+      <li><strong>Operation:</strong> <code>&lang; a, b &rang; &#x2040; &lang; c &rang; &#x2040; &lang; d, e &rang;</code>.</li>
+      <li><strong>Result:</strong> <code>&lang; a, b, c, d, e &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Distributed Concatenation</h3>
+<div class="practice" id="p1_19">
+  <p class="scenario">A forum merges <span class="key">all thread comment lists</span> into one <span class="key">flat feed</span>. Which captures this?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>feed = &#x2040;/ threads</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>feed = threads</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>feed = head threads</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>feed = #threads</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_19">
+    <p><strong>Correct.</strong> Flatten a sequence of sequences.</p>
+    <ul>
+      <li><strong>Model:</strong> each thread is a seq Comment; threads is seq(seq Comment).</li>
+      <li><strong>Notation:</strong> <code>&#x2040;/</code> flattens.</li>
+      <li><strong>Operation:</strong> comments appear in thread order, then comment order.</li>
+      <li><strong>Result:</strong> one flat feed of type seq Comment.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Reconstruction Identity</h3>
+<div class="practice" id="p1_20">
+  <p>For any non-empty sequence <code>s</code>, which identity holds?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')"><code>s = &lang; head s &rang; &#x2040; tail s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>s = tail s &#x2040; &lang; head s &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>s = head s &#x2040; tail s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>s = &lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_20">
+    <p><strong>Correct.</strong> Head as a singleton prepended to tail reconstructs the sequence.</p>
+    <ul>
+      <li><strong>Model:</strong> decompose, then reassemble.</li>
+      <li><strong>Notation:</strong> <code>&lang; head s &rang;</code> wraps the element in a singleton sequence.</li>
+      <li><strong>Operation:</strong> <code>head s</code> alone is an element, not a sequence.</li>
+      <li><strong>Result:</strong> the concatenation returns the original s.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Concatenation Associativity</h3>
+<div class="practice" id="p1_21">
+  <p>Is concatenation associative? I.e., does <code>(a &#x2040; b) &#x2040; c = a &#x2040; (b &#x2040; c)</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')">Yes.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">No.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">Only if all are non-empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">Only for &Nopf; sequences.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_21">
+    <p><strong>Correct.</strong> Parentheses do not matter.</p>
+    <ul>
+      <li><strong>Model:</strong> order of grouping doesn't change the flat result.</li>
+      <li><strong>Notation:</strong> <code>&#x2040;</code> is associative.</li>
+      <li><strong>Operation:</strong> but NOT commutative: <code>a &#x2040; b &ne; b &#x2040; a</code> in general.</li>
+      <li><strong>Result:</strong> same final sequence either way.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Sequence vs Set</h3>
+<div class="practice" id="p1_22">
+  <p>The main difference between <code>&lang; a, b &rang;</code> and <code>{a, b}</code>:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">A sequence preserves order and allows duplicates; a set does neither.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">They are identical.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">A set preserves order.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">Only sequences can be empty.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_22">
+    <p><strong>Correct.</strong> Order + multiplicity distinguish sequences from sets.</p>
+    <ul>
+      <li><strong>Model:</strong> <code>&lang; a, b &rang; &ne; &lang; b, a &rang;</code> but <code>{a, b} = {b, a}</code>.</li>
+      <li><strong>Notation:</strong> angle brackets vs curly braces.</li>
+      <li><strong>Operation:</strong> <code>&lang; a, a &rang;</code> has length 2; <code>{a, a} = {a}</code> has size 1.</li>
+      <li><strong>Result:</strong> sequences model order; sets model membership.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Filter Order Preservation</h3>
+<div class="practice" id="p1_23">
+  <p><code>&lang; a, b, c, d, e, d, c, b, a &rang; &#x21BE; {a, d}</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')"><code>&lang; a, d, d, a &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>&lang; a, d &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>{a, d}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')"><code>&lang; d, a, a, d &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_23">
+    <p><strong>Correct.</strong> Filter preserves order and multiplicity.</p>
+    <ul>
+      <li><strong>Model:</strong> scan left to right; keep a and d wherever they appear.</li>
+      <li><strong>Notation:</strong> <code>&#x21BE;</code> on sequence, not set intersection.</li>
+      <li><strong>Operation:</strong> positions 1(a), 4(d), 6(d), 9(a) survive.</li>
+      <li><strong>Result:</strong> <code>&lang; a, d, d, a &rang;</code> &mdash; four elements.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Tail of Singleton</h3>
+<div class="practice" id="p1_24">
+  <p><code>tail &lang; x &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>x</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>&lang; x &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_24">
+    <p><strong>Correct.</strong> One element; nothing after it.</p>
+    <ul>
+      <li><strong>Model:</strong> <code>&lang; x &rang;</code> is non-empty, so tail is defined.</li>
+      <li><strong>Notation:</strong> <code>tail &lang; x &rang; = &lang;&rang;</code>.</li>
+      <li><strong>Operation:</strong> drop the only element &rarr; empty.</li>
+      <li><strong>Result:</strong> <code>#(tail &lang; x &rang;) = 0</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Distributed Concatenation of Empty</h3>
+<div class="practice" id="p1_25">
+  <p><code>&#x2040;/ &lang;&rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')"><code>&empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')"><code>0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_25">
+    <p><strong>Correct.</strong> No inner sequences to concatenate.</p>
+    <ul>
+      <li><strong>Model:</strong> distributed concatenation of nothing.</li>
+      <li><strong>Notation:</strong> <code>&#x2040;/ &lang;&rang; = &lang;&rang;</code>.</li>
+      <li><strong>Operation:</strong> identity: concatenating zero sequences yields empty.</li>
+      <li><strong>Result:</strong> <code>&lang;&rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 9.2 A model for sequences ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">9.2 A model for sequences</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>A sequence is a finite function from <code>&Nopf;</code> to <code>X</code> whose domain is an <span class="vocab" data-def="A contiguous range 1..n of the natural numbers, starting at 1.">initial segment</span> <code>1..n</code>.</li>
+  <li><strong>Formal:</strong> <code>seq X == { s : &Nopf; &#x21F8; X | &exist; n : &Nopf; &bull; dom s = 1..n }</code>.</li>
+  <li><strong>Indexing:</strong> <code>s n</code> denotes the <em>n</em>th element &mdash; functional application.</li>
+  <li><strong><span class="vocab" data-def="Compact a sparse finite function on &Nopf; into a proper sequence by renumbering.">Squash</span>:</strong> compacts a sparse function into a contiguous sequence.</li>
+  <li><strong>Restriction:</strong> <code>s &#x21BE; A = squash (s &#x25B7; A)</code> &mdash; range-restrict then compact.</li>
+  <li><strong>Head / tail schemas:</strong> <code>head s = s 1</code>; <code>#tail s = #s &minus; 1</code>.</li>
+  <li><strong><span class="vocab" data-def="Non-empty sequences: {s : seq X | s &ne; &lang;&rang;}.">seq<sub>1</sub> X</span>:</strong> non-empty sequences &mdash; head and tail are total on this set.</li>
+  <li><strong><span class="vocab" data-def="Injective sequences: no element appears more than once.">iseq X</span>:</strong> injective sequences &mdash; no duplicates.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s1-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Initial segment</td><td>A contiguous range 1..n of the natural numbers, starting at 1.</td></tr>
+  <tr><td>Squash</td><td>Compact a sparse finite function on &Nopf; into a proper sequence by renumbering.</td></tr>
+  <tr><td>Fairness</td><td>A property requiring infinite sequences to describe (beyond finite Z sequences).</td></tr>
+  <tr><td>seq<sub>1</sub> X</td><td>Non-empty sequences: {s : seq X | s &ne; &lang;&rang;}.</td></tr>
+  <tr><td>iseq X</td><td>Injective sequences: no element appears more than once.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s1-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq X</code></td><td>Set of all finite sequences over X.</td></tr>
+  <tr><td><code>seq<sub>1</sub> X</code></td><td>Non-empty sequences over X.</td></tr>
+  <tr><td><code>iseq X</code></td><td>Injective (no-duplicate) sequences over X.</td></tr>
+  <tr><td><code>dom s = 1..n</code></td><td>Domain is a contiguous range.</td></tr>
+  <tr><td><code>s n</code></td><td>Functional application: element at position n.</td></tr>
+  <tr><td><code>squash</code></td><td>Compact a sparse function into a sequence.</td></tr>
+  <tr><td><code>&#x25B7;</code></td><td>Range restriction.</td></tr>
+</table>
+
+<h3 id="s1-D">IV.1 Examples: Playlist Mapping, Queue Positions &amp; Recipe Steps</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq X</code></td><td>Finite sequences over X.</td></tr>
+  <tr><td><code>dom s = 1..n</code></td><td>Domain is 1 through n.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A music app stores a <span class="key">playlist</span> as a mapping from <span class="key">position numbers to songs</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>playlist : seq Song</code> &mdash; finite function <code>&Nopf; &#x21F8; Song</code>.</li>
+  <li><strong>Constraint:</strong> <code>dom playlist = 1..3</code> &mdash; contiguous <span class="vocab" data-def="A contiguous range 1..n of the natural numbers, starting at 1.">initial segment</span>.</li>
+  <li><strong>Schema:</strong> <code>playlist = {1 &#8614; rock, 2 &#8614; jazz, 3 &#8614; pop}</code>.</li>
+  <li><strong>Consequence:</strong> equivalent to <code>&lang; rock, jazz, pop &rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A ticket counter <span class="key">queue</span> maps <span class="key">positions</span> to <span class="key">people</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>queue_b : seq Person</code>.</li>
+  <li><strong>Constraint:</strong> <code>dom queue_b = 1..3</code>.</li>
+  <li><strong>Schema:</strong> <code>queue_b = {1 &#8614; vicky, 2 &#8614; wilson, 3 &#8614; xavier}</code>.</li>
+  <li><strong>Consequence:</strong> <code>&lang; vicky, wilson, xavier &rang;</code> &mdash; same sequence.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A recipe lists <span class="key">steps in order</span>; each <span class="key">step number maps to an instruction</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>recipe : seq Instruction</code>.</li>
+  <li><strong>Constraint:</strong> <code>dom recipe = 1..4</code>.</li>
+  <li><strong>Schema:</strong> <code>{1 &#8614; preheat, 2 &#8614; mix, 3 &#8614; bake, 4 &#8614; cool}</code>.</li>
+  <li><strong>Consequence:</strong> every element shares the type <code>Instruction</code> (homogeneous).</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Queue Lookup, Train Lookup &amp; Roster Lookup</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>s n</code></td><td>Element at position n.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The <span class="key">third person</span> in counter <em>b</em>'s queue is looked up by <span class="key">applying the function at index 3</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>queue_b : seq Person</code>.</li>
+  <li><strong>Constraint:</strong> <code>3 &isin; dom queue_b</code> &mdash; index exists.</li>
+  <li><strong>Schema:</strong> <code>queue_b 3 = wilson</code>.</li>
+  <li><strong>Consequence:</strong> functional application on sequences = indexing.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">The <span class="key">second train</span> on the destination board is looked up by <span class="key">applying trains at position 2</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>trains : seq (Time &times; Destination)</code>.</li>
+  <li><strong>Constraint:</strong> <code>2 &isin; dom trains</code>.</li>
+  <li><strong>Schema:</strong> <code>trains 2 = (10.38, edinburgh)</code>.</li>
+  <li><strong>Consequence:</strong> sequence application reuses function application from Ch 8.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A sports <span class="key">roster</span> lists players by <span class="key">jersey number order</span>; the coach wants <span class="key">player at position 5</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>roster : seq Player</code>.</li>
+  <li><strong>Constraint:</strong> <code>5 &le; #roster</code> &mdash; index in range.</li>
+  <li><strong>Schema:</strong> <code>roster 5 = garcia</code>.</li>
+  <li><strong>Consequence:</strong> out-of-range index (e.g., <code>roster 99</code>) is undefined.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Clip Splicing, Log Merging &amp; Build Sequencing</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq X</code></td><td>Finite sequences.</td></tr>
+  <tr><td><code>s n</code></td><td>Element at position n.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Two video <span class="key">clips are spliced</span>; element <em>i</em> of the result comes from <span class="key">s</span> if <code>i &le; #s</code>, else from <span class="key">t</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>s, t : seq Frame</code>; result <code>s &#x2040; t : seq Frame</code>.</li>
+  <li><strong>Constraint:</strong> <code>#(s &#x2040; t) = #s + #t</code>.</li>
+  <li><strong>Schema:</strong> <code>(s &#x2040; t) i = s i</code> for <code>i &isin; 1..#s</code>; <code>(s &#x2040; t)(#s + j) = t j</code> for <code>j &isin; 1..#t</code>.</li>
+  <li><strong>Consequence:</strong> this uniquely defines concatenation as a function.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Two server logs are <span class="key">merged sequentially</span>; the second log's indices <span class="key">shift by the length of the first</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>logA, logB : seq Entry</code>.</li>
+  <li><strong>Constraint:</strong> <code>dom(logA &#x2040; logB) = 1..(#logA + #logB)</code>.</li>
+  <li><strong>Schema:</strong> position <code>#logA + 1</code> holds <code>head logB</code>.</li>
+  <li><strong>Consequence:</strong> indices of logB shift by <code>#logA</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A build system <span class="key">sequences compile steps then test steps</span>; the <span class="key">test indices start after compile</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>compile, test : seq Step</code>.</li>
+  <li><strong>Constraint:</strong> <code>#compile = 4</code>, <code>#test = 10</code>.</li>
+  <li><strong>Schema:</strong> <code>(compile &#x2040; test) 5 = test 1</code> &mdash; first test step.</li>
+  <li><strong>Consequence:</strong> <code>(compile &#x2040; test)(4 + j) = test j</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: List Deletion, Event Pruning &amp; Cart Cleanup</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>squash</code></td><td>Compact sparse function into sequence.</td></tr>
+  <tr><td><code>&#x25B7;</code></td><td>Range restriction.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A to-do app <span class="key">deletes item at position 2</span> from <code>{1 &#8614; a, 2 &#8614; b, 3 &#8614; c}</code> and must <span class="key">close the gap</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> after deletion: <code>{1 &#8614; a, 3 &#8614; c}</code> &mdash; sparse.</li>
+  <li><strong>Constraint:</strong> not a valid sequence (gap at position 2).</li>
+  <li><strong>Schema:</strong> <code><span class="vocab" data-def="Compact a sparse finite function on &Nopf; into a proper sequence by renumbering.">squash</span> {1 &#8614; a, 3 &#8614; c} = {1 &#8614; a, 2 &#8614; c} = &lang; a, c &rang;</code>.</li>
+  <li><strong>Consequence:</strong> squash renumbers to restore contiguity.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An event log <span class="key">removes cancelled events</span> and <span class="key">compacts the remaining entries</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>log &#x25B7; Valid</code> &mdash; range-restrict to valid events.</li>
+  <li><strong>Constraint:</strong> result may have gaps in domain.</li>
+  <li><strong>Schema:</strong> <code>log &#x21BE; Valid = squash(log &#x25B7; Valid)</code>.</li>
+  <li><strong>Consequence:</strong> filter = range-restrict then squash.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A shopping cart <span class="key">removes out-of-stock items</span> and <span class="key">re-indexes the remaining items</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>cart &#x25B7; InStock</code> drops out-of-stock maplets.</li>
+  <li><strong>Constraint:</strong> sparse result needs compaction.</li>
+  <li><strong>Schema:</strong> <code>squash(cart &#x25B7; InStock) = &lang; item2, item5 &rang;</code> &mdash; renumbered 1, 2.</li>
+  <li><strong>Consequence:</strong> squash preserves relative order of remaining items.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Race Results, Non-empty Inbox &amp; Password Log</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>seq<sub>1</sub> X</code></td><td>Non-empty sequences.</td></tr>
+  <tr><td><code>iseq X</code></td><td>Injective sequences.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A race records <span class="key">finish order</span> with <span class="key">no ties</span> &mdash; each runner appears <span class="key">exactly once</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>results : <span class="vocab" data-def="Injective sequences: no element appears more than once.">iseq</span> Runner</code>.</li>
+  <li><strong>Constraint:</strong> <code>results &isin; &Nopf; &#x21A3; Runner</code> &mdash; injective function.</li>
+  <li><strong>Schema:</strong> <code>results = &lang; alice, bob, carol &rang;</code> &mdash; no duplicates.</li>
+  <li><strong>Consequence:</strong> <code>#results = #(ran results)</code> &mdash; length equals distinct count.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An email system requires the inbox to be <span class="key">non-empty</span> before showing a <span class="key">preview</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>inbox : <span class="vocab" data-def="Non-empty sequences: {s : seq X | s &ne; &lang;&rang;}.">seq<sub>1</sub></span> Email</code>.</li>
+  <li><strong>Constraint:</strong> <code>inbox &ne; &lang;&rang;</code> &mdash; at least one message.</li>
+  <li><strong>Schema:</strong> <code>head</code> and <code>tail</code> are total on <code>seq<sub>1</sub></code>.</li>
+  <li><strong>Consequence:</strong> preview = <code>head inbox</code> is always defined.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A security app tracks <span class="key">distinct passwords tried</span> in order &mdash; <span class="key">no password re-recorded</span>.</p>
+<ul>
+  <li><strong>Definition:</strong> <code>tried : iseq Password</code>.</li>
+  <li><strong>Constraint:</strong> <code>&forall; i, j &bull; tried(i) = tried(j) &rArr; i = j</code>.</li>
+  <li><strong>Schema:</strong> <code>tried = &lang; abc, xyz, p4ss &rang;</code> &mdash; all distinct.</li>
+  <li><strong>Consequence:</strong> <code>iseq X &sube; seq X</code> &mdash; every injective sequence is a sequence.</li>
+</ul>
+</div>
+
+<h3 id="s1-E">V.1 Practice: Sequence as Function</h3>
+<div class="practice" id="p2_1">
+  <p>In the formal model, a sequence is:</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb2_1')">A total function from X to &Nopf;.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')">A finite partial function from &Nopf; to X with domain 1..n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')">A relation between two sets.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')">A predicate on X.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_1">
+    <p><strong>Correct.</strong> Domain is an initial segment of &Nopf;.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>seq X == {s : &Nopf; &#x21F8; X | &exist; n &bull; dom s = 1..n}</code>.</li>
+      <li><strong>Constraint:</strong> contiguous range starting at 1.</li>
+      <li><strong>Schema:</strong> each position maps to an element.</li>
+      <li><strong>Consequence:</strong> finite length by construction.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Domain of Sequence</h3>
+<div class="practice" id="p2_2">
+  <p>The domain of a sequence of length <code>n</code> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>1..n</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>0..n</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')">Any subset of &Nopf;.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>X</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_2">
+    <p><strong>Correct.</strong> 1-based, contiguous.</p>
+    <ul>
+      <li><strong>Definition:</strong> starts at 1, not 0.</li>
+      <li><strong>Constraint:</strong> no gaps allowed.</li>
+      <li><strong>Schema:</strong> <code>dom &lang; a, b, c &rang; = {1, 2, 3} = 1..3</code>.</li>
+      <li><strong>Consequence:</strong> <code>#s = n</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Functional Application</h3>
+<div class="practice" id="p2_3">
+  <p class="scenario">Given <code>queue_b = &lang; vicky, wilson, xavier &rang;</code>, what is <code>queue_b 3</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>xavier</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>vicky</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>wilson</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>&lang; xavier &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_3">
+    <p><strong>Correct.</strong> Index 3 maps to xavier.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>s n</code> = function application.</li>
+      <li><strong>Constraint:</strong> <code>3 &isin; dom queue_b</code>.</li>
+      <li><strong>Schema:</strong> <code>queue_b = {1 &#8614; vicky, 2 &#8614; wilson, 3 &#8614; xavier}</code>.</li>
+      <li><strong>Consequence:</strong> returns an element, not a sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Functional Application</h3>
+<div class="practice" id="p2_4">
+  <p class="scenario">The <span class="key">second train</span> on the destination board: <code>trains 2</code> =</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>(10.38, edinburgh)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>(10.15, london)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>(10.40, london)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>&lang; (10.38, edinburgh) &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_4">
+    <p><strong>Correct.</strong> Position 2 is the 10:38 to Edinburgh.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>trains</code> maps positions to (time, destination) pairs.</li>
+      <li><strong>Constraint:</strong> <code>2 &isin; dom trains</code>.</li>
+      <li><strong>Schema:</strong> <code>trains 2 = (10.38, edinburgh)</code>.</li>
+      <li><strong>Consequence:</strong> functional application on sequences = indexing.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Functional Application</h3>
+<div class="practice" id="p2_5">
+  <p class="scenario">A roster has 8 players. What is <code>roster 9</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')">Undefined &mdash; index out of range.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')">The last player.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_5">
+    <p><strong>Correct.</strong> 9 &notin; 1..8.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>dom roster = 1..8</code>.</li>
+      <li><strong>Constraint:</strong> <code>9 &notin; dom roster</code>.</li>
+      <li><strong>Schema:</strong> function application outside domain is undefined.</li>
+      <li><strong>Consequence:</strong> must check <code>n &le; #s</code> before indexing.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Concatenation Index Shift</h3>
+<div class="practice" id="p2_6">
+  <p class="scenario">If <code>#s = 4</code>, then <code>(s &#x2040; t) 5</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')"><code>t 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>s 5</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')"><code>t 5</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_6">
+    <p><strong>Correct.</strong> Index shifts past s into t.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>(s &#x2040; t)(#s + j) = t j</code>.</li>
+      <li><strong>Constraint:</strong> <code>5 = 4 + 1</code>, so <code>j = 1</code>.</li>
+      <li><strong>Schema:</strong> <code>(s &#x2040; t) 5 = t 1</code>.</li>
+      <li><strong>Consequence:</strong> t's first element is at position <code>#s + 1</code> in the result.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Concatenation Index Shift</h3>
+<div class="practice" id="p2_7">
+  <p>For <code>i &isin; 1..#s</code>, <code>(s &#x2040; t) i</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')"><code>s i</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>t i</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>t(i &minus; #s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_7">
+    <p><strong>Correct.</strong> Indices within s come from s.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>(s &#x2040; t) i = s i</code> when <code>i &le; #s</code>.</li>
+      <li><strong>Constraint:</strong> i is in the s portion.</li>
+      <li><strong>Schema:</strong> the concatenation schema splits at <code>#s</code>.</li>
+      <li><strong>Consequence:</strong> s's elements unchanged in the result.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Squash</h3>
+<div class="practice" id="p2_8">
+  <p class="scenario">After deleting position 2 from <code>&lang; a, b, c &rang;</code>, the partial function is <code>{1 &#8614; a, 3 &#8614; c}</code>. What is <code>squash</code> of it?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>&lang; a, c &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>&lang; a, b, c &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>{1 &#8614; a, 3 &#8614; c}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>&lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_8">
+    <p><strong>Correct.</strong> Squash renumbers 1, 3 &rarr; 1, 2.</p>
+    <ul>
+      <li><strong>Definition:</strong> squash compacts a sparse function.</li>
+      <li><strong>Constraint:</strong> preserves relative order of remaining elements.</li>
+      <li><strong>Schema:</strong> <code>{1 &#8614; a, 2 &#8614; c}</code> = <code>&lang; a, c &rang;</code>.</li>
+      <li><strong>Consequence:</strong> gaps removed; result is a proper sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Squash</h3>
+<div class="practice" id="p2_9">
+  <p class="scenario">A sparse function <code>{2 &#8614; x, 5 &#8614; y, 7 &#8614; z}</code> is squashed. Result?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')"><code>&lang; x, y, z &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&lang; z, y, x &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>{2 &#8614; x, 5 &#8614; y, 7 &#8614; z}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')"><code>&lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_9">
+    <p><strong>Correct.</strong> Renumber to 1, 2, 3 preserving ascending order.</p>
+    <ul>
+      <li><strong>Definition:</strong> squash enumerates domain in ascending order.</li>
+      <li><strong>Constraint:</strong> 2 &lt; 5 &lt; 7, so x first, y second, z third.</li>
+      <li><strong>Schema:</strong> <code>{1 &#8614; x, 2 &#8614; y, 3 &#8614; z}</code>.</li>
+      <li><strong>Consequence:</strong> <code>&lang; x, y, z &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Restriction Formula</h3>
+<div class="practice" id="p2_10">
+  <p>The filter <code>s &#x21BE; A</code> is formally defined as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')"><code>squash(s &#x25B7; A)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>s &cap; A</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>s &cup; A</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')"><code>head(s &#x25B7; A)</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_10">
+    <p><strong>Correct.</strong> Range-restrict then squash.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>s &#x25B7; A</code> keeps only maplets whose value is in A.</li>
+      <li><strong>Constraint:</strong> result may be sparse.</li>
+      <li><strong>Schema:</strong> <code>squash</code> re-indexes to 1..m.</li>
+      <li><strong>Consequence:</strong> filter = range restriction + compaction.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Head Schema</h3>
+<div class="practice" id="p2_11">
+  <p>In the formal model, <code>head s</code> is defined as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>s 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>s 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>s (#s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>&lang; s 1 &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_11">
+    <p><strong>Correct.</strong> Function application at index 1.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>head s = s 1</code>.</li>
+      <li><strong>Constraint:</strong> requires <code>s &ne; &lang;&rang;</code>.</li>
+      <li><strong>Schema:</strong> partial function: defined only on seq<sub>1</sub> X.</li>
+      <li><strong>Consequence:</strong> returns an element of X.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Tail Schema</h3>
+<div class="practice" id="p2_12">
+  <p><code>#(tail s)</code> for a non-empty <code>s</code> of length <code>n</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>n &minus; 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>n</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_12">
+    <p><strong>Correct.</strong> Tail drops one element.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>#tail s = #s &minus; 1</code>.</li>
+      <li><strong>Constraint:</strong> <code>(tail s) i = s(i + 1)</code>.</li>
+      <li><strong>Schema:</strong> indices shift down by 1.</li>
+      <li><strong>Consequence:</strong> tail returns a sequence (possibly empty).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: seq<sub>1</sub> Definition</h3>
+<div class="practice" id="p2_13">
+  <p><code>seq<sub>1</sub> X</code> is defined as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')"><code>{ s : seq X | s &ne; &lang;&rang; }</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')"><code>{ s : seq X | #s = 1 }</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')"><code>seq X</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')"><code>iseq X</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_13">
+    <p><strong>Correct.</strong> Non-empty means length &ge; 1.</p>
+    <ul>
+      <li><strong>Definition:</strong> excludes only <code>&lang;&rang;</code>.</li>
+      <li><strong>Constraint:</strong> <code>#s = 1</code> would be singletons only.</li>
+      <li><strong>Schema:</strong> <code>head</code> and <code>tail</code> are total on seq<sub>1</sub> X.</li>
+      <li><strong>Consequence:</strong> seq<sub>1</sub> X &sub; seq X.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: iseq Definition</h3>
+<div class="practice" id="p2_14">
+  <p><code>iseq X</code> is defined as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')"><code>{ s : seq X | s &isin; &Nopf; &#x21A3; X }</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>seq<sub>1</sub> X</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>{ s : seq X | #s = 1 }</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>seq X</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_14">
+    <p><strong>Correct.</strong> Injective means no duplicates.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>s</code> is an injection from &Nopf; to X.</li>
+      <li><strong>Constraint:</strong> <code>&forall; i, j &bull; s i = s j &rArr; i = j</code>.</li>
+      <li><strong>Schema:</strong> <code>#s = #(ran s)</code>.</li>
+      <li><strong>Consequence:</strong> useful for rankings, permutations.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Injective Sequence Check</h3>
+<div class="practice" id="p2_15">
+  <p>Which is NOT an element of <code>iseq &Nopf;</code>?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb2_15')"><code>&lang; 1, 2, 3 &rang;</code></button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')"><code>&lang; 1, 2, 1 &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')"><code>&lang; 5 &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_15">
+    <p><strong>Correct.</strong> 1 appears twice &mdash; not injective.</p>
+    <ul>
+      <li><strong>Definition:</strong> iseq requires distinct values.</li>
+      <li><strong>Constraint:</strong> <code>s 1 = s 3 = 1</code> but <code>1 &ne; 3</code>.</li>
+      <li><strong>Schema:</strong> injectivity violated.</li>
+      <li><strong>Consequence:</strong> <code>&lang; 1, 2, 1 &rang; &isin; seq &Nopf;</code> but <code>&notin; iseq &Nopf;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Homogeneity</h3>
+<div class="practice" id="p2_16">
+  <p>Can <code>&lang; 1, (1, 2) &rang;</code> be a valid Z sequence?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Yes.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')">No &mdash; elements must share the same type.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Only if both are &Nopf;.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Only in iseq.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_16">
+    <p><strong>Correct.</strong> Sequences are homogeneous.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>seq X</code> &mdash; all elements from X.</li>
+      <li><strong>Constraint:</strong> 1 &isin; &Nopf; but (1,2) &isin; &Nopf; &times; &Nopf;.</li>
+      <li><strong>Schema:</strong> different types &rarr; no common X.</li>
+      <li><strong>Consequence:</strong> type error.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Finiteness</h3>
+<div class="practice" id="p2_17">
+  <p>Are Z sequences always finite?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">Yes &mdash; domain is 1..n for some natural n.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">No &mdash; infinite sequences exist.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">Only if X is finite.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">Only in iseq.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_17">
+    <p><strong>Correct.</strong> Finite by definition.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>&exist; n : &Nopf; &bull; dom s = 1..n</code>.</li>
+      <li><strong>Constraint:</strong> domain is bounded.</li>
+      <li><strong>Schema:</strong> infinite sequences require extensions beyond standard Z.</li>
+      <li><strong>Consequence:</strong> fairness properties need infinite sequences (not in seq X).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Length and Cardinality</h3>
+<div class="practice" id="p2_18">
+  <p>Using <code>#</code> for both set cardinality and sequence length makes sense because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')">A sequence is a function, and its length equals the number of maplets.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">They are unrelated operators with the same symbol.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">Only works for &Nopf; sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')">It is a coincidence.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_18">
+    <p><strong>Correct.</strong> Sequences are functions; maplet count = element count.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>#s</code> = cardinality of the function s.</li>
+      <li><strong>Constraint:</strong> domain has n elements &rarr; n maplets.</li>
+      <li><strong>Schema:</strong> same <code>#</code> used in Ch 8 for finite sets.</li>
+      <li><strong>Consequence:</strong> unified notation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: iseq vs seq</h3>
+<div class="practice" id="p2_19">
+  <p class="scenario">A tournament ranks <span class="key">players with no ties</span>. Which type fits?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>ranking : iseq Player</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>ranking : seq Player</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>ranking : &Popf; Player</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>ranking : seq<sub>1</sub> Player</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_19">
+    <p><strong>Correct.</strong> No ties &rarr; no duplicates &rarr; injective.</p>
+    <ul>
+      <li><strong>Definition:</strong> iseq = ordered + unique.</li>
+      <li><strong>Constraint:</strong> each player appears at most once.</li>
+      <li><strong>Schema:</strong> <code>ranking &isin; &Nopf; &#x21A3; Player</code>.</li>
+      <li><strong>Consequence:</strong> <code>seq</code> would allow ties; <code>&Popf;</code> loses order.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: seq<sub>1</sub> vs seq</h3>
+<div class="practice" id="p2_20">
+  <p class="scenario">An email preview requires the inbox to be <span class="key">non-empty</span>. Which type ensures <code>head</code> is always defined?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>inbox : seq<sub>1</sub> Email</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>inbox : seq Email</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>inbox : iseq Email</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>inbox : &Popf; Email</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_20">
+    <p><strong>Correct.</strong> seq<sub>1</sub> excludes the empty sequence.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>seq<sub>1</sub> X = {s : seq X | s &ne; &lang;&rang;}</code>.</li>
+      <li><strong>Constraint:</strong> head and tail are total on seq<sub>1</sub>.</li>
+      <li><strong>Schema:</strong> <code>head inbox</code> always returns an email.</li>
+      <li><strong>Consequence:</strong> <code>seq</code> alone would allow <code>&lang;&rang;</code> &rarr; head undefined.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Squash Idempotence</h3>
+<div class="practice" id="p2_21">
+  <p>Is <code>squash</code> idempotent on a proper sequence (no gaps)?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">Yes &mdash; already contiguous, so squash is a no-op.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">No &mdash; it always changes the function.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">Only for empty sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">Only for singletons.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_21">
+    <p><strong>Correct.</strong> No gaps to close.</p>
+    <ul>
+      <li><strong>Definition:</strong> squash renumbers ascending &mdash; already 1..n.</li>
+      <li><strong>Constraint:</strong> domain unchanged.</li>
+      <li><strong>Schema:</strong> identity on sequences.</li>
+      <li><strong>Consequence:</strong> <code>squash s = s</code> when s is a sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Range Restriction</h3>
+<div class="practice" id="p2_22">
+  <p class="scenario">A log <code>{1 &#8614; info, 2 &#8614; error, 3 &#8614; info, 4 &#8614; error}</code> is range-restricted to <code>{error}</code>. Result before squash?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>{2 &#8614; error, 4 &#8614; error}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>&lang; error, error &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>{1 &#8614; error, 2 &#8614; error}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>&lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_22">
+    <p><strong>Correct.</strong> Range restriction keeps original indices.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>&#x25B7;</code> keeps maplets whose value is in the set.</li>
+      <li><strong>Constraint:</strong> positions 2 and 4 have error.</li>
+      <li><strong>Schema:</strong> sparse function; squash needed for a proper sequence.</li>
+      <li><strong>Consequence:</strong> <code>squash {2 &#8614; error, 4 &#8614; error} = &lang; error, error &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Tail Index Formula</h3>
+<div class="practice" id="p2_23">
+  <p><code>(tail s) i</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')"><code>s(i + 1)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')"><code>s(i &minus; 1)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')"><code>s i</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')"><code>s 1</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_23">
+    <p><strong>Correct.</strong> Tail shifts indices down by 1.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>(tail s) i = s(i + 1)</code> for <code>i &isin; 1..#s &minus; 1</code>.</li>
+      <li><strong>Constraint:</strong> position 1 of tail = position 2 of s.</li>
+      <li><strong>Schema:</strong> tail requires a translation.</li>
+      <li><strong>Consequence:</strong> <code>#tail s = #s &minus; 1</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Fairness</h3>
+<div class="practice" id="p2_24">
+  <p>Why can't fairness be described using finite sequences?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">Fairness requires infinite sequences to ensure every element is eventually served.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Fairness is not a sequence property.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Finite sequences are not ordered.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Only iseq supports fairness.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_24">
+    <p><strong>Correct.</strong> "Eventually" needs unbounded length.</p>
+    <ul>
+      <li><strong>Definition:</strong> fairness = every pending item is reached at some point.</li>
+      <li><strong>Constraint:</strong> finite sequences have a fixed length.</li>
+      <li><strong>Schema:</strong> standard Z restricts to finite sequences.</li>
+      <li><strong>Consequence:</strong> infinite sequence theory is possible but outside basic Z.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: iseq Subset</h3>
+<div class="practice" id="p2_25">
+  <p><code>iseq X &sube; seq X</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">Yes &mdash; every injective sequence is a sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">No &mdash; they are disjoint sets.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Only if X is finite.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">Only for &Nopf;.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_25">
+    <p><strong>Correct.</strong> iseq adds a constraint; doesn't change the underlying type.</p>
+    <ul>
+      <li><strong>Definition:</strong> <code>iseq X = {s : seq X | s &isin; &Nopf; &#x21A3; X}</code>.</li>
+      <li><strong>Constraint:</strong> injection &sub; function.</li>
+      <li><strong>Schema:</strong> extra uniqueness requirement.</li>
+      <li><strong>Consequence:</strong> iseq X &sube; seq X for any X.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 9.3 Functions on sequences ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">9.3 Functions on sequences</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>New operations on sequences can be defined by the <span class="vocab" data-def="Define f by giving its value on &lang;&rang; and on &lang;x&rang; &#x2040; s.">recursion principle</span>: specify <code>f &lang;&rang;</code> and <code>f(&lang;x&rang; &#x2040; s)</code>.</li>
+  <li><strong><span class="vocab" data-def="Returns a sequence with elements in the opposite order.">reverse</span>:</strong> <code>reverse &lang;&rang; = &lang;&rang;</code>; <code>reverse(&lang;x&rang; &#x2040; s) = (reverse s) &#x2040; &lang;x&rang;</code>.</li>
+  <li><strong>add_one:</strong> <code>add_one &lang;&rang; = &lang;&rang;</code>; <code>add_one(&lang;n&rang; &#x2040; s) = &lang;n+1&rang; &#x2040; (add_one s)</code>.</li>
+  <li><strong><span class="vocab" data-def="f(s &#x2040; t) = (f s) &#x2040; (f t) &mdash; f distributes through concatenation.">Distributivity</span>:</strong> <code>f(s &#x2040; t) = (f s) &#x2040; (f t)</code>.</li>
+  <li><strong>Laws:</strong> <code>&#x2040;</code> is associative; <code>&lang;&rang;</code> is its unit; filter laws govern <code>&#x21BE;</code>.</li>
+  <li><strong>Key laws:</strong> <code>&lang;&rang; &#x21BE; A = &lang;&rang;</code> (filter.1); <code>(&lang;x&rang; &#x2040; s) &#x21BE; A</code> = <code>&lang;x&rang; &#x2040; (s &#x21BE; A)</code> if <code>x &isin; A</code>, else <code>s &#x21BE; A</code> (filter.2).</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s2-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Recursion principle</td><td>Define f by giving its value on &lang;&rang; and on &lang;x&rang; &#x2040; s.</td></tr>
+  <tr><td>reverse</td><td>Returns a sequence with elements in the opposite order.</td></tr>
+  <tr><td>Distributivity</td><td>f(s &#x2040; t) = (f s) &#x2040; (f t) &mdash; f distributes through concatenation.</td></tr>
+  <tr><td>Equational law</td><td>An equation expressing a property of an operator (e.g., filter.1, cat.1).</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s2-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>reverse</code></td><td>Reverse a sequence.</td></tr>
+  <tr><td><code>f &lang;&rang; = k</code></td><td>Base case of a recursive definition.</td></tr>
+  <tr><td><code>f(&lang;x&rang; &#x2040; s) = g(x, f(s))</code></td><td>Recursive step.</td></tr>
+  <tr><td><code>add_one</code></td><td>Increment each element by 1.</td></tr>
+</table>
+
+<h3 id="s2-D">IV.1 Examples: Undo History, Route Return &amp; Stack Dump</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>reverse</code></td><td>Reverse a sequence.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An editor replays <span class="key">actions in reverse</span> to <span class="key">undo</span> them.</p>
+<ul>
+  <li><strong>Base case:</strong> <code><span class="vocab" data-def="Returns a sequence with elements in the opposite order.">reverse</span> &lang;&rang; = &lang;&rang;</code> &mdash; nothing to undo.</li>
+  <li><strong>Recursive step:</strong> <code>reverse(&lang;x&rang; &#x2040; s) = (reverse s) &#x2040; &lang;x&rang;</code>.</li>
+  <li><strong>Law:</strong> the first action done is the last undone.</li>
+  <li><strong>Application:</strong> <code>reverse &lang; save, edit, delete &rang; = &lang; delete, edit, save &rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A navigation app computes the <span class="key">return trip</span> by <span class="key">reversing the outward route</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> <code>reverse &lang;&rang; = &lang;&rang;</code> &mdash; no waypoints.</li>
+  <li><strong>Recursive step:</strong> first waypoint becomes last on return.</li>
+  <li><strong>Law:</strong> <code>reverse(reverse route) = route</code> &mdash; round trip returns to original.</li>
+  <li><strong>Application:</strong> <code>reverse &lang; home, gas, office &rang; = &lang; office, gas, home &rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A debugger dumps the <span class="key">call stack</span> in <span class="key">reverse order</span> (most recent first).</p>
+<ul>
+  <li><strong>Base case:</strong> empty stack &rarr; empty output.</li>
+  <li><strong>Recursive step:</strong> deepest call printed last.</li>
+  <li><strong>Law:</strong> <code>#(reverse s) = #s</code> &mdash; same length.</li>
+  <li><strong>Application:</strong> <code>reverse &lang; main, parse, lex &rang; = &lang; lex, parse, main &rang;</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Price Markup, Temperature Shift &amp; Score Adjustment</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>add_one</code></td><td>Increment each element by 1.</td></tr>
+  <tr><td><code>f &lang;&rang; = k</code></td><td>Base case.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A store <span class="key">raises every price</span> by <span class="key">1 unit</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> <code><span class="vocab" data-def="Define f by giving its value on &lang;&rang; and on &lang;x&rang; &#x2040; s.">add_one</span> &lang;&rang; = &lang;&rang;</code>.</li>
+  <li><strong>Recursive step:</strong> <code>add_one(&lang;n&rang; &#x2040; s) = &lang;n + 1&rang; &#x2040; (add_one s)</code>.</li>
+  <li><strong>Law:</strong> <code>add_one &lang; 2, 4, 6 &rang; = &lang; 3, 5, 7 &rang;</code>.</li>
+  <li><strong>Application:</strong> each element increases independently.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A weather app <span class="key">shifts all readings</span> up by <span class="key">1 degree</span> for calibration.</p>
+<ul>
+  <li><strong>Base case:</strong> no readings &rarr; no adjustments.</li>
+  <li><strong>Recursive step:</strong> <code>&lang; temp + 1 &rang; &#x2040; (add_one rest)</code>.</li>
+  <li><strong>Law:</strong> <code>#(add_one s) = #s</code> &mdash; same length.</li>
+  <li><strong>Application:</strong> <code>add_one &lang; 20, 22, 19 &rang; = &lang; 21, 23, 20 &rang;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A grading system adds <span class="key">1 bonus point</span> to <span class="key">every score</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> <code>add_one &lang;&rang; = &lang;&rang;</code>.</li>
+  <li><strong>Recursive step:</strong> <code>add_one(&lang;85&rang; &#x2040; rest) = &lang;86&rang; &#x2040; (add_one rest)</code>.</li>
+  <li><strong>Law:</strong> <span class="vocab" data-def="f(s &#x2040; t) = (f s) &#x2040; (f t) &mdash; f distributes through concatenation.">distributive</span>: <code>add_one(s &#x2040; t) = (add_one s) &#x2040; (add_one t)</code>.</li>
+  <li><strong>Application:</strong> process class A and B separately, then combine.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Concatenation Unit, Associativity &amp; Reverse Anti-homomorphism</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>reverse</code></td><td>Reverse a sequence.</td></tr>
+  <tr><td><code>f &lang;&rang; = k</code></td><td>Base case.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">merge tool</span> appends an <span class="key">empty changelog</span> to a project's log.</p>
+<ul>
+  <li><strong>Base case:</strong> law cat.1: <code>&lang;&rang; &#x2040; s = s</code>.</li>
+  <li><strong>Recursive step:</strong> no elements to prepend.</li>
+  <li><strong>Law:</strong> <code>&lang;&rang;</code> is the unit for <code>&#x2040;</code> (both left and right).</li>
+  <li><strong>Application:</strong> merging an empty branch changes nothing.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Three <span class="key">log files</span> are concatenated; <span class="key">grouping doesn't matter</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> law cat.2: <code>s &#x2040; (t &#x2040; u) = (s &#x2040; t) &#x2040; u</code>.</li>
+  <li><strong>Recursive step:</strong> associativity of concatenation.</li>
+  <li><strong>Law:</strong> parentheses can be dropped: <code>s &#x2040; t &#x2040; u</code>.</li>
+  <li><strong>Application:</strong> merge logs in any grouping order.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Reversing a <span class="key">combined playlist</span> reverses the <span class="key">order of the parts</span> and <span class="key">each part itself</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> <code>reverse &lang;&rang; = &lang;&rang;</code>.</li>
+  <li><strong>Recursive step:</strong> <code>reverse(s &#x2040; t) = (reverse t) &#x2040; (reverse s)</code>.</li>
+  <li><strong>Law:</strong> anti-homomorphism &mdash; order of parts swaps.</li>
+  <li><strong>Application:</strong> like matrix transpose: <code>(AB)<sup>T</sup> = B<sup>T</sup>A<sup>T</sup></code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Empty Filter, Element Filter &amp; Full Filter</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>f &lang;&rang; = k</code></td><td>Base case.</td></tr>
+  <tr><td><code>f(&lang;x&rang; &#x2040; s) = g(x, f(s))</code></td><td>Recursive step.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Filtering an <span class="key">empty log</span> by any severity set.</p>
+<ul>
+  <li><strong>Base case:</strong> filter.1: <code>&lang;&rang; &#x21BE; A = &lang;&rang;</code>.</li>
+  <li><strong>Recursive step:</strong> nothing to check.</li>
+  <li><strong>Law:</strong> empty in, empty out &mdash; regardless of A.</li>
+  <li><strong>Application:</strong> no entries &rarr; no errors, no warnings, nothing.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Filtering <code>&lang; error &rang; &#x2040; rest</code> where <span class="key">error &isin; A</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> if <code>x &isin; A</code>: keep x.</li>
+  <li><strong>Recursive step:</strong> filter.2: <code>(&lang;x&rang; &#x2040; s) &#x21BE; A = &lang;x&rang; &#x2040; (s &#x21BE; A)</code>.</li>
+  <li><strong>Law:</strong> x passes the filter; recurse on s.</li>
+  <li><strong>Application:</strong> error stays; continue filtering rest.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Filtering <code>&lang; info &rang; &#x2040; rest</code> where <span class="key">info &notin; A</span>.</p>
+<ul>
+  <li><strong>Base case:</strong> if <code>x &notin; A</code>: drop x.</li>
+  <li><strong>Recursive step:</strong> filter.2: <code>(&lang;x&rang; &#x2040; s) &#x21BE; A = s &#x21BE; A</code>.</li>
+  <li><strong>Law:</strong> x fails the filter; skip to rest.</li>
+  <li><strong>Application:</strong> info dropped; continue filtering rest.</li>
+</ul>
+</div>
+
+<h3 id="s2-E">V.1 Practice: Recursion Principle</h3>
+<div class="practice" id="p3_1">
+  <p>The recursion principle defines a function on sequences by specifying:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')">Its value on &lang;&rang; and on &lang;x&rang; &#x2040; s.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')">Its value on every possible input.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')">Only its value on &lang;&rang;.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')">A sorting order.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_1">
+    <p><strong>Correct.</strong> Two cases: empty and non-empty.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>f &lang;&rang; = k</code>.</li>
+      <li><strong>Recursive step:</strong> <code>f(&lang;x&rang; &#x2040; s) = g(x, f(s))</code>.</li>
+      <li><strong>Law:</strong> uniquely defines f on all finite sequences.</li>
+      <li><strong>Application:</strong> reverse, add_one, etc.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Base Case Pattern</h3>
+<div class="practice" id="p3_2">
+  <p><code>reverse &lang;&rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">Undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')"><code>&empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')"><code>0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_2">
+    <p><strong>Correct.</strong> Reversing nothing yields nothing.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>reverse &lang;&rang; = &lang;&rang;</code> (reverse.1).</li>
+      <li><strong>Recursive step:</strong> not needed for empty input.</li>
+      <li><strong>Law:</strong> base case is required for every recursive definition.</li>
+      <li><strong>Application:</strong> empty sequence reversed is still empty.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Reverse Function</h3>
+<div class="practice" id="p3_3">
+  <p class="scenario">An editor <span class="key">reverses</span> <code>&lang; save, edit, delete &rang;</code>. Result?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>&lang; delete, edit, save &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&lang; save, edit, delete &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&lang; edit, save, delete &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>&lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_3">
+    <p><strong>Correct.</strong> Last becomes first.</p>
+    <ul>
+      <li><strong>Base case:</strong> eventually reaches <code>reverse &lang;&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> <code>reverse(&lang;save&rang; &#x2040; &lang;edit, delete&rang;) = (reverse &lang;edit, delete&rang;) &#x2040; &lang;save&rang;</code>.</li>
+      <li><strong>Law:</strong> reverse.2 applied repeatedly.</li>
+      <li><strong>Application:</strong> <code>&lang; delete, edit, save &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Reverse Function</h3>
+<div class="practice" id="p3_4">
+  <p><code>reverse(reverse s)</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>reverse s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>head s</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_4">
+    <p><strong>Correct.</strong> Reverse is an involution.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>reverse(reverse &lang;&rang;) = reverse &lang;&rang; = &lang;&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> applying reverse twice restores order.</li>
+      <li><strong>Law:</strong> self-inverse property.</li>
+      <li><strong>Application:</strong> round trip returns to original.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Reverse Function</h3>
+<div class="practice" id="p3_5">
+  <p><code>reverse(s &#x2040; t)</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')"><code>(reverse t) &#x2040; (reverse s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>(reverse s) &#x2040; (reverse t)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>s &#x2040; t</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')"><code>reverse s</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_5">
+    <p><strong>Correct.</strong> Reverse is an anti-homomorphism.</p>
+    <ul>
+      <li><strong>Base case:</strong> parts swap order.</li>
+      <li><strong>Recursive step:</strong> each part reversed individually.</li>
+      <li><strong>Law:</strong> like <code>(AB)&minus;&sup1; = B&minus;&sup1;A&minus;&sup1;</code>.</li>
+      <li><strong>Application:</strong> <code>reverse(&lang;a,b&rang; &#x2040; &lang;c,d&rang;) = &lang;d,c&rang; &#x2040; &lang;b,a&rang; = &lang;d,c,b,a&rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Reverse Function</h3>
+<div class="practice" id="p3_6">
+  <p><code>#(reverse s)</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>#s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>2 &middot; #s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>#s &minus; 1</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_6">
+    <p><strong>Correct.</strong> Reverse preserves length.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>#(reverse &lang;&rang;) = #&lang;&rang; = 0</code>.</li>
+      <li><strong>Recursive step:</strong> no elements added or removed.</li>
+      <li><strong>Law:</strong> only order changes.</li>
+      <li><strong>Application:</strong> same number of elements.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Recursive Definition</h3>
+<div class="practice" id="p3_7">
+  <p class="scenario">A function <code>double</code> doubles each element: <code>double &lang; 2, 4 &rang; = &lang; 4, 8 &rang;</code>. Which recursive definition fits?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')"><code>double &lang;&rang; = &lang;&rang;</code>; <code>double(&lang;n&rang; &#x2040; s) = &lang;2&middot;n&rang; &#x2040; (double s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>double s = s &#x2040; s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>double s = reverse s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>double &lang;&rang; = &lang; 0 &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_7">
+    <p><strong>Correct.</strong> Base case + recursive step pattern.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>double &lang;&rang; = &lang;&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> double the head, recurse on tail.</li>
+      <li><strong>Law:</strong> follows the recursion principle exactly.</li>
+      <li><strong>Application:</strong> <code>double &lang; 3, 5 &rang; = &lang; 6, 10 &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Recursive Definition</h3>
+<div class="practice" id="p3_8">
+  <p class="scenario"><code>add_one &lang; 2, 4, 6 &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')"><code>&lang; 3, 5, 7 &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')"><code>&lang; 2, 4, 6 &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')"><code>&lang; 1, 1, 1 &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')"><code>13</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_8">
+    <p><strong>Correct.</strong> Each element incremented by 1.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>add_one &lang;&rang; = &lang;&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> <code>&lang; 2+1 &rang; &#x2040; add_one &lang; 4, 6 &rang;</code>.</li>
+      <li><strong>Law:</strong> element-wise transformation.</li>
+      <li><strong>Application:</strong> <code>&lang; 3, 5, 7 &rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Distributivity</h3>
+<div class="practice" id="p3_9">
+  <p>A function <code>f</code> is distributive over concatenation if:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>f(s &#x2040; t) = (f s) &#x2040; (f t)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>f(s &#x2040; t) = f s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>f(s &#x2040; t) = (f t) &#x2040; (f s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>f(s &#x2040; t) = s &#x2040; t</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_9">
+    <p><strong>Correct.</strong> Apply f to parts, then concatenate.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>f &lang;&rang; &#x2040; (f s) = f(&lang;&rang; &#x2040; s) = f s</code>.</li>
+      <li><strong>Recursive step:</strong> process each piece independently.</li>
+      <li><strong>Law:</strong> add_one is distributive; reverse is NOT (anti-homomorphism).</li>
+      <li><strong>Application:</strong> parallel processing: apply f to each part, merge results.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Distributivity</h3>
+<div class="practice" id="p3_10">
+  <p>Is <code>add_one</code> distributive?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">Yes: <code>add_one(s &#x2040; t) = (add_one s) &#x2040; (add_one t)</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">No.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">Only for &Nopf; sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">Only for empty sequences.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_10">
+    <p><strong>Correct.</strong> Incrementing distributes through concatenation.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>add_one &lang;&rang; = &lang;&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> each element handled independently.</li>
+      <li><strong>Law:</strong> <code>add_one(s &#x2040; t) = (add_one s) &#x2040; (add_one t)</code>.</li>
+      <li><strong>Application:</strong> process batches separately, merge.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Filter Law</h3>
+<div class="practice" id="p3_11">
+  <p>Law filter.1 states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')"><code>&lang;&rang; &#x21BE; A = &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')"><code>s &#x21BE; &empty; = s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')"><code>s &#x21BE; A = reverse s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')"><code>&lang;&rang; &#x21BE; A = A</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_11">
+    <p><strong>Correct.</strong> Filtering an empty sequence yields empty.</p>
+    <ul>
+      <li><strong>Base case:</strong> no elements to filter.</li>
+      <li><strong>Recursive step:</strong> not needed here.</li>
+      <li><strong>Law:</strong> filter.1 is the base case for filter's recursive definition.</li>
+      <li><strong>Application:</strong> empty log filtered by anything = empty.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Filter Law</h3>
+<div class="practice" id="p3_12">
+  <p>Law filter.2: <code>(&lang;x&rang; &#x2040; s) &#x21BE; A</code> when <code>x &isin; A</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')"><code>&lang;x&rang; &#x2040; (s &#x21BE; A)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')"><code>s &#x21BE; A</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')"><code>&lang;x&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')"><code>&lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_12">
+    <p><strong>Correct.</strong> Element passes; prepend and continue.</p>
+    <ul>
+      <li><strong>Base case:</strong> x is in A &rarr; keep it.</li>
+      <li><strong>Recursive step:</strong> filter the rest.</li>
+      <li><strong>Law:</strong> filter.2 (x &isin; A case).</li>
+      <li><strong>Application:</strong> error &isin; {error, warn} &rarr; keep, filter rest.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Concatenation Law</h3>
+<div class="practice" id="p3_13">
+  <p>Law cat.1 states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')"><code>&lang;&rang; &#x2040; s = s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')"><code>s &#x2040; s = 2s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')"><code>s &#x2040; t = t &#x2040; s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')"><code>s &#x2040; &lang;&rang; = &lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_13">
+    <p><strong>Correct.</strong> Empty sequence is the left identity for concatenation.</p>
+    <ul>
+      <li><strong>Base case:</strong> prepending nothing.</li>
+      <li><strong>Recursive step:</strong> no elements to add.</li>
+      <li><strong>Law:</strong> cat.1: <code>&lang;&rang;</code> is the unit.</li>
+      <li><strong>Application:</strong> also holds on the right: <code>s &#x2040; &lang;&rang; = s</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Concatenation Law</h3>
+<div class="practice" id="p3_14">
+  <p>Law cat.2 states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')"><code>s &#x2040; (t &#x2040; u) = (s &#x2040; t) &#x2040; u</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>s &#x2040; t = t &#x2040; s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>s &#x2040; t = &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>#(s &#x2040; t) = #s &middot; #t</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_14">
+    <p><strong>Correct.</strong> Concatenation is associative.</p>
+    <ul>
+      <li><strong>Base case:</strong> grouping doesn't affect the flat result.</li>
+      <li><strong>Recursive step:</strong> elements appear in the same order.</li>
+      <li><strong>Law:</strong> cat.2: associativity.</li>
+      <li><strong>Application:</strong> can drop parentheses: <code>s &#x2040; t &#x2040; u</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Reverse Recursive Step</h3>
+<div class="practice" id="p3_15">
+  <p><code>reverse(&lang;x&rang; &#x2040; s)</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')"><code>(reverse s) &#x2040; &lang;x&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&lang;x&rang; &#x2040; (reverse s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')"><code>reverse s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')"><code>&lang;x&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_15">
+    <p><strong>Correct.</strong> Head moves to the end after reversing the rest.</p>
+    <ul>
+      <li><strong>Base case:</strong> reverse.1 handles &lang;&rang;.</li>
+      <li><strong>Recursive step:</strong> reverse.2: <code>(reverse s) &#x2040; &lang;x&rang;</code>.</li>
+      <li><strong>Law:</strong> first element becomes last.</li>
+      <li><strong>Application:</strong> recursively reverse tail, then append head.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Filter Distributivity</h3>
+<div class="practice" id="p3_16">
+  <p>Is the filter operator <code>&#x21BE;</code> distributive over concatenation?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">Yes: <code>(s &#x2040; t) &#x21BE; A = (s &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">No.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">Only for singleton A.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">Only for empty s.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_16">
+    <p><strong>Correct.</strong> Filter distributes.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>(&lang;&rang; &#x2040; t) &#x21BE; A = t &#x21BE; A = (&lang;&rang; &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</li>
+      <li><strong>Recursive step:</strong> proven by structural induction.</li>
+      <li><strong>Law:</strong> <code>(s &#x2040; t) &#x21BE; A = (s &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</li>
+      <li><strong>Application:</strong> filter each log part separately, then merge.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Reverse and Filter</h3>
+<div class="practice" id="p3_17">
+  <p>For compatible types, <code>reverse(s &#x21BE; A)</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')"><code>(reverse s) &#x21BE; A</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')"><code>reverse(s) &#x2040; A</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')"><code>s &#x21BE; (reverse A)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')"><code>A &#x21BE; (reverse s)</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_17">
+    <p><strong>Correct.</strong> Reverse and filter commute.</p>
+    <ul>
+      <li><strong>Base case:</strong> filter then reverse = reverse then filter.</li>
+      <li><strong>Recursive step:</strong> proven by structural induction (Ex 9.11).</li>
+      <li><strong>Law:</strong> order of application doesn't matter.</li>
+      <li><strong>Application:</strong> filter errors, then reverse = reverse log, then filter errors.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Sequence Laws</h3>
+<div class="practice" id="p3_18">
+  <p>Which is NOT a property of concatenation?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Associativity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Has an identity element (&lang;&rang;).</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">Commutativity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')"><code>#(s &#x2040; t) = #s + #t</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_18">
+    <p><strong>Correct.</strong> Concatenation is NOT commutative.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>&lang; a &rang; &#x2040; &lang; b &rang; = &lang; a, b &rang; &ne; &lang; b, a &rang; = &lang; b &rang; &#x2040; &lang; a &rang;</code>.</li>
+      <li><strong>Recursive step:</strong> order matters.</li>
+      <li><strong>Law:</strong> associative + identity, but NOT commutative.</li>
+      <li><strong>Application:</strong> <code>s &#x2040; t &ne; t &#x2040; s</code> in general.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Recursive Definition</h3>
+<div class="practice" id="p3_19">
+  <p class="scenario">Define <code>negate</code> to flip signs: <code>negate &lang; 1, &minus;2, 3 &rang; = &lang; &minus;1, 2, &minus;3 &rang;</code>. Base case?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')"><code>negate &lang;&rang; = &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')"><code>negate &lang;&rang; = &lang; 0 &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')"><code>negate &lang;&rang; = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">No base case needed.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_19">
+    <p><strong>Correct.</strong> Negating nothing yields nothing.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>negate &lang;&rang; = &lang;&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> <code>negate(&lang;n&rang; &#x2040; s) = &lang;&minus;n&rang; &#x2040; (negate s)</code>.</li>
+      <li><strong>Law:</strong> follows the recursion principle.</li>
+      <li><strong>Application:</strong> element-wise transformation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Reverse vs Distributive</h3>
+<div class="practice" id="p3_20">
+  <p>Is <code>reverse</code> distributive over concatenation?</p>
+  <ul class="choices">
+    <li><button onclick="selectAnswer(this,false,'fb3_20')">Yes.</button></li>
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')">No &mdash; it is an anti-homomorphism: parts swap order.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')">Only for equal-length sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')">Only for &Nopf;.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_20">
+    <p><strong>Correct.</strong> <code>reverse(s &#x2040; t) = (reverse t) &#x2040; (reverse s)</code>, not <code>(reverse s) &#x2040; (reverse t)</code>.</p>
+    <ul>
+      <li><strong>Base case:</strong> distributivity requires same order of parts.</li>
+      <li><strong>Recursive step:</strong> reverse swaps the parts.</li>
+      <li><strong>Law:</strong> anti-homomorphism, not homomorphism.</li>
+      <li><strong>Application:</strong> add_one IS distributive; reverse is NOT.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Head of Reversed</h3>
+<div class="practice" id="p3_21">
+  <p><code>head(reverse s)</code> for non-empty <code>s</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">The last element of <code>s</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">The first element of <code>s</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_21">
+    <p><strong>Correct.</strong> Reversing makes the last element first.</p>
+    <ul>
+      <li><strong>Base case:</strong> endpoint duality.</li>
+      <li><strong>Recursive step:</strong> reverse puts last at position 1.</li>
+      <li><strong>Law:</strong> <code>head(reverse s) = last element of s</code>.</li>
+      <li><strong>Application:</strong> <code>head(reverse &lang;a,b,c&rang;) = head &lang;c,b,a&rang; = c</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Filter Law Application</h3>
+<div class="practice" id="p3_22">
+  <p class="scenario">Apply filter.2 to <code>(&lang; info &rang; &#x2040; rest) &#x21BE; {error}</code> where <span class="key">info &notin; {error}</span>:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')"><code>rest &#x21BE; {error}</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&lang; info &rang; &#x2040; (rest &#x21BE; {error})</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')"><code>&lang; info &rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_22">
+    <p><strong>Correct.</strong> info fails the filter; skip to rest.</p>
+    <ul>
+      <li><strong>Base case:</strong> filter.2 (x &notin; A case).</li>
+      <li><strong>Recursive step:</strong> drop info, continue with rest.</li>
+      <li><strong>Law:</strong> <code>(&lang;x&rang; &#x2040; s) &#x21BE; A = s &#x21BE; A</code> when <code>x &notin; A</code>.</li>
+      <li><strong>Application:</strong> only errors pass; info discarded.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Reverse of Singleton</h3>
+<div class="practice" id="p3_23">
+  <p><code>reverse &lang; x &rang;</code> equals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')"><code>&lang; x &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')"><code>x</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_23">
+    <p><strong>Correct.</strong> One element reversed is itself.</p>
+    <ul>
+      <li><strong>Base case:</strong> <code>reverse(&lang;x&rang; &#x2040; &lang;&rang;) = (reverse &lang;&rang;) &#x2040; &lang;x&rang; = &lang;&rang; &#x2040; &lang;x&rang; = &lang;x&rang;</code>.</li>
+      <li><strong>Recursive step:</strong> only one element.</li>
+      <li><strong>Law:</strong> reverse.1 + reverse.2 + cat.1.</li>
+      <li><strong>Application:</strong> singleton is a fixed point of reverse.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Equational Law</h3>
+<div class="practice" id="p3_24">
+  <p>An equational law is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">An equation expressing a property of an operator (e.g., cat.1, filter.2).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">A sorting algorithm.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">A type declaration.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">A schema definition.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_24">
+    <p><strong>Correct.</strong> Laws capture reusable properties.</p>
+    <ul>
+      <li><strong>Base case:</strong> named equations like filter.1, cat.2.</li>
+      <li><strong>Recursive step:</strong> used as justification steps in proofs.</li>
+      <li><strong>Law:</strong> proven once, applied many times.</li>
+      <li><strong>Application:</strong> building blocks for equational reasoning.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Recursive Functions</h3>
+<div class="practice" id="p3_25">
+  <p>Why does the recursion principle guarantee a unique function?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Every finite sequence is either &lang;&rang; or &lang;x&rang; &#x2040; s, so the two cases cover all inputs.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">It doesn't &mdash; multiple functions may result.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Only for sorted sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Only for injective sequences.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_25">
+    <p><strong>Correct.</strong> Exhaustive decomposition.</p>
+    <ul>
+      <li><strong>Base case:</strong> &lang;&rang; is the only empty sequence.</li>
+      <li><strong>Recursive step:</strong> every non-empty s = &lang;head s&rang; &#x2040; tail s.</li>
+      <li><strong>Law:</strong> tail s is shorter &rarr; recursion terminates.</li>
+      <li><strong>Application:</strong> consequence of the recursion principle for &Nopf; (Ch 10.4).</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 9.4 Structural induction ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">9.4 Structural induction</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="If P 0 holds and P i &rArr; P(i+1), then P n for all n &isin; &Nopf;.">Induction principle</span> for &Nopf;:</strong> prove <code>P 0</code>; prove <code>P i &rArr; P(i + 1)</code>; conclude <code>&forall; n : &Nopf; &bull; P n</code>.</li>
+  <li><strong><span class="vocab" data-def="The initial case of an induction proof (P 0 or P &lang;&rang;).">Base case</span> + <span class="vocab" data-def="Show that if P holds for a smaller case, it holds for the next.">inductive step</span>:</strong> two branches of an induction proof.</li>
+  <li><strong><span class="vocab" data-def="The assumption that P holds for a smaller structure, used to prove P for the next.">Inductive hypothesis</span>:</strong> assume <code>P t</code> when proving <code>P(&lang;x&rang; &#x2040; t)</code>.</li>
+  <li><strong><span class="vocab" data-def="Induction based on sequence structure: base case P &lang;&rang;; step P t &rArr; P(&lang;x&rang; &#x2040; t).">Structural induction</span> for sequences:</strong> prove <code>P &lang;&rang;</code>; prove <code>x &isin; X &and; P t &rArr; P(&lang;x&rang; &#x2040; t)</code>; conclude <code>&forall; s : seq X &bull; P s</code>.</li>
+  <li><strong><span class="vocab" data-def="A proof as a chain of equalities, each justified by a named law.">Equational reasoning</span>:</strong> chain of equalities, each justified by a named law.</li>
+  <li>Used to prove: filter is distributive, reverse commutes with filter.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s3-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Induction principle</td><td>If P 0 holds and P i &rArr; P(i+1), then P n for all n &isin; &Nopf;.</td></tr>
+  <tr><td>Base case</td><td>The initial case of an induction proof (P 0 or P &lang;&rang;).</td></tr>
+  <tr><td>Inductive step</td><td>Show that if P holds for a smaller case, it holds for the next.</td></tr>
+  <tr><td>Inductive hypothesis</td><td>The assumption that P holds for a smaller structure, used to prove P for the next.</td></tr>
+  <tr><td>Structural induction</td><td>Induction based on sequence structure: base case P &lang;&rang;; step P t &rArr; P(&lang;x&rang; &#x2040; t).</td></tr>
+  <tr><td>Equational reasoning</td><td>A proof as a chain of equalities, each justified by a named law.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s3-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P 0</code></td><td>Base case for &Nopf; induction.</td></tr>
+  <tr><td><code>P(i + 1)</code></td><td>Inductive step for &Nopf;.</td></tr>
+  <tr><td><code>P &lang;&rang;</code></td><td>Base case for sequence induction.</td></tr>
+  <tr><td><code>P(&lang;x&rang; &#x2040; t)</code></td><td>Inductive step for sequences.</td></tr>
+  <tr><td><code>&forall; s : seq X &bull; P s</code></td><td>Conclusion of structural induction.</td></tr>
+  <tr><td><code>sum</code></td><td>Summation function.</td></tr>
+  <tr><td><code>div</code></td><td>Integer division.</td></tr>
+</table>
+
+<h3 id="s3-D">IV.1 Examples: Sum Formula, Product Formula &amp; Triangular Numbers</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P 0</code></td><td>Base case.</td></tr>
+  <tr><td><code>P(i + 1)</code></td><td>Inductive step.</td></tr>
+  <tr><td><code>sum</code></td><td>Summation.</td></tr>
+  <tr><td><code>div</code></td><td>Integer division.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Prove that the <span class="key">sum of 0..n</span> equals <span class="key">(n&sup2; + n) div 2</span>.</p>
+<ul>
+  <li><strong>Property:</strong> <code>P n &hArr; sum{i : 0..n} = (n&sup2; + n) div 2</code>.</li>
+  <li><strong><span class="vocab" data-def="The initial case of an induction proof (P 0 or P &lang;&rang;).">Base case</span>:</strong> <code>P 0</code>: <code>sum{i : 0..0} = 0 = (0 + 0) div 2</code>. &#10003;</li>
+  <li><strong><span class="vocab" data-def="Show that if P holds for a smaller case, it holds for the next.">Inductive step</span>:</strong> assume <code>P m</code>; show <code>P(m + 1)</code>.</li>
+  <li><strong>Conclusion:</strong> by the <span class="vocab" data-def="If P 0 holds and P i &rArr; P(i+1), then P n for all n &isin; &Nopf;.">induction principle</span>, <code>&forall; n : &Nopf; &bull; P n</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Prove that the <span class="key">sum of first n odd numbers</span> equals <span class="key">n&sup2;</span>.</p>
+<ul>
+  <li><strong>Property:</strong> <code>P n &hArr; sum{2i &minus; 1 : i &isin; 1..n} = n&sup2;</code>.</li>
+  <li><strong>Base case:</strong> <code>P 0</code>: empty sum = 0 = 0&sup2;. &#10003;</li>
+  <li><strong>Inductive step:</strong> assume <code>P m</code>; add <code>(2(m+1) &minus; 1)</code> to both sides.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; n &bull; P n</code> by induction.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Prove that the <span class="key">n-th triangular number</span> equals <span class="key">n(n+1)/2</span>.</p>
+<ul>
+  <li><strong>Property:</strong> <code>P n &hArr; T(n) = n(n + 1) div 2</code>.</li>
+  <li><strong>Base case:</strong> <code>P 0</code>: <code>T(0) = 0 = 0 &middot; 1 div 2</code>. &#10003;</li>
+  <li><strong>Inductive step:</strong> <code>T(m + 1) = T(m) + (m + 1) = m(m+1) div 2 + (m+1)</code>.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; n &bull; T(n) = n(n+1) div 2</code>.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Reverse Length, Filter Empty &amp; Double Reverse</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P &lang;&rang;</code></td><td>Sequence induction base case.</td></tr>
+  <tr><td><code>P(&lang;x&rang; &#x2040; t)</code></td><td>Sequence induction step.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Prove <code>#(reverse s) = #s</code> for all <span class="key">finite sequences</span> by <span class="key">structural induction</span>.</p>
+<ul>
+  <li><strong>Property:</strong> <code>P s &hArr; #(reverse s) = #s</code>.</li>
+  <li><strong><span class="vocab" data-def="The initial case of an induction proof (P 0 or P &lang;&rang;).">Base case</span>:</strong> <code>P &lang;&rang;</code>: <code>#(reverse &lang;&rang;) = #&lang;&rang; = 0</code>. &#10003;</li>
+  <li><strong><span class="vocab" data-def="Show that if P holds for a smaller case, it holds for the next.">Inductive step</span>:</strong> assume <code>P t</code>; show <code>P(&lang;x&rang; &#x2040; t)</code>.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; s : seq X &bull; #(reverse s) = #s</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Prove <code>reverse(&lang;&rang; &#x21BE; A) = (reverse &lang;&rang;) &#x21BE; A</code> as a <span class="key">base case</span> for a larger proof.</p>
+<ul>
+  <li><strong>Property:</strong> <code>reverse(s &#x21BE; A) = (reverse s) &#x21BE; A</code>.</li>
+  <li><strong>Base case:</strong> <code>reverse(&lang;&rang; &#x21BE; A) = reverse &lang;&rang; = &lang;&rang; = &lang;&rang; &#x21BE; A = (reverse &lang;&rang;) &#x21BE; A</code>. &#10003;</li>
+  <li><strong>Inductive step:</strong> uses filter.1 and reverse.1.</li>
+  <li><strong>Conclusion:</strong> base case established by <span class="vocab" data-def="A proof as a chain of equalities, each justified by a named law.">equational reasoning</span>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Prove <code>reverse(reverse s) = s</code> for all <span class="key">finite sequences</span>.</p>
+<ul>
+  <li><strong>Property:</strong> <code>P s &hArr; reverse(reverse s) = s</code>.</li>
+  <li><strong>Base case:</strong> <code>P &lang;&rang;</code>: <code>reverse(reverse &lang;&rang;) = reverse &lang;&rang; = &lang;&rang;</code>. &#10003;</li>
+  <li><strong>Inductive step:</strong> assume <code>P t</code>; use reverse.2 twice.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; s &bull; reverse(reverse s) = s</code>.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Filter Distributivity Proof, Reverse-Filter Proof &amp; Associativity Proof</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P &lang;&rang;</code></td><td>Base case.</td></tr>
+  <tr><td><code>P(&lang;x&rang; &#x2040; t)</code></td><td>Inductive step.</td></tr>
+  <tr><td><code>&forall; s : seq X &bull; P s</code></td><td>Conclusion.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Prove <span class="key">filter distributes</span>: <code>(s &#x2040; t) &#x21BE; A = (s &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</p>
+<ul>
+  <li><strong>Property:</strong> induction on <code>s</code> with <code>t</code> arbitrary.</li>
+  <li><strong>Base case:</strong> <code>(&lang;&rang; &#x2040; t) &#x21BE; A = t &#x21BE; A = &lang;&rang; &#x2040; (t &#x21BE; A) = (&lang;&rang; &#x21BE; A) &#x2040; (t &#x21BE; A)</code>. &#10003;</li>
+  <li><strong>Inductive step:</strong> split on <code>x &isin; A</code> vs <code>x &notin; A</code>; use filter.2, cat.2, <span class="vocab" data-def="The assumption that P holds for a smaller structure, used to prove P for the next.">inductive hypothesis</span>.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; s, t : seq X; A : &Popf; X &bull; (s &#x2040; t) &#x21BE; A = (s &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Prove <span class="key">reverse and filter commute</span>: <code>reverse(s &#x21BE; A) = (reverse s) &#x21BE; A</code>.</p>
+<ul>
+  <li><strong>Property:</strong> induction on <code>s</code>.</li>
+  <li><strong>Base case:</strong> established in Example 9.8 of the textbook.</li>
+  <li><strong>Inductive step:</strong> uses reverse.2, filter.2, inductive hypothesis, and filter distributivity.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; s : seq X; A : &Popf; X &bull; reverse(s &#x21BE; A) = (reverse s) &#x21BE; A</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Prove <span class="key">concatenation is associative</span>: <code>s &#x2040; (t &#x2040; u) = (s &#x2040; t) &#x2040; u</code>.</p>
+<ul>
+  <li><strong>Property:</strong> induction on <code>s</code>.</li>
+  <li><strong>Base case:</strong> <code>&lang;&rang; &#x2040; (t &#x2040; u) = t &#x2040; u = (&lang;&rang; &#x2040; t) &#x2040; u</code> by cat.1. &#10003;</li>
+  <li><strong>Inductive step:</strong> <code>(&lang;x&rang; &#x2040; r) &#x2040; (t &#x2040; u) = &lang;x&rang; &#x2040; (r &#x2040; (t &#x2040; u))</code> &rarr; apply hypothesis.</li>
+  <li><strong>Conclusion:</strong> <code>&forall; s, t, u &bull; s &#x2040; (t &#x2040; u) = (s &#x2040; t) &#x2040; u</code>.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Sum Chain, Filter Chain &amp; Reverse Chain</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P 0</code></td><td>Base case.</td></tr>
+  <tr><td><code>P(&lang;x&rang; &#x2040; t)</code></td><td>Inductive step.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">An <span class="key">equational chain</span> proves <code>sum{i : 0..0} = (0&sup2; + 0) div 2</code>.</p>
+<ul>
+  <li><strong>Property:</strong> base case of sum formula.</li>
+  <li><strong>Base case:</strong> <code>sum{i : 0..0} = 0</code> [definition of sum].</li>
+  <li><strong>Inductive step:</strong> <code>0 = (0 + 0) div 2</code> [arithmetic].</li>
+  <li><strong>Conclusion:</strong> each step justified by a named law or definition.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">equational chain</span> proves <code>(&lang;&rang; &#x2040; t) &#x21BE; A = (&lang;&rang; &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</p>
+<ul>
+  <li><strong>Property:</strong> base case of filter distributivity.</li>
+  <li><strong>Base case:</strong> <code>(&lang;&rang; &#x2040; t) &#x21BE; A = t &#x21BE; A</code> [cat.1].</li>
+  <li><strong>Inductive step:</strong> <code>t &#x21BE; A = &lang;&rang; &#x2040; (t &#x21BE; A)</code> [cat.1] = <code>(&lang;&rang; &#x21BE; A) &#x2040; (t &#x21BE; A)</code> [filter.1].</li>
+  <li><strong>Conclusion:</strong> <span class="vocab" data-def="A proof as a chain of equalities, each justified by a named law.">equational reasoning</span>: chain of = with law citations.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">equational chain</span> proves <code>reverse(&lang;&rang; &#x21BE; A) = (reverse &lang;&rang;) &#x21BE; A</code>.</p>
+<ul>
+  <li><strong>Property:</strong> base case of reverse-filter commutativity.</li>
+  <li><strong>Base case:</strong> <code>reverse(&lang;&rang; &#x21BE; A) = reverse &lang;&rang;</code> [filter.1] <code>= &lang;&rang;</code> [reverse.1] <code>= &lang;&rang; &#x21BE; A</code> [filter.1] <code>= (reverse &lang;&rang;) &#x21BE; A</code> [reverse.1].</li>
+  <li><strong>Inductive step:</strong> four equalities, each justified.</li>
+  <li><strong>Conclusion:</strong> equational reasoning completes the base case.</li>
+</ul>
+</div>
+
+<h3 id="s3-E">V.1 Practice: Induction Principle</h3>
+<div class="practice" id="p4_1">
+  <p>The induction principle for &Nopf; requires proving:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">P 0 (base case) and P i &rArr; P(i+1) (inductive step).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">Only P 0.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">P n for all n directly.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">Only the inductive step.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_1">
+    <p><strong>Correct.</strong> Two obligations: base and step.</p>
+    <ul>
+      <li><strong>Property:</strong> P must hold for 0 and propagate.</li>
+      <li><strong>Base case:</strong> P 0 is the anchor.</li>
+      <li><strong>Inductive step:</strong> P i &rArr; P(i+1) is the propagation.</li>
+      <li><strong>Conclusion:</strong> &forall; n : &Nopf; &bull; P n.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Base Case</h3>
+<div class="practice" id="p4_2">
+  <p>In structural induction on sequences, the base case proves:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')"><code>P &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')"><code>P 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')"><code>P &lang; x &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')"><code>&forall; s &bull; P s</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_2">
+    <p><strong>Correct.</strong> The empty sequence is the base.</p>
+    <ul>
+      <li><strong>Property:</strong> P must hold for the simplest sequence.</li>
+      <li><strong>Base case:</strong> &lang;&rang; is the only sequence with no elements.</li>
+      <li><strong>Inductive step:</strong> then extend to &lang;x&rang; &#x2040; t.</li>
+      <li><strong>Conclusion:</strong> builds up from empty to any finite sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: &Nopf; Induction</h3>
+<div class="practice" id="p4_3">
+  <p class="scenario">To prove <code>sum{i : 0..n} = (n&sup2; + n) div 2</code>, the <span class="key">base case</span> checks:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>sum{i : 0..0} = 0 = (0 + 0) div 2</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>sum{i : 0..1} = 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>sum{i : 0..n} = n</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')">No base case needed.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_3">
+    <p><strong>Correct.</strong> n = 0: sum is 0, formula gives 0.</p>
+    <ul>
+      <li><strong>Property:</strong> <code>P n &hArr; sum = (n&sup2; + n) div 2</code>.</li>
+      <li><strong>Base case:</strong> P 0 verified directly.</li>
+      <li><strong>Inductive step:</strong> next: assume P m, prove P(m+1).</li>
+      <li><strong>Conclusion:</strong> anchor established.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: &Nopf; Induction</h3>
+<div class="practice" id="p4_4">
+  <p class="scenario">In the inductive step for the sum formula, we assume <code>P m</code>. This assumption is called:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')">The inductive hypothesis.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">The base case.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">The conclusion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">A lemma.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_4">
+    <p><strong>Correct.</strong> We assume the property holds for m to prove it for m+1.</p>
+    <ul>
+      <li><strong>Property:</strong> P m is assumed true.</li>
+      <li><strong>Base case:</strong> already proven separately.</li>
+      <li><strong>Inductive step:</strong> use P m to derive P(m+1).</li>
+      <li><strong>Conclusion:</strong> hypothesis bridges from m to m+1.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Structural Induction Rule</h3>
+<div class="practice" id="p4_5">
+  <p>The structural induction rule for seq X has the form:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')"><code>P &lang;&rang;</code> and <code>&forall; x : X; t : seq X &bull; P t &rArr; P(&lang;x&rang; &#x2040; t)</code> implies <code>&forall; s : seq X &bull; P s</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')"><code>P 0</code> and <code>P n &rArr; P(n+1)</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')">Only <code>P &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')">Only <code>P(&lang;x&rang; &#x2040; t)</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_5">
+    <p><strong>Correct.</strong> Base on &lang;&rang;, step on &lang;x&rang; &#x2040; t.</p>
+    <ul>
+      <li><strong>Property:</strong> P must hold for all finite sequences.</li>
+      <li><strong>Base case:</strong> P &lang;&rang;.</li>
+      <li><strong>Inductive step:</strong> P t &rArr; P(&lang;x&rang; &#x2040; t).</li>
+      <li><strong>Conclusion:</strong> every finite sequence is built from &lang;&rang; by prepending.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Structural Induction</h3>
+<div class="practice" id="p4_6">
+  <p class="scenario">To prove <code>#(reverse s) = #s</code> by structural induction, the <span class="key">base case</span> is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>#(reverse &lang;&rang;) = #&lang;&rang; = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>#(reverse &lang;x&rang;) = 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>reverse &lang;&rang; = &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')">No base case needed.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_6">
+    <p><strong>Correct.</strong> Both sides equal 0 for the empty sequence.</p>
+    <ul>
+      <li><strong>Property:</strong> <code>P s &hArr; #(reverse s) = #s</code>.</li>
+      <li><strong>Base case:</strong> <code>P &lang;&rang;</code>: <code>#(reverse &lang;&rang;) = #&lang;&rang; = 0</code>.</li>
+      <li><strong>Inductive step:</strong> use reverse.2 and length of concatenation.</li>
+      <li><strong>Conclusion:</strong> &forall; s &bull; #(reverse s) = #s.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Structural Induction</h3>
+<div class="practice" id="p4_7">
+  <p>Why is structural induction valid for sequences?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')">Every finite sequence is built from &lang;&rang; by prepending elements one at a time.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">Sequences are infinite.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">It only works for sorted sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">It is a conjecture, not proven.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_7">
+    <p><strong>Correct.</strong> Exhaustive decomposition.</p>
+    <ul>
+      <li><strong>Property:</strong> any s is either &lang;&rang; or &lang;head s&rang; &#x2040; tail s.</li>
+      <li><strong>Base case:</strong> &lang;&rang; is the foundation.</li>
+      <li><strong>Inductive step:</strong> each prepend adds one element.</li>
+      <li><strong>Conclusion:</strong> reaches every finite sequence.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Structural Induction</h3>
+<div class="practice" id="p4_8">
+  <p class="scenario">In the structural induction proof of filter distributivity, the <span class="key">inductive hypothesis</span> assumes:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')"><code>(r &#x2040; t) &#x21BE; A = (r &#x21BE; A) &#x2040; (t &#x21BE; A)</code> holds for some shorter sequence r.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')">The conclusion itself.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')">That A is empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')">That s is a singleton.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_8">
+    <p><strong>Correct.</strong> Assume the property for r (the tail), prove for &lang;x&rang; &#x2040; r.</p>
+    <ul>
+      <li><strong>Property:</strong> P r assumed true.</li>
+      <li><strong>Base case:</strong> already established for &lang;&rang;.</li>
+      <li><strong>Inductive step:</strong> P r &rArr; P(&lang;x&rang; &#x2040; r).</li>
+      <li><strong>Conclusion:</strong> propagates to all sequences.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Equational Reasoning</h3>
+<div class="practice" id="p4_9">
+  <p>An equational reasoning proof is structured as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')">A chain of equalities, each justified by a named law or definition.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')">A truth table.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')">A counterexample.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')">An algorithm.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_9">
+    <p><strong>Correct.</strong> Each step = previous step, justified by a law.</p>
+    <ul>
+      <li><strong>Property:</strong> start with LHS, end with RHS.</li>
+      <li><strong>Base case:</strong> each = is tagged: [cat.1], [filter.2], etc.</li>
+      <li><strong>Inductive step:</strong> substitution by named laws.</li>
+      <li><strong>Conclusion:</strong> LHS = &hellip; = RHS. QED.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Equational Reasoning</h3>
+<div class="practice" id="p4_10">
+  <p class="scenario">In the chain <code>reverse(&lang;&rang; &#x21BE; A) = reverse &lang;&rang;</code>, the justification is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">filter.1: <code>&lang;&rang; &#x21BE; A = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">reverse.1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">cat.1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">cat.2.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_10">
+    <p><strong>Correct.</strong> Filter of empty is empty.</p>
+    <ul>
+      <li><strong>Property:</strong> law filter.1 applied inside reverse.</li>
+      <li><strong>Base case:</strong> <code>&lang;&rang; &#x21BE; A = &lang;&rang;</code> &rarr; <code>reverse &lang;&rang;</code>.</li>
+      <li><strong>Inductive step:</strong> next step would use reverse.1.</li>
+      <li><strong>Conclusion:</strong> each equality cites its law.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Inductive Step</h3>
+<div class="practice" id="p4_11">
+  <p class="scenario">In proving filter distributivity, the inductive step splits into two cases based on:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">Whether <code>x &isin; A</code> or <code>x &notin; A</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Whether s is empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Whether t is empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">The length of s.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_11">
+    <p><strong>Correct.</strong> filter.2 has two cases.</p>
+    <ul>
+      <li><strong>Property:</strong> <code>(&lang;x&rang; &#x2040; r) &#x21BE; A</code>.</li>
+      <li><strong>Base case:</strong> already done for &lang;&rang;.</li>
+      <li><strong>Inductive step:</strong> if x &isin; A: keep x; if x &notin; A: drop x.</li>
+      <li><strong>Conclusion:</strong> both sub-cases use the inductive hypothesis.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Structural vs &Nopf; Induction</h3>
+<div class="practice" id="p4_12">
+  <p>Structural induction on sequences is based on:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')">The structure of sequences: empty vs &lang;x&rang; &#x2040; t.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')">The natural number 0 and successor.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')">The type X.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')">Random sampling.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_12">
+    <p><strong>Correct.</strong> Sequence structure, not numeric structure.</p>
+    <ul>
+      <li><strong>Property:</strong> sequences decompose structurally.</li>
+      <li><strong>Base case:</strong> &lang;&rang; (not 0).</li>
+      <li><strong>Inductive step:</strong> &lang;x&rang; &#x2040; t (not n+1).</li>
+      <li><strong>Conclusion:</strong> &Nopf; induction works on numbers; structural induction works on data structures.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Proof Structure</h3>
+<div class="practice" id="p4_13">
+  <p>A structural induction proof has how many branches?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')">Two: base case and inductive step.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">One.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">Three.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">Unlimited.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_13">
+    <p><strong>Correct.</strong> Left branch = base; right branch = step.</p>
+    <ul>
+      <li><strong>Property:</strong> two obligations.</li>
+      <li><strong>Base case:</strong> anchor the proof.</li>
+      <li><strong>Inductive step:</strong> propagate to all sequences.</li>
+      <li><strong>Conclusion:</strong> both branches required.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Inductive Hypothesis Application</h3>
+<div class="practice" id="p4_14">
+  <p class="scenario">In the inductive step for <code>reverse(reverse s) = s</code>, after assuming <code>P t</code>, we need to show:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')"><code>reverse(reverse(&lang;x&rang; &#x2040; t)) = &lang;x&rang; &#x2040; t</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')"><code>reverse t = t</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')"><code>P &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')"><code>reverse &lang;&rang; = &lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_14">
+    <p><strong>Correct.</strong> Show P holds for &lang;x&rang; &#x2040; t.</p>
+    <ul>
+      <li><strong>Property:</strong> <code>P(&lang;x&rang; &#x2040; t)</code>.</li>
+      <li><strong>Base case:</strong> already done.</li>
+      <li><strong>Inductive step:</strong> use reverse.2 to expand, then apply P t.</li>
+      <li><strong>Conclusion:</strong> hypothesis bridges from t to &lang;x&rang; &#x2040; t.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Law Citation</h3>
+<div class="practice" id="p4_15">
+  <p class="scenario">In an equational chain, <code>&lang;&rang; &#x2040; (t &#x21BE; A) = t &#x21BE; A</code> is justified by:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">cat.1: <code>&lang;&rang; &#x2040; s = s</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">filter.1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">reverse.1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">cat.2.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_15">
+    <p><strong>Correct.</strong> Cat.1 is the unit law for concatenation.</p>
+    <ul>
+      <li><strong>Property:</strong> <code>&lang;&rang; &#x2040; s = s</code>.</li>
+      <li><strong>Base case:</strong> here s = <code>t &#x21BE; A</code>.</li>
+      <li><strong>Inductive step:</strong> substitution via cat.1.</li>
+      <li><strong>Conclusion:</strong> cited as [cat.1] in the chain.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Proof by Induction vs Direct</h3>
+<div class="practice" id="p4_16">
+  <p>When is structural induction needed instead of direct equational reasoning?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')">When the property must hold for sequences of arbitrary length.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')">When the sequence is empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')">When the sequence is a singleton.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')">Never &mdash; direct proofs always suffice.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_16">
+    <p><strong>Correct.</strong> Arbitrary length requires induction.</p>
+    <ul>
+      <li><strong>Property:</strong> universal statement over all finite sequences.</li>
+      <li><strong>Base case:</strong> direct proof handles fixed-size cases.</li>
+      <li><strong>Inductive step:</strong> induction handles unbounded cases.</li>
+      <li><strong>Conclusion:</strong> filter distributivity needs induction because s can be any length.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Inductive Step Mechanics</h3>
+<div class="practice" id="p4_17">
+  <p class="scenario">In the inductive step for filter distributivity, after applying filter.2, we use the <span class="key">inductive hypothesis</span> to rewrite:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')"><code>(r &#x2040; t) &#x21BE; A</code> as <code>(r &#x21BE; A) &#x2040; (t &#x21BE; A)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')"><code>&lang;&rang; &#x21BE; A</code> as <code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')"><code>reverse r</code> as <code>r</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')"><code>s &#x2040; t</code> as <code>t &#x2040; s</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_17">
+    <p><strong>Correct.</strong> The hypothesis lets us split the filter.</p>
+    <ul>
+      <li><strong>Property:</strong> P r assumed &rarr; split (r &#x2040; t) &#x21BE; A.</li>
+      <li><strong>Base case:</strong> already handled &lang;&rang;.</li>
+      <li><strong>Inductive step:</strong> hypothesis applied to the shorter sequence r.</li>
+      <li><strong>Conclusion:</strong> completes the case.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Number Induction vs Structural</h3>
+<div class="practice" id="p4_18">
+  <p>Which type of induction is used for <code>&forall; n : &Nopf; &bull; sum{i : 0..n} = (n&sup2; + n) div 2</code>?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')">&Nopf; induction (mathematical induction on natural numbers).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">Structural induction on sequences.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">Strong induction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">No induction needed.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_18">
+    <p><strong>Correct.</strong> The variable is n &isin; &Nopf;, not a sequence.</p>
+    <ul>
+      <li><strong>Property:</strong> universal over &Nopf;.</li>
+      <li><strong>Base case:</strong> P 0.</li>
+      <li><strong>Inductive step:</strong> P m &rArr; P(m+1).</li>
+      <li><strong>Conclusion:</strong> structural induction is for sequences; &Nopf; induction is for numbers.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Equational Chain Construction</h3>
+<div class="practice" id="p4_19">
+  <p class="scenario">Build the next step: <code>reverse &lang;&rang; = ?</code> [reverse.1]</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')"><code>&lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')"><code>&empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')"><code>0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_19">
+    <p><strong>Correct.</strong> reverse.1 defines <code>reverse &lang;&rang; = &lang;&rang;</code>.</p>
+    <ul>
+      <li><strong>Property:</strong> base case definition.</li>
+      <li><strong>Base case:</strong> direct from the recursive definition.</li>
+      <li><strong>Inductive step:</strong> cited as [reverse.1].</li>
+      <li><strong>Conclusion:</strong> <code>&lang;&rang;</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Equational Chain Construction</h3>
+<div class="practice" id="p4_20">
+  <p class="scenario">In a chain: <code>(&lang;&rang; &#x21BE; A) &#x2040; (t &#x21BE; A) = &lang;&rang; &#x2040; (t &#x21BE; A)</code>. Justification?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')">filter.1: <code>&lang;&rang; &#x21BE; A = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">cat.1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">reverse.1.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">filter.2.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_20">
+    <p><strong>Correct.</strong> Filter of empty replaced by empty.</p>
+    <ul>
+      <li><strong>Property:</strong> <code>&lang;&rang; &#x21BE; A = &lang;&rang;</code> by filter.1.</li>
+      <li><strong>Base case:</strong> substituted in the left conjunct.</li>
+      <li><strong>Inductive step:</strong> next step would use cat.1 to simplify.</li>
+      <li><strong>Conclusion:</strong> cited as [filter.1].</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Complete Induction Proof</h3>
+<div class="practice" id="p4_21">
+  <p>After proving both branches of a structural induction, we may conclude:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')"><code>&forall; s : seq X &bull; P s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">Only P &lang;&rang;.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">P for singletons only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">P for non-empty only.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_21">
+    <p><strong>Correct.</strong> Universal quantification over all finite sequences.</p>
+    <ul>
+      <li><strong>Property:</strong> P holds universally.</li>
+      <li><strong>Base case:</strong> covers &lang;&rang;.</li>
+      <li><strong>Inductive step:</strong> covers all non-empty sequences.</li>
+      <li><strong>Conclusion:</strong> together: every s in seq X.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Filter Distributivity Proof</h3>
+<div class="practice" id="p4_22">
+  <p>The proof that filter is distributive requires structural induction because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">Direct equational reasoning cannot handle arbitrary-length s.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Filter is not distributive.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">It can be proven by a truth table.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Only &Nopf; induction works.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_22">
+    <p><strong>Correct.</strong> Infinite family of proofs (one per length).</p>
+    <ul>
+      <li><strong>Property:</strong> must hold for all lengths.</li>
+      <li><strong>Base case:</strong> length 0: use filter.1.</li>
+      <li><strong>Inductive step:</strong> length n+1: use filter.2 + hypothesis.</li>
+      <li><strong>Conclusion:</strong> structural induction packages all lengths into one proof.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Proof Structure</h3>
+<div class="practice" id="p4_23">
+  <p>When two sequence variables appear (e.g., s and t), induction is typically done on:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')">One variable, with the other held arbitrary.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Both simultaneously.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Neither.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">The longer one.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_23">
+    <p><strong>Correct.</strong> Fix t, induct on s (or vice versa).</p>
+    <ul>
+      <li><strong>Property:</strong> &forall; s, t &bull; P(s, t).</li>
+      <li><strong>Base case:</strong> s = &lang;&rang;, t arbitrary.</li>
+      <li><strong>Inductive step:</strong> s = &lang;x&rang; &#x2040; r, t still arbitrary.</li>
+      <li><strong>Conclusion:</strong> one induction variable suffices.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Law Application</h3>
+<div class="practice" id="p4_24">
+  <p>Law reverse.2 states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')"><code>reverse(&lang;x&rang; &#x2040; s) = (reverse s) &#x2040; &lang;x&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')"><code>reverse &lang;&rang; = &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')"><code>reverse s = s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')"><code>&lang;&rang; &#x2040; s = s</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_24">
+    <p><strong>Correct.</strong> The recursive step of reverse.</p>
+    <ul>
+      <li><strong>Property:</strong> head moves to the end.</li>
+      <li><strong>Base case:</strong> reverse.1 handles &lang;&rang;.</li>
+      <li><strong>Inductive step:</strong> reverse.2 handles non-empty.</li>
+      <li><strong>Conclusion:</strong> together they define reverse on all finite sequences.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Induction vs Direct Proof</h3>
+<div class="practice" id="p4_25">
+  <p>Which can be proven by direct equational reasoning (no induction)?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')"><code>reverse(&lang;&rang; &#x21BE; A) = (reverse &lang;&rang;) &#x21BE; A</code> (base case only).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')"><code>&forall; s &bull; reverse(s &#x21BE; A) = (reverse s) &#x21BE; A</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')"><code>&forall; s, t &bull; (s &#x2040; t) &#x21BE; A = (s &#x21BE; A) &#x2040; (t &#x21BE; A)</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">None &mdash; all require induction.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_25">
+    <p><strong>Correct.</strong> A single fixed-size case needs only equational steps.</p>
+    <ul>
+      <li><strong>Property:</strong> specific case (s = &lang;&rang;), not universal.</li>
+      <li><strong>Base case:</strong> chain: filter.1 &rarr; reverse.1 &rarr; filter.1 &rarr; reverse.1.</li>
+      <li><strong>Inductive step:</strong> not needed for a specific instance.</li>
+      <li><strong>Conclusion:</strong> universal statements (&forall; s) require induction.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 4</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 9.</footer>
+
+</body>
+</html>

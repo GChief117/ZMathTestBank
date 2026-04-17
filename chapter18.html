@@ -1,0 +1,2909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chapter 18 — Functional Refinement</title>
+<link rel="stylesheet" href="style.css">
+<script src="quiz.js" defer></script>
+<script src="ch18-bank.js" defer></script>
+</head>
+<body>
+
+<nav class="section-nav">
+  <div class="nav-item">
+    <button onclick="handleSectionClick(0, event)">18.1 Retrieve Functions &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s0-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s0-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s0-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s0-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s0-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(1, event)">18.2 Functional Refinement &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s1-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s1-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s1-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s1-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s1-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(2, event)">18.3 Calculating Refinements &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s2-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s2-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s2-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s2-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s2-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <div class="nav-item">
+    <button onclick="handleSectionClick(3, event)">18.4 Refining Promotion &#9662;</button>
+    <ul class="nav-dropdown">
+      <li><a onclick="jumpTo('s3-A'); closeDropdowns();">I. Concept</a></li>
+      <li><a onclick="jumpTo('s3-B'); closeDropdowns();">II. Vocab Table</a></li>
+      <li><a onclick="jumpTo('s3-C'); closeDropdowns();">III. Symbol Table</a></li>
+      <li><a onclick="jumpTo('s3-D'); closeDropdowns();">IV. Examples</a></li>
+      <li><a onclick="jumpTo('s3-E'); closeDropdowns();">V. Practice</a></li>
+    </ul>
+  </div>
+  <a href="index.html" style="margin-left:auto; align-self:center; font-size:0.9em;">&larr; All Chapters</a>
+</nav>
+
+<h1>Chapter 18 &mdash; Functional Refinement</h1>
+
+<!-- ================= 18.1 Retrieve functions ================= -->
+<section class="page" id="page-0">
+<h2 id="c1">18.1 Retrieve functions</h2>
+
+<h3 id="s0-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li>A <span class="vocab" data-def="A total function from concrete to abstract state; the functional special case of a retrieve relation.">retrieve function</span> <code>f</code> maps every concrete state to exactly one abstract state.</li>
+  <li><strong><span class="vocab" data-def="R &sube; S &#x2A1E; f~ &hArr; R &#x2A1E; f &sube; S &mdash; allows post-composing with f instead of pre-composing with f~.">Cancellation law</span>:</strong> <code>R &sube; S &#x2A1E; f<sup>~</sup> &hArr; R &#x2A1E; f &sube; S</code> when <code>f</code> is total.</li>
+  <li><strong>Simplified correctness:</strong> existentials over abstract states collapse to applications of <code>f</code>.</li>
+  <li><strong>Table 18.1 rules:</strong> <span class="vocab" data-def="ci &#x2A1E; f &sube; ai &mdash; initialisation obligation for functional retrieve.">F-init-func-rel</span>, <span class="vocab" data-def="dom ao &#x25C1; f~ &#x2A1E; co &#x2A1E; f &sube; ao &mdash; correctness obligation for functional retrieve.">F-corr-func-rel</span>.</li>
+  <li><strong>Weaker condition:</strong> <code>ran R &sube; dom f</code> suffices; <code>f</code> need not be globally total.</li>
+  <li>Most practical refinements use retrieve functions &mdash; sorted list &rarr; set, array-prefix &rarr; sequence.</li>
+  <li>Functional retrieves compose by ordinary function composition.</li>
+  <li>Benefit: mechanised proofs are easier; the retrieve <em>computes</em> the abstract view.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s0-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Retrieve function</td><td>A total function from concrete to abstract state; the functional special case of a retrieve relation.</td></tr>
+  <tr><td>Cancellation law</td><td>R &sube; S &#x2A1E; f~ &hArr; R &#x2A1E; f &sube; S &mdash; allows post-composing with f instead of pre-composing with f~.</td></tr>
+  <tr><td>F-init-func-rel</td><td>ci &#x2A1E; f &sube; ai &mdash; initialisation obligation for functional retrieve.</td></tr>
+  <tr><td>F-corr-func-rel</td><td>dom ao &#x25C1; f~ &#x2A1E; co &#x2A1E; f &sube; ao &mdash; correctness obligation for functional retrieve.</td></tr>
+  <tr><td>Forward simulation</td><td>Proof method where concrete simulates abstract via the retrieve.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s0-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>f</code></td><td>Retrieve function (concrete &rarr; abstract).</td></tr>
+  <tr><td><code>f<sup>~</sup></code></td><td>Relational inverse of f.</td></tr>
+  <tr><td><code>&#x2A1E;</code></td><td>Relational composition (forward pipe).</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset / refinement inclusion.</td></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>ran</code></td><td>Range of a relation.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain of a relation.</td></tr>
+</table>
+
+<h3 id="s0-D">IV.1 Examples: Sorted List &rarr; Set, Array Prefix &rarr; Sequence &amp; Hash Table &rarr; Map</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>f</code></td><td>Retrieve function.</td></tr>
+  <tr><td><code>ran</code></td><td>Range.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A contact app stores names as a <span class="key">sorted list</span>; abstractly a <span class="key">set</span>. The retrieve <span class="key">forgets order</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>contacts : &Popf; Name</code>.</li>
+  <li><strong>Concrete:</strong> <code>sortedList : seq Name</code> (sorted, no duplicates).</li>
+  <li><strong>Retrieve:</strong> <code>f(l) = ran l</code> &mdash; total <span class="vocab" data-def="A total function from concrete to abstract state; the functional special case of a retrieve relation.">retrieve function</span>.</li>
+  <li><strong>Simplification:</strong> every list maps to exactly one set; no existentials needed.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A stack uses an <span class="key">array + top pointer</span>; abstractly a <span class="key">sequence</span>. The retrieve <span class="key">extracts the prefix</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>stack : seq X</code>.</li>
+  <li><strong>Concrete:</strong> <code>(arr : 1..N &rarr; X, top : &Nopf;)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(arr, top) = arr &#x25C1; 1..top</code> &mdash; restrict array to valid prefix.</li>
+  <li><strong>Simplification:</strong> each <code>(arr, top)</code> yields one sequence &mdash; functional.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A DNS cache uses a <span class="key">hash table</span>; abstractly a <span class="key">partial function</span>. The retrieve <span class="key">flattens buckets</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>cache : Name &#x21F8; IP</code>.</li>
+  <li><strong>Concrete:</strong> <code>buckets : 0..B&minus;1 &rarr; &Popf;(Name &times; IP)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(buckets) = &bigcup;{ b : ran buckets &bull; b }</code> &mdash; union all buckets.</li>
+  <li><strong>Simplification:</strong> bucket state determines one cache &mdash; functional retrieve.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Circular Buffer, Ring Queue &amp; Fixed Array</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>f</code></td><td>Retrieve function.</td></tr>
+  <tr><td><code>dom</code></td><td>Domain.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">circular buffer</span> with <code>(arr, head, count)</code> retrieves to a <span class="key">sequence</span> only when <span class="key">count &le; size</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>q : seq X</code>.</li>
+  <li><strong>Concrete:</strong> <code>(arr, head, count)</code> with invariant <code>count &le; size</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f</code> extracts the circular slice &mdash; partial: defined only on valid buffers.</li>
+  <li><strong>Simplification:</strong> valid buffer &rarr; exactly one queue; invariant restricts <code>dom f</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">ring queue</span> uses modular arithmetic; retrieve <span class="key">unwraps the ring</span> into a flat sequence.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>q : seq Msg</code>.</li>
+  <li><strong>Concrete:</strong> <code>(ring : 0..N&minus;1 &rarr; Msg, rd, wr : 0..N&minus;1)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f</code> reads from <code>rd</code> to <code>wr</code> modularly &mdash; functional.</li>
+  <li><strong>Simplification:</strong> each valid <code>(ring, rd, wr)</code> yields one sequence.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">fixed-size array</span> with a <span class="key">length counter</span> retrieves to a sequence by <span class="key">prefix extraction</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>items : seq Item</code>.</li>
+  <li><strong>Concrete:</strong> <code>(data : 1..MAX &rarr; Item, len : 0..MAX)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(data, len) = data &#x25C1; 1..len</code>.</li>
+  <li><strong>Simplification:</strong> deterministic prefix &mdash; total function on valid states.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Ledger Balance, Inventory Count &amp; Grade Average</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2A1E;</code></td><td>Relational composition.</td></tr>
+  <tr><td><code>f<sup>~</sup></code></td><td>Inverse of retrieve.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bank ledger (concrete) computes a <span class="key">balance</span> (abstract) by <span class="key">summing transactions</span>. The <span class="vocab" data-def="R &sube; S &#x2A1E; f~ &hArr; R &#x2A1E; f &sube; S &mdash; allows post-composing with f instead of pre-composing with f~.">cancellation law</span> lets us prove correctness without <code>f<sup>~</sup></code>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>balance : &Zopf;</code>.</li>
+  <li><strong>Concrete:</strong> <code>ledger : seq Transaction</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(ledger) = sum(ledger)</code>.</li>
+  <li><strong>Simplification:</strong> <code>R &#x2A1E; f &sube; S</code> replaces <code>R &sube; S &#x2A1E; f<sup>~</sup></code> &mdash; no inverse needed.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A warehouse <span class="key">inventory list</span> (concrete) retrieves to a <span class="key">count per item</span> (abstract) by <span class="key">grouping</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>stock : Item &#x21F8; &Nopf;</code>.</li>
+  <li><strong>Concrete:</strong> <code>bins : seq (Item &times; &Nopf;)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(bins)</code> groups by item, sums quantities.</li>
+  <li><strong>Simplification:</strong> cancellation law avoids reasoning about <code>f<sup>~</sup></code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A student <span class="key">grade list</span> (concrete) retrieves to a <span class="key">GPA</span> (abstract) by <span class="key">weighted average</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>gpa : &Ropf;</code>.</li>
+  <li><strong>Concrete:</strong> <code>grades : seq (Course &times; Grade &times; Credits)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(grades) = weightedAvg(grades)</code>.</li>
+  <li><strong>Simplification:</strong> deterministic computation &mdash; functional retrieve.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Contact Init, Queue Init &amp; Cache Init</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2A1E;</code></td><td>Relational composition.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset inclusion.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A contact book <span class="key">initialises</span> to an empty list; the abstract set must also be <span class="key">empty</span>. Prove <span class="vocab" data-def="ci &#x2A1E; f &sube; ai &mdash; initialisation obligation for functional retrieve.">F-init-func-rel</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ai : contacts' = &empty;</code>.</li>
+  <li><strong>Concrete:</strong> <code>ci : l' = &lang;&rang;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(&lang;&rang;) = ran &lang;&rang; = &empty;</code>.</li>
+  <li><strong>Simplification:</strong> <code>ci &#x2A1E; f &sube; ai</code> &mdash; <code>&empty; &sube; &empty;</code>. &#10003;</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A task queue <span class="key">initialises</span> with an empty array; abstract is an <span class="key">empty sequence</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ai : stack' = &lang;&rang;</code>.</li>
+  <li><strong>Concrete:</strong> <code>ci : top' = 0</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(arr, 0) = arr &#x25C1; 1..0 = &lang;&rang;</code>.</li>
+  <li><strong>Simplification:</strong> <code>ci &#x2A1E; f &sube; ai</code> holds trivially.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A DNS cache <span class="key">initialises</span> with all empty buckets; abstract is <span class="key">empty partial function</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ai : cache' = &empty;</code>.</li>
+  <li><strong>Concrete:</strong> <code>ci : &forall; i &bull; buckets'(i) = &empty;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(empty buckets) = &bigcup; &empty; = &empty;</code>.</li>
+  <li><strong>Simplification:</strong> empty buckets &rarr; empty cache. &#10003;</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Search Correctness, Insert Correctness &amp; Delete Correctness</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x25C1;</code></td><td>Domain restriction.</td></tr>
+  <tr><td><code>&#x2A1E;</code></td><td>Relational composition.</td></tr>
+  <tr><td><code>&sube;</code></td><td>Subset.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A membership <span class="key">lookup</span> in a sorted list must agree with <span class="key">set membership</span>. Prove <span class="vocab" data-def="dom ao &#x25C1; f~ &#x2A1E; co &#x2A1E; f &sube; ao &mdash; correctness obligation for functional retrieve.">F-corr-func-rel</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ao : result! = (n? &isin; contacts)</code>.</li>
+  <li><strong>Concrete:</strong> <code>co : result! = binarySearch(l, n?)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(l) = ran l</code>; binary search = set membership on <code>ran l</code>.</li>
+  <li><strong>Simplification:</strong> <code>dom ao &#x25C1; f<sup>~</sup> &#x2A1E; co &#x2A1E; f &sube; ao</code> reduces to showing search agrees with <code>&isin;</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An <span class="key">insert</span> into a sorted list must produce a list whose range equals the <span class="key">abstract set union</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ao : contacts' = contacts &cup; {n?}</code>.</li>
+  <li><strong>Concrete:</strong> <code>co : l' = sortedInsert(l, n?)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(l') = ran(sortedInsert(l, n?)) = ran l &cup; {n?}</code>.</li>
+  <li><strong>Simplification:</strong> <code>f(co(c)) = ao(f(c))</code> &mdash; commuting equation.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">delete</span> from a sorted list must produce a list whose range equals the <span class="key">abstract set difference</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ao : contacts' = contacts \ {n?}</code>.</li>
+  <li><strong>Concrete:</strong> <code>co : l' = filter(l, n?)</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f(l') = ran(filter(l, n?)) = ran l \ {n?}</code>.</li>
+  <li><strong>Simplification:</strong> filtering matches set difference via <code>ran</code>.</li>
+</ul>
+</div>
+
+<h3 id="s0-E">V.1 Practice: Retrieve Function Definition</h3>
+<div class="practice" id="p1_1">
+  <p>A retrieve function maps:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_1')">Each concrete state to exactly one abstract state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Each abstract state to many concrete states.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Concrete states to concrete states.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_1')">Abstract states to abstract states.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_1">
+    <p><strong>Correct.</strong> Functional: unique image per input.</p>
+    <ul>
+      <li><strong>Abstract:</strong> the target of the function.</li>
+      <li><strong>Concrete:</strong> the domain of the function.</li>
+      <li><strong>Retrieve:</strong> <code>f : Conc &rarr; Abs</code>.</li>
+      <li><strong>Simplification:</strong> deterministic abstraction.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Cancellation Law</h3>
+<div class="practice" id="p1_2">
+  <p>The cancellation law states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_2')"><code>R &sube; S &#x2A1E; f<sup>~</sup> &hArr; R &#x2A1E; f &sube; S</code> when f is total.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>R = S</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>f = f<sup>~</sup></code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_2')"><code>R &sube; &empty;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_2">
+    <p><strong>Correct.</strong> Post-compose with f instead of pre-composing with f~.</p>
+    <ul>
+      <li><strong>Abstract:</strong> S is the abstract relation.</li>
+      <li><strong>Concrete:</strong> R is the concrete relation.</li>
+      <li><strong>Retrieve:</strong> f total &rarr; cancellation applies.</li>
+      <li><strong>Simplification:</strong> avoids reasoning about the inverse.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Identifying Retrieve Functions</h3>
+<div class="practice" id="p1_3">
+  <p class="scenario">A library stores books as a <span class="key">sorted array</span>; abstractly as a <span class="key">set</span>. Which retrieve function is correct?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_3')"><code>f(arr) = ran arr</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>f(arr) = #arr</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>f(arr) = head arr</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_3')"><code>f(arr) = dom arr</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_3">
+    <p><strong>Correct.</strong> Range extracts elements, forgetting order.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>&Popf; Book</code>.</li>
+      <li><strong>Concrete:</strong> <code>seq Book</code> (sorted).</li>
+      <li><strong>Retrieve:</strong> <code>ran</code> maps list to set.</li>
+      <li><strong>Simplification:</strong> every sorted list yields exactly one set.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Identifying Retrieve Functions</h3>
+<div class="practice" id="p1_4">
+  <p class="scenario">A stack uses <span class="key">array + top pointer</span>; abstractly a <span class="key">sequence</span>. Which retrieve extracts the valid portion?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_4')"><code>f(arr, top) = arr &#x25C1; 1..top</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>f(arr, top) = arr</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>f(arr, top) = top</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_4')"><code>f(arr, top) = ran arr</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_4">
+    <p><strong>Correct.</strong> Domain-restrict to 1..top extracts the prefix.</p>
+    <ul>
+      <li><strong>Abstract:</strong> sequence of stack elements.</li>
+      <li><strong>Concrete:</strong> full array + pointer.</li>
+      <li><strong>Retrieve:</strong> <code>&#x25C1;</code> restricts domain.</li>
+      <li><strong>Simplification:</strong> elements past <code>top</code> are garbage &mdash; ignored.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Total vs Partial Retrieve</h3>
+<div class="practice" id="p1_5">
+  <p class="scenario">A circular buffer's retrieve is defined only when <span class="key">count &le; size</span>. This retrieve is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_5')">Partial &mdash; defined only on valid concrete states.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')">Total &mdash; defined on all concrete states.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')">Not a function.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_5')">Multi-valued.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_5">
+    <p><strong>Correct.</strong> Concrete invariant restricts domain.</p>
+    <ul>
+      <li><strong>Abstract:</strong> any sequence.</li>
+      <li><strong>Concrete:</strong> valid buffers only.</li>
+      <li><strong>Retrieve:</strong> <code>f : CBuf &#x21F8; seq X</code> &mdash; partial function arrow.</li>
+      <li><strong>Simplification:</strong> the weaker condition <code>ran R &sube; dom f</code> suffices.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Total vs Partial Retrieve</h3>
+<div class="practice" id="p1_6">
+  <p class="scenario">Every list maps to a set via <code>ran</code>. This retrieve is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_6')">Total &mdash; <code>ran</code> is defined on every sequence.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')">Partial &mdash; only sorted lists.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')">Multi-valued.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_6')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_6">
+    <p><strong>Correct.</strong> <code>ran</code> works on any sequence, including <code>&lang;&rang;</code>.</p>
+    <ul>
+      <li><strong>Abstract:</strong> set of elements.</li>
+      <li><strong>Concrete:</strong> any list.</li>
+      <li><strong>Retrieve:</strong> <code>f : seq X &rarr; &Popf; X</code> total.</li>
+      <li><strong>Simplification:</strong> no invariant restriction on domain.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Cancellation Law Application</h3>
+<div class="practice" id="p1_7">
+  <p>The cancellation law replaces reasoning about <code>f<sup>~</sup></code> with:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_7')">Post-composing with <code>f</code> on the concrete side.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">Removing <code>f</code> entirely.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">Pre-composing with <code>f<sup>~</sup></code> twice.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_7')">Replacing <code>f</code> with identity.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_7">
+    <p><strong>Correct.</strong> Move f to the other side of &sube;.</p>
+    <ul>
+      <li><strong>Abstract:</strong> S stays on the right.</li>
+      <li><strong>Concrete:</strong> R &#x2A1E; f replaces R on the left.</li>
+      <li><strong>Retrieve:</strong> f applied forward, not inverted.</li>
+      <li><strong>Simplification:</strong> no need to construct the inverse relation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: F-init-func-rel</h3>
+<div class="practice" id="p1_8">
+  <p>The initialisation obligation F-init-func-rel is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_8')"><code>ci &#x2A1E; f &sube; ai</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>ai &#x2A1E; f &sube; ci</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>ci = ai</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_8')"><code>f &sube; ci</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_8">
+    <p><strong>Correct.</strong> Concrete init then retrieve must land in abstract init.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>ai</code> = abstract initialisation.</li>
+      <li><strong>Concrete:</strong> <code>ci</code> = concrete initialisation.</li>
+      <li><strong>Retrieve:</strong> <code>f</code> applied after <code>ci</code>.</li>
+      <li><strong>Simplification:</strong> the concrete start-state, when retrieved, must be a valid abstract start-state.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: F-corr-func-rel</h3>
+<div class="practice" id="p1_9">
+  <p>The correctness obligation F-corr-func-rel is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_9')"><code>dom ao &#x25C1; f<sup>~</sup> &#x2A1E; co &#x2A1E; f &sube; ao</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>co = ao</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>f &#x2A1E; co = ao &#x2A1E; f</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_9')"><code>co &sube; ao</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_9">
+    <p><strong>Correct.</strong> Restrict to applicable states, do concrete op, retrieve, and check it refines the abstract op.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>ao</code> = abstract operation.</li>
+      <li><strong>Concrete:</strong> <code>co</code> = concrete operation.</li>
+      <li><strong>Retrieve:</strong> <code>f</code> and <code>f<sup>~</sup></code> bracket the concrete op.</li>
+      <li><strong>Simplification:</strong> uses the cancellation law to remove <code>f<sup>~</sup></code> in practice.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Init Proof</h3>
+<div class="practice" id="p1_10">
+  <p class="scenario">A contact book inits to <code>l' = &lang;&rang;</code>, abstract to <code>contacts' = &empty;</code>, retrieve <code>f = ran</code>. F-init-func-rel holds because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_10')"><code>f(&lang;&rang;) = ran &lang;&rang; = &empty; &isin; ai</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>f(&lang;&rang;) = &lang;&rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>f(&lang;&rang;)</code> is undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_10')"><code>ran &lang;&rang; = {0}</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_10">
+    <p><strong>Correct.</strong> Empty list retrieves to empty set.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>&empty;</code> is the abstract init state.</li>
+      <li><strong>Concrete:</strong> <code>&lang;&rang;</code> is the concrete init state.</li>
+      <li><strong>Retrieve:</strong> <code>ran &lang;&rang; = &empty;</code>.</li>
+      <li><strong>Simplification:</strong> <code>ci &#x2A1E; f &sube; ai</code> trivially holds.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Composition of Retrieves</h3>
+<div class="practice" id="p1_11">
+  <p>Two retrieve functions <code>f : C &rarr; B</code> and <code>g : B &rarr; A</code> compose as:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_11')"><code>g &#x2218; f : C &rarr; A</code> &mdash; ordinary function composition.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>f + g</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')"><code>f &cap; g</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_11')">They cannot compose.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_11">
+    <p><strong>Correct.</strong> Functions compose by standard composition.</p>
+    <ul>
+      <li><strong>Abstract:</strong> A is the most abstract level.</li>
+      <li><strong>Concrete:</strong> C is the most concrete level.</li>
+      <li><strong>Retrieve:</strong> g &#x2218; f goes C &rarr; A directly.</li>
+      <li><strong>Simplification:</strong> relational composition becomes function composition.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Why Functional</h3>
+<div class="practice" id="p1_12">
+  <p>Retrieve functions simplify proofs because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_12')">Existentials over abstract states become direct function applications.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">They add more quantifiers.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">They require backward simulation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_12')">They eliminate the concrete state.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_12">
+    <p><strong>Correct.</strong> <code>&exist; a &bull; R(c, a) &and; &hellip;</code> becomes <code>&hellip;[f(c)/a]</code>.</p>
+    <ul>
+      <li><strong>Abstract:</strong> a = f(c), uniquely determined.</li>
+      <li><strong>Concrete:</strong> c is the input.</li>
+      <li><strong>Retrieve:</strong> f computes a from c.</li>
+      <li><strong>Simplification:</strong> no search for witness; direct calculation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Correctness Proof</h3>
+<div class="practice" id="p1_13">
+  <p class="scenario">A sorted-list <span class="key">insert</span> must satisfy: <code>f(sortedInsert(l, n?)) = ran l &cup; {n?}</code>. This proves:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_13')">F-corr-func-rel: the concrete insert commutes with the retrieve.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')">F-init-func-rel.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')">The retrieve is surjective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_13')">The cancellation law itself.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_13">
+    <p><strong>Correct.</strong> Retrieve after concrete op = abstract op after retrieve.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>contacts' = contacts &cup; {n?}</code>.</li>
+      <li><strong>Concrete:</strong> <code>l' = sortedInsert(l, n?)</code>.</li>
+      <li><strong>Retrieve:</strong> <code>f(l') = ran l' = ran l &cup; {n?} = f(l) &cup; {n?}</code>.</li>
+      <li><strong>Simplification:</strong> equation chain proves correctness.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Weaker Condition</h3>
+<div class="practice" id="p1_14">
+  <p>The cancellation law requires f to be total. The weaker condition that suffices is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_14')"><code>ran R &sube; dom f</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>dom f = &empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>f = f<sup>~</sup></code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_14')"><code>R = S</code></button></li>
+  </ul>
+  <div class="feedback" id="fb1_14">
+    <p><strong>Correct.</strong> f need only be defined on states that R can reach.</p>
+    <ul>
+      <li><strong>Abstract:</strong> S stays as-is.</li>
+      <li><strong>Concrete:</strong> R's range must be in f's domain.</li>
+      <li><strong>Retrieve:</strong> partial f suffices if ran R &sube; dom f.</li>
+      <li><strong>Simplification:</strong> relaxes the totality requirement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Non-functional Retrieve</h3>
+<div class="practice" id="p1_15">
+  <p>A retrieve relation that is NOT a function means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_15')">One concrete state may correspond to multiple abstract states.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">The retrieve is undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">The refinement is impossible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_15')">Abstract and concrete are identical.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_15">
+    <p><strong>Correct.</strong> Non-deterministic abstraction.</p>
+    <ul>
+      <li><strong>Abstract:</strong> multiple abstract views per concrete state.</li>
+      <li><strong>Concrete:</strong> under-determines the abstraction.</li>
+      <li><strong>Retrieve:</strong> a relation, not a function.</li>
+      <li><strong>Simplification:</strong> cannot use functional refinement rules; must use general data refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Retrieve Direction</h3>
+<div class="practice" id="p1_16">
+  <p>A retrieve function goes from:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_16')">Concrete to abstract.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">Abstract to concrete.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">Concrete to concrete.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_16')">Abstract to abstract.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_16">
+    <p><strong>Correct.</strong> f : Conc &rarr; Abs.</p>
+    <ul>
+      <li><strong>Abstract:</strong> the codomain (target).</li>
+      <li><strong>Concrete:</strong> the domain (source).</li>
+      <li><strong>Retrieve:</strong> computes the abstract view.</li>
+      <li><strong>Simplification:</strong> "retrieve" = extract abstract from concrete.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Applicability</h3>
+<div class="practice" id="p1_17">
+  <p>The applicability part of F-corr-func-rel ensures:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_17')"><code>ran((dom ao) &#x25C1; f<sup>~</sup>) &sube; dom co</code> &mdash; concrete op is defined where abstract op applies.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>dom co = &empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>ao &sube; co</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_17')"><code>f = co</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_17">
+    <p><strong>Correct.</strong> Concrete operation must be applicable whenever abstract is.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>dom ao</code> = states where abstract op applies.</li>
+      <li><strong>Concrete:</strong> <code>dom co</code> = states where concrete op applies.</li>
+      <li><strong>Retrieve:</strong> <code>f<sup>~</sup></code> maps back to concrete.</li>
+      <li><strong>Simplification:</strong> concrete must not refuse valid abstract requests.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Practical Prevalence</h3>
+<div class="practice" id="p1_18">
+  <p>Most practical Z refinements use retrieve functions because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_18')">Implementations typically determine a unique abstract view.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">Relations are impossible to define.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">Functions are always total.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_18')">Abstract specs are always functions.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_18">
+    <p><strong>Correct.</strong> One concrete state &rarr; one abstract view.</p>
+    <ul>
+      <li><strong>Abstract:</strong> uniquely determined.</li>
+      <li><strong>Concrete:</strong> the implementation state.</li>
+      <li><strong>Retrieve:</strong> computes the abstraction.</li>
+      <li><strong>Simplification:</strong> deterministic &rarr; functional &rarr; simpler proof rules.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Proof Rule Application</h3>
+<div class="practice" id="p1_19">
+  <p class="scenario">A GPS tracker stores locations as a <span class="key">list</span>; abstract is a <span class="key">set</span>. <code>f = ran</code>. Prove init: <code>ci : l' = &lang;&rang;</code>, <code>ai : locs' = &empty;</code>.</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_19')"><code>ran &lang;&rang; = &empty; &isin; ai</code> &mdash; F-init-func-rel holds.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>ran &lang;&rang; = {0}</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>ran &lang;&rang;</code> is undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_19')"><code>&lang;&rang; &isin; &Popf; Loc</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_19">
+    <p><strong>Correct.</strong> Empty range = empty set.</p>
+    <ul>
+      <li><strong>Abstract:</strong> empty set of locations.</li>
+      <li><strong>Concrete:</strong> empty list.</li>
+      <li><strong>Retrieve:</strong> <code>ran &lang;&rang; = &empty;</code>.</li>
+      <li><strong>Simplification:</strong> <code>ci &#x2A1E; f &sube; ai</code> trivially.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Proof Rule Application</h3>
+<div class="practice" id="p1_20">
+  <p class="scenario">A contact-book <span class="key">delete</span>: abstract <code>contacts' = contacts \ {n?}</code>, concrete <code>l' = filter(l, n?)</code>, retrieve <code>f = ran</code>. Correctness holds because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_20')"><code>ran(filter(l, n?)) = ran l \ {n?}</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>filter(l, n?) = l</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>ran l = {n?}</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_20')"><code>f(l') = &empty;</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_20">
+    <p><strong>Correct.</strong> Filtering removes n? from the range.</p>
+    <ul>
+      <li><strong>Abstract:</strong> set difference.</li>
+      <li><strong>Concrete:</strong> sequence filter.</li>
+      <li><strong>Retrieve:</strong> <code>ran</code> commutes with filter/set-diff.</li>
+      <li><strong>Simplification:</strong> equation chain: <code>f(co(c)) = ao(f(c))</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Mechanised Proofs</h3>
+<div class="practice" id="p1_21">
+  <p>Functional retrieves benefit mechanised provers because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_21')">The retrieve computes the abstract view &mdash; no existential witness search.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">Provers cannot handle relations.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">Functions are always bijective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_21')">No proof obligations remain.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_21">
+    <p><strong>Correct.</strong> Computational witness replaces existential search.</p>
+    <ul>
+      <li><strong>Abstract:</strong> determined by f(c).</li>
+      <li><strong>Concrete:</strong> c is given.</li>
+      <li><strong>Retrieve:</strong> f produces the witness directly.</li>
+      <li><strong>Simplification:</strong> easier for automated tools.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Cancellation Law Proof Direction</h3>
+<div class="practice" id="p1_22">
+  <p>The cancellation law is proved using properties of:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_22')">Relational composition, inverse, and totality of f.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">Set union only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">Sequence concatenation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_22')">Free types.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_22">
+    <p><strong>Correct.</strong> Relational calculus + f total.</p>
+    <ul>
+      <li><strong>Abstract:</strong> definitions of &sube;, &#x2A1E;, ~.</li>
+      <li><strong>Concrete:</strong> f total &rArr; f<sup>~</sup> &#x2A1E; f = id on ran f.</li>
+      <li><strong>Retrieve:</strong> key step uses totality to cancel.</li>
+      <li><strong>Simplification:</strong> each step justified by a relational law.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Surjectivity</h3>
+<div class="practice" id="p1_23">
+  <p class="scenario">The retrieve <code>ListRetrieveSet</code> where <code>s = ran l</code> is a total, <span class="key">surjective</span> function. Surjective means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_23')">Every abstract state has at least one concrete representation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">Every concrete state has at least one abstract representation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">The function is injective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_23')">The function is partial.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_23">
+    <p><strong>Correct.</strong> Every set is representable by some list.</p>
+    <ul>
+      <li><strong>Abstract:</strong> every set is the range of some sequence.</li>
+      <li><strong>Concrete:</strong> at least one list exists for each set.</li>
+      <li><strong>Retrieve:</strong> surjective = onto.</li>
+      <li><strong>Simplification:</strong> surjectivity allows calculation of weakest refinement (§18.3).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Chat App Retrieve</h3>
+<div class="practice" id="p1_24">
+  <p class="scenario">A chat app stores <code>(msgs : seq Msg, unreadCount : &Nopf;)</code>; abstract is <code>seq Msg</code>. Which retrieve?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_24')"><code>f(msgs, n) = msgs</code> &mdash; first projection.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>f(msgs, n) = n</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>f(msgs, n) = &lang;&rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_24')"><code>f(msgs, n) = ran msgs</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_24">
+    <p><strong>Correct.</strong> Drop the auxiliary counter; keep the messages.</p>
+    <ul>
+      <li><strong>Abstract:</strong> message sequence.</li>
+      <li><strong>Concrete:</strong> messages + unread count.</li>
+      <li><strong>Retrieve:</strong> projection discards supplementary data.</li>
+      <li><strong>Simplification:</strong> total function &mdash; always defined.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Canonical View</h3>
+<div class="practice" id="p1_25">
+  <p>A retrieve function ensures:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb1_25')">One canonical abstract view per concrete state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Multiple abstract views per concrete state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">No abstract view exists.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb1_25')">Abstract and concrete are identical.</button></li>
+  </ul>
+  <div class="feedback" id="fb1_25">
+    <p><strong>Correct.</strong> Unique, deterministic abstraction.</p>
+    <ul>
+      <li><strong>Abstract:</strong> f(c) is the one and only abstract state for c.</li>
+      <li><strong>Concrete:</strong> c may have many representations of the same abstract state.</li>
+      <li><strong>Retrieve:</strong> function = single-valued.</li>
+      <li><strong>Simplification:</strong> canonical mapping enables equational proofs.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 18.2 Functional refinement ================= -->
+<section class="page" id="page-1">
+<h2 id="c2">18.2 Functional refinement</h2>
+
+<h3 id="s1-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Data refinement whose retrieve is a total function; proof obligations reduce to equations.">Functional refinement</span> requires proving <code>&forall; C &bull; &exist;<sub>1</sub> A &bull; R</code> &mdash; the retrieve is a total function (<span class="vocab" data-def="&forall; C &bull; &exist;&#x2081; A &bull; R &mdash; every concrete state has exactly one abstract counterpart.">F-func</span>).</li>
+  <li><strong><span class="vocab" data-def="&forall; A'; C' &bull; CI &and; R' &rArr; AI &mdash; concrete init under retrieve implies abstract init.">F-init-func</span>:</strong> <code>&forall; A'; C' &bull; CI &and; R' &rArr; AI</code>.</li>
+  <li><strong><span class="vocab" data-def="Concrete op + retrieve must imply abstract op; and abstract precondition + retrieve must imply concrete precondition.">F-corr-func</span>:</strong> correctness + applicability &mdash; two obligations.</li>
+  <li>Correctness: <code>&forall; A; A'; C; C' &bull; pre AO &and; R &and; CO &and; R' &rArr; AO</code>.</li>
+  <li>Applicability: <code>&forall; A; C &bull; pre AO &and; R &rArr; pre CO</code>.</li>
+  <li>These rules are simpler than general data refinement &mdash; no existentials.</li>
+  <li>If the retrieve is defined by equations (e.g., <code>s = ran l</code>), it is automatically functional.</li>
+  <li>Most realistic specifications use this pattern.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s1-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Functional refinement</td><td>Data refinement whose retrieve is a total function; proof obligations reduce to equations.</td></tr>
+  <tr><td>F-func</td><td>&forall; C &bull; &exist;&#x2081; A &bull; R &mdash; every concrete state has exactly one abstract counterpart.</td></tr>
+  <tr><td>F-init-func</td><td>&forall; A'; C' &bull; CI &and; R' &rArr; AI &mdash; concrete init under retrieve implies abstract init.</td></tr>
+  <tr><td>F-corr-func</td><td>Concrete op + retrieve must imply abstract op; and abstract precondition + retrieve must imply concrete precondition.</td></tr>
+  <tr><td>Commuting diagram</td><td>Two paths around a square (concrete-then-retrieve vs retrieve-then-abstract) give the same result.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s1-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;<sub>1</sub></code></td><td>Exists uniquely.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>pre</code></td><td>Precondition of an operation.</td></tr>
+  <tr><td><code>&and;</code></td><td>Logical conjunction.</td></tr>
+  <tr><td><code>R</code></td><td>Retrieve relation (here a function).</td></tr>
+  <tr><td><code>R'</code></td><td>Retrieve on after-states.</td></tr>
+</table>
+
+<h3 id="s1-D">IV.1 Examples: Building Access List, Gym Membership &amp; Library Cards</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;<sub>1</sub></code></td><td>Exists uniquely.</td></tr>
+  <tr><td><code>R</code></td><td>Retrieve relation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A building access system stores people as a <span class="key">concrete list</span>; abstractly a <span class="key">set</span>. Retrieve: <code>s = ran l</code>. Proving <span class="vocab" data-def="&forall; C &bull; &exist;&#x2081; A &bull; R &mdash; every concrete state has exactly one abstract counterpart.">F-func</span>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>&forall; CSystem &bull; &exist;<sub>1</sub> ASystem &bull; ListRetrieveSet</code>.</li>
+  <li><strong>Equation:</strong> <code>s = ran l</code> defines <code>s</code> uniquely from <code>l</code>.</li>
+  <li><strong>Commutation:</strong> <code>ran</code> is a total, surjective function.</li>
+  <li><strong>Conclusion:</strong> F-func holds &mdash; every list has one set.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A gym stores <span class="key">member check-ins</span> as a log; abstractly a <span class="key">set of present members</span>. Retrieve: <code>present = ran log</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>&forall; log &bull; &exist;<sub>1</sub> present &bull; present = ran log</code>.</li>
+  <li><strong>Equation:</strong> <code>ran</code> uniquely determines the set.</li>
+  <li><strong>Commutation:</strong> total, surjective &mdash; every set has a representing log.</li>
+  <li><strong>Conclusion:</strong> functional refinement applies.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A library tracks <span class="key">checked-out books</span> via a card log; abstractly a <span class="key">partial function</span> <code>Book &#x21F8; Patron</code>. Retrieve: <code>loans = cardLog &#x25C1; activeCards</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> each card log state uniquely determines the loan map.</li>
+  <li><strong>Equation:</strong> restricting the log to active cards gives one function.</li>
+  <li><strong>Commutation:</strong> F-func holds.</li>
+  <li><strong>Conclusion:</strong> functional refinement rules apply.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Counter Commuting, Temperature Commuting &amp; Currency Commuting</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>pre</code></td><td>Precondition.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A visit <span class="key">counter</span>: abstract <code>AInc(n) = n + 1</code>, concrete <code>CInc(b) = b + 1</code>, retrieve <code>r = id</code>. Proving <span class="vocab" data-def="Two paths around a square (concrete-then-retrieve vs retrieve-then-abstract) give the same result.">commuting diagram</span>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>r(CInc(b)) = AInc(r(b))</code>.</li>
+  <li><strong>Equation:</strong> <code>b + 1 = b + 1</code>. &#10003;</li>
+  <li><strong>Commutation:</strong> trivially commutes (identity retrieve).</li>
+  <li><strong>Conclusion:</strong> correctness holds by equation.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">temperature sensor</span>: abstract in &deg;F, concrete in raw units. Retrieve: <code>r(raw) = raw &times; 0.1</code>. Abstract <code>ASet(v) = v</code>, concrete <code>CSet(v) = v &times; 10</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>r(CSet(v)) = ASet(r(raw), v)</code>.</li>
+  <li><strong>Equation:</strong> <code>(v &times; 10) &times; 0.1 = v</code>. &#10003;</li>
+  <li><strong>Commutation:</strong> scaling factor cancels.</li>
+  <li><strong>Conclusion:</strong> functional refinement via equation.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">currency converter</span>: abstract in dollars, concrete in cents. Retrieve: <code>r(cents) = cents / 100</code>. Abstract <code>ADeposit(b, x) = b + x</code>, concrete <code>CDeposit(c, x) = c + x &times; 100</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>r(CDeposit(c, x)) = ADeposit(r(c), x)</code>.</li>
+  <li><strong>Equation:</strong> <code>(c + x &times; 100) / 100 = c/100 + x</code>. &#10003;</li>
+  <li><strong>Commutation:</strong> division distributes over addition.</li>
+  <li><strong>Conclusion:</strong> deposit in cents = deposit in dollars via retrieve.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Init Proof &mdash; Library Init, Queue Init &amp; Cache Init</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+  <tr><td><code>R'</code></td><td>Retrieve on after-states.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A library <span class="key">initialises</span> with an empty card log. <span class="vocab" data-def="&forall; A'; C' &bull; CI &and; R' &rArr; AI &mdash; concrete init under retrieve implies abstract init.">F-init-func</span>: <code>CI &and; R' &rArr; AI</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> empty card log under retrieve gives empty loan map.</li>
+  <li><strong>Equation:</strong> <code>loans' = &empty; &#x25C1; activeCards' = &empty;</code>.</li>
+  <li><strong>Commutation:</strong> abstract init also sets <code>loans' = &empty;</code>.</li>
+  <li><strong>Conclusion:</strong> F-init-func holds.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A task queue <span class="key">initialises</span> with <code>top' = 0</code>. Under retrieve: <code>f(arr', 0) = &lang;&rang;</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>CI &and; R' &rArr; AI</code> where <code>AI : stack' = &lang;&rang;</code>.</li>
+  <li><strong>Equation:</strong> <code>f(arr', 0) = &lang;&rang; = stack'</code>.</li>
+  <li><strong>Commutation:</strong> both sides are empty sequence.</li>
+  <li><strong>Conclusion:</strong> init obligation satisfied.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A cache <span class="key">initialises</span> with empty buckets. <code>CI &and; R' &rArr; AI</code> where <code>AI : cache' = &empty;</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> union of empty buckets = empty cache.</li>
+  <li><strong>Equation:</strong> <code>&bigcup; &empty; = &empty;</code>.</li>
+  <li><strong>Commutation:</strong> abstract init matches.</li>
+  <li><strong>Conclusion:</strong> F-init-func holds trivially.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Correctness &mdash; Deposit, Withdraw &amp; Transfer</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>pre</code></td><td>Precondition.</td></tr>
+  <tr><td><code>&and;</code></td><td>Conjunction.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bank <span class="key">deposit</span>: abstract <code>bal' = bal + x?</code>, concrete <code>cents' = cents + x? &times; 100</code>, retrieve <code>bal = cents / 100</code>. <span class="vocab" data-def="Concrete op + retrieve must imply abstract op; and abstract precondition + retrieve must imply concrete precondition.">F-corr-func</span>.</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>pre ADeposit &and; R &and; CDeposit &and; R' &rArr; ADeposit</code>.</li>
+  <li><strong>Equation:</strong> <code>cents'/100 = (cents + x?&times;100)/100 = cents/100 + x? = bal + x?</code>.</li>
+  <li><strong>Commutation:</strong> both paths agree.</li>
+  <li><strong>Conclusion:</strong> correctness via equation chain.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A bank <span class="key">withdraw</span>: abstract <code>bal' = bal &minus; x?</code> with <code>pre : bal &ge; x?</code>. Concrete <code>cents' = cents &minus; x? &times; 100</code> with <code>pre : cents &ge; x? &times; 100</code>.</p>
+<ul>
+  <li><strong>Obligation:</strong> correctness + applicability.</li>
+  <li><strong>Equation:</strong> <code>cents'/100 = bal &minus; x?</code> and <code>bal &ge; x? &and; R &rArr; cents &ge; x? &times; 100</code>.</li>
+  <li><strong>Commutation:</strong> applicability: abstract precondition implies concrete.</li>
+  <li><strong>Conclusion:</strong> both F-corr-func parts hold.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">transfer</span>: abstract <code>(a' = a &minus; x?, b' = b + x?)</code>. Concrete operates on cents. Two-component commutation.</p>
+<ul>
+  <li><strong>Obligation:</strong> both balance updates must commute with retrieve.</li>
+  <li><strong>Equation:</strong> <code>centsA'/100 = a &minus; x?</code> and <code>centsB'/100 = b + x?</code>.</li>
+  <li><strong>Commutation:</strong> each component commutes independently.</li>
+  <li><strong>Conclusion:</strong> functional refinement handles multi-component state.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Applicability &mdash; Bounded Stack, Full Cache &amp; Max-Size Queue</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>pre</code></td><td>Precondition.</td></tr>
+  <tr><td><code>&rArr;</code></td><td>Implication.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A <span class="key">bounded stack push</span>: abstract has no bound, concrete requires <code>top &lt; MAX</code>. Applicability:</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>&forall; A; C &bull; pre APush &and; R &rArr; pre CPush</code>.</li>
+  <li><strong>Equation:</strong> <code>pre APush = true</code>; <code>pre CPush = (top &lt; MAX)</code>.</li>
+  <li><strong>Commutation:</strong> concrete is more restrictive &mdash; fails if stack is full.</li>
+  <li><strong>Conclusion:</strong> applicability fails unless abstract also bounds the stack.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">full cache eviction</span>: abstract <code>AEvict</code> always applies, concrete requires <code>#entries &gt; 0</code>. Applicability:</p>
+<ul>
+  <li><strong>Obligation:</strong> <code>pre AEvict &and; R &rArr; pre CEvict</code>.</li>
+  <li><strong>Equation:</strong> if abstract says cache is non-empty under retrieve, concrete must agree.</li>
+  <li><strong>Commutation:</strong> retrieve preserves non-emptiness &rArr; obligation holds.</li>
+  <li><strong>Conclusion:</strong> applicability via invariant transfer.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A <span class="key">max-size queue enqueue</span>: abstract unbounded, concrete <code>count &lt; N</code>. Applicability:</p>
+<ul>
+  <li><strong>Obligation:</strong> abstract precondition + retrieve must imply concrete precondition.</li>
+  <li><strong>Equation:</strong> <code>pre AEnq = true</code>; <code>pre CEnq = (count &lt; N)</code>.</li>
+  <li><strong>Commutation:</strong> concrete refuses when full &mdash; abstract must be amended to match.</li>
+  <li><strong>Conclusion:</strong> applicability forces design alignment.</li>
+</ul>
+</div>
+
+<h3 id="s1-E">V.1 Practice: F-func Obligation</h3>
+<div class="practice" id="p2_1">
+  <p>F-func requires proving:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_1')"><code>&forall; C &bull; &exist;<sub>1</sub> A &bull; R</code> &mdash; the retrieve is a total function.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>&forall; A &bull; &exist;<sub>1</sub> C &bull; R</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>R = &empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_1')"><code>&forall; C &bull; R</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_1">
+    <p><strong>Correct.</strong> Every concrete state has exactly one abstract counterpart.</p>
+    <ul>
+      <li><strong>Obligation:</strong> unique existence.</li>
+      <li><strong>Equation:</strong> R defines A as a function of C.</li>
+      <li><strong>Commutation:</strong> functional retrieve ensures F-func.</li>
+      <li><strong>Conclusion:</strong> enables simpler proof rules.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Correctness Rule</h3>
+<div class="practice" id="p2_2">
+  <p>F-corr-func correctness states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_2')"><code>&forall; A; A'; C; C' &bull; pre AO &and; R &and; CO &and; R' &rArr; AO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>CO = AO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>R &rArr; AO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_2')"><code>&forall; C &bull; CO</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_2">
+    <p><strong>Correct.</strong> Concrete op under retrieve implies abstract op.</p>
+    <ul>
+      <li><strong>Obligation:</strong> if we start in a valid abstract state (pre AO &and; R), do the concrete op (CO), and retrieve again (R'), then AO must hold.</li>
+      <li><strong>Equation:</strong> both paths around the commuting square agree.</li>
+      <li><strong>Commutation:</strong> R and R' bracket the concrete op.</li>
+      <li><strong>Conclusion:</strong> correctness = commuting diagram.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Commuting Diagram</h3>
+<div class="practice" id="p2_3">
+  <p class="scenario">A banking system: <code>ADeposit(b, x) = b + x</code>, <code>CDeposit(cents, x) = cents + x&times;100</code>, <code>r(cents) = cents / 100</code>. Which proves commutation?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_3')"><code>r(CDeposit(c,x)) = (c + x&times;100)/100 = c/100 + x = ADeposit(r(c), x)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>r = ADeposit</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>CDeposit = ADeposit</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_3')"><code>r(c) = c</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_3">
+    <p><strong>Correct.</strong> Equation chain: retrieve after concrete = abstract after retrieve.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func.</li>
+      <li><strong>Equation:</strong> scaling distributes through addition.</li>
+      <li><strong>Commutation:</strong> both paths yield <code>c/100 + x</code>.</li>
+      <li><strong>Conclusion:</strong> deposit in cents = deposit in dollars.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Commuting Diagram</h3>
+<div class="practice" id="p2_4">
+  <p class="scenario">A to-do app: abstract <code>AAdd(S, t) = S &cup; {t}</code>, concrete <code>CAdd(l, t) = l &#x2040; &lang; t &rang;</code>, retrieve <code>r(l) = ran l</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_4')"><code>r(CAdd(l,t)) = ran(l &#x2040; &lang;t&rang;) = ran l &cup; {t} = AAdd(r(l), t)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>r = t</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>CAdd = AAdd</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_4')"><code>ran l = l</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_4">
+    <p><strong>Correct.</strong> Range of append = range union singleton.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func for Add.</li>
+      <li><strong>Equation:</strong> <code>ran(l &#x2040; &lang;t&rang;) = ran l &cup; {t}</code>.</li>
+      <li><strong>Commutation:</strong> list-append = set-add via retrieve.</li>
+      <li><strong>Conclusion:</strong> correctness by equation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Applicability Rule</h3>
+<div class="practice" id="p2_5">
+  <p>F-corr-func applicability states:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_5')"><code>&forall; A; C &bull; pre AO &and; R &rArr; pre CO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>pre CO &rArr; pre AO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>pre AO = true</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_5')"><code>pre CO = &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_5">
+    <p><strong>Correct.</strong> If abstract op applies under retrieve, concrete op must also apply.</p>
+    <ul>
+      <li><strong>Obligation:</strong> concrete must not refuse valid requests.</li>
+      <li><strong>Equation:</strong> abstract precondition + retrieve implies concrete precondition.</li>
+      <li><strong>Commutation:</strong> ensures the diagram can be entered.</li>
+      <li><strong>Conclusion:</strong> concrete is at least as applicable as abstract.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Equational vs Existential</h3>
+<div class="practice" id="p2_6">
+  <p>Functional refinement proofs avoid existentials because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_6')">The retrieve function directly computes the abstract state from concrete.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">Existentials are invalid in Z.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">The concrete state is always empty.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_6')">Only forward simulation uses existentials.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_6">
+    <p><strong>Correct.</strong> <code>&exist; a &bull; R(c,a) &and; &hellip;</code> becomes <code>&hellip;[f(c)/a]</code>.</p>
+    <ul>
+      <li><strong>Obligation:</strong> no witness search.</li>
+      <li><strong>Equation:</strong> direct substitution.</li>
+      <li><strong>Commutation:</strong> equational proof style.</li>
+      <li><strong>Conclusion:</strong> simpler than general data refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Timer Commuting</h3>
+<div class="practice" id="p2_7">
+  <p class="scenario">A timer: abstract <code>ATick(t) = t + 1</code>, concrete <code>CTick(t) = t + 1</code>, retrieve <code>r = id</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_7')"><code>r(CTick(t)) = t + 1 = ATick(r(t))</code> &#10003;</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>r(t) = 0</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>CTick = r</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_7')"><code>ATick(t) = 0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_7">
+    <p><strong>Correct.</strong> Identity retrieve &mdash; trivial commutation.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func.</li>
+      <li><strong>Equation:</strong> <code>id(t+1) = t+1</code>.</li>
+      <li><strong>Commutation:</strong> same operation on both sides.</li>
+      <li><strong>Conclusion:</strong> identity is the simplest retrieve.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Remove Commuting</h3>
+<div class="practice" id="p2_8">
+  <p class="scenario">Shopping cart: abstract <code>ARemove(S, x) = S \ {x}</code>, concrete <code>CRemove(l, x)</code> filters x out, retrieve <code>r(l) = ran l</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_8')"><code>r(CRemove(l,x)) = ran l \ {x} = ARemove(r(l), x)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>ARemove = CRemove</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>r(l) = l</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_8')"><code>ran l = {x}</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_8">
+    <p><strong>Correct.</strong> Sequence filter = set difference via ran.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func for Remove.</li>
+      <li><strong>Equation:</strong> <code>ran(filter(l,x)) = ran l \ {x}</code>.</li>
+      <li><strong>Commutation:</strong> concrete and abstract agree.</li>
+      <li><strong>Conclusion:</strong> correctness by range equation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Non-deterministic Case</h3>
+<div class="practice" id="p2_9">
+  <p>When operations are non-deterministic, correctness uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_9')">Inclusion (<code>&sube;</code>) instead of equality.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">Equality always.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">No proof obligation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_9')">Backward simulation only.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_9">
+    <p><strong>Correct.</strong> Concrete may resolve non-determinism.</p>
+    <ul>
+      <li><strong>Obligation:</strong> concrete outcomes &sube; abstract outcomes.</li>
+      <li><strong>Equation:</strong> <code>f<sup>~</sup> &#x2A1E; co &#x2A1E; f &sube; ao</code> (not =).</li>
+      <li><strong>Commutation:</strong> one path refines the other.</li>
+      <li><strong>Conclusion:</strong> concrete is more deterministic than abstract.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Equation-based Retrieve</h3>
+<div class="practice" id="p2_10">
+  <p>If the retrieve is defined by an equation <code>s = ran l</code>, then F-func:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_10')">Holds automatically &mdash; the equation defines A uniquely from C.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Must still be proven separately.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Fails.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_10')">Requires backward simulation.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_10">
+    <p><strong>Correct.</strong> An equation defining abstract from concrete is a function by definition.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-func is immediate.</li>
+      <li><strong>Equation:</strong> <code>s = ran l</code> computes s from l.</li>
+      <li><strong>Commutation:</strong> functional by construction.</li>
+      <li><strong>Conclusion:</strong> common pattern in realistic specs.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Queue Send</h3>
+<div class="practice" id="p2_11">
+  <p class="scenario">A message queue: abstract <code>ASend(q, m) = q &#x2040; &lang; m &rang;</code>, concrete buffer writes at tail. Commutation requires:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_11')"><code>r(CSend(buf, m)) = r(buf) &#x2040; &lang; m &rang;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>r = m</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>buf = m</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_11')"><code>CSend = ASend</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_11">
+    <p><strong>Correct.</strong> Retrieve after buffer-write = abstract queue-append.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func for Send.</li>
+      <li><strong>Equation:</strong> buffer write at tail produces the right sequence.</li>
+      <li><strong>Commutation:</strong> both paths yield <code>q &#x2040; &lang; m &rang;</code>.</li>
+      <li><strong>Conclusion:</strong> correctness by equation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: IoT Sensor</h3>
+<div class="practice" id="p2_12">
+  <p class="scenario">IoT device: abstract <code>temp : &Ropf;</code>, concrete <code>raw : &Zopf;</code>, retrieve <code>r(raw) = raw &times; 0.1</code>. <code>CSet(raw, v) = v &times; 10</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_12')"><code>r(CSet(raw, v)) = (v&times;10)&times;0.1 = v = ASet(r(raw), v)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>r = v</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>CSet = ASet</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_12')"><code>raw = v</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_12">
+    <p><strong>Correct.</strong> Scaling factor cancels.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func.</li>
+      <li><strong>Equation:</strong> <code>10 &times; 0.1 = 1</code>.</li>
+      <li><strong>Commutation:</strong> scaling bijection.</li>
+      <li><strong>Conclusion:</strong> raw units refine real units.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Proof Burden</h3>
+<div class="practice" id="p2_13">
+  <p>Functional refinement's proof burden compared to general data refinement is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_13')">Smaller &mdash; fewer quantifiers, no existential witnesses.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Larger.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">Identical.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_13')">No obligations at all.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_13">
+    <p><strong>Correct.</strong> Equations replace quantified formulas.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-func + F-init-func + F-corr-func.</li>
+      <li><strong>Equation:</strong> direct computation instead of witness search.</li>
+      <li><strong>Commutation:</strong> equational reasoning.</li>
+      <li><strong>Conclusion:</strong> smaller, simpler proof.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Gym Check-in</h3>
+<div class="practice" id="p2_14">
+  <p class="scenario">Gym: abstract <code>ACheckin(S, m) = S &cup; {m}</code>, concrete <code>CCheckin(log, m) = log &#x2040; &lang; m &rang;</code>, retrieve <code>r(log) = ran log</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_14')"><code>r(CCheckin(log,m)) = ran log &cup; {m} = ACheckin(r(log), m)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>r = log</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>CCheckin = ACheckin</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_14')"><code>ran log = &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_14">
+    <p><strong>Correct.</strong> Log-append = set-add via range.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func.</li>
+      <li><strong>Equation:</strong> <code>ran(log &#x2040; &lang;m&rang;) = ran log &cup; {m}</code>.</li>
+      <li><strong>Commutation:</strong> both paths agree.</li>
+      <li><strong>Conclusion:</strong> check-in log refines member set.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Commuting Diagram Meaning</h3>
+<div class="practice" id="p2_15">
+  <p>A commuting diagram proves:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_15')">Two paths (concrete-then-retrieve vs retrieve-then-abstract) give equal results.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">The concrete op is faster.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">The abstract op is undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_15')">Only one path exists.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_15">
+    <p><strong>Correct.</strong> Two routes around the square agree.</p>
+    <ul>
+      <li><strong>Obligation:</strong> <code>f &#x2218; co = ao &#x2218; f</code> (informally).</li>
+      <li><strong>Equation:</strong> operate then retrieve = retrieve then operate.</li>
+      <li><strong>Commutation:</strong> the diagram "commutes."</li>
+      <li><strong>Conclusion:</strong> core of functional refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Ledger Transfer</h3>
+<div class="practice" id="p2_16">
+  <p class="scenario">Banking: abstract <code>ATransfer(a, b, x) = (a&minus;x, b+x)</code>, concrete posts to a ledger, retrieve computes balances. Commutation says:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_16')">Posting to the ledger, then retrieving balances = updating balances directly.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">The ledger replaces the abstract state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Transfer is undefined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_16')">Only one account changes.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_16">
+    <p><strong>Correct.</strong> Ledger posting commutes with balance update.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func for Transfer.</li>
+      <li><strong>Equation:</strong> summing the ledger after posting = direct balance arithmetic.</li>
+      <li><strong>Commutation:</strong> both paths agree on (a&minus;x, b+x).</li>
+      <li><strong>Conclusion:</strong> event-sourced accounting refines direct balance tracking.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Proof Style</h3>
+<div class="practice" id="p2_17">
+  <p>Functional refinement proofs typically follow:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_17')">A chain of equalities &mdash; calculational style.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">A truth table.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">A counterexample argument.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_17')">An induction proof.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_17">
+    <p><strong>Correct.</strong> Equational reasoning &mdash; same approach as equational proofs in Ch 9.</p>
+    <ul>
+      <li><strong>Obligation:</strong> show LHS = RHS.</li>
+      <li><strong>Equation:</strong> each step justified by a law or definition.</li>
+      <li><strong>Commutation:</strong> chain of = signs.</li>
+      <li><strong>Conclusion:</strong> clean, verifiable proofs.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Save Game</h3>
+<div class="practice" id="p2_18">
+  <p class="scenario">Game save: abstract <code>ASave(S, s) = S &cup; {s}</code>, concrete <code>CSave(map, s) = map &oplus; {nextId &#8614; s}</code>, retrieve <code>r(map) = ran map</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_18')"><code>r(CSave(map,s)) = ran map &cup; {s} = ASave(r(map), s)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')"><code>map = s</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')"><code>CSave = ASave</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_18')"><code>ran map = &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_18">
+    <p><strong>Correct.</strong> Override with new id adds to range.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func.</li>
+      <li><strong>Equation:</strong> <code>ran(map &oplus; {id &#8614; s}) = ran map &cup; {s}</code>.</li>
+      <li><strong>Commutation:</strong> id-map refines abstract set.</li>
+      <li><strong>Conclusion:</strong> save as id-keyed map commutes with save as set-add.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Existential Elimination</h3>
+<div class="practice" id="p2_19">
+  <p>In functional refinement, <code>&exist; a &bull; R(c, a) &and; P(a)</code> simplifies to:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_19')"><code>P(f(c))</code> &mdash; substitute the retrieve function.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>&forall; a &bull; P(a)</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')"><code>P(&empty;)</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_19')">No simplification possible.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_19">
+    <p><strong>Correct.</strong> The function provides the unique witness.</p>
+    <ul>
+      <li><strong>Obligation:</strong> f(c) is the only a satisfying R(c, a).</li>
+      <li><strong>Equation:</strong> substitute a = f(c).</li>
+      <li><strong>Commutation:</strong> existential becomes application.</li>
+      <li><strong>Conclusion:</strong> key simplification of functional refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Rental System</h3>
+<div class="practice" id="p2_20">
+  <p class="scenario">Rental: abstract <code>ARent(S, c, i) = S &cup; {(c,i)}</code>, concrete <code>CRent(rec, c, i) = rec &oplus; {id &#8614; (c,i)}</code>, retrieve <code>r(rec) = ran rec</code>. Commutation:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_20')"><code>r(CRent(rec,c,i)) = ran rec &cup; {(c,i)} = ARent(r(rec), c, i)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>CRent = ARent</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>r = i</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_20')"><code>ran rec = &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_20">
+    <p><strong>Correct.</strong> Override-and-range = union.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func for Rent.</li>
+      <li><strong>Equation:</strong> range of override adds the new pair.</li>
+      <li><strong>Commutation:</strong> id-map refines set of rentals.</li>
+      <li><strong>Conclusion:</strong> commuting diagram holds.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Surjective Retrieve</h3>
+<div class="practice" id="p2_21">
+  <p>A surjective retrieve function means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_21')">Every abstract state is representable by some concrete state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">The retrieve is injective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">The retrieve is partial.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_21')">No concrete states exist.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_21">
+    <p><strong>Correct.</strong> Onto &mdash; ran f = Abs.</p>
+    <ul>
+      <li><strong>Obligation:</strong> every abstract state has a pre-image.</li>
+      <li><strong>Equation:</strong> <code>ran f = Abs</code>.</li>
+      <li><strong>Commutation:</strong> surjectivity enables calculation of weakest refinement.</li>
+      <li><strong>Conclusion:</strong> important for &sect;18.3.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Browser History</h3>
+<div class="practice" id="p2_22">
+  <p class="scenario">Browser history: abstract <code>APush(s, p) = s &#x2040; &lang; p &rang;</code>, concrete <code>CPush(arr, top, p) = (arr &oplus; {top+1 &#8614; p}, top+1)</code>, retrieve <code>r(arr, top) = arr &#x25C1; 1..top</code>.</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_22')"><code>r(CPush) = (arr &#x25C1; 1..top) &#x2040; &lang; p &rang; = APush(r(arr,top), p)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>r = p</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>CPush = APush</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_22')"><code>arr = &lang;&rang;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb2_22">
+    <p><strong>Correct.</strong> Prefix-then-append = write at top+1 then restrict to 1..top+1.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-corr-func for Push.</li>
+      <li><strong>Equation:</strong> override at top+1, restrict to 1..top+1 = old prefix &#x2040; &lang; p &rang;.</li>
+      <li><strong>Commutation:</strong> array push = sequence append via retrieve.</li>
+      <li><strong>Conclusion:</strong> stack refinement by equation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Common Pattern</h3>
+<div class="practice" id="p2_23">
+  <p>Functional refinement is preferred in textbooks because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_23')">Proofs reduce to algebra &mdash; easy to follow and verify.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">It is the only valid refinement method.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">General data refinement is impossible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_23')">It requires no proof obligations.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_23">
+    <p><strong>Correct.</strong> Algebraic, calculational proofs.</p>
+    <ul>
+      <li><strong>Obligation:</strong> three rules: F-func, F-init-func, F-corr-func.</li>
+      <li><strong>Equation:</strong> each proven by equation chain.</li>
+      <li><strong>Commutation:</strong> pedagogically clear.</li>
+      <li><strong>Conclusion:</strong> most practical refinements fit this pattern.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: SumSizeRetrieve Counterexample</h3>
+<div class="practice" id="p2_24">
+  <p class="scenario">The retrieve <code>SumSizeRetrieve</code> goes from <span class="key">abstract to concrete</span> (surjective in the wrong direction). Can it simplify proof obligations?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_24')">No &mdash; the function goes abstract &rarr; concrete, not concrete &rarr; abstract.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Yes &mdash; any surjection works.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">Yes &mdash; direction doesn't matter.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_24')">No retrieve exists.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_24">
+    <p><strong>Correct.</strong> Functional refinement needs f : Conc &rarr; Abs, not the reverse.</p>
+    <ul>
+      <li><strong>Obligation:</strong> F-func requires concrete &rarr; abstract direction.</li>
+      <li><strong>Equation:</strong> SumSizeRetrieve goes the wrong way.</li>
+      <li><strong>Commutation:</strong> cannot apply functional refinement rules.</li>
+      <li><strong>Conclusion:</strong> must use general data refinement (Example 18.3).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Unified Equation</h3>
+<div class="practice" id="p2_25">
+  <p>Functional refinement unifies abstract and concrete via:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb2_25')">A commuting equation: <code>f &#x2218; co = ao &#x2218; f</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">An arbitrary relation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">A free type declaration.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb2_25')">No connection between levels.</button></li>
+  </ul>
+  <div class="feedback" id="fb2_25">
+    <p><strong>Correct.</strong> The commuting equation is the core of functional refinement.</p>
+    <ul>
+      <li><strong>Obligation:</strong> both paths agree.</li>
+      <li><strong>Equation:</strong> f after co = ao after f.</li>
+      <li><strong>Commutation:</strong> the diagram commutes.</li>
+      <li><strong>Conclusion:</strong> concrete faithfully implements abstract.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 18.3 Calculating data refinements ================= -->
+<section class="page" id="page-2">
+<h2 id="c3">18.3 Calculating data refinements</h2>
+
+<h3 id="s2-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><strong><span class="vocab" data-def="The largest relation that is a refinement of the abstract op under retrieve f.">Weakest refinement</span></strong> <code>W</code>: <code>A &#x2291; W</code> and for all C refining A, <code>W &#x2291; C</code>.</li>
+  <li><strong>Calculating operations:</strong> <code>wo == f &#x2A1E; ao &#x2A1E; f<sup>~</sup></code> &mdash; retrieve, abstract-op, un-retrieve.</li>
+  <li>Proof: <code>f<sup>~</sup> &#x2A1E; wo = ao &#x2A1E; f<sup>~</sup></code> by relational calculus (using surjectivity).</li>
+  <li><strong><span class="vocab" data-def="Derive concrete spec by composing retrieve with abstract schemas &mdash; design is the proof.">Calculation</span>:</strong> derive concrete form step-by-step from abstract + retrieve &mdash; no guessing.</li>
+  <li><strong>With schemas:</strong> <code>CI &cong; CI &#x2A1E; F'</code>; <code>CO &cong; F &#x2A1E; AO &#x2A1E; F'</code> (Table 18.4).</li>
+  <li><strong>Result is correct by construction</strong> &mdash; each step is a valid law application.</li>
+  <li>Produces both the concrete implementation and its proof simultaneously.</li>
+  <li>Requires <code>f</code> to be total and surjective (or <code>dom ao &sube; ran f</code> weaker condition).</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s2-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Weakest refinement</td><td>The largest relation that is a refinement of the abstract op under retrieve f.</td></tr>
+  <tr><td>Calculation</td><td>Derive concrete spec by composing retrieve with abstract schemas &mdash; design is the proof.</td></tr>
+  <tr><td>Correct by construction</td><td>If each step is a valid law application, the result is guaranteed correct.</td></tr>
+  <tr><td>Surjective</td><td>Every abstract state has at least one concrete pre-image.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s2-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2291;</code></td><td>Refinement ordering (A &#x2291; W means A is refined by W).</td></tr>
+  <tr><td><code>wo == f &#x2A1E; ao &#x2A1E; f<sup>~</sup></code></td><td>Weakest concrete operation formula.</td></tr>
+  <tr><td><code>wi == ai &#x2A1E; f<sup>~</sup></code></td><td>Weakest concrete initialisation formula.</td></tr>
+  <tr><td><code>CI &cong; CI &#x2A1E; F'</code></td><td>Schema calculation for initialisation.</td></tr>
+  <tr><td><code>CO &cong; F &#x2A1E; AO &#x2A1E; F'</code></td><td>Schema calculation for operations.</td></tr>
+</table>
+
+<h3 id="s2-D">IV.1 Examples: Building Enter Weakest, Cart Add Weakest &amp; Playlist Append Weakest</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>wo == f &#x2A1E; ao &#x2A1E; f<sup>~</sup></code></td><td>Weakest operation formula.</td></tr>
+  <tr><td><code>&#x2291;</code></td><td>Refinement ordering.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Building access: abstract <code>AEnter: s' = s &cup; {p?}</code>, retrieve <code>s = ran l</code>. The <span class="vocab" data-def="The largest relation that is a refinement of the abstract op under retrieve f.">weakest refinement</span> is <code>ran l' = ran l &cup; {p?}</code> &mdash; <span class="key">no ordering constraint</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>AEnter : s' = s &cup; {p?}</code>.</li>
+  <li><strong>Retrieve:</strong> <code>s = ran l</code>.</li>
+  <li><strong>Calculation:</strong> <code>wo : ran l' = ran l &cup; {p?}</code>.</li>
+  <li><strong>Concrete:</strong> any list with the right elements &mdash; weaker than appending at the end.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Shopping cart: abstract <code>AAdd(items, x) = items &cup; {x}</code>. <span class="key">Weakest refinement</span> says only <code>ran cart' = ran cart &cup; {x}</code>.</p>
+<ul>
+  <li><strong>Abstract:</strong> set-add.</li>
+  <li><strong>Retrieve:</strong> <code>items = ran cart</code>.</li>
+  <li><strong>Calculation:</strong> <code>ran cart' = ran cart &cup; {x}</code> &mdash; no position constraint.</li>
+  <li><strong>Concrete:</strong> the design choice (prepend, append, sorted insert) is extra &mdash; not required by weakest.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Playlist: abstract <code>AAdd(songs, s) = songs &cup; {s}</code>. Weakest: <code>ran playlist' = ran playlist &cup; {s}</code>.</p>
+<ul>
+  <li><strong>Abstract:</strong> set-add.</li>
+  <li><strong>Retrieve:</strong> <code>songs = ran playlist</code>.</li>
+  <li><strong>Calculation:</strong> weakest allows any list ordering.</li>
+  <li><strong>Concrete:</strong> choosing <code>playlist' = playlist &#x2040; &lang; s &rang;</code> is <em>stronger</em> than weakest &mdash; a design decision.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Weakest Init &mdash; Contact Book, Queue &amp; Cache</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>wi == ai &#x2A1E; f<sup>~</sup></code></td><td>Weakest init formula.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Contact book: abstract init <code>contacts' = &empty;</code>, retrieve <code>contacts = ran l</code>. <span class="key">Weakest concrete init</span>:</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ai : contacts' = &empty;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>contacts = ran l</code>.</li>
+  <li><strong>Calculation:</strong> <code>wi : ran l' = &empty;</code> &mdash; any empty-range list.</li>
+  <li><strong>Concrete:</strong> <code>l' = &lang;&rang;</code> satisfies <code>wi</code> but is not the only option (wi is the weakest).</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Queue: abstract init <code>q' = &lang;&rang;</code>. Weakest concrete init for array+top: <code>top' = 0</code> (array contents don't matter).</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ai : q' = &lang;&rang;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>q = arr &#x25C1; 1..top</code>.</li>
+  <li><strong>Calculation:</strong> <code>wi : arr' &#x25C1; 1..0 = &lang;&rang;</code> &mdash; trivially true for any arr'.</li>
+  <li><strong>Concrete:</strong> only <code>top' = 0</code> matters; array contents irrelevant.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Cache: abstract init <code>cache' = &empty;</code>. Weakest: all buckets empty.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>ai : cache' = &empty;</code>.</li>
+  <li><strong>Retrieve:</strong> <code>cache = &bigcup; buckets</code>.</li>
+  <li><strong>Calculation:</strong> <code>wi : &bigcup; buckets' = &empty;</code> &mdash; each bucket empty.</li>
+  <li><strong>Concrete:</strong> weakest init = all buckets empty.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Temperature Sensor &mdash; Fahrenheit Abstract, Celsius Concrete &amp; Retrieve Bijection</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>CO &cong; F &#x2A1E; AO &#x2A1E; F'</code></td><td>Schema calculation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A temperature sensor: <span class="key">abstract in Fahrenheit</span>, <span class="key">concrete in Celsius</span>. Retrieve: <code>f = (9/5) &times; c + 32</code>. <span class="vocab" data-def="Derive concrete spec by composing retrieve with abstract schemas &mdash; design is the proof.">Calculate</span> the concrete init.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>FTempInit : f' = StdTemp = 65</code>.</li>
+  <li><strong>Retrieve:</strong> <code>f = (9/5) &times; c + 32</code> &mdash; total bijection.</li>
+  <li><strong>Calculation:</strong> <code>(9/5) &times; c' + 32 = 65</code> &rArr; <code>c' = (5/9) &times; (65 &minus; 32)</code>.</li>
+  <li><strong>Concrete:</strong> <code>CTempInit : c' = (5/9) &times; (StdTemp &minus; 32)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Calculate the <span class="key">concrete increment</span>: abstract <code>FTInc : f' = f + 1</code> with <code>f &le; 4999</code>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>f' = f + 1</code>, <code>f &le; 4999</code>.</li>
+  <li><strong>Retrieve:</strong> substitute <code>f = (9/5)c + 32</code>.</li>
+  <li><strong>Calculation:</strong> <code>(9/5)c' + 32 = (9/5)c + 32 + 1</code> &rArr; <code>c' = c + 5/9</code>; precondition <code>c &le; 2759 &times; 4/9</code>.</li>
+  <li><strong>Concrete:</strong> <code>CTInc : c' = c + (5/9)</code>, <code>c &le; 2759 &times; (4/9)</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Calculate the <span class="key">concrete decrement</span>: abstract <code>FTDec : f' = f &minus; 1</code> with <code>f &ge; &minus;458.4</code>.</p>
+<ul>
+  <li><strong>Abstract:</strong> <code>f' = f &minus; 1</code>, <code>f &ge; &minus;458.4</code>.</li>
+  <li><strong>Retrieve:</strong> substitute <code>f = (9/5)c + 32</code>.</li>
+  <li><strong>Calculation:</strong> <code>c' = c &minus; (5/9)</code>; precondition <code>c &gt; 272 &times; (4/9)</code>.</li>
+  <li><strong>Concrete:</strong> <code>CTDec : c' = c &minus; (5/9)</code> &mdash; calculated, not guessed.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Weakest vs Actual &mdash; Enter, Leave &amp; Lookup</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2291;</code></td><td>Refinement ordering.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Building <span class="key">Enter</span>: weakest says <code>ran l' = ran l &cup; {p?}</code>. Actual design appends at end: <code>l' = l &#x2040; &lang; p? &rang;</code>. Which is <span class="key">stronger</span>?</p>
+<ul>
+  <li><strong>Abstract:</strong> set-add.</li>
+  <li><strong>Retrieve:</strong> <code>s = ran l</code>.</li>
+  <li><strong>Calculation:</strong> actual design prescribes position (end); weakest does not.</li>
+  <li><strong>Concrete:</strong> <code>A &#x2291; W &#x2291; l' = l &#x2040; &lang; p? &rang;</code> &mdash; actual refines weakest.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Building <span class="key">Leave</span>: weakest says <code>ran l' = ran l \ {p?}</code>. Actual design preserves order: <code>l' = filter(l, p?)</code>. The <span class="key">order-preserving design choice</span> is extra.</p>
+<ul>
+  <li><strong>Abstract:</strong> set-remove.</li>
+  <li><strong>Retrieve:</strong> <code>s = ran l</code>.</li>
+  <li><strong>Calculation:</strong> weakest requires only the right elements, not their order.</li>
+  <li><strong>Concrete:</strong> the value of calculating weakest: it shows exactly the design step we make.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Building <span class="key">Lookup</span>: weakest says <code>result! = (p? &isin; ran l)</code>. Binary search is one implementation.</p>
+<ul>
+  <li><strong>Abstract:</strong> set membership.</li>
+  <li><strong>Retrieve:</strong> <code>s = ran l</code>.</li>
+  <li><strong>Calculation:</strong> weakest = membership test on range.</li>
+  <li><strong>Concrete:</strong> binary search is correct because sorted invariant + range membership = binary search.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: SumSizeRetrieve Failure, Design = Proof &amp; Correct by Construction</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&#x2291;</code></td><td>Refinement ordering.</td></tr>
+  <tr><td><code>wo == f &#x2A1E; ao &#x2A1E; f<sup>~</sup></code></td><td>Weakest operation.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">The retrieve <code>SumSizeRetrieve</code> is a total, surjective function from <span class="key">abstract to concrete</span> (wrong direction). <span class="key">Cannot simplify</span> proofs.</p>
+<ul>
+  <li><strong>Abstract:</strong> sequence.</li>
+  <li><strong>Retrieve:</strong> abstract &rarr; concrete (sum, size).</li>
+  <li><strong>Calculation:</strong> cannot calculate weakest refinement &mdash; function points wrong way.</li>
+  <li><strong>Concrete:</strong> must use general data refinement rules.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="key">Design is the proof</span>: when calculating a refinement, each step uses a refinement law. The final concrete spec is <span class="key">proven correct by construction</span>.</p>
+<ul>
+  <li><strong>Abstract:</strong> starting point.</li>
+  <li><strong>Retrieve:</strong> bridge between levels.</li>
+  <li><strong>Calculation:</strong> each rewrite step is justified by a law.</li>
+  <li><strong>Concrete:</strong> the result is both the implementation and its proof.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario"><span class="vocab" data-def="If each step is a valid law application, the result is guaranteed correct.">Correct by construction</span>: no post-hoc verification needed. The <span class="key">chain of law applications</span> is the proof.</p>
+<ul>
+  <li><strong>Abstract:</strong> each step sound &rArr; composition sound.</li>
+  <li><strong>Retrieve:</strong> used at each step.</li>
+  <li><strong>Calculation:</strong> analogous to program derivation (Dijkstra, Bird&ndash;Meertens).</li>
+  <li><strong>Concrete:</strong> verified implementation, ready for coding.</li>
+</ul>
+</div>
+
+<h3 id="s2-E">V.1 Practice: Weakest Refinement Definition</h3>
+<div class="practice" id="p3_1">
+  <p>The weakest refinement W satisfies:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_1')"><code>A &#x2291; W</code> and for every C refining A, <code>W &#x2291; C</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')"><code>W = A</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')"><code>W = &empty;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_1')"><code>A &#x2291; C</code> only.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_1">
+    <p><strong>Correct.</strong> W is the largest refinement &mdash; closest to abstract.</p>
+    <ul>
+      <li><strong>Abstract:</strong> A is refined by W.</li>
+      <li><strong>Retrieve:</strong> f links levels.</li>
+      <li><strong>Calculation:</strong> <code>wo == f &#x2A1E; ao &#x2A1E; f<sup>~</sup></code>.</li>
+      <li><strong>Concrete:</strong> any actual implementation refines W further.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Correct by Construction</h3>
+<div class="practice" id="p3_2">
+  <p>Correct by construction means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_2')">If each derivation step is sound, the whole result is sound.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">A separate proof is always needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">The result may contain errors.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_2')">Only applies to free types.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_2">
+    <p><strong>Correct.</strong> Sound steps compose to a sound result.</p>
+    <ul>
+      <li><strong>Abstract:</strong> starting spec is given.</li>
+      <li><strong>Retrieve:</strong> used in each step.</li>
+      <li><strong>Calculation:</strong> each rewrite justified by a law.</li>
+      <li><strong>Concrete:</strong> result = implementation + proof.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Calculating Operations</h3>
+<div class="practice" id="p3_3">
+  <p>The formula for the weakest concrete operation is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_3')"><code>wo == f &#x2A1E; ao &#x2A1E; f<sup>~</sup></code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>wo == ao</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>wo == f<sup>~</sup> &#x2A1E; ao</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_3')"><code>wo == f &#x2A1E; f<sup>~</sup></code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_3">
+    <p><strong>Correct.</strong> Retrieve, do abstract op, un-retrieve.</p>
+    <ul>
+      <li><strong>Abstract:</strong> ao is the abstract operation.</li>
+      <li><strong>Retrieve:</strong> f maps concrete &rarr; abstract.</li>
+      <li><strong>Calculation:</strong> sandwich ao between f and f~.</li>
+      <li><strong>Concrete:</strong> wo is the weakest (largest) refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Weakest Init</h3>
+<div class="practice" id="p3_4">
+  <p>The weakest concrete initialisation is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_4')"><code>wi == ai &#x2A1E; f<sup>~</sup></code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>wi == ai</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>wi == f &#x2A1E; ai</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_4')"><code>wi == f<sup>~</sup></code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_4">
+    <p><strong>Correct.</strong> Abstract init then un-retrieve.</p>
+    <ul>
+      <li><strong>Abstract:</strong> ai produces abstract init state.</li>
+      <li><strong>Retrieve:</strong> f~ maps back to concrete.</li>
+      <li><strong>Calculation:</strong> any concrete state whose retrieve is in ai.</li>
+      <li><strong>Concrete:</strong> weakest init.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Weakest vs Actual</h3>
+<div class="practice" id="p3_5">
+  <p class="scenario">Building Enter: weakest says <code>ran l' = ran l &cup; {p?}</code>. Actual: <code>l' = l &#x2040; &lang; p? &rang;</code>. The actual is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_5')">Stronger than weakest &mdash; it prescribes where p? goes (the end).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')">Weaker than weakest.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')">Equal to weakest.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_5')">Unrelated.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_5">
+    <p><strong>Correct.</strong> Actual design refines weakest further by fixing ordering.</p>
+    <ul>
+      <li><strong>Abstract:</strong> set-add (unordered).</li>
+      <li><strong>Retrieve:</strong> <code>ran</code> forgets order.</li>
+      <li><strong>Calculation:</strong> weakest only requires right elements.</li>
+      <li><strong>Concrete:</strong> append-at-end is a design choice beyond the minimum.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Temperature Init Calculation</h3>
+<div class="practice" id="p3_6">
+  <p class="scenario">Temperature sensor: abstract <code>f' = 65</code>, retrieve <code>f = (9/5)c + 32</code>. Calculated concrete init:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_6')"><code>c' = (5/9) &times; (65 &minus; 32) = (5/9) &times; 33</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>c' = 65</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>c' = 32</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_6')"><code>c' = 0</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_6">
+    <p><strong>Correct.</strong> Solve <code>(9/5)c' + 32 = 65</code> for c'.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>f' = StdTemp = 65</code>.</li>
+      <li><strong>Retrieve:</strong> <code>f = (9/5)c + 32</code>.</li>
+      <li><strong>Calculation:</strong> substitute and solve.</li>
+      <li><strong>Concrete:</strong> <code>c' = (5/9)(StdTemp &minus; 32)</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Temperature Inc Calculation</h3>
+<div class="practice" id="p3_7">
+  <p class="scenario">Abstract <code>f' = f + 1</code>. Retrieve <code>f = (9/5)c + 32</code>. Calculated concrete increment:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_7')"><code>c' = c + (5/9)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>c' = c + 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>c' = c + (9/5)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_7')"><code>c' = c &minus; 1</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_7">
+    <p><strong>Correct.</strong> +1&deg;F = +(5/9)&deg;C.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>f' = f + 1</code>.</li>
+      <li><strong>Retrieve:</strong> substitute: <code>(9/5)c' + 32 = (9/5)c + 32 + 1</code>.</li>
+      <li><strong>Calculation:</strong> <code>c' = c + 5/9</code>.</li>
+      <li><strong>Concrete:</strong> Celsius increment is a fraction of a degree.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: SumSizeRetrieve Direction</h3>
+<div class="practice" id="p3_8">
+  <p class="scenario">SumSizeRetrieve goes abstract &rarr; concrete (a total surjection in the wrong direction). Can it calculate the weakest refinement?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_8')">No &mdash; the formula requires f : Conc &rarr; Abs.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')">Yes &mdash; any function works.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')">Yes &mdash; direction is irrelevant.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_8')">No retrieve exists.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_8">
+    <p><strong>Correct.</strong> Calculation requires concrete-to-abstract direction.</p>
+    <ul>
+      <li><strong>Abstract:</strong> sequence.</li>
+      <li><strong>Retrieve:</strong> goes wrong way (abs &rarr; conc).</li>
+      <li><strong>Calculation:</strong> formula <code>wo == f &#x2A1E; ao &#x2A1E; f~</code> needs f : Conc &rarr; Abs.</li>
+      <li><strong>Concrete:</strong> must use general data refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Schema Calculation</h3>
+<div class="practice" id="p3_9">
+  <p>Calculating a concrete operation with schemas uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_9')"><code>CO &cong; F &#x2A1E; AO &#x2A1E; F'</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>CO = AO</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>CO &cong; F'</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_9')"><code>CO &cong; AO</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_9">
+    <p><strong>Correct.</strong> Sandwich abstract op between retrieve schemas.</p>
+    <ul>
+      <li><strong>Abstract:</strong> AO is the abstract operation schema.</li>
+      <li><strong>Retrieve:</strong> F and F' bracket it.</li>
+      <li><strong>Calculation:</strong> schema composition produces CO.</li>
+      <li><strong>Concrete:</strong> CO is the calculated concrete operation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Surjectivity Requirement</h3>
+<div class="practice" id="p3_10">
+  <p>Calculating the weakest refinement requires the retrieve to be:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_10')">Total and surjective (or weaker: <code>dom ao &sube; ran f</code>).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">Injective.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">Partial only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_10')">Undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_10">
+    <p><strong>Correct.</strong> Surjectivity ensures every abstract state has a concrete pre-image.</p>
+    <ul>
+      <li><strong>Abstract:</strong> every abstract state reachable.</li>
+      <li><strong>Retrieve:</strong> surjective = onto.</li>
+      <li><strong>Calculation:</strong> <code>f~ &#x2A1E; f = id</code> on ran f &mdash; needs surjectivity.</li>
+      <li><strong>Concrete:</strong> weaker condition: <code>dom ao &sube; ran f</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Design is Proof</h3>
+<div class="practice" id="p3_11">
+  <p>Calculating a refinement produces:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_11')">Both the concrete implementation and its refinement proof.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')">Only the implementation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')">Only the proof.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_11')">Neither.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_11">
+    <p><strong>Correct.</strong> Design = proof &mdash; they are one and the same.</p>
+    <ul>
+      <li><strong>Abstract:</strong> starting spec.</li>
+      <li><strong>Retrieve:</strong> bridge.</li>
+      <li><strong>Calculation:</strong> each step is a law application.</li>
+      <li><strong>Concrete:</strong> result is correct by construction.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Leave Weakest</h3>
+<div class="practice" id="p3_12">
+  <p class="scenario">Building Leave: weakest says <code>ran l' = ran l \ {p?}</code>. The actual design preserves order. Calculating the weakest refinement reveals:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_12')">The exact design step recorded in the retrieve &mdash; ordering is extra.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')">No design decision was made.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')">Weakest and actual are identical.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_12')">Order is required by the weakest.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_12">
+    <p><strong>Correct.</strong> Weakest shows what's essential; extra ordering is a design choice.</p>
+    <ul>
+      <li><strong>Abstract:</strong> set-remove.</li>
+      <li><strong>Retrieve:</strong> ran forgets order.</li>
+      <li><strong>Calculation:</strong> weakest = right elements, any order.</li>
+      <li><strong>Concrete:</strong> order-preserving filter goes beyond weakest.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Calculation vs Guess</h3>
+<div class="practice" id="p3_13">
+  <p>Calculation differs from guess-and-verify because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_13')">It derives the concrete form systematically &mdash; no speculative guessing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">They are identical methods.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">Guess-and-verify is always better.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_13')">Calculation never produces a result.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_13">
+    <p><strong>Correct.</strong> Systematic derivation vs speculative attempts.</p>
+    <ul>
+      <li><strong>Abstract:</strong> start from spec.</li>
+      <li><strong>Retrieve:</strong> guides the derivation.</li>
+      <li><strong>Calculation:</strong> each step justified by a law.</li>
+      <li><strong>Concrete:</strong> arrives at implementation mechanically.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: Temperature Dec</h3>
+<div class="practice" id="p3_14">
+  <p class="scenario">Abstract <code>f' = f &minus; 1</code>, retrieve <code>f = (9/5)c + 32</code>. Calculated concrete decrement:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_14')"><code>c' = c &minus; (5/9)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>c' = c &minus; 1</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>c' = c + (5/9)</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_14')"><code>c' = c &minus; (9/5)</code></button></li>
+  </ul>
+  <div class="feedback" id="fb3_14">
+    <p><strong>Correct.</strong> &minus;1&deg;F = &minus;(5/9)&deg;C.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>f' = f &minus; 1</code>.</li>
+      <li><strong>Retrieve:</strong> substitute and solve.</li>
+      <li><strong>Calculation:</strong> <code>(9/5)c' + 32 = (9/5)c + 32 &minus; 1</code>.</li>
+      <li><strong>Concrete:</strong> <code>c' = c &minus; 5/9</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Retrieve Bijection</h3>
+<div class="practice" id="p3_15">
+  <p class="scenario">The Fahrenheit-Celsius retrieve is a total <span class="key">bijection</span>. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_15')">Each Celsius value maps to exactly one Fahrenheit value, and vice versa.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')">The retrieve is partial.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')">Multiple Celsius values share one Fahrenheit.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_15')">The retrieve is undefined.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_15">
+    <p><strong>Correct.</strong> Bijection = injective + surjective.</p>
+    <ul>
+      <li><strong>Abstract:</strong> Fahrenheit range.</li>
+      <li><strong>Retrieve:</strong> <code>f = (9/5)c + 32</code> is a bijection.</li>
+      <li><strong>Calculation:</strong> bijection makes calculation especially clean.</li>
+      <li><strong>Concrete:</strong> Celsius range.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: Analogy</h3>
+<div class="practice" id="p3_16">
+  <p>Refinement calculation is analogous to:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_16')">Program derivation via algebraic transformation (e.g., Dijkstra, Bird&ndash;Meertens).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">Random code generation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">Brute-force testing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_16')">No known analogy.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_16">
+    <p><strong>Correct.</strong> Algebraic derivation tradition.</p>
+    <ul>
+      <li><strong>Abstract:</strong> start from spec.</li>
+      <li><strong>Retrieve:</strong> guides transformations.</li>
+      <li><strong>Calculation:</strong> stepwise rewriting.</li>
+      <li><strong>Concrete:</strong> verified result.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Simplification Needed</h3>
+<div class="practice" id="p3_17">
+  <p>Calculated refinements may need:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_17')">Algebraic simplification before they are usable as concrete specs.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">No further work.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">A complete rewrite.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_17')">Removal of the retrieve.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_17">
+    <p><strong>Correct.</strong> Raw calculated forms may be complex; simplification is typical.</p>
+    <ul>
+      <li><strong>Abstract:</strong> e.g., <code>(9/5)c'+32 = (9/5)c+33</code>.</li>
+      <li><strong>Retrieve:</strong> still present in the formula.</li>
+      <li><strong>Calculation:</strong> simplify to <code>c' = c + 5/9</code>.</li>
+      <li><strong>Concrete:</strong> cleaner form for implementation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Table 18.3</h3>
+<div class="practice" id="p3_18">
+  <p>Table 18.3 gives rules for:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_18')">Calculating refinements (weakest init and weakest operation).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">General data refinement obligations.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Free type constructors.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_18')">Sequence operations.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_18">
+    <p><strong>Correct.</strong> F-init-calc-rel and F-corr-calc-rel.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>wi == ai &#x2A1E; f~</code>.</li>
+      <li><strong>Retrieve:</strong> <code>wo == f &#x2A1E; ao &#x2A1E; f~</code>.</li>
+      <li><strong>Calculation:</strong> plug in and simplify.</li>
+      <li><strong>Concrete:</strong> weakest refinement formulas.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Table 18.4</h3>
+<div class="practice" id="p3_19">
+  <p>Table 18.4 gives rules for:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_19')">Calculating refinements with schemas (F-init-calc, F-corr-calc).</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">Retrieve function rules.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">Promotion rules.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_19')">Backward simulation.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_19">
+    <p><strong>Correct.</strong> Schema-level calculation.</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>CI &cong; CI &#x2A1E; F'</code>.</li>
+      <li><strong>Retrieve:</strong> <code>CO &cong; F &#x2A1E; AO &#x2A1E; F'</code>.</li>
+      <li><strong>Calculation:</strong> compose schemas.</li>
+      <li><strong>Concrete:</strong> derive CI and CO.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Weakest Enter</h3>
+<div class="practice" id="p3_20">
+  <p class="scenario">Building Enter: abstract <code>s' = s &cup; {p?}</code>, retrieve <code>s = ran l</code>. The weakest concrete operation says:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_20')"><code>ran l' = ran l &cup; {p?}</code> &mdash; right elements, any order.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')"><code>l' = l &#x2040; &lang; p? &rang;</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')"><code>l' = &lang; p? &rang; &#x2040; l</code>.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_20')"><code>l' = l</code>.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_20">
+    <p><strong>Correct.</strong> Weakest doesn't prescribe position.</p>
+    <ul>
+      <li><strong>Abstract:</strong> set-add is order-free.</li>
+      <li><strong>Retrieve:</strong> <code>ran</code> forgets order.</li>
+      <li><strong>Calculation:</strong> <code>ran l' = ran l &cup; {p?}</code>.</li>
+      <li><strong>Concrete:</strong> append-at-end or prepend are both refinements of this.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Calculation Value</h3>
+<div class="practice" id="p3_21">
+  <p>The value of calculating the weakest refinement is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_21')">It reveals exactly which design decisions go beyond the minimum.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">It produces the fastest implementation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">It eliminates the need for a retrieve.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_21')">It always produces a unique implementation.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_21">
+    <p><strong>Correct.</strong> Separates essential requirements from design choices.</p>
+    <ul>
+      <li><strong>Abstract:</strong> what's required.</li>
+      <li><strong>Retrieve:</strong> what the bridge needs.</li>
+      <li><strong>Calculation:</strong> weakest = minimum requirement.</li>
+      <li><strong>Concrete:</strong> any extra = design decision.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Relational Calculus</h3>
+<div class="practice" id="p3_22">
+  <p>The proof that <code>f~ &#x2A1E; wo = ao &#x2A1E; f~</code> uses:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_22')">Relational calculus and the surjectivity of f.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">Set union only.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">Structural induction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_22')">Free type rules.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_22">
+    <p><strong>Correct.</strong> Key step: <code>f~ &#x2A1E; f = id</code> on <code>ran f</code> (surjectivity).</p>
+    <ul>
+      <li><strong>Abstract:</strong> <code>ao</code> is the abstract op relation.</li>
+      <li><strong>Retrieve:</strong> <code>f</code> surjective &rArr; <code>f~ &#x2A1E; f = id</code>.</li>
+      <li><strong>Calculation:</strong> relational identity law.</li>
+      <li><strong>Concrete:</strong> cancellation produces the result.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Calculation Output</h3>
+<div class="practice" id="p3_23">
+  <p>The output of a refinement calculation is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_23')">A verified concrete implementation ready for coding.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">Unverified pseudocode.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">An abstract spec.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_23')">A test suite.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_23">
+    <p><strong>Correct.</strong> Proven implementation.</p>
+    <ul>
+      <li><strong>Abstract:</strong> started from spec.</li>
+      <li><strong>Retrieve:</strong> guided the derivation.</li>
+      <li><strong>Calculation:</strong> each step was a law.</li>
+      <li><strong>Concrete:</strong> code-ready, verified result.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Bijection Advantage</h3>
+<div class="practice" id="p3_24">
+  <p>When the retrieve is a bijection, calculation is especially clean because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_24')">The inverse <code>f~</code> is also a total function &mdash; no ambiguity in either direction.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">Bijections are always the identity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">No retrieve is needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_24')">Only works for &Nopf;.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_24">
+    <p><strong>Correct.</strong> Both f and f~ are total functions.</p>
+    <ul>
+      <li><strong>Abstract:</strong> Fahrenheit.</li>
+      <li><strong>Retrieve:</strong> F &harr; C bijection.</li>
+      <li><strong>Calculation:</strong> substitute and solve algebraically.</li>
+      <li><strong>Concrete:</strong> Celsius &mdash; clean result.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Design as Proof</h3>
+<div class="practice" id="p3_25">
+  <p>Calculating data refinements teaches:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb3_25')">Design and proof are two views of the same activity.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Design and proof are unrelated.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Proofs are unnecessary.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb3_25')">Design always fails.</button></li>
+  </ul>
+  <div class="feedback" id="fb3_25">
+    <p><strong>Correct.</strong> Unified activity.</p>
+    <ul>
+      <li><strong>Abstract:</strong> spec is the starting point.</li>
+      <li><strong>Retrieve:</strong> connects abstraction levels.</li>
+      <li><strong>Calculation:</strong> each design step is a proof step.</li>
+      <li><strong>Concrete:</strong> result is simultaneously designed and proven.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= 18.4 Refining promotion ================= -->
+<section class="page" id="page-3">
+<h2 id="c4">18.4 Refining promotion</h2>
+
+<h3 id="s3-A">I. Concept</h3>
+<div class="concept">
+<ul>
+  <li><span class="vocab" data-def="Lifting a local operation on one instance to a global operation on a collection via a framing schema.">Promotion</span> lifts a local op on one instance to a global op on a collection.</li>
+  <li><strong>Monotonicity:</strong> promotion is <span class="vocab" data-def="If a local data type refines, the promoted global op also refines &mdash; refinement of a promotion is the promotion of the refinement.">monotonic</span> with respect to refinement.</li>
+  <li><strong>Key result:</strong> &ldquo;the refinement of a promotion is the promotion of the refinement.&rdquo;</li>
+  <li>Simplest form: <code>P &cong; [ f : I &#x21F8; S ]</code> &mdash; a <span class="vocab" data-def="A schema selecting one instance from the collection and relating its change to the global state change.">framing schema</span> indexes instances.</li>
+  <li><strong>Local refinement:</strong> refine data type <code>S</code> to <code>T</code> with retrieve <code>r : T &rarr; S</code>.</li>
+  <li><strong><span class="vocab" data-def="Apply the local retrieve to each instance in the collection: g = f &#x2A1E; r.">Pointwise retrieve</span>:</strong> global retrieve <code>g = f &#x2A1E; r</code> &mdash; compose the collection function with the local retrieve.</li>
+  <li>Benefit: prove refinement once for the local instance; the global refinement follows for free.</li>
+  <li>The framing schema is preserved verbatim; only the inner data type changes.</li>
+</ul>
+</div>
+
+<h3 class="jump-target" data-part="B" id="s3-B">II. Vocab Table</h3>
+<table>
+  <tr><th>Term</th><th>Plain English</th></tr>
+  <tr><td>Promotion</td><td>Lifting a local operation on one instance to a global operation on a collection via a framing schema.</td></tr>
+  <tr><td>Monotonic</td><td>If a local data type refines, the promoted global op also refines &mdash; refinement of a promotion is the promotion of the refinement.</td></tr>
+  <tr><td>Framing schema</td><td>A schema selecting one instance from the collection and relating its change to the global state change.</td></tr>
+  <tr><td>Pointwise retrieve</td><td>Apply the local retrieve to each instance in the collection: g = f &#x2A1E; r.</td></tr>
+  <tr><td>Local / global</td><td>Local = one instance; global = the whole collection.</td></tr>
+</table>
+
+<h3 class="jump-target" data-part="C" id="s3-C">III. Symbol Table</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P &cong; [ f : I &#x21F8; S ]</code></td><td>Global state: function from index set I to local state S.</td></tr>
+  <tr><td><code>r : T &rarr; S</code></td><td>Local retrieve function.</td></tr>
+  <tr><td><code>g = f &#x2A1E; r</code></td><td>Global (pointwise) retrieve.</td></tr>
+  <tr><td><code>&exist;</code></td><td>Existential quantifier (in promoted ops).</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change (before/after).</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Function override.</td></tr>
+</table>
+
+<h3 id="s3-D">IV.1 Examples: Bank Accounts, Library Shelves &amp; Hospital Patients</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>P &cong; [ f : I &#x21F8; S ]</code></td><td>Global state.</td></tr>
+  <tr><td><code>r : T &rarr; S</code></td><td>Local retrieve.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A bank has many <span class="key">accounts</span> indexed by ID. Refine <span class="key">Account</span> to <span class="key">AccountImpl</span>. The <span class="key">bank refinement follows</span>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>Account</code> refines to <code>AccountImpl</code> with retrieve <code>r</code>.</li>
+  <li><strong>Framing:</strong> selects account <code>a?</code>: <code>bank' = bank &oplus; {a? &#8614; account'}</code>.</li>
+  <li><strong>Retrieve:</strong> global <code>g = bank &#x2A1E; r</code> &mdash; <span class="vocab" data-def="Apply the local retrieve to each instance in the collection: g = f &#x2A1E; r.">pointwise</span>.</li>
+  <li><strong>Global:</strong> BankDeposit refines because local Deposit refines + framing preserved.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A library has many <span class="key">shelves</span> indexed by category. Refine <span class="key">Shelf</span> to <span class="key">ShelfImpl</span>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>Shelf</code> &rarr; <code>ShelfImpl</code> with local retrieve <code>r</code>.</li>
+  <li><strong>Framing:</strong> selects shelf by category: <code>library' = library &oplus; {cat? &#8614; shelf'}</code>.</li>
+  <li><strong>Retrieve:</strong> <code>g = library &#x2A1E; r</code> &mdash; apply r to each shelf.</li>
+  <li><strong>Global:</strong> library-wide ops refine for free.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A hospital has many <span class="key">patients</span> indexed by ID. Refine <span class="key">PatientRecord</span> to <span class="key">PatientImpl</span>.</p>
+<ul>
+  <li><strong>Local:</strong> patient record refinement with retrieve <code>r</code>.</li>
+  <li><strong>Framing:</strong> selects patient <code>pid?</code>: <code>patients' = patients &oplus; {pid? &#8614; record'}</code>.</li>
+  <li><strong>Retrieve:</strong> <code>g = patients &#x2A1E; r</code>.</li>
+  <li><strong>Global:</strong> hospital-wide record ops inherit refinement.</li>
+</ul>
+</div>
+
+<h3>IV.2 Examples: Fleet Vehicles, Chat Threads &amp; IoT Devices</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&exist;</code></td><td>Existential.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">A fleet system has many <span class="key">vehicles</span>. <code>FleetDispatch(v?)</code> promotes <code>VehicleDispatch</code> via framing.</p>
+<ul>
+  <li><strong>Local:</strong> <code>VehicleDispatch : &Delta;Vehicle</code>.</li>
+  <li><strong>Framing:</strong> <code>&exist; &Delta;Vehicle &bull; Frame &and; VehicleDispatch</code>.</li>
+  <li><strong>Retrieve:</strong> refine Vehicle to VehicleImpl; global retrieve = pointwise.</li>
+  <li><strong>Global:</strong> <code>FleetDispatchImpl</code> inherits from local refinement.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">A chat server has many <span class="key">threads</span>. <code>ServerSend(t?, msg)</code> promotes <code>ThreadSend</code>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>ThreadSend : &Delta;Thread</code>.</li>
+  <li><strong>Framing:</strong> selects thread <code>t?</code>: <code>threads' = threads &oplus; {t? &#8614; thread'}</code>.</li>
+  <li><strong>Retrieve:</strong> refine Thread to ThreadImpl; <code>g = threads &#x2A1E; r</code>.</li>
+  <li><strong>Global:</strong> server-send refines via local thread refinement.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">An IoT system has many <span class="key">devices</span>. <code>SystemReset(d?)</code> promotes <code>DeviceReset</code>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>DeviceReset : &Delta;Device</code>.</li>
+  <li><strong>Framing:</strong> selects device <code>d?</code>.</li>
+  <li><strong>Retrieve:</strong> refine Device; pointwise global retrieve.</li>
+  <li><strong>Global:</strong> system-wide reset inherits &mdash; proved once, used everywhere.</li>
+</ul>
+</div>
+
+<h3>IV.3 Examples: Pointwise Retrieve &mdash; Account, Thread &amp; Device</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>g = f &#x2A1E; r</code></td><td>Pointwise retrieve.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Bank: <span class="key">global retrieve</span> applies <code>r</code> to each account. <code>g(bankImpl) = { (id, r(bankImpl(id))) | id &isin; dom bankImpl }</code>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>r : AccountImpl &rarr; Account</code>.</li>
+  <li><strong>Framing:</strong> indexed by account ID.</li>
+  <li><strong>Retrieve:</strong> <code>g = bankImpl &#x2A1E; r</code> &mdash; compose with local retrieve.</li>
+  <li><strong>Global:</strong> pointwise retrieve builds abstract bank from concrete bank.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Chat server: <span class="key">global retrieve</span> applies <code>r</code> to each thread. <code>g(serverImpl) = serverImpl &#x2A1E; r</code>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>r : ThreadImpl &rarr; Thread</code>.</li>
+  <li><strong>Framing:</strong> indexed by thread ID.</li>
+  <li><strong>Retrieve:</strong> pointwise composition.</li>
+  <li><strong>Global:</strong> abstract server = concrete server with each thread retrieved.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">IoT: <span class="key">global retrieve</span> applies <code>r</code> to each device. <code>g(iotImpl) = iotImpl &#x2A1E; r</code>.</p>
+<ul>
+  <li><strong>Local:</strong> <code>r : DeviceImpl &rarr; Device</code>.</li>
+  <li><strong>Framing:</strong> indexed by device ID.</li>
+  <li><strong>Retrieve:</strong> <code>g = iotImpl &#x2A1E; r</code>.</li>
+  <li><strong>Global:</strong> system-wide retrieve = per-device retrieve.</li>
+</ul>
+</div>
+
+<h3>IV.4 Examples: Framing Preservation &mdash; Deposit, Send &amp; Reset</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+  <tr><td><code>&Delta;</code></td><td>State change.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Bank <span class="key">Deposit</span>: the framing schema <span class="key">is preserved verbatim</span>. Only the inner <code>Account</code> &rarr; <code>AccountImpl</code> changes.</p>
+<ul>
+  <li><strong>Local:</strong> <code>DepositImpl</code> refines <code>Deposit</code>.</li>
+  <li><strong>Framing:</strong> <code>bank' = bank &oplus; {a? &#8614; account'}</code> &mdash; unchanged.</li>
+  <li><strong>Retrieve:</strong> inner retrieve wrapped in framing.</li>
+  <li><strong>Global:</strong> <code>BankDepositImpl = &exist; &Delta;AccountImpl &bull; Frame &and; DepositImpl</code>.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Chat <span class="key">Send</span>: framing selects thread and overrides. Only <code>Thread</code> &rarr; <code>ThreadImpl</code> changes inside.</p>
+<ul>
+  <li><strong>Local:</strong> <code>SendImpl</code> refines <code>Send</code>.</li>
+  <li><strong>Framing:</strong> <code>threads' = threads &oplus; {t? &#8614; thread'}</code> &mdash; same structure.</li>
+  <li><strong>Retrieve:</strong> pointwise.</li>
+  <li><strong>Global:</strong> promoted SendImpl via preserved framing.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">IoT <span class="key">Reset</span>: framing selects device. Only inner <code>Device</code> &rarr; <code>DeviceImpl</code> changes.</p>
+<ul>
+  <li><strong>Local:</strong> <code>ResetImpl</code> refines <code>Reset</code>.</li>
+  <li><strong>Framing:</strong> device selector preserved.</li>
+  <li><strong>Retrieve:</strong> pointwise per-device.</li>
+  <li><strong>Global:</strong> system-reset refinement inherited.</li>
+</ul>
+</div>
+
+<h3>IV.5 Examples: Non-interference &mdash; Concurrent Accounts, Parallel Threads &amp; Disjoint Buckets</h3>
+<table>
+  <tr><th>Symbol</th><th>Plain English</th></tr>
+  <tr><td><code>&oplus;</code></td><td>Override.</td></tr>
+</table>
+<div class="example">
+<p class="scenario">Bank: depositing to account A <span class="key">does not affect</span> account B. The framing ensures <span class="key">non-interference</span>.</p>
+<ul>
+  <li><strong>Local:</strong> only <code>bank(a?)</code> changes.</li>
+  <li><strong>Framing:</strong> <code>bank' = bank &oplus; {a? &#8614; account'}</code> &mdash; other entries unchanged.</li>
+  <li><strong>Retrieve:</strong> pointwise retrieve unaffected for other IDs.</li>
+  <li><strong>Global:</strong> disjoint instances &mdash; refinement doesn't create interference.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Chat: sending to thread T1 <span class="key">does not affect</span> thread T2. Framing isolates.</p>
+<ul>
+  <li><strong>Local:</strong> only <code>threads(t?)</code> changes.</li>
+  <li><strong>Framing:</strong> override at t? only.</li>
+  <li><strong>Retrieve:</strong> T2's retrieve is unchanged.</li>
+  <li><strong>Global:</strong> parallel threads are independent.</li>
+</ul>
+</div>
+<div class="example">
+<p class="scenario">Cloud storage: uploading to bucket B1 <span class="key">does not affect</span> bucket B2. Framing prevents cross-contamination.</p>
+<ul>
+  <li><strong>Local:</strong> only <code>buckets(b?)</code> changes.</li>
+  <li><strong>Framing:</strong> override at b? only.</li>
+  <li><strong>Retrieve:</strong> other buckets unaffected.</li>
+  <li><strong>Global:</strong> disjoint-bucket property &mdash; promotion enforces isolation.</li>
+</ul>
+</div>
+
+<h3 id="s3-E">V.1 Practice: Promotion Definition</h3>
+<div class="practice" id="p4_1">
+  <p>Promotion lifts:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_1')">A local op on one instance to a global op on a collection via a framing schema.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">A global op to a local op.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">An abstract op to a concrete op.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_1')">A schema to a predicate.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_1">
+    <p><strong>Correct.</strong> Local &rarr; global via framing.</p>
+    <ul>
+      <li><strong>Local:</strong> one-instance operation.</li>
+      <li><strong>Framing:</strong> selects instance, relates local/global.</li>
+      <li><strong>Retrieve:</strong> pointwise composition.</li>
+      <li><strong>Global:</strong> collection-wide operation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.2 Practice: Monotonicity</h3>
+<div class="practice" id="p4_2">
+  <p>Promotion is monotonic with respect to refinement. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_2')">If the local data type refines, the promoted global op also refines.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')">Global refinement requires a separate proof.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')">Promotion reverses refinement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_2')">Only local refinement matters.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_2">
+    <p><strong>Correct.</strong> Refinement of a promotion = promotion of the refinement.</p>
+    <ul>
+      <li><strong>Local:</strong> refine S to T.</li>
+      <li><strong>Framing:</strong> preserved.</li>
+      <li><strong>Retrieve:</strong> pointwise lift.</li>
+      <li><strong>Global:</strong> global refinement follows automatically.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.3 Practice: Pointwise Retrieve</h3>
+<div class="practice" id="p4_3">
+  <p class="scenario">Bank: abstract <code>bank : ID &#x21F8; Account</code>, concrete <code>bankImpl : ID &#x21F8; AccountImpl</code>, local <code>r : AccountImpl &rarr; Account</code>. Global retrieve:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_3')"><code>g = bankImpl &#x2A1E; r</code> &mdash; apply r to each instance.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>g = r</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>g = bankImpl</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_3')"><code>g = &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_3">
+    <p><strong>Correct.</strong> Functional composition with local retrieve.</p>
+    <ul>
+      <li><strong>Local:</strong> r maps each AccountImpl to Account.</li>
+      <li><strong>Framing:</strong> indexed by ID.</li>
+      <li><strong>Retrieve:</strong> <code>g = bankImpl &#x2A1E; r</code>.</li>
+      <li><strong>Global:</strong> abstract bank = concrete bank with r applied per-account.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.4 Practice: Framing Preservation</h3>
+<div class="practice" id="p4_4">
+  <p>When refining a promoted specification, the framing schema is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_4')">Preserved verbatim &mdash; only the inner data type changes.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">Completely rewritten.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">Removed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_4')">Doubled.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_4">
+    <p><strong>Correct.</strong> Framing structure is invariant under refinement.</p>
+    <ul>
+      <li><strong>Local:</strong> inner type S &rarr; T.</li>
+      <li><strong>Framing:</strong> same shape: <code>f' = f &oplus; {i? &#8614; s'}</code>.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> only the type of instances changes.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.5 Practice: Key Result</h3>
+<div class="practice" id="p4_5">
+  <p>The key result of &sect;18.4 is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_5')">The refinement of a promotion is the promotion of the refinement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')">Promotion and refinement are unrelated.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')">Promotion prevents refinement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_5')">Refinement always fails for promoted specs.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_5">
+    <p><strong>Correct.</strong> Promotion and refinement commute.</p>
+    <ul>
+      <li><strong>Local:</strong> refine the instance type.</li>
+      <li><strong>Framing:</strong> then promote.</li>
+      <li><strong>Retrieve:</strong> = promote then refine.</li>
+      <li><strong>Global:</strong> same result either way.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.6 Practice: Global State Shape</h3>
+<div class="practice" id="p4_6">
+  <p>The simplest promoted state is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_6')"><code>P &cong; [ f : I &#x21F8; S ]</code> &mdash; a partial function from index set to local state.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>P &cong; [ s : S ]</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>P &cong; [ i : I ]</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_6')"><code>P &cong; &empty;</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_6">
+    <p><strong>Correct.</strong> Collection indexed by I, values of type S.</p>
+    <ul>
+      <li><strong>Local:</strong> S is the instance type.</li>
+      <li><strong>Framing:</strong> I is the index set (e.g., account IDs).</li>
+      <li><strong>Retrieve:</strong> f maps indices to instances.</li>
+      <li><strong>Global:</strong> partial function allows variable-size collections.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.7 Practice: Local Refinement Lifts</h3>
+<div class="practice" id="p4_7">
+  <p class="scenario">A library refines <code>Shelf</code> to <code>ShelfImpl</code>. Every promoted shelf operation (CheckOut, Return, etc.):</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_7')">Inherits refinement from the local shelf refinement + framing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">Must each be proved separately at the global level.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">Cannot be refined.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_7')">Requires backward simulation.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_7">
+    <p><strong>Correct.</strong> Local refinement + framing = global refinement for free.</p>
+    <ul>
+      <li><strong>Local:</strong> Shelf &rarr; ShelfImpl proved once.</li>
+      <li><strong>Framing:</strong> shelf selector preserved.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> all promoted ops refine automatically.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.8 Practice: Non-interference</h3>
+<div class="practice" id="p4_8">
+  <p>The framing schema ensures non-interference because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_8')">It says other instances in the collection are unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')">It modifies all instances.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')">It removes instances.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_8')">It duplicates instances.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_8">
+    <p><strong>Correct.</strong> Only the selected instance changes; others are unchanged.</p>
+    <ul>
+      <li><strong>Local:</strong> one instance updated.</li>
+      <li><strong>Framing:</strong> <code>f' = f &oplus; {i? &#8614; s'}</code> &mdash; override only at i?.</li>
+      <li><strong>Retrieve:</strong> other instances' retrieves unaffected.</li>
+      <li><strong>Global:</strong> disjoint-instance isolation.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.9 Practice: Promoted Op Structure</h3>
+<div class="practice" id="p4_9">
+  <p>A promoted operation has the form:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_9')"><code>&exist; &Delta;S &bull; Frame &and; LocalOp</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')"><code>LocalOp</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')"><code>Frame</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_9')"><code>&Delta;P</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_9">
+    <p><strong>Correct.</strong> Existentially quantify the local state change; conjoin with framing.</p>
+    <ul>
+      <li><strong>Local:</strong> LocalOp operates on S.</li>
+      <li><strong>Framing:</strong> Frame links local and global state.</li>
+      <li><strong>Retrieve:</strong> existential hides local state.</li>
+      <li><strong>Global:</strong> promoted op on the collection.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.10 Practice: Fleet Dispatch</h3>
+<div class="practice" id="p4_10">
+  <p class="scenario">Fleet: each <code>Vehicle</code> refines to <code>VehicleImpl</code>. <code>FleetDispatch(v?)</code> is promoted. Refinement:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_10')">Follows from local VehicleDispatch refinement + framing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">Must be proved from scratch at fleet level.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">Is impossible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_10')">Requires backward simulation.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_10">
+    <p><strong>Correct.</strong> Local + framing = global.</p>
+    <ul>
+      <li><strong>Local:</strong> VehicleDispatch refines.</li>
+      <li><strong>Framing:</strong> vehicle selector preserved.</li>
+      <li><strong>Retrieve:</strong> pointwise over fleet.</li>
+      <li><strong>Global:</strong> FleetDispatchImpl refines FleetDispatch.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.11 Practice: Scalability Pattern</h3>
+<div class="practice" id="p4_11">
+  <p>Promotion + refinement is a key scalability pattern because:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_11')">Prove refinement once for one instance; the collection inherits it.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Every instance must be proved separately.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">Only one instance can exist.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_11')">The collection cannot be refined.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_11">
+    <p><strong>Correct.</strong> One local proof scales to the entire collection.</p>
+    <ul>
+      <li><strong>Local:</strong> proved once.</li>
+      <li><strong>Framing:</strong> reused for all instances.</li>
+      <li><strong>Retrieve:</strong> pointwise lift.</li>
+      <li><strong>Global:</strong> free scaling.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.12 Practice: Conversation Server</h3>
+<div class="practice" id="p4_12">
+  <p class="scenario">Chat server: <code>Conversation</code>s form a collection. Each refines. Global retrieve:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_12')"><code>g(serverImpl) = serverImpl &#x2A1E; r</code> &mdash; apply r per conversation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')"><code>g = r</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')"><code>g = &empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_12')"><code>g = serverImpl</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_12">
+    <p><strong>Correct.</strong> Compose collection function with local retrieve.</p>
+    <ul>
+      <li><strong>Local:</strong> conversation retrieve.</li>
+      <li><strong>Framing:</strong> indexed by conversation ID.</li>
+      <li><strong>Retrieve:</strong> pointwise composition.</li>
+      <li><strong>Global:</strong> server retrieve = per-conversation retrieve.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.13 Practice: Compositional</h3>
+<div class="practice" id="p4_13">
+  <p>Promotion refinement is compositional. This means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_13')">Instance refinement composes with framing to yield global refinement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">All proofs must be monolithic.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">Composition is impossible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_13')">Only one level can be refined.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_13">
+    <p><strong>Correct.</strong> Modular proof structure.</p>
+    <ul>
+      <li><strong>Local:</strong> instance proof is one module.</li>
+      <li><strong>Framing:</strong> structural glue.</li>
+      <li><strong>Retrieve:</strong> pointwise bridge.</li>
+      <li><strong>Global:</strong> composition yields collection-wide proof.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.14 Practice: SaaS Tenants</h3>
+<div class="practice" id="p4_14">
+  <p class="scenario">SaaS: many <code>Tenant</code> workspaces. Each refines to <code>TenantImpl</code>. A promoted, refined op is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_14')"><code>SaaSImplOp(t?) == &exist; &Delta;TenantImpl &bull; Frame &and; TenantImplOp</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')"><code>SaaSImplOp = TenantImplOp</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')"><code>SaaSImplOp = &empty;</code></button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_14')"><code>SaaSImplOp = Frame</code></button></li>
+  </ul>
+  <div class="feedback" id="fb4_14">
+    <p><strong>Correct.</strong> Same promotion pattern with refined inner type.</p>
+    <ul>
+      <li><strong>Local:</strong> TenantImplOp refines TenantOp.</li>
+      <li><strong>Framing:</strong> tenant selector preserved.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> SaaS op promotes the refined tenant op.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.15 Practice: Override Semantics</h3>
+<div class="practice" id="p4_15">
+  <p>In the framing schema, <code>f' = f &oplus; {i? &#8614; s'}</code> means:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_15')">Instance at i? is updated to s'; all other instances unchanged.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">All instances are updated.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">Instance at i? is deleted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_15')">A new instance is added at a random index.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_15">
+    <p><strong>Correct.</strong> Function override updates one entry.</p>
+    <ul>
+      <li><strong>Local:</strong> s' is the new state of instance i?.</li>
+      <li><strong>Framing:</strong> <code>&oplus;</code> overrides only at i?.</li>
+      <li><strong>Retrieve:</strong> other instances' retrieves unchanged.</li>
+      <li><strong>Global:</strong> surgical update.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.16 Practice: IoT Reset</h3>
+<div class="practice" id="p4_16">
+  <p class="scenario">IoT: <code>DeviceReset</code> refines. <code>SystemReset(d?)</code> promoted. Refinement proof:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_16')">Proved once for local DeviceReset; framing lifts it to system-wide.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')">Must re-prove for each device.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')">System-level proof is independent.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_16')">Promotion blocks refinement.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_16">
+    <p><strong>Correct.</strong> Single local proof + framing = system-wide.</p>
+    <ul>
+      <li><strong>Local:</strong> DeviceReset refinement.</li>
+      <li><strong>Framing:</strong> device selector.</li>
+      <li><strong>Retrieve:</strong> pointwise per device.</li>
+      <li><strong>Global:</strong> system reset inherits refinement.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.17 Practice: Global Refinement</h3>
+<div class="practice" id="p4_17">
+  <p>Global refinement of a promoted op follows from:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_17')">Local instance refinement + preserved framing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')">A fresh global proof.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')">Backward simulation.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_17')">Free type induction.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_17">
+    <p><strong>Correct.</strong> Two components compose.</p>
+    <ul>
+      <li><strong>Local:</strong> instance refinement proof.</li>
+      <li><strong>Framing:</strong> structural bridge.</li>
+      <li><strong>Retrieve:</strong> pointwise composition.</li>
+      <li><strong>Global:</strong> automatic lifting.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.18 Practice: Cloud Upload</h3>
+<div class="practice" id="p4_18">
+  <p class="scenario">Cloud storage: many <code>Bucket</code>s. Each refines. <code>CloudUpload(b?, f?)</code> is promoted. Refinement:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_18')">Inherited from BucketUpload refinement + framing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">Independent of bucket refinement.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">Requires re-proving at cloud level.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_18')">Impossible for cloud-scale systems.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_18">
+    <p><strong>Correct.</strong> Promotion inheritance.</p>
+    <ul>
+      <li><strong>Local:</strong> bucket upload refinement.</li>
+      <li><strong>Framing:</strong> bucket selector.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> cloud upload inherits.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.19 Practice: Functional Promotion</h3>
+<div class="practice" id="p4_19">
+  <p>The simplest promotion uses a function to index instances. This form is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_19')"><code>P &cong; [ f : I &#x21F8; S ]</code> &mdash; a functional promotion.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')"><code>P &cong; [ s : S ]</code> &mdash; a single instance.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')"><code>P &cong; &Popf; S</code> &mdash; a set of instances.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_19')"><code>P &cong; seq S</code> &mdash; a sequence.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_19">
+    <p><strong>Correct.</strong> Partial function from index to instance state.</p>
+    <ul>
+      <li><strong>Local:</strong> S is the instance state.</li>
+      <li><strong>Framing:</strong> I is the index set.</li>
+      <li><strong>Retrieve:</strong> functional promotion is the simplest form.</li>
+      <li><strong>Global:</strong> variable-size collection.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.20 Practice: Patient Records</h3>
+<div class="practice" id="p4_20">
+  <p class="scenario">Hospital: many <code>PatientRecord</code>s. Each refines to <code>PatientImpl</code>. Promoted retrieve:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_20')">Pointwise: apply <code>r</code> to each PatientImpl by patient ID.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">Apply r to only one patient.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">No retrieve needed.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_20')">Apply r to the hospital state directly.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_20">
+    <p><strong>Correct.</strong> Per-patient application of the local retrieve.</p>
+    <ul>
+      <li><strong>Local:</strong> patient record retrieve.</li>
+      <li><strong>Framing:</strong> indexed by patient ID.</li>
+      <li><strong>Retrieve:</strong> <code>g = patients &#x2A1E; r</code>.</li>
+      <li><strong>Global:</strong> hospital-wide retrieve.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.21 Practice: Big Payoff</h3>
+<div class="practice" id="p4_21">
+  <p>The big payoff of refining promotion is:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_21')">Refine one instance, get the collection's refinement for free.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">More work at the global level.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">No refinement is possible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_21')">Only one instance can exist.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_21">
+    <p><strong>Correct.</strong> Free scaling of refinement proofs.</p>
+    <ul>
+      <li><strong>Local:</strong> prove once.</li>
+      <li><strong>Framing:</strong> structural glue.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> collection-wide refinement automatic.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.22 Practice: Order ERP</h3>
+<div class="practice" id="p4_22">
+  <p class="scenario">ERP: <code>Order</code> per tenant, each refines. Which global ops get refinement for free?</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_22')">All promoted order ops using the tenant framing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Only one op.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">None.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_22')">Only read ops.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_22">
+    <p><strong>Correct.</strong> Every promoted op inherits.</p>
+    <ul>
+      <li><strong>Local:</strong> order ops refine.</li>
+      <li><strong>Framing:</strong> tenant + order selector.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> all promoted ops refine.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.23 Practice: Framing Verbatim</h3>
+<div class="practice" id="p4_23">
+  <p>During refinement, framing schemas are:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_23')">Preserved verbatim; only the inner op/type refines.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Completely redesigned.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Deleted.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_23')">Duplicated for each instance.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_23">
+    <p><strong>Correct.</strong> Structural invariance.</p>
+    <ul>
+      <li><strong>Local:</strong> inner type changes.</li>
+      <li><strong>Framing:</strong> same structure.</li>
+      <li><strong>Retrieve:</strong> pointwise bridge.</li>
+      <li><strong>Global:</strong> only the inner part evolves.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.24 Practice: Warehouse Shipping</h3>
+<div class="practice" id="p4_24">
+  <p class="scenario">Logistics: many <code>Warehouse</code>s, each refines. <code>ShipOrder</code> promoted. Refinement:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_24')"><code>ShipOrderImpl</code> via WarehouseShip refinement + framing.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')">From scratch.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')">Impossible.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_24')">Only for one warehouse.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_24">
+    <p><strong>Correct.</strong> Framing-based lift.</p>
+    <ul>
+      <li><strong>Local:</strong> warehouse ship refinement.</li>
+      <li><strong>Framing:</strong> warehouse selector.</li>
+      <li><strong>Retrieve:</strong> pointwise.</li>
+      <li><strong>Global:</strong> logistics-wide refinement inherited.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>V.25 Practice: Capstone</h3>
+<div class="practice" id="p4_25">
+  <p>Refining promotion is the capstone of Ch 18 because it:</p>
+  <ul class="choices">
+    <li><button data-correct="true" onclick="selectAnswer(this,true,'fb4_25')">Combines data refinement with modular lifting across collections.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">Is unrelated to the rest of Ch 18.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">Only applies to singleton collections.</button></li>
+    <li><button onclick="selectAnswer(this,false,'fb4_25')">Replaces all other refinement methods.</button></li>
+  </ul>
+  <div class="feedback" id="fb4_25">
+    <p><strong>Correct.</strong> Synthesis of refinement + promotion.</p>
+    <ul>
+      <li><strong>Local:</strong> data refinement (&sect;18.1&ndash;18.3).</li>
+      <li><strong>Framing:</strong> promotion (Ch 13).</li>
+      <li><strong>Retrieve:</strong> pointwise composition.</li>
+      <li><strong>Global:</strong> scalable, modular, proven-correct systems.</li>
+    </ul>
+  </div>
+</div>
+
+</section>
+
+<div class="pagination">
+  <button id="prev-btn" onclick="prevPage()">&larr; Previous</button>
+  <span class="page-indicator" id="page-indicator">1 / 4</span>
+  <button id="next-btn" onclick="nextPage()">Next &rarr;</button>
+</div>
+
+<footer>Based on Woodcock &amp; Davies, <em>Using Z</em>, Ch 18.</footer>
+
+</body>
+</html>
