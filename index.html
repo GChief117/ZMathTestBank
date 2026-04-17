@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Discrete Mathematics &amp; Proofs — Z Based Math</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Discrete Mathematics &amp; Proofs — Z Based Math</h1>
+<p><strong>Authored by Gunnar Beck Nelson</strong></p>
+<p>Original concepts, examples, and practice problems, organized by concepts (referenced from Woodcock &amp; Davies, <em>Using Z: Specification, Refinement, and Proof</em>).</p>
+
+<h2>Chapters</h2>
+<ul>
+  <li><a href="chapter1.html">Chapter 1 — Introduction</a></li>
+  <li><a href="chapter2.html">Chapter 2 — Propositional Logic</a></li>
+  <li><a href="chapter3.html">Chapter 3 — Predicate Logic</a></li>
+  <li><a href="chapter4.html">Chapter 4 — Equality and Definite Description</a></li>
+  <li><a href="chapter5.html">Chapter 5 — Sets</a></li>
+  <li><a href="chapter6.html">Chapter 6 — Definitions</a></li>
+  <li><a href="chapter7.html">Chapter 7 — Relations</a></li>
+  <li><a href="chapter8.html">Chapter 8 — Functions</a></li>
+  <li><a href="chapter9.html">Chapter 9 — Sequences</a></li>
+  <li><a href="chapter10.html">Chapter 10 — Free Types</a></li>
+  <li><a href="chapter11.html">Chapter 11 — Schemas</a></li>
+  <li><a href="chapter12.html">Chapter 12 — Schema Operators</a></li>
+  <li><a href="chapter13.html">Chapter 13 — Promotion</a></li>
+  <li><a href="chapter14.html">Chapter 14 — Preconditions</a></li>
+  <li><a href="chapter15.html">Chapter 15 — File System</a></li>
+  <li><a href="chapter16.html">Chapter 16 — Data Refinement</a></li>
+  <li><a href="chapter17.html">Chapter 17 — Data Refinement with Schemas</a></li>
+  <li><a href="chapter18.html">Chapter 18 — Functional Refinement</a></li>
+  <li><a href="chapter19.html">Chapter 19 — Refinement Calculus</a></li>
+  <li><a href="chapter20.html">Chapter 20 — A Telecommunications Protocol</a></li>
+  <li><a href="chapter21.html">Chapter 21 — An Operating System Scheduler</a></li>
+  <li><a href="chapter22.html">Chapter 22 — A Bounded Buffer Module</a></li>
+  <li><a href="chapter23.html">Chapter 23 — A Save Area</a></li>
+</ul>
+
+<footer>
+</footer>
+
+<style>
+  li.ch-pass a { color: #28a745; font-weight: bold; }
+  li.ch-pass::marker { color: #28a745; }
+  .ch-check { color: #28a745; font-size: 0.85em; margin-left: 4px; }
+  .ch-restart {
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 0.8em;
+    border: 1px solid #888;
+    border-radius: 3px;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+  }
+  .ch-restart:hover { background: #f0f0f0; color: #111; }
+</style>
+<script>
+(function() {
+  for (let ch = 1; ch <= 23; ch++) {
+    try {
+      const raw = localStorage.getItem('zmath-ch' + ch);
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      let earned = 0, total = 0;
+      for (const s of Object.values(data)) {
+        earned += s.earned;
+        total += s.total;
+      }
+      if (total > 0 && (earned / total) * 100 >= 90) {
+        const link = document.querySelector('a[href="chapter' + ch + '.html"]');
+        if (link && link.parentElement) {
+          const li = link.parentElement;
+          li.classList.add('ch-pass');
+          const check = document.createElement('span');
+          check.className = 'ch-check';
+          check.textContent = '\u2714';
+          li.appendChild(check);
+          const btn = document.createElement('button');
+          btn.className = 'ch-restart';
+          btn.textContent = '\u21BB Restart';
+          btn.addEventListener('click', function() {
+            if (confirm('Reset Chapter ' + ch + ' progress and start over?')) {
+              localStorage.removeItem('zmath-ch' + ch);
+              li.classList.remove('ch-pass');
+              check.remove();
+              btn.remove();
+            }
+          });
+          li.appendChild(btn);
+        }
+      }
+    } catch(e) {}
+  }
+})();
+</script>
+
+</body>
+</html>
